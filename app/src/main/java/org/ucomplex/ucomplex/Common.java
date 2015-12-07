@@ -17,7 +17,7 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
 /**
- * Created by Sermilion on 04/12/2015.
+ * Created by Sermi lion on 04/12/2015.
  */
 public class Common {
 
