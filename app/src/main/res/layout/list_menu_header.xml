@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="250dp"
+    android:background="@color/uc_dark_menu"
+    android:orientation="vertical"
+    android:weightSum="1">
+
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:src="@mipmap/ic_no_image"
+        android:layout_marginTop="50dp"
+        android:id="@+id/circleView"
+        android:layout_gravity="center"
+        />
+
+
+        <TextView
+            android:id="@+id/name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#ffffff"
+            android:text="Akash Bangad"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_gravity="center"
+
+            />
+
+
+
+
+</LinearLayout>

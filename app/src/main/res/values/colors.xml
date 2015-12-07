@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#7ac9e4</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#7ac9e5</color>
+    <color name="uc_dark_menu">#4d5362</color>
+    <color name="uc_gray_text">#bbbbbb</color>
+
+</resources>
