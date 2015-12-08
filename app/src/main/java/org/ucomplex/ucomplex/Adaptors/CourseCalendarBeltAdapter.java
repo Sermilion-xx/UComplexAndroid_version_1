@@ -12,11 +12,8 @@ import android.widget.TextView;
 import com.amulyakhare.textdrawable.TextDrawable;
 
 import org.javatuples.Quartet;
-import org.javatuples.Triplet;
-import org.ucomplex.ucomplex.Model.StudyStructure.File;
 import org.ucomplex.ucomplex.R;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
