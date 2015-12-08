@@ -1,19 +1,16 @@
 package org.ucomplex.ucomplex.Adaptors;
 
 import android.content.Context;
-import android.os.Bundle;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
+
 
 import org.ucomplex.ucomplex.Model.StudyStructure.File;
 import org.ucomplex.ucomplex.R;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -25,8 +22,6 @@ public class CourseMaterialsAdapter extends ArrayAdapter<File> {
     public CourseMaterialsAdapter(Context context, List<File> items){
         super(context, R.layout.course_material_listview_item,items);
     }
-
-
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {

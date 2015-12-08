@@ -34,4 +34,6 @@ dependencies {
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.4'
     compile 'com.squareup.okhttp:okhttp:2.6.0'
     compile 'com.google.code.gson:gson:1.7.2'
+    compile 'org.javatuples:javatuples:1.2'
+    compile 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
 }

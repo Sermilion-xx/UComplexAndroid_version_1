@@ -103,7 +103,7 @@ public class FetchUserEventsTask extends AsyncTask<Void, Void, ArrayList<EventRo
             int type = Integer.parseInt(event.getString(JSON_EVENTS_TYPE));
             JSONObject paramsJson = new JSONObject(event.getString(JSON_EVENTS_PARAMS));
             String displayEvent = makeEvent(type, paramsJson);
-            String time = makeDate(event.getString(JSON_EVENTS_TIME));
+            String time = Common.makeDate(event.getString(JSON_EVENTS_TIME));
 
             if(type!=6){
                 int param_id = paramsJson.getInt(JSON_EVENTS_PARAMS_ID);
@@ -195,36 +195,5 @@ public class FetchUserEventsTask extends AsyncTask<Void, Void, ArrayList<EventRo
     }
 
 
-    private String makeDate(String time) {
-        String r = "";
-        String d = time.split(" ")[0];
-        String t = time.split(" ")[1];
-        try {
-            Locale locale = new Locale("ru", "RU");
-            Date date = new SimpleDateFormat("y-M-d H:m:s", locale).parse(time);
-            Date today = new Date();
-            Calendar cal1 = Calendar.getInstance();
-            cal1.setTime(today);
-            int year1 = cal1.get(Calendar.YEAR);
-            int month1 = cal1.get(Calendar.MONTH);
-            int day1 = cal1.get(Calendar.DAY_OF_MONTH);
 
-            Calendar cal2 = Calendar.getInstance();
-            cal2.setTime(date);
-            int year2 = cal2.get(Calendar.YEAR);
-            int month2 = cal2.get(Calendar.MONTH);
-            int day2 = cal2.get(Calendar.DAY_OF_MONTH);
-            if (day1 == day2) {
-                r += "Сегодня";
-            } else if (day1 - 1 == day2) {
-                r += "Вчера";
-            } else {
-                r += d;
-            }
-            r += " в " + t;
-        } catch (Exception ex) {
-
-        }
-        return r;
-    }
 }

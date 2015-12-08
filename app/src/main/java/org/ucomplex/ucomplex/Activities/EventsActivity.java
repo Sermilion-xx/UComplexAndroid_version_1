@@ -101,8 +101,6 @@ public class EventsActivity extends AppCompatActivity {
         Drawer.setDrawerListener(mDrawerToggle); // Drawer Listener set to the Drawer toggle
         mDrawerToggle.syncState();               // Finally we set the drawer toggle sync State
 
-
-//        globals.setShareInstance(eventsArray);
         EventsFragment fragment = new EventsFragment();
         Bundle data = new Bundle();
         data.putSerializable("eventItems", eventsArray);

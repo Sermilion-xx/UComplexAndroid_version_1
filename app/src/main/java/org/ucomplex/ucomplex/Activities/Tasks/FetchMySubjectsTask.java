@@ -21,6 +21,7 @@ import org.ucomplex.ucomplex.Model.Users.Teacher;
 import org.ucomplex.ucomplex.MyServices;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by Sermilion on 05/12/2015.
@@ -44,7 +45,7 @@ public class FetchMySubjectsTask extends AsyncTask<Void, Void, Course> {
     }
 
     public String getGcourseString() {
-        return "subjId="+gcourse;
+        return String.valueOf(gcourse);
     }
 
     public void setGcourse(int gcourse) {
@@ -89,12 +90,9 @@ public class FetchMySubjectsTask extends AsyncTask<Void, Void, Course> {
                     department.setClient(departmentArray.getInt("client"));
                     course.setDepartment(department);
                 }
-
-
             }
             JSONObject progressArray = courseJson.getJSONObject("progress");
             JSONArray  filesArray = courseJson.getJSONArray("files");
-
 //used
             Teacher mainTeacher  = new Teacher();
             mainTeacher.setId(Integer.valueOf(teacherArray.getString("id")));
@@ -102,7 +100,6 @@ public class FetchMySubjectsTask extends AsyncTask<Void, Void, Course> {
             mainTeacher.setPhoto(teacherArray.getInt("photo"));
             mainTeacher.setCode(teacherArray.getString("code"));
             mainTeacher.setDepartment(department);
-
 
             course.addTeacher(mainTeacher);
 
@@ -153,7 +150,6 @@ public class FetchMySubjectsTask extends AsyncTask<Void, Void, Course> {
             progress.setTable(progressArray.getInt("table"));
             progress.setTime(progressArray.getInt("time"));
 
-
             course.setName(courseArray.getString("name"));
             course.setId(courseArray.getInt("id"));
             course.setCourse(courseArray.getInt("course"));
@@ -163,24 +159,22 @@ public class FetchMySubjectsTask extends AsyncTask<Void, Void, Course> {
             course.setCourse_id(courseArray.getInt("course_id"));
             course.setDescription(courseArray.getString("description"));
 
-
-
             course.setProgress(progress);
             course.setFiles(files);
 
             return course;
-
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
         return null;
     }
 
     @Override
     protected Course doInBackground(Void... params) {
         String urlString = "http://you.com.ru/student/ajax/my_subjects?json";
-        jsonData = Common.httpPost(urlString, MyServices.getLoginDataFromPref(mContext),getGcourseString());
+        HashMap<String, String> postParams = new HashMap<String, String>();
+        postParams.put("subjId",this.getGcourseString());
+        jsonData = Common.httpPost(urlString, MyServices.getLoginDataFromPref(mContext), postParams);
         return getCourseDataFromJson(jsonData);
     }
 

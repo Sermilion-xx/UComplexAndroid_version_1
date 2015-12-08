@@ -3,8 +3,12 @@ package org.ucomplex.ucomplex;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Build;
 import android.util.Base64;
+
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -12,9 +16,19 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 /**
  * Created by Sermi lion on 04/12/2015.
@@ -22,12 +36,16 @@ import java.nio.charset.StandardCharsets;
 public class Common {
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
-    public static String httpPost(String urlString, String auth, String ...params) {
-        final String UC_BASE_URL = urlString; //"http://you.com.ru/auth?json";
+    public static String httpPost(String urlString, String auth, HashMap<String, String>... postDataParams) {
+        final String UC_BASE_URL = urlString;
 
         String dataUrlParameters = "";
-        if(params.length>=1){
-            dataUrlParameters = params[0];
+        try {
+            if(postDataParams.length>0){
+                    dataUrlParameters = getPostDataString(postDataParams[0]);
+            }
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
         }
 
         final byte[] authBytes = auth.getBytes(StandardCharsets.UTF_8);
@@ -48,6 +66,7 @@ public class Common {
 
             DataOutputStream wr = new DataOutputStream(
                     MyServices.connection.getOutputStream());
+
             wr.writeBytes(dataUrlParameters);
             wr.flush();
             wr.close();
@@ -72,6 +91,24 @@ public class Common {
         }
         return null;
     }
+
+    private static String getPostDataString(HashMap<String, String> params) throws UnsupportedEncodingException {
+        StringBuilder result = new StringBuilder();
+        boolean first = true;
+        for(Map.Entry<String, String> entry : params.entrySet()){
+            if (first)
+                first = false;
+            else
+                result.append("&");
+
+            result.append(URLEncoder.encode(entry.getKey(), "UTF-8"));
+            result.append("=");
+            result.append(URLEncoder.encode(entry.getValue(), "UTF-8"));
+        }
+
+        return result.toString();
+    }
+
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
     public static String downloadPhoto(String code) {
@@ -116,4 +153,40 @@ public class Common {
         }
         return null;
     }
+
+
+    public static String makeDate(String time) {
+        String r = "";
+        String d = time.split(" ")[0];
+        String t = time.split(" ")[1];
+        try {
+            Locale locale = new Locale("ru", "RU");
+            Date date = new SimpleDateFormat("y-M-d H:m:s", locale).parse(time);
+            Date today = new Date();
+            Calendar cal1 = Calendar.getInstance();
+            cal1.setTime(today);
+            int year1 = cal1.get(Calendar.YEAR);
+            int month1 = cal1.get(Calendar.MONTH);
+            int day1 = cal1.get(Calendar.DAY_OF_MONTH);
+
+            Calendar cal2 = Calendar.getInstance();
+            cal2.setTime(date);
+            int year2 = cal2.get(Calendar.YEAR);
+            int month2 = cal2.get(Calendar.MONTH);
+            int day2 = cal2.get(Calendar.DAY_OF_MONTH);
+            if (day1 == day2) {
+                r += "Сегодня";
+            } else if (day1 - 1 == day2) {
+                r += "Вчера";
+            } else {
+                r += d;
+            }
+            r += " в " + t;
+        } catch (Exception ex) {
+
+        }
+        return r;
+    }
+
+
 }

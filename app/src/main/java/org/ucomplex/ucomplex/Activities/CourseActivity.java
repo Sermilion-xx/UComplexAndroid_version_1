@@ -10,6 +10,9 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
+import org.javatuples.Quartet;
+import org.javatuples.Triplet;
+import org.ucomplex.ucomplex.Activities.Tasks.FetchCalendarBeltTask;
 import org.ucomplex.ucomplex.Activities.Tasks.FetchMySubjectsTask;
 import org.ucomplex.ucomplex.Fragments.*;
 import org.ucomplex.ucomplex.Model.StudyStructure.Course;
@@ -26,6 +29,7 @@ public class CourseActivity extends AppCompatActivity {
     private Course coursedata;
     private int type;
     private Bitmap bitmap;
+    ArrayList<Quartet<Integer, String, String, Integer>> feedItems;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +48,15 @@ public class CourseActivity extends AppCompatActivity {
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
+
+        FetchCalendarBeltTask fetchCalendarBeltTask = new FetchCalendarBeltTask();
+        fetchCalendarBeltTask.setmContext(this);
+        try {
+            this.feedItems = fetchCalendarBeltTask.execute(this.gcourse).get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -73,6 +86,7 @@ public class CourseActivity extends AppCompatActivity {
 
         CalendarBeltFragment calendarBeltFragment = new CalendarBeltFragment();
         calendarBeltFragment.setGcourse(this.gcourse);
+        calendarBeltFragment.setFeedItems(this.feedItems);
 
         adapter.addFragment(courseInfoFragment, "Дисциплина");
         adapter.addFragment(courseMaterialsFragment, "Материалы");

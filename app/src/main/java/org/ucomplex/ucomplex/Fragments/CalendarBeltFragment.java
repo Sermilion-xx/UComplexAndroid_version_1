@@ -2,16 +2,33 @@ package org.ucomplex.ucomplex.Fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
+import android.widget.Toast;
 
+import org.javatuples.Quartet;
+import org.ucomplex.ucomplex.Adaptors.CourseCalendarBeltAdapter;
+import org.ucomplex.ucomplex.Model.StudyStructure.File;
 import org.ucomplex.ucomplex.R;
 
+import java.util.ArrayList;
 
-public class CalendarBeltFragment extends Fragment{
+
+public class CalendarBeltFragment extends ListFragment {
 
     private int gcourse;
+    private ArrayList<Quartet<Integer, String, String, Integer>> feedItems;
+
+    public ArrayList<Quartet<Integer, String, String, Integer>> getFeedItems() {
+        return feedItems;
+    }
+
+    public void setFeedItems(ArrayList<Quartet<Integer, String, String, Integer>> feedItems) {
+        this.feedItems = feedItems;
+    }
 
     public int getGcourse() {
         return gcourse;
@@ -26,15 +43,27 @@ public class CalendarBeltFragment extends Fragment{
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        // remove the dividers from the ListView of the ListFragment
+        getListView().setDivider(null);
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_course_material, container, false);
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setListAdapter(new CourseCalendarBeltAdapter(getActivity(), feedItems));
     }
+
+    @Override
+    public void onListItemClick(ListView l, View v, int position, long id) {
+        // retrieve theListView item
+        Quartet<Integer, String, String, Integer> item = feedItems.get(position);
+
+        // do something
+        Toast.makeText(getActivity(), item.getValue1(), Toast.LENGTH_SHORT).show();
+    }
+
+
 
 }
