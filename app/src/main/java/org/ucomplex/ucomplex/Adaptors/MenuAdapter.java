@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import org.ucomplex.ucomplex.Activities.EventsActivity;
 import org.ucomplex.ucomplex.Activities.LoginActivity;
+import org.ucomplex.ucomplex.Activities.MyFilesActivity;
 import org.ucomplex.ucomplex.Activities.SubjectsActivity;
 import org.ucomplex.ucomplex.Activities.WebViewActivity;
 import org.ucomplex.ucomplex.R;
@@ -79,6 +80,9 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder>  {
                 contxt.startActivity(intent);
             }else if(getAdapterPosition()==3){
                 Intent intent = new Intent(contxt, SubjectsActivity.class);
+                contxt.startActivity(intent);
+            }else if(getAdapterPosition()==4){
+                Intent intent = new Intent(contxt, MyFilesActivity.class);
                 contxt.startActivity(intent);
             }else if(getAdapterPosition()==7){
                 this.logout();

@@ -14,20 +14,19 @@ public class File {
     private int size;
     private String time;
     private String data;
+    private String checkTime;
 
-    public File(String id, User owner, String name, String address, String type, int size, String time, String data) {
-        this.id = id;
-        this.owner = owner;
-        this.name = name;
-        this.address = address;
-        this.type = type;
-        this.size = size;
-        this.time = time;
-        this.data = data;
-    }
 
     public File(){
 
+    }
+
+    public String getCheckTime() {
+        return checkTime;
+    }
+
+    public void setCheckTime(String checkTime) {
+        this.checkTime = checkTime;
     }
 
     public String getId() {

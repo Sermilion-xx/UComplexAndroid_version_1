@@ -45,6 +45,10 @@
         <activity
             android:name=".Activities.WebViewActivity"
             android:label="@string/title_activity_web_view"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".Activities.MyFilesActivity"
+            android:label="@string/title_activity_my_files"
             android:theme="@style/AppTheme"></activity>
     </application>
 

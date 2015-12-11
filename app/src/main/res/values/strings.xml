@@ -35,5 +35,6 @@
     <string name="title_activity_courses">CoursesActivity</string>
     <string name="title_activity_questionare">QuestionareActivity</string>
     <string name="title_activity_web_view">WebViewActivity</string>
+    <string name="title_activity_my_files">Материалы</string>
 
 </resources>
