@@ -41,7 +41,6 @@ import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListene
 
 import org.ucomplex.ucomplex.Activities.CourseActivity;
 import org.ucomplex.ucomplex.Model.EventRowItem;
-import org.ucomplex.ucomplex.Model.Globals;
 import org.ucomplex.ucomplex.R;
 
 import java.util.ArrayList;

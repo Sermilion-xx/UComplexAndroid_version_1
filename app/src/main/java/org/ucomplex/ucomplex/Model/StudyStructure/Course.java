@@ -81,9 +81,9 @@ public class Course implements Serializable {
         return this.teachers.get(index);
     }
 
-//    public void removieTeachers(int index){
-//        this.teachers.remove(index);
-//    }
+    public void removieTeachers(int index){
+        this.teachers.remove(index);
+    }
 
     public int getId() {
         return id;

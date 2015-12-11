@@ -1,6 +1,7 @@
 package org.ucomplex.ucomplex.Adaptors;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,6 +9,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 
+import org.ucomplex.ucomplex.Common;
 import org.ucomplex.ucomplex.Model.StudyStructure.File;
 import org.ucomplex.ucomplex.R;
 
@@ -32,6 +34,11 @@ public class CourseMaterialsAdapter extends ArrayAdapter<File> {
             viewHolder = new ViewHolder();
             viewHolder.textView1 = (TextView) convertView.findViewById(R.id.course_material_listview_item_textview1);
             viewHolder.textView2 = (TextView) convertView.findViewById(R.id.course_material_listview_item_textview2);
+            viewHolder.weightTextView = (TextView) convertView.findViewById(R.id.course_material_listview_item_weight);
+            viewHolder.weightIconTextView = (TextView) convertView.findViewById(R.id.course_material_listview_item_weight_icon);
+            viewHolder.personIconTextView = (TextView) convertView.findViewById(R.id.course_material_listview_item_person_icon);
+            viewHolder.timeIconTextView = (TextView) convertView.findViewById(R.id.course_material_listview_item_time_icon);
+            viewHolder.timeTextView = (TextView) convertView.findViewById(R.id.course_material_listview_item_time);
             convertView.setTag(viewHolder);
         }else{
             viewHolder = (ViewHolder) convertView.getTag();
@@ -39,7 +46,14 @@ public class CourseMaterialsAdapter extends ArrayAdapter<File> {
         File file = getItem(position);
         viewHolder.textView1.setText(file.getName());
         viewHolder.textView2.setText(file.getOwner().getName());
-
+        viewHolder.weightIconTextView.setTypeface(Typeface.createFromAsset(getContext().getAssets(), "fonts/fontawesome-webfont.ttf"));
+        viewHolder.weightIconTextView.setText("\uF24E");
+        viewHolder.weightTextView.setText(String.valueOf(Common.readableFileSize(file.getSize(), false)));
+        viewHolder.personIconTextView.setTypeface(Typeface.createFromAsset(getContext().getAssets(), "fonts/fontawesome-webfont.ttf"));
+        viewHolder.personIconTextView.setText("\uF007");
+        viewHolder.timeIconTextView.setTypeface(Typeface.createFromAsset(getContext().getAssets(), "fonts/fontawesome-webfont.ttf"));
+        viewHolder.timeIconTextView.setText("\uF017");
+        viewHolder.timeTextView.setText(file.getTime());
         return convertView;
 
     }
@@ -47,5 +61,10 @@ public class CourseMaterialsAdapter extends ArrayAdapter<File> {
     public static class ViewHolder {
         TextView textView1;
         TextView textView2;
+        TextView weightTextView;
+        TextView weightIconTextView;
+        TextView personIconTextView;
+        TextView timeIconTextView;
+        TextView timeTextView;
     }
 }

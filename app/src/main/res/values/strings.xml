@@ -32,5 +32,8 @@
     <string name="department_string">Кафедра: </string>
     <string name="average_mark_string">Средний балл:</string>
     <string name="attendance_string">Посещаемость по предмету:</string>
+    <string name="title_activity_courses">CoursesActivity</string>
+    <string name="title_activity_questionare">QuestionareActivity</string>
+    <string name="title_activity_web_view">WebViewActivity</string>
 
 </resources>

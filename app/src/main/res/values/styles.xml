@@ -1,4 +1,8 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+
+    >
+
 
     <!-- Base application theme. -->
 
@@ -7,6 +11,11 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
 
+    </style>
+
+    <style name="AwesomeIcon" parent="android:TextAppearance">
+        <!-- Custom Attr-->
+        <item name="fontPath">fonts/fontawesome-webfont.ttf</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />

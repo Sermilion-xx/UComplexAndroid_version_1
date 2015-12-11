@@ -4,21 +4,17 @@ import android.app.Activity;
 import android.os.AsyncTask;
 
 import org.javatuples.Quartet;
-import org.javatuples.Triplet;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.ucomplex.ucomplex.Common;
-import org.ucomplex.ucomplex.Model.EventRowItem;
 import org.ucomplex.ucomplex.MyServices;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Locale;
-import java.util.Map;
+
 
 
 /**
@@ -49,18 +45,6 @@ public class FetchCalendarBeltTask extends AsyncTask<Integer, Void, ArrayList<Qu
         return getCalendarBeltDataFromJson(jsonData);
     }
 
-    private Map<String, String> parseJsonKV(JSONObject jObject) throws JSONException {
-
-        Map<String,String> map = new HashMap<>();
-        Iterator iter = jObject.keys();
-        while(iter.hasNext()){
-            String key = (String)iter.next();
-            String value = jObject.getString(key);
-            map.put(key,value);
-        }
-        return map;
-    }
-
 
 
     private ArrayList<Quartet<Integer, String, String, Integer>> getCalendarBeltDataFromJson(String jsonData) {
@@ -69,7 +53,7 @@ public class FetchCalendarBeltTask extends AsyncTask<Integer, Void, ArrayList<Qu
         try {
             courseJson = new JSONObject(jsonData);
             JSONObject teachers = courseJson.getJSONObject("teachers");
-            HashMap<String, String> teachersMap = (HashMap<String, String>) parseJsonKV(teachers);
+            HashMap<String, String> teachersMap = (HashMap<String, String>) Common.parseJsonKV(teachers);
             JSONArray marksArray = courseJson.getJSONArray("marks");
 
             for(int i=0;i<marksArray.length();i++){

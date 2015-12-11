@@ -9,6 +9,8 @@ import android.util.Base64;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -21,11 +23,13 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -186,6 +190,27 @@ public class Common {
 
         }
         return r;
+    }
+
+    public static Map<String, String> parseJsonKV(JSONObject jObject) throws JSONException {
+
+        Map<String,String> map = new HashMap<>();
+        Iterator iter = jObject.keys();
+        while(iter.hasNext()){
+            String key = (String)iter.next();
+            String value = jObject.getString(key);
+            map.put(key,value);
+        }
+        return map;
+    }
+
+
+    public static String readableFileSize(long bytes, boolean si) {
+        int unit = si ? 1000 : 1024;
+        if (bytes < unit) return bytes + " B";
+        int exp = (int) (Math.log(bytes) / Math.log(unit));
+        String pre = (si ? "kMGTPE" : "KMGTPE").charAt(exp-1) + (si ? "" : "i");
+        return String.format("%.1f %sB", bytes / Math.pow(unit, exp), pre);
     }
 
 

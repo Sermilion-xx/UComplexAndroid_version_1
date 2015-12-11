@@ -28,7 +28,6 @@ import java.util.concurrent.ExecutionException;
 
 public class CourseInfoFragment extends Fragment {
 
-    private int type;
     private Course courseData;
     Activity mContext;
     Bitmap bitmap;
@@ -54,13 +53,7 @@ public class CourseInfoFragment extends Fragment {
         this.bitmap = bitmap;
     }
 
-    public int getType() {
-        return type;
-    }
 
-    public void setType(int type) {
-        this.type = type;
-    }
 
     public void setmContext(Activity mContext) {
         this.mContext = mContext;

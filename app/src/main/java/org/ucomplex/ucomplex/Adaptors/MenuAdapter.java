@@ -10,9 +10,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import org.ucomplex.ucomplex.Activities.EventsActivity;
 import org.ucomplex.ucomplex.Activities.LoginActivity;
+import org.ucomplex.ucomplex.Activities.SubjectsActivity;
+import org.ucomplex.ucomplex.Activities.WebViewActivity;
 import org.ucomplex.ucomplex.R;
 
 /**
@@ -28,7 +30,8 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder>  {
     private String name;        //String Resource for list_menu_header View Name
     private int profile;        //int Resource for list_menu_header view profile picture
     private String email;       //String Resource for list_menu_header view email
-    Context context;
+    private Context context;
+
 
 
     // Creating a ViewHolder which extends the RecyclerView View Holder
@@ -68,8 +71,16 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder>  {
         @Override
         public void onClick(View v) {
 
-            Toast.makeText(contxt,"The Item Clicked is: "+getAdapterPosition(),Toast.LENGTH_SHORT).show();
-            if(getAdapterPosition()==7){
+            if(getAdapterPosition()==1){
+                Intent intent = new Intent(contxt, EventsActivity.class);
+                contxt.startActivity(intent);
+            }else if(getAdapterPosition()==2){
+                Intent intent = new Intent(contxt, WebViewActivity.class);
+                contxt.startActivity(intent);
+            }else if(getAdapterPosition()==3){
+                Intent intent = new Intent(contxt, SubjectsActivity.class);
+                contxt.startActivity(intent);
+            }else if(getAdapterPosition()==7){
                 this.logout();
             }
 

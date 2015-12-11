@@ -11,8 +11,6 @@ import android.widget.Toast;
 
 import org.javatuples.Quartet;
 import org.ucomplex.ucomplex.Adaptors.CourseCalendarBeltAdapter;
-import org.ucomplex.ucomplex.Model.StudyStructure.File;
-import org.ucomplex.ucomplex.R;
 
 import java.util.ArrayList;
 

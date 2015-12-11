@@ -7,11 +7,13 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
+
 
 import org.javatuples.Quartet;
-import org.javatuples.Triplet;
 import org.ucomplex.ucomplex.Activities.Tasks.FetchCalendarBeltTask;
 import org.ucomplex.ucomplex.Activities.Tasks.FetchMySubjectsTask;
 import org.ucomplex.ucomplex.Fragments.*;
@@ -22,12 +24,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+
+
 public class CourseActivity extends AppCompatActivity {
 
     private int gcourse;
     private String jsonData;
     private Course coursedata;
-    private int type;
     private Bitmap bitmap;
     ArrayList<Quartet<Integer, String, String, Integer>> feedItems;
 
@@ -38,7 +41,7 @@ public class CourseActivity extends AppCompatActivity {
 
         Bundle extras = getIntent().getExtras();
         this.gcourse = extras.getInt("gcourse", -1);
-        this.type = extras.getInt("type", -1);
+
 
         FetchMySubjectsTask fetchMySubjectsTask = new FetchMySubjectsTask();
         fetchMySubjectsTask.setmContext(this);
@@ -57,8 +60,8 @@ public class CourseActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle(coursedata.getName());
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -70,11 +73,23 @@ public class CourseActivity extends AppCompatActivity {
         tabLayout.setupWithViewPager(viewPager);
     }
 
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         CourseInfoFragment courseInfoFragment = new CourseInfoFragment();
         courseInfoFragment.setmContext(this);
-        courseInfoFragment.setType(this.type);
         courseInfoFragment.setBitmap(this.bitmap);
 
         Bundle cmBundel = new Bundle();

@@ -36,4 +36,5 @@ dependencies {
     compile 'com.google.code.gson:gson:1.7.2'
     compile 'org.javatuples:javatuples:1.2'
     compile 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
+    compile 'uk.co.chrisjenx:calligraphy:2.1.0'
 }

@@ -14,8 +14,6 @@ import android.view.View;
 import org.ucomplex.ucomplex.Activities.Tasks.FetchUserEventsTask;
 import org.ucomplex.ucomplex.Adaptors.MenuAdapter;
 import org.ucomplex.ucomplex.Fragments.EventsFragment;
-import org.ucomplex.ucomplex.Model.EventRowItem;
-import org.ucomplex.ucomplex.Model.Users.Student;
 import org.ucomplex.ucomplex.R;
 
 import java.util.ArrayList;
@@ -26,9 +24,10 @@ public class EventsActivity extends AppCompatActivity {
 
     ArrayList eventsArray = null;
     FetchUserEventsTask mEventsTask = null;
-    final String[] TITLES = { "События", "Календарь", "Сообщения", "Предметы", "Расписание","Пользователи", "Выход" };
+    final String[] TITLES = { "События", "Анкетирование", "Дисциплины", "Сообщения", "Предметы", "Расписание","Пользователи", "Выход" };
     final int[] ICONS = { R.drawable.ic_menu_event,
             R.drawable.ic_menu_calendar,
+            R.drawable.ic_menu_subject,
             R.drawable.ic_menu_message,
             R.drawable.ic_menu_subject,
             R.drawable.ic_menu_timetable,
@@ -45,21 +44,14 @@ public class EventsActivity extends AppCompatActivity {
     DrawerLayout Drawer;                                  // Declaring DrawerLayout
     ActionBarDrawerToggle mDrawerToggle;                  // Declaring Action Bar Drawer Toggle
 
-    private ArrayList<EventRowItem> parseJSON(String json){
-
-        return null;
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_events);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar);
+        toolbar.setTitle("События");
         setSupportActionBar(toolbar);
-        Student student = (Student)getIntent().getExtras().getSerializable("student");
-
-
 
         mEventsTask = new FetchUserEventsTask(this);
         try {
@@ -112,6 +104,7 @@ public class EventsActivity extends AppCompatActivity {
         }
     }
 
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -123,6 +116,10 @@ public class EventsActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_settings) {
+            return true;
+        }
+        if(id==android.R.id.home) {
+            onBackPressed();
             return true;
         }
         return super.onOptionsItemSelected(item);

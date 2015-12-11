@@ -14,7 +14,6 @@ import java.io.PrintWriter;
 public class FetchLangTask extends AsyncTask<Void, Void, Boolean> {
 
     Activity mContext;
-    String jsonData;
 
     public Activity getmContext() {
         return mContext;
@@ -27,7 +26,7 @@ public class FetchLangTask extends AsyncTask<Void, Void, Boolean> {
     @Override
     protected Boolean doInBackground(Void... params) {
         String urlString = "http://you.com.ru/public/get_uc_vars?json&lang=1";
-        jsonData = Common.httpPost(urlString, MyServices.getLoginDataFromPref(mContext));
+        String jsonData = Common.httpPost(urlString, MyServices.getLoginDataFromPref(mContext));
         PrintWriter out = null;
         try {
             out = new PrintWriter("lang.txt");
