@@ -36,5 +36,25 @@
     <string name="title_activity_questionare">QuestionareActivity</string>
     <string name="title_activity_web_view">WebViewActivity</string>
     <string name="title_activity_my_files">Материалы</string>
+    <string name="title_activity_reference">ReferenceActivity</string>
+    <string name="reference_descr">Сформулируйте, пожалуйста, Ваш заказ на справку, заполнив предлагаемую форму.</string>
+    <string name="org_name">Название организации:</string>
+    <string name="reference_info">Точное название организации, куда предоставляется справка (предварительно уточните полное наименование). Формулировка \"по месту требования\" не допускается (информация доступна только сотруднику, обрабатывающему Вашу заявку).</string>
+    <string name="reference_palce">Место предоставление справки:</string>
+    <string name="send_button">Отправить</string>
+    <string name="reference_more_info">* Если Вам необходимо предоставить справку в разные организации, то заполните, пожалуйста, форму несколько раз (для каждой организации соответственно). Указывайте полное и точное наименование организации, куда предоставляется справка. Размещайте Ваши заказы на изготовление всех документов заблаговременно. Учитывайте, что средний срок подготовки справки - порядка 3 дней.</string>
+
+
+    <string-array name="reference_places_array">
+        <item>Налоговые органы РФ</item>
+        <item>По месту работы родителей</item>
+        <item>По месту работы (справка-вызов)</item>
+        <item>Другой вуз, планирую переводиться (справка об успеваемости)</item>
+        <item>Jupiter</item>
+        <item>Saturn</item>
+        <item>Uranus</item>
+        <item>Neptune</item>
+    </string-array>
+    <string name="title_activity_users">UsersActivity</string>
 
 </resources>

@@ -24,12 +24,12 @@ public class EventsActivity extends AppCompatActivity {
 
     ArrayList eventsArray = null;
     FetchUserEventsTask mEventsTask = null;
-    final String[] TITLES = { "События", "Анкетирование", "Дисциплины", "Материалы", "Сообщения", "Расписание","Пользователи", "Выход" };
+    final String[] TITLES = { "События", "Анкетирование", "Дисциплины", "Материалы", "Справки", "Расписание","Пользователи", "Выход" };
     final int[] ICONS = { R.drawable.ic_menu_event,
             R.drawable.ic_menu_questionare,
             R.drawable.ic_menu_materials,
             R.drawable.ic_menu_subject,
-            R.drawable.ic_menu_message,
+            R.drawable.ic_menu_materials,
             R.drawable.ic_menu_calendar,
             R.drawable.ic_menu_users,
             R.drawable.ic_menu_exit};
