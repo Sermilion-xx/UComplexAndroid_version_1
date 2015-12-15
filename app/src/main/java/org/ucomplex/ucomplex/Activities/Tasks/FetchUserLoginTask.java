@@ -56,7 +56,7 @@ public class FetchUserLoginTask extends AsyncTask<Void, Void, Boolean> {
         Student student = new Student();
         student.setPhoto(userSession.getInt("photo"));
         student.setCode(userSession.getString("code"));
-        student.setPerson(userSession.getString("person"));
+        student.setPerson(userSession.getInt("person"));
         student.setName(userSession.getString("name"));
         student.setClient(userSession.getInt("client"));
         student.setEmail(userSession.getString("email"));

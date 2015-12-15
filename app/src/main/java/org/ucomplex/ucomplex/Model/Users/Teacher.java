@@ -17,7 +17,6 @@ public class Teacher extends User implements Serializable {
     private int dep_experience;
     private ArrayList<String> courses;
     private int rank;
-    private ArrayList<String> upqualification;
     private int degree;
     private String bio;
     private int plan;
@@ -27,22 +26,115 @@ public class Teacher extends User implements Serializable {
     private int selection;
     private Department department;
     private int closed;
-    private int agent;
-    private int online;
     private ArrayList<File> files;
-    private Bitmap photoBitmap;
+    private int sex;
+    private String statuses;
+    private String series;
+    private String number;
+    private String documentDate;
+    private String documentDepart;
+    private String documentDepartCode;
+    private int academicDegree;
+    private int academicRank;
+    private String academicAwards;
+    private String upqualification;
+
+
+
+
 
 
     public Teacher(){
 
     }
 
-    public Bitmap getPhotoBitmap() {
-        return photoBitmap;
+
+    public String getUpqualification() {
+        return upqualification;
     }
 
-    public void setPhotoBitmap(Bitmap photoBitmap) {
-        this.photoBitmap = photoBitmap;
+    public String getDocumentDate() {
+        return documentDate;
+    }
+
+    public void setDocumentDate(String documentDate) {
+        this.documentDate = documentDate;
+    }
+
+    public String getDocumentDepart() {
+        return documentDepart;
+    }
+
+    public void setDocumentDepart(String documentDepart) {
+        this.documentDepart = documentDepart;
+    }
+
+    public String getDocumentDepartCode() {
+        return documentDepartCode;
+    }
+
+    public void setDocumentDepartCode(String documentDepartCode) {
+        this.documentDepartCode = documentDepartCode;
+    }
+
+    public int getAcademicDegree() {
+        return academicDegree;
+    }
+
+    public void setAcademicDegree(int academicDegree) {
+        this.academicDegree = academicDegree;
+    }
+
+    public int getAcademicRank() {
+        return academicRank;
+    }
+
+    public void setAcademicRank(int academicRank) {
+        this.academicRank = academicRank;
+    }
+
+    public String getAcademicAwards() {
+        return academicAwards;
+    }
+
+    public void setAcademicAwards(String academicAwards) {
+        this.academicAwards = academicAwards;
+    }
+
+    public void setUpqualification(String upqualification) {
+        this.upqualification = upqualification;
+    }
+
+    public String getNumber() {
+        return number;
+    }
+
+    public void setNumber(String number) {
+        this.number = number;
+    }
+
+    public String getSeries() {
+        return series;
+    }
+
+    public void setSeries(String series) {
+        this.series = series;
+    }
+
+    public String getStatuses() {
+        return statuses;
+    }
+
+    public void setStatuses(String statuses) {
+        this.statuses = statuses;
+    }
+
+    public int getSex() {
+        return sex;
+    }
+
+    public void setSex(int sex) {
+        this.sex = sex;
     }
 
     public ArrayList<File> getFiles() {
@@ -93,13 +185,6 @@ public class Teacher extends User implements Serializable {
         this.rank = rank;
     }
 
-    public ArrayList<String> getUpqualification() {
-        return upqualification;
-    }
-
-    public void setUpqualification(ArrayList<String> upqualification) {
-        this.upqualification = upqualification;
-    }
 
     public int getDegree() {
         return degree;
@@ -173,19 +258,6 @@ public class Teacher extends User implements Serializable {
         this.closed = closed;
     }
 
-    public int getAgent() {
-        return agent;
-    }
 
-    public void setAgent(int agent) {
-        this.agent = agent;
-    }
 
-    public int getOnline() {
-        return online;
-    }
-
-    public void setOnline(int online) {
-        this.online = online;
-    }
 }

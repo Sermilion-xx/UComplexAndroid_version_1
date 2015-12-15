@@ -56,5 +56,6 @@
         <item>Neptune</item>
     </string-array>
     <string name="title_activity_users">UsersActivity</string>
+    <string name="loadmore_string">Загрузить еще</string>
 
 </resources>

@@ -3,9 +3,6 @@ package org.ucomplex.ucomplex.Activities;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 
 import android.support.v7.app.AppCompatActivity;
@@ -16,12 +13,12 @@ import android.view.MenuItem;
 import org.javatuples.Quartet;
 import org.ucomplex.ucomplex.Activities.Tasks.FetchCalendarBeltTask;
 import org.ucomplex.ucomplex.Activities.Tasks.FetchMySubjectsTask;
+import org.ucomplex.ucomplex.Adaptors.ViewPagerAdapter;
 import org.ucomplex.ucomplex.Fragments.*;
 import org.ucomplex.ucomplex.Model.StudyStructure.Course;
 import org.ucomplex.ucomplex.R;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 
@@ -82,12 +79,12 @@ public class CourseActivity extends AppCompatActivity {
                 onBackPressed();
                 return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
+
         CourseInfoFragment courseInfoFragment = new CourseInfoFragment();
         courseInfoFragment.setmContext(this);
         courseInfoFragment.setBitmap(this.bitmap);
@@ -109,34 +106,7 @@ public class CourseActivity extends AppCompatActivity {
         viewPager.setAdapter(adapter);
     }
 
-    class ViewPagerAdapter extends FragmentPagerAdapter {
-        private final List<Fragment> mFragmentList = new ArrayList<>();
-        private final List<String> mFragmentTitleList = new ArrayList<>();
 
-        public ViewPagerAdapter(FragmentManager manager) {
-            super(manager);
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            return mFragmentList.get(position);
-        }
-
-        @Override
-        public int getCount() {
-            return mFragmentList.size();
-        }
-
-        public void addFragment(Fragment fragment, String title) {
-            mFragmentList.add(fragment);
-            mFragmentTitleList.add(title);
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            return mFragmentTitleList.get(position);
-        }
-    }
 
 
 }

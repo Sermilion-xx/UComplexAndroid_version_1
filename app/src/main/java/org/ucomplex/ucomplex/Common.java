@@ -1,8 +1,23 @@
 package org.ucomplex.ucomplex;
 
 import android.annotation.TargetApi;
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.util.Base64;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.ImageView;
+
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.FailReason;
+
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.listener.ImageLoadingProgressListener;
+import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -30,6 +45,9 @@ import java.util.Map;
  * Created by Sermi lion on 04/12/2015.
  */
 public class Common {
+
+    private LayoutInflater inflater;
+    private DisplayImageOptions options;
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
     public static String httpPost(String urlString, String auth, HashMap<String, String>... postDataParams) {
@@ -105,50 +123,66 @@ public class Common {
         return result.toString();
     }
 
-
-    @TargetApi(Build.VERSION_CODES.KITKAT)
-    public static String downloadPhoto(String code) {
-        final String UC_BASE_URL = "https://ucomplex.org/files/photos/"+code+".jpg";
-
-        String dataUrlParameters = "";
-
+    public static Bitmap getBitmapFromURL(String code) {
         try {
+            final String UC_BASE_URL = "https://ucomplex.org/files/photos/"+code+".jpg";
             URL url = new URL(UC_BASE_URL);
-            MyServices.connection = (HttpURLConnection) url.openConnection();
-            MyServices.connection.setRequestMethod("POST");
-            MyServices.connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-            MyServices.connection.setRequestProperty("Content-Length", "" + Integer.toString(dataUrlParameters.getBytes().length));
-            MyServices.connection.setRequestProperty("Content-Language", "en-US");
-            MyServices.connection.setUseCaches(false);
-            MyServices.connection.setDoInput(true);
-            MyServices.connection.setDoOutput(true);
-
-            DataOutputStream wr = new DataOutputStream(
-                    MyServices.connection.getOutputStream());
-            wr.writeBytes(dataUrlParameters);
-            wr.flush();
-            wr.close();
-            // Get Response
-            InputStream is = MyServices.connection.getInputStream();
-            BufferedReader rd = new BufferedReader(new InputStreamReader(is));
-            String line;
-            StringBuilder response = new StringBuilder();
-            while ((line = rd.readLine()) != null) {
-                response.append(line);
-                response.append('\r');
-            }
-            rd.close();
-            return response.toString();
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setDoInput(true);
+            connection.connect();
+            InputStream input = connection.getInputStream();
+            Bitmap myBitmap = BitmapFactory.decodeStream(input);
+            return myBitmap;
         } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-
-            if (MyServices.connection != null) {
-                MyServices.connection.disconnect();
-            }
+            // Log exception
+            return null;
         }
-        return null;
     }
+
+
+//    @TargetApi(Build.VERSION_CODES.KITKAT)
+//    public static String downloadPhoto(String code) {
+//        final String UC_BASE_URL = "https://ucomplex.org/files/photos/"+code+".jpg";
+//
+//        String dataUrlParameters = "";
+//
+//        try {
+//            URL url = new URL(UC_BASE_URL);
+//            MyServices.connection = (HttpURLConnection) url.openConnection();
+//            MyServices.connection.setRequestMethod("POST");
+//            MyServices.connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+//            MyServices.connection.setRequestProperty("Content-Length", "" + Integer.toString(dataUrlParameters.getBytes().length));
+//            MyServices.connection.setRequestProperty("Content-Language", "en-US");
+//            MyServices.connection.setUseCaches(false);
+//            MyServices.connection.setDoInput(true);
+//            MyServices.connection.setDoOutput(true);
+//
+//            DataOutputStream wr = new DataOutputStream(
+//                    MyServices.connection.getOutputStream());
+//            wr.writeBytes(dataUrlParameters);
+//            wr.flush();
+//            wr.close();
+//            // Get Response
+//            InputStream is = MyServices.connection.getInputStream();
+//            BufferedReader rd = new BufferedReader(new InputStreamReader(is));
+//            String line;
+//            StringBuilder response = new StringBuilder();
+//            while ((line = rd.readLine()) != null) {
+//                response.append(line);
+//                response.append('\r');
+//            }
+//            rd.close();
+//            return response.toString();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        } finally {
+//
+//            if (MyServices.connection != null) {
+//                MyServices.connection.disconnect();
+//            }
+//        }
+//        return null;
+//    }
 
 
     public static String makeDate(String time) {
@@ -204,6 +238,5 @@ public class Common {
         String pre = (si ? "kMGTPE" : "KMGTPE").charAt(exp-1) + (si ? "" : "i");
         return String.format("%.1f %sB", bytes / Math.pow(unit, exp), pre);
     }
-
 
 }

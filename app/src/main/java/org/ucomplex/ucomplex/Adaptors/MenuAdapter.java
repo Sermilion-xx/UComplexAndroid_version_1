@@ -16,6 +16,7 @@ import org.ucomplex.ucomplex.Activities.LoginActivity;
 import org.ucomplex.ucomplex.Activities.MyFilesActivity;
 import org.ucomplex.ucomplex.Activities.ReferenceActivity;
 import org.ucomplex.ucomplex.Activities.SubjectsActivity;
+import org.ucomplex.ucomplex.Activities.UsersActivity;
 import org.ucomplex.ucomplex.Activities.WebViewActivity;
 import org.ucomplex.ucomplex.R;
 
@@ -88,7 +89,11 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder>  {
             }else if(getAdapterPosition()==5){
                 Intent intent = new Intent(contxt, ReferenceActivity.class);
                 contxt.startActivity(intent);
-            }else if(getAdapterPosition()==7){
+            }else if(getAdapterPosition()==6){
+                Intent intent = new Intent(contxt, UsersActivity.class);
+                contxt.startActivity(intent);
+            }
+            else if(getAdapterPosition()==7){
                 this.logout();
             }
 
