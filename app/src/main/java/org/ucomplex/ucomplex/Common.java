@@ -1,23 +1,14 @@
 package org.ucomplex.ucomplex;
 
 import android.annotation.TargetApi;
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
+import android.graphics.Color;
 import android.os.Build;
 import android.util.Base64;
 import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.ImageView;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.assist.FailReason;
-
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.listener.ImageLoadingProgressListener;
-import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -45,6 +36,15 @@ import java.util.Map;
  * Created by Sermi lion on 04/12/2015.
  */
 public class Common {
+
+
+
+    public static int getColor(int index) {
+        String [] hexColors = {"#f6a6c1","#92d6eb","#4dd9e2","#68d9f0","#c69ad9","#ff83b6","#fda79d","#f8c092",
+                "#928fbf","#aa7aad","#e27193","#fb736d","#36add8","#ff6c76","#4dbcbb","#4da8b6",""};
+        return Color.parseColor(hexColors[index]);
+    }
+
 
     private LayoutInflater inflater;
     private DisplayImageOptions options;
@@ -238,5 +238,7 @@ public class Common {
         String pre = (si ? "kMGTPE" : "KMGTPE").charAt(exp-1) + (si ? "" : "i");
         return String.format("%.1f %sB", bytes / Math.pow(unit, exp), pre);
     }
+
+
 
 }

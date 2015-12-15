@@ -3,20 +3,22 @@ package org.ucomplex.ucomplex.Fragments;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import org.ucomplex.ucomplex.Activities.Tasks.FetchUsersTask;
+import org.ucomplex.ucomplex.Common;
 import org.ucomplex.ucomplex.Model.Users.User;
 import org.ucomplex.ucomplex.R;
 
@@ -26,6 +28,7 @@ import java.util.concurrent.ExecutionException;
 
 import android.widget.BaseAdapter;
 
+import com.amulyakhare.textdrawable.TextDrawable;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
@@ -111,9 +114,9 @@ public class UsersFragment extends ListFragment {
 		ImageAdapter(Context context, ArrayList<User> items,  boolean loaded) {
 			inflater = LayoutInflater.from(context);
 			options = new DisplayImageOptions.Builder()
-					.showImageOnLoading(R.mipmap.ic_file)
-					.showImageForEmptyUri(R.mipmap.ic_no_image)
-					.showImageOnFail(R.mipmap.ic_launcher)
+					.showImageOnLoading(null)
+					.showImageForEmptyUri(null)
+					.showImageOnFail(null)
 					.cacheInMemory(true)
 					.cacheOnDisk(true)
 					.considerExifParams(true)
@@ -155,6 +158,7 @@ public class UsersFragment extends ListFragment {
 		@Override
 		public View getView(final int position, View convertView, ViewGroup parent) {
 
+
             final ViewHolder viewHolder;
             int viewType = getItemViewType(position);
 
@@ -176,12 +180,15 @@ public class UsersFragment extends ListFragment {
             } else {
                 viewHolder = (ViewHolder) convertView.getTag();
             }
+
             if(viewType!=TYPE_SEPARATOR){
+                viewHolder.icon.setImageDrawable(getDrawable(position));
                 if (!finishedLoading) {
                     ImageLoader.getInstance()
                             .displayImage("http://ucomplex.org/files/photos/" + mItems.get(position).getCode() + ".jpg", viewHolder.icon, options, new SimpleImageLoadingListener() {
                                 @Override
                                 public void onLoadingStarted(String imageUri, View view) {
+
 //							holder.progressBar.setProgress(0);
 //							holder.progressBar.setVisibility(View.VISIBLE);
                                 }
@@ -194,10 +201,16 @@ public class UsersFragment extends ListFragment {
                                 @Override
                                 public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
 //							holder.progressBar.setVisibility(View.GONE);
-                                    BitmapDrawable bitmapDrawable = ((BitmapDrawable) viewHolder.icon.getDrawable());
-                                    Bitmap bitmap = bitmapDrawable.getBitmap();
-                                    mItems.get(position).setPhotoBitmap(bitmap);
-                                    viewHolder.icon.setImageBitmap(bitmap);
+                                    if(loadedImage!=null){
+                                        BitmapDrawable bitmapDrawable = ((BitmapDrawable) viewHolder.icon.getDrawable());
+                                        Bitmap bitmap = bitmapDrawable.getBitmap();
+                                        mItems.get(position).setPhotoBitmap(bitmap);
+                                        viewHolder.icon.setImageBitmap(bitmap);
+                                    }else{
+                                        viewHolder.icon.setImageDrawable(getDrawable(position));
+                                    }
+
+
                                 }
                             }, new ImageLoadingProgressListener() {
                                 @Override
@@ -215,9 +228,10 @@ public class UsersFragment extends ListFragment {
                 } else {
                     Bitmap image = mItems.get(position).getPhotoBitmap();
                     if(image!=null)
-                        viewHolder.icon.setImageBitmap(mItems.get(position).getPhotoBitmap());
-                    else
-                        viewHolder.icon.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_time));
+                        viewHolder.icon.setImageBitmap(getItem(position).getPhotoBitmap());
+                    else {
+                        viewHolder.icon.setImageDrawable(getDrawable(position));
+                    }
                 }
             }
 
@@ -244,6 +258,20 @@ public class UsersFragment extends ListFragment {
             }
             return convertView;
         }
+
+        public Drawable getDrawable(int position){
+            final int colorsCount = 16;
+            final int number = (getItem(position).getId() <= colorsCount) ? getItem(position).getId() : getItem(position).getId() % colorsCount;
+            char firstLetter = getItem(position).getName().split("")[1].charAt(0);
+
+            TextDrawable drawable = TextDrawable.builder().beginConfig()
+                    .width(60)  // width in px
+                    .height(60) // height in px
+                    .endConfig()
+                    .buildRound(String.valueOf(firstLetter), Common.getColor(number));
+            return drawable;
+        }
+
 
 	}
 
