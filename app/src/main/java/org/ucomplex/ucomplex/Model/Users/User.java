@@ -32,7 +32,15 @@ public class User implements Serializable {
     private String addressLive;
     private String phoneWork;
     private int type;
+    private boolean friendRequested;
 
+    public boolean isFriendRequested() {
+        return friendRequested;
+    }
+
+    public void setFriendRequested(boolean friendRequested) {
+        this.friendRequested = friendRequested;
+    }
 
     public int getType() {
         return type;

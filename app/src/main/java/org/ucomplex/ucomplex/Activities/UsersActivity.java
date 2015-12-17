@@ -30,7 +30,7 @@ public class UsersActivity extends AppCompatActivity {
         tabLayout.setupWithViewPager(viewPager);
     }
 
-    private void setupViewPager(ViewPager viewPager) {
+    public void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
 
         UsersFragment onlineUsersFragment = new UsersFragment();
@@ -43,7 +43,7 @@ public class UsersActivity extends AppCompatActivity {
 
         UsersFragment groupsUsersFragment = new UsersFragment();
         groupsUsersFragment.setUsersType(2);
-        adapter.addFragment(groupsUsersFragment, "Группы");
+        adapter.addFragment(groupsUsersFragment, "Группа");
 
         UsersFragment teachersUsersFragment = new UsersFragment();
         teachersUsersFragment.setUsersType(3);

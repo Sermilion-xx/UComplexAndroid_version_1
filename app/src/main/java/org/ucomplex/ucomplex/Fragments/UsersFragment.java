@@ -2,29 +2,33 @@ package org.ucomplex.ucomplex.Fragments;
 
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
-import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
+import android.support.v4.view.ViewPager;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import org.ucomplex.ucomplex.Activities.Tasks.FetchUsersTask;
+import org.ucomplex.ucomplex.Activities.UsersActivity;
 import org.ucomplex.ucomplex.Common;
 import org.ucomplex.ucomplex.Model.Users.User;
+import org.ucomplex.ucomplex.MyServices;
 import org.ucomplex.ucomplex.R;
 
 import java.util.ArrayList;
-import java.util.TreeSet;
+import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
 
 import android.widget.BaseAdapter;
@@ -43,10 +47,8 @@ public class UsersFragment extends ListFragment {
     int usersType;
     ImageAdapter imageAdapter;
     Button btnLoadExtra;
+    private boolean isViewShown = false;
 
-    private static final int TYPE_ITEM = 0;
-    private static final int TYPE_SEPARATOR = 1;
-    private static final int TYPE_MAX_COUNT = TYPE_SEPARATOR + 1;
 
     public UsersFragment() {
         // Required empty public constructor
@@ -59,42 +61,22 @@ public class UsersFragment extends ListFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         try {
-            mItems = new FetchUsersTask(getActivity()).execute(usersType).get();
+            mItems = new FetchUsersTask(getActivity(), imageAdapter).execute(usersType).get();
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
-        boolean loaded = false;
+    }
 
-//        Button btnLoadExtra = new Button(getContext());
-//        btnLoadExtra.setText("Load More...");
-//
-//// Adding Load More button to lisview at bottom
-//        getListView().addFooterView(btnLoadExtra);
-//        imageAdapter = new ImageAdapter(getActivity(), mItems, false);
-//        setListAdapter(imageAdapter);
-//
-//        btnLoadExtra.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View arg0) {
-//                // Starting a new async task
-//                try {
-//                    int lastPos = mItems.size();
-//                    ArrayList<User> loadedUsers = new FetchUsersTask(getActivity()).execute(usersType,mItems.size()).get();
-//                    boolean loaded = false;
-//                    if(loadedUsers.size()<20){
-//                        loaded = true;
-//                    }
-//                    mItems.addAll(loadedUsers);
-//                    setListAdapter(new ImageAdapter(getContext(),mItems, loaded));
-//                    getListView().setSelection(lastPos - 2);
-//
-//                } catch (InterruptedException | ExecutionException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        });
+    @Override
+    public void onStart() {
+        super.onStart();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
     }
 
     @Override
@@ -117,7 +99,7 @@ public class UsersFragment extends ListFragment {
                 // Starting a new async task
                 try {
                     int lastPos = mItems.size();
-                    ArrayList<User> loadedUsers = new FetchUsersTask(getActivity()).execute(usersType,mItems.size()).get();
+                    ArrayList<User> loadedUsers = new FetchUsersTask(getActivity(),imageAdapter).execute(usersType,mItems.size()).get();
                     boolean loaded = false;
                     if(loadedUsers.size()<=20){
                         loaded = true;
@@ -132,7 +114,6 @@ public class UsersFragment extends ListFragment {
                 }
             }
         });
-
     }
 
     @Override
@@ -144,14 +125,11 @@ public class UsersFragment extends ListFragment {
 
     private class ImageAdapter extends BaseAdapter {
 
-
 		private LayoutInflater inflater;
 		private DisplayImageOptions options;
         private boolean finishedLoading =false;
         private int counter = 0;
         ArrayList<User> mItems;
-        private TreeSet mSeparatorsSet = new TreeSet();
-
 
 		ImageAdapter(Context context, ArrayList<User> items,  boolean loaded) {
 			inflater = LayoutInflater.from(context);
@@ -165,22 +143,7 @@ public class UsersFragment extends ListFragment {
 					.bitmapConfig(Bitmap.Config.RGB_565)
 					.build();
             this.mItems = items;
-//            if (!loaded) {
-//                addSeparatorItem(new User());
-//            }
-
 		}
-
-        public void addSeparatorItem(final User item) {
-            this.mItems.add(new User());
-            mSeparatorsSet.add(mItems.size()-1);
-            notifyDataSetChanged();
-        }
-
-        @Override
-        public int getItemViewType(int position) {
-            return mSeparatorsSet.contains(position) ? TYPE_SEPARATOR : TYPE_ITEM;
-        }
 
         @Override
         public int getCount() {
@@ -200,21 +163,10 @@ public class UsersFragment extends ListFragment {
 		@Override
 		public View getView(final int position, View convertView, ViewGroup parent) {
 
-
             final ViewHolder viewHolder;
-            int viewType = getItemViewType(position);
-
             if (convertView == null) {
-                switch (viewType) {
-                    case TYPE_SEPARATOR:
-                        convertView = inflater.inflate(R.layout.list_users_item_loadmore, null);
-                        break;
-                    case TYPE_ITEM:
-                        convertView = inflater.inflate(R.layout.list_users_item, null);
-                        break;
-                    default:
-                }
-                viewHolder = new ViewHolder(convertView, viewType);
+                convertView = inflater.inflate(R.layout.list_users_item, null);
+                viewHolder = new ViewHolder(convertView, position, this);
                 if (convertView != null) {
                     convertView.setTag(viewHolder);
                 }
@@ -222,8 +174,6 @@ public class UsersFragment extends ListFragment {
             } else {
                 viewHolder = (ViewHolder) convertView.getTag();
             }
-
-            if(viewType!=TYPE_SEPARATOR){
                 viewHolder.icon.setImageDrawable(getDrawable(position));
                 if (!finishedLoading) {
                     ImageLoader.getInstance()
@@ -231,18 +181,14 @@ public class UsersFragment extends ListFragment {
                                 @Override
                                 public void onLoadingStarted(String imageUri, View view) {
 
-//							holder.progressBar.setProgress(0);
-//							holder.progressBar.setVisibility(View.VISIBLE);
                                 }
 
                                 @Override
                                 public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-//							holder.progressBar.setVisibility(View.GONE);
                                 }
 
                                 @Override
                                 public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-//							holder.progressBar.setVisibility(View.GONE);
                                     if(loadedImage!=null){
                                         BitmapDrawable bitmapDrawable = ((BitmapDrawable) viewHolder.icon.getDrawable());
                                         Bitmap bitmap = bitmapDrawable.getBitmap();
@@ -251,8 +197,6 @@ public class UsersFragment extends ListFragment {
                                     }else{
                                         viewHolder.icon.setImageDrawable(getDrawable(position));
                                     }
-
-
                                 }
                             }, new ImageLoadingProgressListener() {
                                 @Override
@@ -275,7 +219,6 @@ public class UsersFragment extends ListFragment {
                         viewHolder.icon.setImageDrawable(getDrawable(position));
                     }
                 }
-            }
 
             User user = getItem(position);
             int type = user.getType();
@@ -288,16 +231,9 @@ public class UsersFragment extends ListFragment {
                 typeStr = "Студент";
             }
 
-            switch (viewHolder.holderid) {
-                case TYPE_SEPARATOR:
-                    viewHolder.loadMoreIcon.setTypeface(Typeface.createFromAsset(getActivity().getAssets(), "fonts/fontawesome-webfont.ttf"));
-                    viewHolder.loadMoreIcon.setText("\uF021");
-                    break;
-                case TYPE_ITEM:
-                    viewHolder.textView1.setText(user.getName());
-                    viewHolder.textView2.setText(typeStr);
-                    break;
-            }
+            viewHolder.textView1.setText(user.getName());
+            viewHolder.textView2.setText(typeStr);
+
             return convertView;
         }
 
@@ -307,36 +243,140 @@ public class UsersFragment extends ListFragment {
             char firstLetter = getItem(position).getName().split("")[1].charAt(0);
 
             TextDrawable drawable = TextDrawable.builder().beginConfig()
-                    .width(60)  // width in px
-                    .height(60) // height in px
+                    .width(60)
+                    .height(60)
                     .endConfig()
                     .buildRound(String.valueOf(firstLetter), Common.getColor(number));
             return drawable;
         }
-
-
 	}
 
-    static class ViewHolder {
-        int holderid;
+     class ViewHolder {
         ImageView icon;
-        TextView loadMoreIcon;
         TextView textView1;
         TextView textView2;
+        Button btnMenu;
+        ArrayList<String> actionsArrayList = new ArrayList<>();
+         ImageAdapter imageAdapter;
 
-        public ViewHolder(View itemView, int ViewType) {                 // Creating ViewHolder Constructor with View and viewType As a parameter
-            if (ViewType == TYPE_ITEM) {
+        public ViewHolder(View itemView, final int position, final ImageAdapter adapter) {
+            imageAdapter = adapter;
                 this.textView1 = (TextView) itemView.findViewById(R.id.list_users_item_textview1);
                 this.textView2 = (TextView) itemView.findViewById(R.id.list_users_item_textview2);
-                this.icon = (ImageView) itemView.findViewById(R.id.list_users_item_image);// Creating ImageView object with the id of ImageView from item_row.xml
-                holderid = TYPE_ITEM;                                               // setting holder id as 1 as the object being populated are of type item row
-            } else {
-                this.loadMoreIcon = (TextView) itemView.findViewById(R.id.list_users_item_loadmore_icon);
-                holderid = TYPE_SEPARATOR;
-            }
-        }
+                this.icon      = (ImageView) itemView.findViewById(R.id.list_users_item_image);
+                this.btnMenu        = (Button) itemView.findViewById(R.id.list_users_item_menu_button);
 
+            this.btnMenu.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    actionsArrayList.clear();
+                    switch (usersType){
+                        case 0:
+                            actionsArrayList.add("Написать сообщение");
+                            actionsArrayList.add("Добавить в друзья");
+                            break;
+                        case 2:
+                            actionsArrayList.add("Написать сообщение");
+                            actionsArrayList.add("Добавить в друзья");
+                            break;
+                        case 3:
+                            actionsArrayList.add("Написать сообщение");
+                            actionsArrayList.add("Удалить из друзей");
+                            break;
+                        case 1:
+                            actionsArrayList.add("Написать сообщение");
+                            if(mItems.get(position).isFriendRequested()){
+                                actionsArrayList.add("Добавить в друзья");
+                            }else{
+                                actionsArrayList.add("Удалить из друзей");
+                            }
+                            actionsArrayList.add("Заблокировать");
+                            break;
+                        case 4:
+                            actionsArrayList.add("Удалить из списка");
+                        default:
+                            btnMenu.setVisibility(View.GONE);
+                    }
+                    AlertDialog.Builder build = new AlertDialog.Builder(getContext());
+                    build.setItems(actionsArrayList.toArray(new String[actionsArrayList.size()]), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            final HashMap<String, String> params = new HashMap<>();
+                                switch (which){
+                                    case 0:
+                                        //write a message to friend
+                                        if(usersType==1){
+
+                                        }// Remove form blacklist
+                                        else if(usersType==4){
+                                            params.put("user", String.valueOf(mItems.get(position).getId()));
+                                            HandleMenuPress handleMenuPress1 = new HandleMenuPress();
+                                            handleMenuPress1.execute("http://you.com.ru/user/blacklist/delete",position, params);
+                                            mItems.remove(position);
+                                            adapter.notifyDataSetChanged();
+                                            MyServices.usersDataChanged=1;
+
+                                            System.out.println();
+                                            //Add friend form online list
+                                        }else if(usersType==0){
+                                            params.put("user", String.valueOf(mItems.get(position).getId()));
+                                            HandleMenuPress handleMenuPress1 = new HandleMenuPress();
+                                            handleMenuPress1.execute("http://you.com.ru/user/friends/add",position, params);
+                                        }
+                                        break;
+                                    case 1:
+                                        //Add/Remove friend request
+                                        if(usersType==1){
+                                            params.put("user", String.valueOf(mItems.get(position).getId()));
+                                            if(mItems.get(position).isFriendRequested()) {
+                                                HandleMenuPress handleMenuPress = new HandleMenuPress();
+                                                handleMenuPress.execute("http://you.com.ru/user/friends/accept",position, params);
+                                                mItems.get(position).setFriendRequested(false);
+                                            }else {
+                                                HandleMenuPress handleMenuPress = new HandleMenuPress();
+                                                handleMenuPress.execute("http://you.com.ru/user/friends/delete",position, params);
+                                                mItems.remove(position);
+
+                                            }
+                                            //write a message to not friend
+                                        }else if(usersType==0){
+
+                                            //Add friend form group list
+                                        }else if(usersType==2){
+                                            params.put("user", String.valueOf(mItems.get(position).getId()));
+                                            HandleMenuPress handleMenuPress1 = new HandleMenuPress();
+                                            handleMenuPress1.execute("http://you.com.ru/user/friends/add",position, params);
+                                        }
+                                        break;
+                                    case 2:
+                                        if(usersType==1) {
+                                            params.put("user", String.valueOf(mItems.get(position).getId()));
+                                            HandleMenuPress handleMenuPress = new HandleMenuPress();
+                                            handleMenuPress.execute("http://you.com.ru/user/blacklist/add", position, params);
+                                            mItems.remove(position);
+                                            break;
+                                        }
+                                    case 4:
+                                        break;
+                                }
+                            UsersActivity act = (UsersActivity)getActivity();
+                            ViewPager viewPager = (ViewPager) getActivity().findViewById(R.id.users_viewpager);
+                            viewPager.setCurrentItem(usersType);
+                            act.setupViewPager(viewPager);
+                            Toast.makeText(getActivity(), String.valueOf(which), Toast.LENGTH_SHORT).show();
+                        }
+                    }).create().show();
+                }
+            });
+        }
     }
 
+    class HandleMenuPress extends AsyncTask <Object, Void, Void> {
+        @Override
+        protected Void doInBackground(Object... params) {
+            Common.httpPost((String) params[0],MyServices.getLoginDataFromPref(getContext()), (HashMap<String, String>) params[2]);
+            return null;
+        }
+    }
 
 }

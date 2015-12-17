@@ -3,6 +3,7 @@ package org.ucomplex.ucomplex.Activities.Tasks;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
+import android.widget.BaseAdapter;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -23,11 +24,13 @@ import java.util.HashMap;
 public class FetchUsersTask extends AsyncTask<Integer, Void, ArrayList<User>> {
 
     Activity mContext;
+    BaseAdapter adapter;
 
     private ArrayList<User> onlineUserList = new ArrayList<>();
 
-    public FetchUsersTask(Activity context){
+    public FetchUsersTask(Activity context, BaseAdapter adapter){
         this.mContext = context;
+        this.adapter = adapter;
 
     }
 
@@ -68,12 +71,16 @@ public class FetchUsersTask extends AsyncTask<Integer, Void, ArrayList<User>> {
 
         String jsonData = Common.httpPost(urlString, MyServices.getLoginDataFromPref(mContext),postData);
         onlineUserList = getUserDataFromJson(jsonData, params[0]);
-//        for(int i=0;i<onlineUserList.size();i++){
-//            Bitmap bmp = Common.getBitmapFromURL(onlineUserList.get(i).getCode());
-//            onlineUserList.get(i).setPhotoBitmap(bmp);
-//        }
-
         return onlineUserList;
+    }
+
+    @Override
+    protected void onPostExecute(ArrayList<User> users) {
+        super.onPostExecute(users);
+        if(this.adapter!=null){
+            this.adapter.notifyDataSetChanged();
+        }
+
     }
 
     private ArrayList<User> getUserDataFromJson(String jsonData, int getTypeInt) {
@@ -142,7 +149,11 @@ public class FetchUsersTask extends AsyncTask<Integer, Void, ArrayList<User>> {
                     user.setName(userJson.getString("name"));
                     user.setCode(userJson.getString("code"));
                     user.setPhoto(userJson.getInt("photo"));
+                    if(userJson.has("friend")){
+                        user.setFriendRequested(true);
+                    }
                     usersList.add(user);
+
                 }
                 return usersList;
 

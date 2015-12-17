@@ -25,7 +25,7 @@ public class FetchLangTask extends AsyncTask<Void, Void, Boolean> {
 
     @Override
     protected Boolean doInBackground(Void... params) {
-        String urlString = "http://you.com.ru/public/get_uc_vars?json&lang=1";
+        String urlString = "http://ucomplex.org/public/get_uc_vars?json&lang=1";
         String jsonData = Common.httpPost(urlString, MyServices.getLoginDataFromPref(mContext));
         PrintWriter out = null;
         try {

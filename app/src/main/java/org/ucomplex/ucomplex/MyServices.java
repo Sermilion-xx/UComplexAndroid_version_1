@@ -5,9 +5,7 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 import com.google.gson.Gson;
-import com.squareup.okhttp.OkHttpClient;
 
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.ucomplex.ucomplex.Model.Users.User;
 
 import java.net.HttpURLConnection;
@@ -21,6 +19,7 @@ public class MyServices {
     public static HttpURLConnection connection;
     public static String lang_version;
     public static String X_UVERSION;
+    public static int usersDataChanged=-1;
 
     public static String getLoginDataFromPref(Context mContext){
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(mContext);

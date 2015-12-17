@@ -34,7 +34,7 @@ public class FetchMyFilesTask extends AsyncTask<Void, Void, ArrayList<File>> {
 
     @Override
     protected ArrayList<File> doInBackground(Void... params) {
-        String urlString = "http://you.com.ru/student/my_files?json";
+        String urlString = "http://ucomplex.org/student/my_files?json";
         String jsonData = Common.httpPost(urlString, MyServices.getLoginDataFromPref(mContext));
         return getFileDataFromJson(jsonData);
     }
