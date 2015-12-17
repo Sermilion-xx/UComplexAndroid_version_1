@@ -11,6 +11,7 @@ import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -41,6 +42,7 @@ public class UsersFragment extends ListFragment {
     ArrayList<User> mItems;
     int usersType;
     ImageAdapter imageAdapter;
+    Button btnLoadExtra;
 
     private static final int TYPE_ITEM = 0;
     private static final int TYPE_SEPARATOR = 1;
@@ -64,38 +66,78 @@ public class UsersFragment extends ListFragment {
             e.printStackTrace();
         }
         boolean loaded = false;
-        if(mItems.size()>=20){
-            loaded = true;
-        }
-        imageAdapter = new ImageAdapter(getActivity(), mItems, false);
-        setListAdapter(imageAdapter);
+
+//        Button btnLoadExtra = new Button(getContext());
+//        btnLoadExtra.setText("Load More...");
+//
+//// Adding Load More button to lisview at bottom
+//        getListView().addFooterView(btnLoadExtra);
+//        imageAdapter = new ImageAdapter(getActivity(), mItems, false);
+//        setListAdapter(imageAdapter);
+//
+//        btnLoadExtra.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View arg0) {
+//                // Starting a new async task
+//                try {
+//                    int lastPos = mItems.size();
+//                    ArrayList<User> loadedUsers = new FetchUsersTask(getActivity()).execute(usersType,mItems.size()).get();
+//                    boolean loaded = false;
+//                    if(loadedUsers.size()<20){
+//                        loaded = true;
+//                    }
+//                    mItems.addAll(loadedUsers);
+//                    setListAdapter(new ImageAdapter(getContext(),mItems, loaded));
+//                    getListView().setSelection(lastPos - 2);
+//
+//                } catch (InterruptedException | ExecutionException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        });
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         getListView().setDivider(null);
+        btnLoadExtra = new Button(getContext());
+        btnLoadExtra.setText("Load More...");
+        if(mItems.size()<=20){
+            btnLoadExtra.setVisibility(View.GONE);
+        }
+
+        getListView().addFooterView(btnLoadExtra);
+        imageAdapter = new ImageAdapter(getActivity(), mItems, false);
+        setListAdapter(imageAdapter);
+
+        btnLoadExtra.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View arg0) {
+                // Starting a new async task
+                try {
+                    int lastPos = mItems.size();
+                    ArrayList<User> loadedUsers = new FetchUsersTask(getActivity()).execute(usersType,mItems.size()).get();
+                    boolean loaded = false;
+                    if(loadedUsers.size()<=20){
+                        loaded = true;
+                        btnLoadExtra.setVisibility(View.GONE);
+                    }
+                    mItems.addAll(loadedUsers);
+                    setListAdapter(new ImageAdapter(getContext(),mItems, loaded));
+                    getListView().setSelection(lastPos - 2);
+
+                } catch (InterruptedException | ExecutionException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
     }
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         User item = mItems.get(position);
-        if(position == mItems.size()-1){
-            try {
-                int lastPos = mItems.size();
-                ArrayList<User> loadedUsers = new FetchUsersTask(getActivity()).execute(usersType,mItems.size()).get();
-                boolean loaded = false;
-                if(loadedUsers.size()<20){
-                    loaded = true;
-                }
-                    this.mItems.addAll(loadedUsers);
-                    setListAdapter(new ImageAdapter(getContext(),this.mItems, loaded));
-                    getListView().setSelection(lastPos - 2);
-
-            } catch (InterruptedException | ExecutionException e) {
-                e.printStackTrace();
-            }
-        }
         Toast.makeText(getActivity(), item.getName(), Toast.LENGTH_SHORT).show();
     }
 
@@ -123,9 +165,9 @@ public class UsersFragment extends ListFragment {
 					.bitmapConfig(Bitmap.Config.RGB_565)
 					.build();
             this.mItems = items;
-            if (!loaded) {
-                addSeparatorItem(new User());
-            }
+//            if (!loaded) {
+//                addSeparatorItem(new User());
+//            }
 
 		}
 
