@@ -83,6 +83,7 @@ public class UsersFragment extends ListFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         getListView().setDivider(null);
+
         btnLoadExtra = new Button(getContext());
         btnLoadExtra.setText("Load More...");
         if(mItems.size()<=20){
@@ -313,15 +314,14 @@ public class UsersFragment extends ListFragment {
                                             HandleMenuPress handleMenuPress1 = new HandleMenuPress();
                                             handleMenuPress1.execute("http://you.com.ru/user/blacklist/delete",position, params);
                                             mItems.remove(position);
-                                            adapter.notifyDataSetChanged();
-                                            MyServices.usersDataChanged=1;
+                                            Toast.makeText(getActivity(), "Пользователь удален из черного списка :)", Toast.LENGTH_SHORT).show();
 
-                                            System.out.println();
                                             //Add friend form online list
                                         }else if(usersType==0){
                                             params.put("user", String.valueOf(mItems.get(position).getId()));
                                             HandleMenuPress handleMenuPress1 = new HandleMenuPress();
                                             handleMenuPress1.execute("http://you.com.ru/user/friends/add",position, params);
+                                            Toast.makeText(getActivity(), "Заявка на дружбу отправлена :)", Toast.LENGTH_SHORT).show();
                                         }
                                         break;
                                     case 1:
@@ -332,12 +332,14 @@ public class UsersFragment extends ListFragment {
                                                 HandleMenuPress handleMenuPress = new HandleMenuPress();
                                                 handleMenuPress.execute("http://you.com.ru/user/friends/accept",position, params);
                                                 mItems.get(position).setFriendRequested(false);
+                                                Toast.makeText(getActivity(), mItems.get(position).getName() + " теперь ваш друг :)", Toast.LENGTH_SHORT).show();
                                             }else {
                                                 HandleMenuPress handleMenuPress = new HandleMenuPress();
                                                 handleMenuPress.execute("http://you.com.ru/user/friends/delete",position, params);
                                                 mItems.remove(position);
-
+                                                Toast.makeText(getActivity(), "Пользователь удален из друзей :(", Toast.LENGTH_SHORT).show();
                                             }
+
                                             //write a message to not friend
                                         }else if(usersType==0){
 
@@ -346,14 +348,17 @@ public class UsersFragment extends ListFragment {
                                             params.put("user", String.valueOf(mItems.get(position).getId()));
                                             HandleMenuPress handleMenuPress1 = new HandleMenuPress();
                                             handleMenuPress1.execute("http://you.com.ru/user/friends/add",position, params);
+                                            Toast.makeText(getActivity(), "Заявка на дружбу отправлена :)", Toast.LENGTH_SHORT).show();
                                         }
                                         break;
                                     case 2:
+                                        //add to blacklist
                                         if(usersType==1) {
                                             params.put("user", String.valueOf(mItems.get(position).getId()));
                                             HandleMenuPress handleMenuPress = new HandleMenuPress();
                                             handleMenuPress.execute("http://you.com.ru/user/blacklist/add", position, params);
                                             mItems.remove(position);
+                                            Toast.makeText(getActivity(), "Пользователь добавлен в черный список :(", Toast.LENGTH_SHORT).show();
                                             break;
                                         }
                                     case 4:
@@ -361,9 +366,8 @@ public class UsersFragment extends ListFragment {
                                 }
                             UsersActivity act = (UsersActivity)getActivity();
                             ViewPager viewPager = (ViewPager) getActivity().findViewById(R.id.users_viewpager);
-                            viewPager.setCurrentItem(usersType);
                             act.setupViewPager(viewPager);
-                            Toast.makeText(getActivity(), String.valueOf(which), Toast.LENGTH_SHORT).show();
+                            viewPager.setCurrentItem(usersType);
                         }
                     }).create().show();
                 }
