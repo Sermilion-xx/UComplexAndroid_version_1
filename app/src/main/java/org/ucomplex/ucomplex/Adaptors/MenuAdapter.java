@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import org.ucomplex.ucomplex.Activities.CalendarActivity;
 import org.ucomplex.ucomplex.Activities.EventsActivity;
 import org.ucomplex.ucomplex.Activities.LoginActivity;
 import org.ucomplex.ucomplex.Activities.MyFilesActivity;
@@ -92,8 +93,11 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder>  {
             }else if(getAdapterPosition()==6){
                 Intent intent = new Intent(contxt, UsersActivity.class);
                 contxt.startActivity(intent);
+            }else if(getAdapterPosition()==7){
+                Intent intent = new Intent(contxt, CalendarActivity.class);
+                contxt.startActivity(intent);
             }
-            else if(getAdapterPosition()==7){
+            else if(getAdapterPosition()==8){
                 this.logout();
             }
 
