@@ -57,6 +57,14 @@
         <activity
             android:name=".Activities.UsersActivity"
             android:label="@string/title_activity_users"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".Activities.PersonActivity"
+            android:label="@string/title_activity_person"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".Activities.CalendarActivity"
+            android:label="@string/title_activity_calendar"
             android:theme="@style/AppTheme"></activity>
     </application>
 

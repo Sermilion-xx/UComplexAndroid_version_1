@@ -1,42 +1,22 @@
 package org.ucomplex.ucomplex.Model;
 
+import org.ucomplex.ucomplex.Model.Users.User;
+
 import java.io.Serializable;
 
 /**
  * Created by Sermilion on 04/12/2015.
  */
-public class Role implements Serializable{
-    private String id;
-    private String person;
+public class Role extends User implements Serializable{
     private int type;
     private String name;
 
-    public Role(String id, String person, int type, String name) {
-        this.id = id;
-        this.person = person;
-        this.type = type;
-        this.name = name;
-    }
 
     public Role(){
 
     }
 
-    public String getId() {
-        return id;
-    }
 
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getPerson() {
-        return person;
-    }
-
-    public void setPerson(String person) {
-        this.person = person;
-    }
 
     public int getType() {
         return type;

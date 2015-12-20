@@ -50,8 +50,8 @@ public class FetchUserEventsTask extends AsyncTask<Void, Void, ArrayList<EventRo
         String uc_version = MyServices.connection.getHeaderField("X-UVERSION");
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
         String uc_version_pref = prefs.getString("X-UVERSION", "");
-
-        if(!uc_version.equals(uc_version_pref)){
+        //!uc_version.equals(uc_version_pref)
+        if(true){
             FetchLangTask flt = new FetchLangTask();
             flt.setmContext(mContext);
 //            flt.setParams(student.getLogin()+":"+student.getPass()+":"+student.getRoles().get(0).getId());
@@ -121,8 +121,10 @@ public class FetchUserEventsTask extends AsyncTask<Void, Void, ArrayList<EventRo
                 int param_type = paramsJson.getInt(JSON_EVENTS_PARAM_TYPE);
                 params.setType(param_type);
             }
+            item.setParams(params);
             item.setEventText(displayEvent);
             item.setTime(time);
+            item.setSeen(Integer.parseInt(event.getString(JSON_EVENTS_SEEN)));
             item.setType(type);
             displayEventsArray.add(item);
         }

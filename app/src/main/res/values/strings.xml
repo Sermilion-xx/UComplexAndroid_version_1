@@ -57,5 +57,7 @@
     </string-array>
     <string name="title_activity_users">UsersActivity</string>
     <string name="loadmore_string">Загрузить еще</string>
+    <string name="title_activity_person">PersonActivity</string>
+    <string name="title_activity_calendar">CalendarActivity</string>
 
 </resources>

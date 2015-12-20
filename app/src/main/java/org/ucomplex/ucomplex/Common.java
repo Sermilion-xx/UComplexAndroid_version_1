@@ -4,14 +4,17 @@ import android.annotation.TargetApi;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.util.Base64;
 import android.view.LayoutInflater;
 
+import com.amulyakhare.textdrawable.TextDrawable;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.ucomplex.ucomplex.Model.Users.User;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -125,7 +128,7 @@ public class Common {
 
     public static Bitmap getBitmapFromURL(String code) {
         try {
-            final String UC_BASE_URL = "https://ucomplex.org/files/photos/"+code+".jpg";
+            final String UC_BASE_URL = "https://ucomplex.org/files/photos/" + code + ".jpg";
             URL url = new URL(UC_BASE_URL);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setDoInput(true);
@@ -138,6 +141,22 @@ public class Common {
             return null;
         }
     }
+
+    public static Drawable getDrawable(User user){
+        final int colorsCount = 16;
+        final int number = (user.getId() <= colorsCount) ? user.getId() : user.getId() % colorsCount;
+        char firstLetter = user.getName().split("")[1].charAt(0);
+
+        TextDrawable drawable = TextDrawable.builder().beginConfig()
+                .width(120)
+                .height(120)
+                .endConfig()
+                .buildRound(String.valueOf(firstLetter), Common.getColor(number));
+        return drawable;
+    }
+
+
+
 
 
 //    @TargetApi(Build.VERSION_CODES.KITKAT)

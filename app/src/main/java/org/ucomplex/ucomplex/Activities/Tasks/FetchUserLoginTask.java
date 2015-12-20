@@ -17,6 +17,8 @@ import org.json.JSONObject;
 import org.ucomplex.ucomplex.Common;
 import org.ucomplex.ucomplex.Model.Role;
 import org.ucomplex.ucomplex.Model.Users.Student;
+import org.ucomplex.ucomplex.Model.Users.User;
+
 import java.util.ArrayList;
 
 /**
@@ -40,15 +42,15 @@ public class FetchUserLoginTask extends AsyncTask<Void, Void, Boolean> {
 
     private Student getUserFromJson(String rolesJsonStr) throws JSONException {
 
-        ArrayList<Role> userRoles = new ArrayList<>();
+        ArrayList<User> userRoles = new ArrayList<>();
         JSONObject rolesJson = new JSONObject(rolesJsonStr);
         JSONArray rolesArray = rolesJson.getJSONArray("roles");
         for(int i = 0; i < rolesArray.length(); i++) {
             JSONObject roles = rolesArray.getJSONObject(i);
-            Role userRole = new Role();
-            userRole.setId(roles.getString("id"));
-            userRole.setName(roles.getString("person"));
-            userRole.setPerson(roles.getString("person"));
+            User userRole = new User();
+            userRole.setId(roles.getInt("id"));
+            userRole.setName(roles.getString("name"));
+            userRole.setPerson(roles.getInt("person"));
             userRole.setType(roles.getInt("type"));
             userRoles.add(userRole);
         }

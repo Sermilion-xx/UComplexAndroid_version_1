@@ -3,6 +3,7 @@ package org.ucomplex.ucomplex.Fragments;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -20,6 +21,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.ucomplex.ucomplex.Activities.PersonActivity;
 import org.ucomplex.ucomplex.Activities.Tasks.FetchUsersTask;
 import org.ucomplex.ucomplex.Activities.UsersActivity;
 import org.ucomplex.ucomplex.Common;
@@ -58,6 +60,8 @@ public class UsersFragment extends ListFragment {
         this.usersType = usersType;
     }
 
+
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,6 +70,7 @@ public class UsersFragment extends ListFragment {
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
+
     }
 
     @Override
@@ -84,43 +89,53 @@ public class UsersFragment extends ListFragment {
         super.onViewCreated(view, savedInstanceState);
         getListView().setDivider(null);
 
-        btnLoadExtra = new Button(getContext());
-        btnLoadExtra.setText("Load More...");
-        if(mItems.size()<=20){
-            btnLoadExtra.setVisibility(View.GONE);
-        }
+        if(usersType!=3) {
+            btnLoadExtra = new Button(getContext());
+            btnLoadExtra.setFocusable(false);
+            btnLoadExtra.setText("Load More...");
+            btnLoadExtra.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View arg0) {
+                    // Starting a new async task
+                    try {
+                        int lastPos = mItems.size();
+                        ArrayList<User> loadedUsers = new FetchUsersTask(getActivity(),imageAdapter).execute(usersType,mItems.size()).get();
+                        boolean loaded = false;
+                        if(loadedUsers.size()<=20){
+                            loaded = true;
+                            btnLoadExtra.setVisibility(View.GONE);
+                        }
+                        mItems.addAll(loadedUsers);
+                        setListAdapter(new ImageAdapter(getContext(),mItems, loaded));
+                        getListView().setSelection(lastPos - 2);
 
-        getListView().addFooterView(btnLoadExtra);
+                    } catch (InterruptedException | ExecutionException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+
+            if (mItems.size() <= 20) {
+                btnLoadExtra.setVisibility(View.GONE);
+            }
+
+            getListView().addFooterView(btnLoadExtra);
+        }
         imageAdapter = new ImageAdapter(getActivity(), mItems, false);
         setListAdapter(imageAdapter);
 
-        btnLoadExtra.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View arg0) {
-                // Starting a new async task
-                try {
-                    int lastPos = mItems.size();
-                    ArrayList<User> loadedUsers = new FetchUsersTask(getActivity(),imageAdapter).execute(usersType,mItems.size()).get();
-                    boolean loaded = false;
-                    if(loadedUsers.size()<=20){
-                        loaded = true;
-                        btnLoadExtra.setVisibility(View.GONE);
-                    }
-                    mItems.addAll(loadedUsers);
-                    setListAdapter(new ImageAdapter(getContext(),mItems, loaded));
-                    getListView().setSelection(lastPos - 2);
 
-                } catch (InterruptedException | ExecutionException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
     }
+
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         User item = mItems.get(position);
-        Toast.makeText(getActivity(), item.getName(), Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(getContext(), PersonActivity.class);
+        final Bundle extra = new Bundle();
+        extra.putString("userId", String.valueOf(item.getId()));
+        intent.putExtras(extra);
+        startActivity(intent);
     }
 
 
@@ -312,7 +327,7 @@ public class UsersFragment extends ListFragment {
                                         else if(usersType==4){
                                             params.put("user", String.valueOf(mItems.get(position).getId()));
                                             HandleMenuPress handleMenuPress1 = new HandleMenuPress();
-                                            handleMenuPress1.execute("http://you.com.ru/user/blacklist/delete",position, params);
+                                            handleMenuPress1.execute("http://you.com.ru/user/blacklist/delete", params);
                                             mItems.remove(position);
                                             Toast.makeText(getActivity(), "Пользователь удален из черного списка :)", Toast.LENGTH_SHORT).show();
 
@@ -320,7 +335,7 @@ public class UsersFragment extends ListFragment {
                                         }else if(usersType==0){
                                             params.put("user", String.valueOf(mItems.get(position).getId()));
                                             HandleMenuPress handleMenuPress1 = new HandleMenuPress();
-                                            handleMenuPress1.execute("http://you.com.ru/user/friends/add",position, params);
+                                            handleMenuPress1.execute("http://you.com.ru/user/friends/add", params);
                                             Toast.makeText(getActivity(), "Заявка на дружбу отправлена :)", Toast.LENGTH_SHORT).show();
                                         }
                                         break;
@@ -330,12 +345,12 @@ public class UsersFragment extends ListFragment {
                                             params.put("user", String.valueOf(mItems.get(position).getId()));
                                             if(mItems.get(position).isFriendRequested()) {
                                                 HandleMenuPress handleMenuPress = new HandleMenuPress();
-                                                handleMenuPress.execute("http://you.com.ru/user/friends/accept",position, params);
+                                                handleMenuPress.execute("http://you.com.ru/user/friends/accept", params);
                                                 mItems.get(position).setFriendRequested(false);
                                                 Toast.makeText(getActivity(), mItems.get(position).getName() + " теперь ваш друг :)", Toast.LENGTH_SHORT).show();
                                             }else {
                                                 HandleMenuPress handleMenuPress = new HandleMenuPress();
-                                                handleMenuPress.execute("http://you.com.ru/user/friends/delete",position, params);
+                                                handleMenuPress.execute("http://you.com.ru/user/friends/delete", params);
                                                 mItems.remove(position);
                                                 Toast.makeText(getActivity(), "Пользователь удален из друзей :(", Toast.LENGTH_SHORT).show();
                                             }
@@ -347,7 +362,7 @@ public class UsersFragment extends ListFragment {
                                         }else if(usersType==2){
                                             params.put("user", String.valueOf(mItems.get(position).getId()));
                                             HandleMenuPress handleMenuPress1 = new HandleMenuPress();
-                                            handleMenuPress1.execute("http://you.com.ru/user/friends/add",position, params);
+                                            handleMenuPress1.execute("http://you.com.ru/user/friends/add", params);
                                             Toast.makeText(getActivity(), "Заявка на дружбу отправлена :)", Toast.LENGTH_SHORT).show();
                                         }
                                         break;
@@ -356,7 +371,7 @@ public class UsersFragment extends ListFragment {
                                         if(usersType==1) {
                                             params.put("user", String.valueOf(mItems.get(position).getId()));
                                             HandleMenuPress handleMenuPress = new HandleMenuPress();
-                                            handleMenuPress.execute("http://you.com.ru/user/blacklist/add", position, params);
+                                            handleMenuPress.execute("http://you.com.ru/user/blacklist/add", params);
                                             mItems.remove(position);
                                             Toast.makeText(getActivity(), "Пользователь добавлен в черный список :(", Toast.LENGTH_SHORT).show();
                                             break;
@@ -378,7 +393,7 @@ public class UsersFragment extends ListFragment {
     class HandleMenuPress extends AsyncTask <Object, Void, Void> {
         @Override
         protected Void doInBackground(Object... params) {
-            Common.httpPost((String) params[0],MyServices.getLoginDataFromPref(getContext()), (HashMap<String, String>) params[2]);
+            Common.httpPost((String) params[0],MyServices.getLoginDataFromPref(getContext()), (HashMap<String, String>) params[1]);
             return null;
         }
     }

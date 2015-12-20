@@ -28,7 +28,6 @@ public class Teacher extends User implements Serializable {
     private int closed;
     private ArrayList<File> files;
     private int sex;
-    private String statuses;
     private String series;
     private String number;
     private String documentDate;
@@ -36,16 +35,71 @@ public class Teacher extends User implements Serializable {
     private String documentDepartCode;
     private int academicDegree;
     private int academicRank;
+    private String statuses;
     private String academicAwards;
     private String upqualification;
 
+    private int rate;
 
 
-
+    private int section;
+    private String sectionName;
+    private int lead;
 
 
     public Teacher(){
 
+    }
+
+    public String getAcademicAwards() {
+        return academicAwards;
+    }
+
+    public void setAcademicAwards(String academicAwards) {
+        this.academicAwards = academicAwards;
+    }
+
+
+    public String getStatuses() {
+        return statuses;
+    }
+
+    public void setStatuses(String statuses) {
+        this.statuses = statuses;
+    }
+
+    public int getLead() {
+        return lead;
+    }
+
+    public void setLead(int lead) {
+        this.lead = lead;
+    }
+
+    public String getSectionName() {
+        return sectionName;
+    }
+
+    public void setSectionName(String sectionName) {
+        this.sectionName = sectionName;
+    }
+
+    public int getSection() {
+        return section;
+    }
+
+    public void setSection(int section) {
+        this.section = section;
+    }
+
+
+
+    public int getRate() {
+        return rate;
+    }
+
+    public void setRate(int rate) {
+        this.rate = rate;
     }
 
 
@@ -93,13 +147,6 @@ public class Teacher extends User implements Serializable {
         this.academicRank = academicRank;
     }
 
-    public String getAcademicAwards() {
-        return academicAwards;
-    }
-
-    public void setAcademicAwards(String academicAwards) {
-        this.academicAwards = academicAwards;
-    }
 
     public void setUpqualification(String upqualification) {
         this.upqualification = upqualification;
@@ -119,14 +166,6 @@ public class Teacher extends User implements Serializable {
 
     public void setSeries(String series) {
         this.series = series;
-    }
-
-    public String getStatuses() {
-        return statuses;
-    }
-
-    public void setStatuses(String statuses) {
-        this.statuses = statuses;
     }
 
     public int getSex() {

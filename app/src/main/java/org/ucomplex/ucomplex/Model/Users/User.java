@@ -2,8 +2,6 @@ package org.ucomplex.ucomplex.Model.Users;
 
 import android.graphics.Bitmap;
 
-import org.ucomplex.ucomplex.Model.Role;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -21,7 +19,7 @@ public class User implements Serializable {
     private int photo;
     private String phone;
     private String email;
-    private ArrayList<Role> roles;
+    private ArrayList<User> roles = new ArrayList<>();
     private int person;
     private int agent;
     private int online;
@@ -33,6 +31,62 @@ public class User implements Serializable {
     private String phoneWork;
     private int type;
     private boolean friendRequested;
+    private int position;
+    private String positionName;
+    private boolean is_black;
+    private boolean me_black;
+    private boolean req_friend;
+
+    public void addRole(User role){
+        roles.add(role);
+    }
+
+    public boolean is_black() {
+        return is_black;
+    }
+
+    public boolean isMe_black() {
+        return me_black;
+    }
+
+    public void setMe_black(boolean me_black) {
+        this.me_black = me_black;
+    }
+
+    public boolean isReq_friend() {
+        return req_friend;
+    }
+
+    public void setReq_friend(boolean req_friend) {
+        this.req_friend = req_friend;
+    }
+
+    public boolean isIs_black() {
+        return is_black;
+    }
+
+    public void setIs_black(boolean is_black) {
+        this.is_black = is_black;
+    }
+
+
+
+    public String getPositionName() {
+        return positionName;
+    }
+
+    public void setPositionName(String positionName) {
+        this.positionName = positionName;
+    }
+
+
+    public int getPosition() {
+        return position;
+    }
+
+    public void setPosition(int position) {
+        this.position = position;
+    }
 
     public boolean isFriendRequested() {
         return friendRequested;
@@ -207,11 +261,11 @@ public class User implements Serializable {
         this.email = email;
     }
 
-    public ArrayList<Role> getRoles() {
+    public ArrayList<User> getRoles() {
         return roles;
     }
 
-    public void setRoles(ArrayList<Role> roles) {
+    public void setRoles(ArrayList<User> roles) {
         this.roles = roles;
     }
 

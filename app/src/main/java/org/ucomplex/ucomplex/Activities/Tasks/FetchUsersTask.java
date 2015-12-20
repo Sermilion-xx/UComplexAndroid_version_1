@@ -117,6 +117,8 @@ public class FetchUsersTask extends AsyncTask<Integer, Void, ArrayList<User>> {
                         Teacher teacher = new Teacher();
                             teacher.setSex(userJson.getInt("sex"));
                             teacher.setStatuses(userJson.getString("statuses"));
+                            String academicAwards = userJson.getString("academic_awards");
+                            teacher.setAcademicAwards(academicAwards);
                             teacher.setBirthday(userJson.getString("birthday"));
                             teacher.setBirthplace(userJson.getString("birthplace"));
                             teacher.setCountry(userJson.getInt("country"));
@@ -130,7 +132,6 @@ public class FetchUsersTask extends AsyncTask<Integer, Void, ArrayList<User>> {
                             teacher.setDocumentDepartCode(userJson.getString("document_depart_code"));
                             teacher.setAcademicDegree(userJson.getInt("academic_degree"));
                             teacher.setAcademicRank(userJson.getInt("academic_rank"));
-                            teacher.setAcademicAwards(userJson.getString("academic_awards"));
                             teacher.setUpqualification(userJson.getString("upqualification"));
                         teacher.setType(getTypeInt);
                         user = teacher;

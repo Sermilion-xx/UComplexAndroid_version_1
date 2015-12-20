@@ -5,8 +5,9 @@ import android.os.Bundle;
 
 import org.ucomplex.ucomplex.R;
 
-import android.app.Activity;
-
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.webkit.WebView;
 
 import java.io.BufferedReader;
@@ -16,7 +17,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 
-public class WebViewActivity extends Activity {
+public class WebViewActivity extends AppCompatActivity {
 
     private WebView webView;
 
@@ -27,6 +28,10 @@ public class WebViewActivity extends Activity {
 
         webView = (WebView) findViewById(R.id.webView1);
         webView.getSettings().setJavaScriptEnabled(true);
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.web_toolbar);
+        toolbar.setTitle("Анкетирование");
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         try {
             webView.loadDataWithBaseURL("", a+b+c+d+e+f, "text/html", "UTF-8", null);
         } catch (Exception e) {
@@ -35,24 +40,15 @@ public class WebViewActivity extends Activity {
 
     }
 
-    public static String getStringFromFile (String filePath) throws Exception {
-        File fl = new File(filePath);
-        FileInputStream fin = new FileInputStream(fl);
-        String ret = convertStreamToString(fin);
-        //Make sure you close all streams.
-        fin.close();
-        return ret;
-    }
-
-    public static String convertStreamToString(InputStream is) throws Exception {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-        StringBuilder sb = new StringBuilder();
-        String line = null;
-        while ((line = reader.readLine()) != null) {
-            sb.append(line).append("\n");
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
         }
-        reader.close();
-        return sb.toString();
+
+        return super.onOptionsItemSelected(item);
     }
 
 

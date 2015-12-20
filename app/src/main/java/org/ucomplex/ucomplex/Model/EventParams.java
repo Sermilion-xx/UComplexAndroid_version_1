@@ -1,8 +1,5 @@
 package org.ucomplex.ucomplex.Model;
 
-import android.graphics.BitmapFactory;
-
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;

@@ -66,9 +66,11 @@ public class CourseCalendarBeltAdapter extends ArrayAdapter<Quartet<Integer, Str
     private static String getLetter(int mark){
 
         if(mark==-1){
-            return "Н";
+            return "н";
         }else if(mark==0){
             return "✓";
+        }else if(mark==-3){
+            return "б";
         }else{
             return String.valueOf(mark);
         }

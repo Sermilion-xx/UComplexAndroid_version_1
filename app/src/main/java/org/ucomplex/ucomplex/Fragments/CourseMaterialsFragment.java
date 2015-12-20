@@ -31,6 +31,9 @@ public class CourseMaterialsFragment extends ListFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if(mItems==null){
+            mItems = new ArrayList<>();
+        }
         setListAdapter(new CourseMaterialsAdapter(getActivity(), mItems));
 
     }
