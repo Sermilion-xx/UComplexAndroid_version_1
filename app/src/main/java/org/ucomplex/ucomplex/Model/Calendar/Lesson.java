@@ -9,8 +9,17 @@ public class Lesson implements Serializable {
     private int number;
     private int type;
     private int course;
+    private int mark;
 
     public Lesson() {
+    }
+
+    public int getMark() {
+        return mark;
+    }
+
+    public void setMark(int mark) {
+        this.mark = mark;
     }
 
     public int getNumber() {

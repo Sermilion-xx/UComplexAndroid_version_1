@@ -238,7 +238,6 @@ public class Common {
     }
 
     public static Map<String, String> parseJsonKV(JSONObject jObject) throws JSONException {
-
         Map<String,String> map = new HashMap<>();
         Iterator iter = jObject.keys();
         while(iter.hasNext()){

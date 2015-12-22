@@ -21,8 +21,8 @@ public class UCCalendar implements Serializable {
     private String group;
     private String subgroup;
     private String course;
-    private ArrayList<HashMap<Integer, String>> courses;
-    private ArrayList<ChangeDay> changeDays;
+    private ArrayList<HashMap<String, String>> courses = new ArrayList<>();
+    private ArrayList<ChangedDay> changedDays = new ArrayList<>();
     private Timetable timetable;
 
     public UCCalendar() {
@@ -40,12 +40,12 @@ public class UCCalendar implements Serializable {
         this.events.add(event);
     }
 
-    public void addCourse(HashMap<Integer, String> course){
+    public void addCourse(HashMap<String, String> course){
         this.courses.add(course);
     }
 
-    public void addChangeDay(ChangeDay day){
-        this.changeDays.add(day);
+    public void addChangeDay(ChangedDay day){
+        this.changedDays.add(day);
     }
 
     public String getSubgroup() {
@@ -136,20 +136,20 @@ public class UCCalendar implements Serializable {
         this.group = group;
     }
 
-    public ArrayList<HashMap<Integer, String>> getCourses() {
+    public ArrayList<HashMap<String, String>> getCourses() {
         return courses;
     }
 
-    public void setCourses(ArrayList<HashMap<Integer, String>> courses) {
+    public void setCourses(ArrayList<HashMap<String, String>> courses) {
         this.courses = courses;
     }
 
-    public ArrayList<ChangeDay> getChangeDays() {
-        return changeDays;
+    public ArrayList<ChangedDay> getChangedDays() {
+        return changedDays;
     }
 
-    public void setChangeDays(ArrayList<ChangeDay> changeDays) {
-        this.changeDays = changeDays;
+    public void setChangedDays(ArrayList<ChangedDay> changedDays) {
+        this.changedDays = changedDays;
     }
 
     public Timetable getTimetable() {
