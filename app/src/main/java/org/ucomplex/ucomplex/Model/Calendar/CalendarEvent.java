@@ -8,12 +8,25 @@ import java.io.Serializable;
 public class CalendarEvent implements Serializable{
 
     private int day;
+    private String name;
     private String descr;
     private String start;
     private String till;
     private int holiday;
 
     public CalendarEvent() {
+    }
+
+    public int getHoliday() {
+        return holiday;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public int getDay() {

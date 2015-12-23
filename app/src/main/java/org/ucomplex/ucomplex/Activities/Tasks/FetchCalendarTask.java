@@ -28,6 +28,9 @@ public class FetchCalendarTask extends AsyncTask<String, Void, UCCalendar> {
     public FetchCalendarTask(){
 
     }
+    public FetchCalendarTask(Activity context){
+        this.mContext = context;
+    }
 
     public Activity getmContext() {
         return mContext;
@@ -40,10 +43,16 @@ public class FetchCalendarTask extends AsyncTask<String, Void, UCCalendar> {
     @Override
     protected UCCalendar doInBackground(String... params) {
         String urlString = "http://you.com.ru/student/ajax/calendar?json";
-        HashMap<String, String> postParams = new HashMap<>();
-        postParams.put("month", String.valueOf(params[0]));
-        postParams.put("time", String.valueOf(params[1]));
-        String jsonData = Common.httpPost(urlString, MyServices.getLoginDataFromPref(mContext),postParams);
+        HashMap<String, String> postParams;
+        String jsonData;
+        if(params.length>0){
+            postParams = new HashMap<>();
+            postParams.put("month", String.valueOf(params[0]));
+            postParams.put("time", String.valueOf(params[1]));
+            jsonData = Common.httpPost(urlString, MyServices.getLoginDataFromPref(mContext),postParams);
+        } else {
+            jsonData = Common.httpPost(urlString, MyServices.getLoginDataFromPref(mContext));
+        }
         return getCalendarDataFromJson(jsonData);
     }
 
@@ -54,29 +63,35 @@ public class FetchCalendarTask extends AsyncTask<String, Void, UCCalendar> {
             calendarJson = new JSONObject(jsonData);
             calendar.setMethod(calendarJson.getString("method"));
             //Start getting events
-            JSONObject eventsJson = calendarJson.getJSONObject("events");
+            try {
+                JSONObject eventsJson = calendarJson.getJSONObject("events");
 
-            for (int i = 0; i < eventsJson.length(); i++) {
-
-                ArrayList<String> keys = getKeys(eventsJson);
-
-                for(int j=0;j<eventsJson.length();j++) {
-                    CalendarEvent calendarEvent = new CalendarEvent();
-                    JSONArray subEvents = eventsJson.getJSONArray(keys.get(j));
-                    for(int k=0;k<subEvents.length();k++){
-                        JSONObject event = subEvents.getJSONObject(k);
-                        calendarEvent.setDay(Integer.parseInt(keys.get(k)));
-                        calendarEvent.setDescr(event.getString("descr"));
-                        calendarEvent.setHoliday(event.getInt("holiday"));
-                        calendarEvent.setStart(event.getString("start"));
-                        calendarEvent.setTill(event.getString("till"));
-                        calendar.addEvent(calendarEvent);
-                    }
+                for (int i = 0; i < eventsJson.length(); i++) {
+                    ArrayList<String> keys = getKeys(eventsJson);
+                        CalendarEvent calendarEvent = new CalendarEvent();
+                        JSONArray subEvents = eventsJson.getJSONArray(keys.get(i));
+                        for (int k = 0; k < subEvents.length(); k++) {
+                            JSONObject event = subEvents.getJSONObject(k);
+                            calendarEvent.setDay(Integer.parseInt(keys.get(i)));
+                            calendarEvent.setDescr(event.getString("descr"));
+                            calendarEvent.setName(event.getString("name"));
+                            calendarEvent.setHoliday(event.getInt("holiday"));
+                            String[] dateArray = event.getString("start").split("-");
+                            String day1 = String.valueOf(calendarEvent.getDay()>9 ? calendarEvent.getDay() : "0"+calendarEvent.getDay());
+                            calendarEvent.setStart(dateArray[0]+"-"+dateArray[1]+"-"+day1);
+                            calendarEvent.setTill(event.getString("till"));
+                            calendar.addEvent(calendarEvent);
+                        }
                 }
+            }catch (JSONException ignored){
+
             }
             //End getting events
             //------------------
-            calendar.setAjax(calendarJson.getInt("ajax"));
+            try {
+                calendar.setAjax(calendarJson.getInt("ajax"));
+            }catch (JSONException ignored){}
+
             calendar.setYear(calendarJson.getString("year"));
             calendar.setMonth(calendarJson.getString("month"));
             calendar.setDay(calendarJson.getString("day"));
@@ -87,18 +102,21 @@ public class FetchCalendarTask extends AsyncTask<String, Void, UCCalendar> {
             calendar.setCourse(calendarJson.getString("course"));
 
             //Start getting courses
-            JSONObject coursesObject = calendarJson.getJSONObject("courses");
-            ArrayList<String> courseKeys = getKeys(coursesObject);
+            try {
+                JSONObject coursesObject = calendarJson.getJSONObject("courses");
+                ArrayList<String> courseKeys = getKeys(coursesObject);
 
-            for(int i=0;i<courseKeys.size();i++){
-                HashMap<String, String> kvCourse = new HashMap<>();
-                kvCourse.put(courseKeys.get(i),coursesObject.getString(courseKeys.get(i)));
-                calendar.addCourse(kvCourse);
-            }
+                for (int i = 0; i < courseKeys.size(); i++) {
+                    HashMap<String, String> kvCourse = new HashMap<>();
+                    kvCourse.put(courseKeys.get(i), coursesObject.getString(courseKeys.get(i)));
+                    calendar.addCourse(kvCourse);
+                }
+            }catch (JSONException ignored){}
             //End getting courses
             //------------------
 
             //Start getting changeDays
+            try {
             JSONObject changeDaysJson = calendarJson.getJSONObject("changedDays");
             ArrayList<String> changeDaysKeys = getKeys(changeDaysJson);
             ChangedDay changeDay = new ChangedDay();
@@ -116,6 +134,7 @@ public class FetchCalendarTask extends AsyncTask<String, Void, UCCalendar> {
                 changeDay.setDay(Integer.parseInt(changeDaysKeys.get(i)));
                 calendar.addChangeDay(changeDay);
             }
+            }catch (JSONException ignored){}
             //End getting changeDays
             //---------------------
 
@@ -153,6 +172,7 @@ public class FetchCalendarTask extends AsyncTask<String, Void, UCCalendar> {
                 kvSubject.put(subjectsKeys.get(i),subjectsObject.getString(subjectsKeys.get(i)));
                 timetable.addSubject(kvSubject);
             }
+            calendar.setTimetable(timetable);
             return calendar;
             }catch(JSONException e){
                 e.printStackTrace();
