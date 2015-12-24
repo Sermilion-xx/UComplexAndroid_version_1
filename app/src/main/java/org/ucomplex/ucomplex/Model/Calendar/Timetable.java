@@ -13,8 +13,13 @@ public class Timetable {
     private ArrayList<HashMap<String, String>> hours = new ArrayList<>();
     private ArrayList<HashMap<String, String>> rooms = new ArrayList<>();
     private ArrayList<HashMap<String, String>> subjects = new ArrayList<>();
+    private ArrayList<HashMap<String, String>> entries = new ArrayList<>();
 
     public Timetable() {
+    }
+
+    public void addEntry(HashMap<String, String> entries){
+        this.entries.add(entries);
     }
 
     public void addTeacher(HashMap<String, String> teacher){
@@ -34,6 +39,13 @@ public class Timetable {
     }
 
 
+    public ArrayList<HashMap<String, String>> getEntries() {
+        return entries;
+    }
+
+    public void setEntries(ArrayList<HashMap<String, String>> entries) {
+        this.entries = entries;
+    }
 
     public ArrayList<HashMap<String, String>> getTeachers() {
         return teachers;

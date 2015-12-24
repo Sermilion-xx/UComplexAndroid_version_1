@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.widget.Toast;
 
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
@@ -12,13 +13,15 @@ import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
 import com.prolificinteractive.materialcalendarview.OnMonthChangedListener;
 
 import org.ucomplex.ucomplex.Activities.Tasks.FetchCalendarTask;
-import org.ucomplex.ucomplex.Model.Calendar.CalendarEvent;
-import org.ucomplex.ucomplex.Model.Calendar.Decorators.EventDayDecorator;
+import org.ucomplex.ucomplex.Model.Calendar.CalendarDayDecorator;
 import org.ucomplex.ucomplex.Model.Calendar.UCCalendar;
 import org.ucomplex.ucomplex.R;
 
-import java.util.HashSet;
-import java.util.List;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.concurrent.ExecutionException;
 
 public class CalendarActivity extends AppCompatActivity {
@@ -26,6 +29,9 @@ public class CalendarActivity extends AppCompatActivity {
     UCCalendar calendar;
     MaterialCalendarView materialCalendarView;
     Activity context = this;
+
+    CalendarDayDecorator dayDecorator;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,9 +52,7 @@ public class CalendarActivity extends AppCompatActivity {
 
         materialCalendarView = (MaterialCalendarView) findViewById(R.id.calendarView);
         try {
-            HashSet<CalendarDay> eventDates = eventsToCalendarDays(calendar.getEvents());
-            EventDayDecorator eventDayDecorator = new EventDayDecorator("#fe7877",eventDates);
-            materialCalendarView.addDecorator(eventDayDecorator);
+            refreshMonth();
         }catch (NullPointerException ignored){
 
         }
@@ -70,38 +74,36 @@ public class CalendarActivity extends AppCompatActivity {
                 String monthStr = String.valueOf(month>9 ? month : "0"+month);
                 String dateStr = 1+"."+monthStr+"."+year;
 
-                try {
-                    calendar = new FetchCalendarTask(context).execute(monthStr, dateStr).get();
+                Calendar cal = Calendar.getInstance();
+                int Year = cal.get(Calendar.YEAR);
+                if(year<=Year){
+                    try {
+                        calendar = new FetchCalendarTask(context).execute(monthStr, dateStr).get();
                         try {
-                            HashSet<CalendarDay> eventDates = eventsToCalendarDays(calendar.getEvents());
-                            EventDayDecorator eventDayDecorator = new EventDayDecorator("#fe7877", eventDates);
-                            materialCalendarView.addDecorator(eventDayDecorator);
+                            refreshMonth();
                         }catch (NullPointerException ignored){
 
                         }
-                } catch (InterruptedException | ExecutionException e) {
-                    e.printStackTrace();
+                    } catch (InterruptedException | ExecutionException e) {
+                        e.printStackTrace();
+                    }
+                }else{
+                    Toast.makeText(context, "Нету данных для следующего года!", Toast.LENGTH_SHORT).show();
                 }
             }
         });
+    }
 
-
+    private void refreshMonth(){
+        materialCalendarView.addDecorator(new CalendarDayDecorator(calendar, 6));
+        materialCalendarView.addDecorator(new CalendarDayDecorator(calendar, 5));
+        materialCalendarView.addDecorator(new CalendarDayDecorator(calendar, 0));
+        materialCalendarView.addDecorator(new CalendarDayDecorator(calendar, 3));
+        materialCalendarView.addDecorator(new CalendarDayDecorator(calendar, 1));
+        materialCalendarView.addDecorator(new CalendarDayDecorator(calendar, 2));
+        materialCalendarView.addDecorator(new CalendarDayDecorator(calendar, 4));
 
     }
 
-    private HashSet<CalendarDay> eventsToCalendarDays(List<CalendarEvent> events){
-        HashSet<CalendarDay> dates = new HashSet<>();
-        for(CalendarEvent event: events){
-            String date = event.getStart();
-            String[] dateList = date.split("-");
-            int year = Integer.parseInt(dateList[0]);
-            int month = dateList[1].charAt(0) == '0' ? Character.getNumericValue(dateList[1].charAt(1)) : Integer.valueOf(dateList[1]);
-            int day = dateList[2].charAt(0)== '0' ? Character.getNumericValue(dateList[2].charAt(1)) : Integer.valueOf(dateList[2]);
-            CalendarDay calendarDay = CalendarDay.from(year, month-1,day);
-            dates.add(calendarDay);
-        }
-
-        return dates;
-    }
 
 }

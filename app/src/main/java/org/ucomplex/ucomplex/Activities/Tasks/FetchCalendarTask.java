@@ -119,14 +119,15 @@ public class FetchCalendarTask extends AsyncTask<String, Void, UCCalendar> {
             try {
             JSONObject changeDaysJson = calendarJson.getJSONObject("changedDays");
             ArrayList<String> changeDaysKeys = getKeys(changeDaysJson);
-            ChangedDay changeDay = new ChangedDay();
+
             for(int i=0;i<changeDaysKeys.size();i++){
+                ChangedDay changeDay = new ChangedDay();
                 JSONObject changeDaysDay = changeDaysJson.getJSONObject(changeDaysKeys.get(i));
                 for(int j = 1; j<changeDaysDay.length()+1;j++){
                     JSONObject lessonJson = changeDaysDay.getJSONObject(String.valueOf(j));
                     Lesson lesson = new Lesson();
                     lesson.setCourse(lessonJson.getInt("course"));
-                    lesson.setNumber(j);
+                    lesson.setNumber(j+1);
                     lesson.setType(lessonJson.getInt("type"));
                     lesson.setMark(lessonJson.getInt("mark"));
                     changeDay.addLesson(lesson);
@@ -145,6 +146,7 @@ public class FetchCalendarTask extends AsyncTask<String, Void, UCCalendar> {
             JSONObject hoursObject = timetableJson.getJSONObject("hours");
             JSONObject roomsObject = timetableJson.getJSONObject("rooms");
             JSONObject subjectsObject = timetableJson.getJSONObject("subjects");
+
 
             ArrayList<String> teachersKeys = getKeys(teachersObject);
             for(int i=0;i<teachersObject.length();i++){
@@ -172,6 +174,24 @@ public class FetchCalendarTask extends AsyncTask<String, Void, UCCalendar> {
                 kvSubject.put(subjectsKeys.get(i),subjectsObject.getString(subjectsKeys.get(i)));
                 timetable.addSubject(kvSubject);
             }
+
+            try {
+                JSONObject entriesObject = timetableJson.getJSONObject("entries");
+                ArrayList<String> entriesKeys = getKeys(entriesObject);
+                ArrayList<HashMap<String, String>> entries = new ArrayList<>();
+                for (int i = 0; i < entriesKeys.size(); i++) {
+                    JSONArray entrieJson = entriesObject.getJSONArray(entriesKeys.get(i));
+                    for (int j = 0; j < entrieJson.length(); j++) {
+                        HashMap<String, String> kvEntry = new HashMap<>();
+                        JSONObject subEntryJSON = entrieJson.getJSONObject(j);
+                        kvEntry = (HashMap<String, String>) Common.parseJsonKV(subEntryJSON);
+                        kvEntry.put("day", entriesKeys.get(i));
+                        entries.add(kvEntry);
+                    }
+                }
+                timetable.setEntries(entries);
+            }catch (JSONException ignored){}
+
             calendar.setTimetable(timetable);
             return calendar;
             }catch(JSONException e){

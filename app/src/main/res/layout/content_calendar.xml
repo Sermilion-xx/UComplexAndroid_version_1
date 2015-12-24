@@ -12,13 +12,20 @@
     tools:context="org.ucomplex.ucomplex.Activities.CalendarActivity"
     tools:showIn="@layout/activity_calendar">
 
+    <Spinner
+        android:layout_width="fill_parent"
+        android:id="@+id/calendar_choice"
+        android:layout_height="wrap_content"
+        />
+
     <com.prolificinteractive.materialcalendarview.MaterialCalendarView
         android:id="@+id/calendarView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         app:mcv_showOtherDates="all"
-        app:mcv_selectionColor="#00F"
+        app:mcv_selectionColor="#c3ccd3"
+        android:layout_below="@+id/calendar_choice"
         />
 
 </RelativeLayout>
