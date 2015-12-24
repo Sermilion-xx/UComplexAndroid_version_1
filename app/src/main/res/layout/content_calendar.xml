@@ -16,6 +16,7 @@
         android:layout_width="fill_parent"
         android:id="@+id/calendar_choice"
         android:layout_height="wrap_content"
+        android:text="@string/calendar_show_all"
         />
 
     <com.prolificinteractive.materialcalendarview.MaterialCalendarView
@@ -26,6 +27,7 @@
         app:mcv_showOtherDates="all"
         app:mcv_selectionColor="#c3ccd3"
         android:layout_below="@+id/calendar_choice"
+
         />
 
 </RelativeLayout>

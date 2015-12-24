@@ -21,7 +21,7 @@ public class UCCalendar implements Serializable {
     private String group;
     private String subgroup;
     private String course;
-    private ArrayList<HashMap<String, String>> courses = new ArrayList<>();
+    private HashMap<String, String> courses = new HashMap<>();
     private ArrayList<ChangedDay> changedDays = new ArrayList<>();
     private Timetable timetable;
 
@@ -40,9 +40,6 @@ public class UCCalendar implements Serializable {
         this.events.add(event);
     }
 
-    public void addCourse(HashMap<String, String> course){
-        this.courses.add(course);
-    }
 
     public void addChangeDay(ChangedDay day){
         this.changedDays.add(day);
@@ -136,11 +133,11 @@ public class UCCalendar implements Serializable {
         this.group = group;
     }
 
-    public ArrayList<HashMap<String, String>> getCourses() {
+    public HashMap<String, String> getCourses() {
         return courses;
     }
 
-    public void setCourses(ArrayList<HashMap<String, String>> courses) {
+    public void setCourses(HashMap<String, String> courses) {
         this.courses = courses;
     }
 

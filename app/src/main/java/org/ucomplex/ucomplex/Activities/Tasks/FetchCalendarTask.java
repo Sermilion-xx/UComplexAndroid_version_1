@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.ucomplex.ucomplex.Activities.CalendarActivity;
 import org.ucomplex.ucomplex.Common;
 import org.ucomplex.ucomplex.Model.Calendar.CalendarEvent;
 import org.ucomplex.ucomplex.Model.Calendar.ChangedDay;
@@ -16,32 +17,66 @@ import org.ucomplex.ucomplex.MyServices;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 
 /**
  * Created by Sermilion on 20/12/2015.
  */
-public class FetchCalendarTask extends AsyncTask<String, Void, UCCalendar> {
+public class FetchCalendarTask extends AsyncTask<String, String, UCCalendar> {
 
     Activity mContext;
+
+    CalendarActivity caller;
+    UCCalendar calendar;
+
+    private Boolean mResult;
+    private String mProgressMessage;
+    private IProgressTracker mProgressTracker;
+
+    /* UI Thread */
+    @Override
+    protected void onCancelled() {
+        // Detach from progress tracker
+        mProgressTracker = null;
+    }
+
+    /* UI Thread */
+    @Override
+    protected void onProgressUpdate(String... values) {
+        // Update progress message
+        mProgressMessage = values[0];
+        // And send it to progress tracker
+        if (mProgressTracker != null) {
+            mProgressTracker.onProgress(mProgressMessage);
+        }
+    }
+
 
     public FetchCalendarTask(){
 
     }
     public FetchCalendarTask(Activity context){
         this.mContext = context;
+        this.caller = (CalendarActivity) mContext;
     }
 
     public Activity getmContext() {
         return mContext;
     }
 
-    public void setmContext(Activity mContext) {
-        this.mContext = mContext;
+    public void setProgressTracker(IProgressTracker progressTracker) {
+        mProgressTracker = progressTracker;
+        if (mProgressTracker != null) {
+            mProgressTracker.onProgress("Загружаем календарь");
+            if (calendar != null) {
+                mProgressTracker.onComplete();
+            }
+        }
     }
+
 
     @Override
     protected UCCalendar doInBackground(String... params) {
+
         String urlString = "http://you.com.ru/student/ajax/calendar?json";
         HashMap<String, String> postParams;
         String jsonData;
@@ -53,12 +88,13 @@ public class FetchCalendarTask extends AsyncTask<String, Void, UCCalendar> {
         } else {
             jsonData = Common.httpPost(urlString, MyServices.getLoginDataFromPref(mContext));
         }
+        publishProgress("50%");
         return getCalendarDataFromJson(jsonData);
     }
 
     private UCCalendar getCalendarDataFromJson(String jsonData){
         JSONObject calendarJson = null;
-        UCCalendar calendar = new UCCalendar();
+        calendar = new UCCalendar();
         try {
             calendarJson = new JSONObject(jsonData);
             calendar.setMethod(calendarJson.getString("method"));
@@ -67,7 +103,7 @@ public class FetchCalendarTask extends AsyncTask<String, Void, UCCalendar> {
                 JSONObject eventsJson = calendarJson.getJSONObject("events");
 
                 for (int i = 0; i < eventsJson.length(); i++) {
-                    ArrayList<String> keys = getKeys(eventsJson);
+                    ArrayList<String> keys = Common.getKeys(eventsJson);
                         CalendarEvent calendarEvent = new CalendarEvent();
                         JSONArray subEvents = eventsJson.getJSONArray(keys.get(i));
                         for (int k = 0; k < subEvents.length(); k++) {
@@ -86,6 +122,7 @@ public class FetchCalendarTask extends AsyncTask<String, Void, UCCalendar> {
             }catch (JSONException ignored){
 
             }
+
             //End getting events
             //------------------
             try {
@@ -104,13 +141,13 @@ public class FetchCalendarTask extends AsyncTask<String, Void, UCCalendar> {
             //Start getting courses
             try {
                 JSONObject coursesObject = calendarJson.getJSONObject("courses");
-                ArrayList<String> courseKeys = getKeys(coursesObject);
+                ArrayList<String> courseKeys = Common.getKeys(coursesObject);
+                HashMap<String, String> kvCourse = new HashMap<>();
 
                 for (int i = 0; i < courseKeys.size(); i++) {
-                    HashMap<String, String> kvCourse = new HashMap<>();
                     kvCourse.put(courseKeys.get(i), coursesObject.getString(courseKeys.get(i)));
-                    calendar.addCourse(kvCourse);
                 }
+                calendar.setCourses(kvCourse);
             }catch (JSONException ignored){}
             //End getting courses
             //------------------
@@ -118,7 +155,7 @@ public class FetchCalendarTask extends AsyncTask<String, Void, UCCalendar> {
             //Start getting changeDays
             try {
             JSONObject changeDaysJson = calendarJson.getJSONObject("changedDays");
-            ArrayList<String> changeDaysKeys = getKeys(changeDaysJson);
+            ArrayList<String> changeDaysKeys = Common.getKeys(changeDaysJson);
 
             for(int i=0;i<changeDaysKeys.size();i++){
                 ChangedDay changeDay = new ChangedDay();
@@ -148,7 +185,7 @@ public class FetchCalendarTask extends AsyncTask<String, Void, UCCalendar> {
             JSONObject subjectsObject = timetableJson.getJSONObject("subjects");
 
 
-            ArrayList<String> teachersKeys = getKeys(teachersObject);
+            ArrayList<String> teachersKeys = Common.getKeys(teachersObject);
             for(int i=0;i<teachersObject.length();i++){
                 HashMap<String, String> kvTeacher = new HashMap<>();
                 kvTeacher.put(teachersKeys.get(i),teachersObject.getString(teachersKeys.get(i)));
@@ -161,14 +198,14 @@ public class FetchCalendarTask extends AsyncTask<String, Void, UCCalendar> {
                 timetable.addRoom(kvHour);
             }
 
-            ArrayList<String> roomsKeys = getKeys(roomsObject);
+            ArrayList<String> roomsKeys = Common.getKeys(roomsObject);
             for(int i=0;i<roomsObject.length();i++){
                 HashMap<String, String> kvRoom = new HashMap<>();
                 kvRoom.put(roomsKeys.get(i),roomsObject.getString(roomsKeys.get(i)));
                 timetable.addSubject(kvRoom);
             }
 
-            ArrayList<String> subjectsKeys = getKeys(subjectsObject);
+            ArrayList<String> subjectsKeys = Common.getKeys(subjectsObject);
             for(int i=0;i<subjectsObject.length();i++){
                 HashMap<String, String> kvSubject = new HashMap<>();
                 kvSubject.put(subjectsKeys.get(i),subjectsObject.getString(subjectsKeys.get(i)));
@@ -177,7 +214,7 @@ public class FetchCalendarTask extends AsyncTask<String, Void, UCCalendar> {
 
             try {
                 JSONObject entriesObject = timetableJson.getJSONObject("entries");
-                ArrayList<String> entriesKeys = getKeys(entriesObject);
+                ArrayList<String> entriesKeys = Common.getKeys(entriesObject);
                 ArrayList<HashMap<String, String>> entries = new ArrayList<>();
                 for (int i = 0; i < entriesKeys.size(); i++) {
                     JSONArray entrieJson = entriesObject.getJSONArray(entriesKeys.get(i));
@@ -193,6 +230,7 @@ public class FetchCalendarTask extends AsyncTask<String, Void, UCCalendar> {
             }catch (JSONException ignored){}
 
             calendar.setTimetable(timetable);
+            publishProgress("100%");
             return calendar;
             }catch(JSONException e){
                 e.printStackTrace();
@@ -201,14 +239,14 @@ public class FetchCalendarTask extends AsyncTask<String, Void, UCCalendar> {
         return null;
         }
 
-    private ArrayList<String> getKeys(JSONObject object) throws JSONException {
-        ArrayList<String> keys = new ArrayList<>();
-        Iterator iter = object.keys();
-        while(iter.hasNext()){
-            String key = (String)iter.next();
-            keys.add(key);
+    @Override
+    protected void onPostExecute(UCCalendar calendar) {
+        super.onPostExecute(calendar);
+        caller.onTaskComplete(this);
+        if (mProgressTracker != null) {
+            mProgressTracker.onComplete();
         }
-        return keys;
+        // Detach from progress tracker
+        mProgressTracker = null;
     }
-
 }

@@ -50,14 +50,13 @@
         <item>По месту работы родителей</item>
         <item>По месту работы (справка-вызов)</item>
         <item>Другой вуз, планирую переводиться (справка об успеваемости)</item>
-        <item>Jupiter</item>
-        <item>Saturn</item>
-        <item>Uranus</item>
-        <item>Neptune</item>
     </string-array>
+
+
     <string name="title_activity_users">UsersActivity</string>
     <string name="loadmore_string">Загрузить еще</string>
     <string name="title_activity_person">PersonActivity</string>
     <string name="title_activity_calendar">CalendarActivity</string>
+    <string name="calendar_show_all">Показать все</string>
 
 </resources>

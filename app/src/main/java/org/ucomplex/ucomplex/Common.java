@@ -28,6 +28,7 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -255,6 +256,16 @@ public class Common {
         int exp = (int) (Math.log(bytes) / Math.log(unit));
         String pre = (si ? "kMGTPE" : "KMGTPE").charAt(exp-1) + (si ? "" : "i");
         return String.format("%.1f %sB", bytes / Math.pow(unit, exp), pre);
+    }
+
+    public static ArrayList<String> getKeys(JSONObject object) throws JSONException {
+        ArrayList<String> keys = new ArrayList<>();
+        Iterator iter = object.keys();
+        while(iter.hasNext()){
+            String key = (String)iter.next();
+            keys.add(key);
+        }
+        return keys;
     }
 
 

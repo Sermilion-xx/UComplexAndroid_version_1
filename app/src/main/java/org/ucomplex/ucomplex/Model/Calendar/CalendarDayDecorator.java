@@ -8,8 +8,6 @@ import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.DayViewDecorator;
 import com.prolificinteractive.materialcalendarview.DayViewFacade;
 
-import org.ucomplex.ucomplex.R;
-
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -49,6 +47,15 @@ public class CalendarDayDecorator implements DayViewDecorator {
             String dayOfMonthStr = String.valueOf(dayOfMonth);
             dates.add(CalendarDay.from(Integer.parseInt(year),Integer.parseInt(month), dayOfMonth));
         }
+
+    }
+
+    public CalendarDayDecorator(ArrayList<ChangedDay> days, String year, String month, int type ) {
+        this.year = year;
+        this.month = month;
+        this.color = colors[type];
+        dates = changedDaysToCalendarDays(days,type);
+
 
     }
 
