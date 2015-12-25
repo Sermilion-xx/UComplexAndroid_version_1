@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:weightSum="1"
+    android:id="@+id/list_calendar_day_timetable">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/list_calendar_day_subject_time"
+        android:text="9:00"
+        android:textSize="16sp"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="10dp"
+        android:textColor="#222222"/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginLeft="10dp"
+        android:layout_weight="1"
+            >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/list_calendar_day_subject"
+            android:text="Исследование социально-экономических и политических процессов, лекционные"
+            android:textSize="14sp"
+            android:layout_marginTop="5dp"
+            android:textColor="#222222"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/list_calendar_day_subject_info"
+            android:text="Ялмаев Рустам Алиевич, аудитория: «4-02»"
+            android:layout_marginTop="5dp"
+            android:textSize="12sp"
+            android:textColor="#bfbfbf"
+            />
+
+
+    </LinearLayout>
+
+
+</LinearLayout>

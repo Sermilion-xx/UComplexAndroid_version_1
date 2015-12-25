@@ -1,8 +1,12 @@
 package org.ucomplex.ucomplex.Activities;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -16,6 +20,7 @@ import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
 import com.prolificinteractive.materialcalendarview.OnMonthChangedListener;
 
+import org.javatuples.Quintet;
 import org.ucomplex.ucomplex.Activities.Tasks.AsyncTaskManager;
 import org.ucomplex.ucomplex.Activities.Tasks.FetchCalendarTask;
 import org.ucomplex.ucomplex.Activities.Tasks.OnTaskCompleteListener;
@@ -64,6 +69,14 @@ public class CalendarActivity extends AppCompatActivity implements AdapterView.O
 
     }
 
+    protected void setFragment(Fragment fragment) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction =
+                fragmentManager.beginTransaction();
+        fragmentTransaction.replace(android.R.id.content, fragment);
+        fragmentTransaction.commit();
+    }
+
     private void refreshMonth() {
         //события
         materialCalendarView.addDecorator(new CalendarDayDecorator(calendar, 4));
@@ -79,8 +92,6 @@ public class CalendarActivity extends AppCompatActivity implements AdapterView.O
         materialCalendarView.addDecorator(new CalendarDayDecorator(calendar, 1));
         //экзамен
         materialCalendarView.addDecorator(new CalendarDayDecorator(calendar, 2));
-
-
     }
 
     @Override
@@ -140,8 +151,6 @@ public class CalendarActivity extends AppCompatActivity implements AdapterView.O
     public void onNothingSelected(AdapterView<?> parent) {
 
     }
-
-
         @Override
         public void onTaskComplete (FetchCalendarTask task){
             if (task.isCancelled()) {
@@ -174,12 +183,57 @@ public class CalendarActivity extends AppCompatActivity implements AdapterView.O
                     adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     spinner.setAdapter(adapter);
 
+
                     materialCalendarView.setOnDateChangedListener(new OnDateSelectedListener() {
                         @Override
                         public void onDateSelected(@NonNull MaterialCalendarView widget, @NonNull CalendarDay date, boolean selected) {
                             CalendarDay selectedDay = date;
-                        }
+                            String day = date.getDay()<10 ? "0"+String.valueOf(date.getDay()) : String.valueOf(date.getDay());
 
+                            ArrayList dayTimetableArray = new ArrayList();
+                            for(ChangedDay changeDay: calendar.getChangedDays()){
+                                if(changeDay.getDay()==Integer.parseInt(day)){
+                                    for(Lesson lesson:changeDay.getLessons()){
+                                        int mark = lesson.getMark();
+                                        int type = lesson.getType();
+                                        int course = lesson.getCourse();
+                                        String color = "";
+                                        if(type==0){
+                                            color = "#51cde7";
+                                        }else if(type==1){
+                                            color = "#fecd71";
+                                        }else if(type==2){
+                                            color = "#9ece2b";
+                                        }
+                                        String subjectName = calendar.getTimetable().getSubjects().get(String.valueOf(course));
+                                        //time, name, info, mark, color
+                                        Quintet<String,String,String,String, String> dayTimetable =
+                                                new Quintet<>("-1",subjectName,"-1",String.valueOf(mark),color);
+                                        dayTimetableArray.add(dayTimetable);
+                                    }
+                                }
+                            }
+
+                            for(HashMap entrie:calendar.getTimetable().getEntries()){
+                                if(entrie.get("lessonDay").equals(day)){
+                                    String hour = calendar.getTimetable().getHours().get(entrie.get("hour"));
+                                    String subjectName = calendar.getTimetable().getSubjects().get(entrie.get("course"));
+                                    String teacher = calendar.getTimetable().getTeachers().get(entrie.get("teacher"));
+                                    String room = calendar.getTimetable().getRooms().get(entrie.get("room"));
+                                    String info = teacher+", "+" аудитория \""+room+"\"";
+                                    //time, name, info, mark, color
+                                    Quintet<String,String,String,String, String> dayTimetable =
+                                            new Quintet<>(hour,subjectName,info,"-1","-1");
+                                    dayTimetableArray.add(dayTimetable);
+                                }
+                            }
+
+                            Intent intent = new Intent(context, CalendarDayActivity.class);
+                            Bundle bundle = new Bundle();
+                            bundle.putSerializable("calendarDay",dayTimetableArray);
+                            intent.putExtras(bundle);
+                            startActivity(intent);
+                        }
                     });
 
                     materialCalendarView.setOnMonthChangedListener(new OnMonthChangedListener() {

@@ -58,5 +58,6 @@
     <string name="title_activity_person">PersonActivity</string>
     <string name="title_activity_calendar">CalendarActivity</string>
     <string name="calendar_show_all">Показать все</string>
+    <string name="title_activity_calendar_day">CalendarDayActivity</string>
 
 </resources>

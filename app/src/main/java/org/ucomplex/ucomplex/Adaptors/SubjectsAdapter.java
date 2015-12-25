@@ -29,7 +29,6 @@ public class SubjectsAdapter extends ArrayAdapter<Triplet<String, String, Intege
             // inflate the GridView item layout
             LayoutInflater inflater = LayoutInflater.from(getContext());
             convertView = inflater.inflate(R.layout.list_subject_item, parent, false);
-
             // initialize the view holder
             viewHolder = new ViewHolder();
             viewHolder.mSubjectNameTextView = (TextView) convertView.findViewById(R.id.subject_listview_item_text1);
