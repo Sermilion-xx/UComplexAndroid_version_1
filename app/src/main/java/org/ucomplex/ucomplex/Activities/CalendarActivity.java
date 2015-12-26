@@ -225,10 +225,16 @@ public class CalendarActivity extends AppCompatActivity implements AdapterView.O
                                     String subjectName = calendar.getTimetable().getSubjects().get(entrie.get("course"));
                                     String teacher = calendar.getTimetable().getTeachers().get(entrie.get("teacher"));
                                     String room = calendar.getTimetable().getRooms().get(entrie.get("room"));
+                                    String type = (String)entrie.get("type");
                                     String info = teacher+", "+" аудитория \""+room+"\"";
+                                    if(type.equals("0")){
+                                        type="лекционные";
+                                    }else if(type.equals("1")){
+                                        type="практические";
+                                    }
                                     //time, name, info, mark, color
                                     Quintet<String,String,String,String, String> dayTimetable =
-                                            new Quintet<>(hour,subjectName,info,"-1","-1");
+                                            new Quintet<>(hour,subjectName+","+type,info,"-1","-1");
                                     dayTimetableArray.add(dayTimetable);
                                 }
                             }
@@ -307,5 +313,5 @@ public class CalendarActivity extends AppCompatActivity implements AdapterView.O
 
         return super.onOptionsItemSelected(item);
     }
-    }
+}
 
