@@ -96,8 +96,11 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder>  {
             }else if(getAdapterPosition()==7){
                 Intent intent = new Intent(contxt, CalendarActivity.class);
                 contxt.startActivity(intent);
+            }else if(getAdapterPosition()==8){
+                Intent intent = new Intent(contxt, CalendarActivity.class);
+                contxt.startActivity(intent);
             }
-            else if(getAdapterPosition()==8){
+            else if(getAdapterPosition()==9){
                 this.logout();
             }
 

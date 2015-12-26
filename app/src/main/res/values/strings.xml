@@ -59,5 +59,6 @@
     <string name="title_activity_calendar">CalendarActivity</string>
     <string name="calendar_show_all">Показать все</string>
     <string name="title_activity_calendar_day">CalendarDayActivity</string>
+    <string name="title_activity_library">LibraryActivity</string>
 
 </resources>

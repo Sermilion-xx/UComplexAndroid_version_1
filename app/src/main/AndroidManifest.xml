@@ -69,6 +69,10 @@
         <activity
             android:name=".Activities.CalendarDayActivity"
             android:label="@string/title_activity_calendar_day"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".Activities.LibraryActivity"
+            android:label="@string/title_activity_library"
             android:theme="@style/AppTheme"></activity>
     </application>
 
