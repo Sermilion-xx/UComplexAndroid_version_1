@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    android:layout_height="70dp"
     android:weightSum="1"
     android:id="@+id/list_calendar_day_timetable">
 
@@ -11,8 +11,8 @@
         android:layout_height="wrap_content"
         android:id="@+id/list_calendar_day_subject_time"
         android:text="9:00"
-        android:textSize="16sp"
         android:layout_marginTop="5dp"
+        android:textSize="16sp"
         android:layout_marginLeft="10dp"
         android:textColor="#222222"/>
 
@@ -21,6 +21,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_marginLeft="10dp"
+
         android:layout_weight="1"
             >
 
@@ -28,9 +29,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/list_calendar_day_subject"
-            android:text="Исследование социально-экономических и политических процессов, лекционные"
+            android:text="Исследование социально-экономических "
             android:textSize="14sp"
-            android:layout_marginTop="5dp"
+            android:paddingTop="5dp"
+
             android:textColor="#222222"/>
         <TextView
             android:layout_width="wrap_content"
@@ -38,6 +40,7 @@
             android:id="@+id/list_calendar_day_subject_info"
             android:text="Ялмаев Рустам Алиевич, аудитория: «4-02»"
             android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
             android:textSize="12sp"
             android:textColor="#bfbfbf"
             />

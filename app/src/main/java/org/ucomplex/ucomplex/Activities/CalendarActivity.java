@@ -2,6 +2,7 @@ package org.ucomplex.ucomplex.Activities;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -9,6 +10,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -78,10 +80,6 @@ public class CalendarActivity extends AppCompatActivity implements AdapterView.O
     }
 
     private void refreshMonth() {
-        //события
-        materialCalendarView.addDecorator(new CalendarDayDecorator(calendar, 4));
-        //сегодня
-        materialCalendarView.addDecorator(new CalendarDayDecorator(calendar, 6));
         //Расписание
         materialCalendarView.addDecorator(new CalendarDayDecorator(calendar, 5));
         //занятие
@@ -92,6 +90,10 @@ public class CalendarActivity extends AppCompatActivity implements AdapterView.O
         materialCalendarView.addDecorator(new CalendarDayDecorator(calendar, 1));
         //экзамен
         materialCalendarView.addDecorator(new CalendarDayDecorator(calendar, 2));
+        //события
+        materialCalendarView.addDecorator(new CalendarDayDecorator(calendar, 4));
+        //сегодня
+        materialCalendarView.addDecorator(new CalendarDayDecorator(calendar, 6));
     }
 
     @Override
@@ -188,16 +190,18 @@ public class CalendarActivity extends AppCompatActivity implements AdapterView.O
                         @Override
                         public void onDateSelected(@NonNull MaterialCalendarView widget, @NonNull CalendarDay date, boolean selected) {
                             CalendarDay selectedDay = date;
+
                             String day = date.getDay()<10 ? "0"+String.valueOf(date.getDay()) : String.valueOf(date.getDay());
 
                             ArrayList dayTimetableArray = new ArrayList();
+                            dayTimetableArray.add(new Quintet<>("-2","-1","-1","-1","-1"));
                             for(ChangedDay changeDay: calendar.getChangedDays()){
                                 if(changeDay.getDay()==Integer.parseInt(day)){
                                     for(Lesson lesson:changeDay.getLessons()){
                                         int mark = lesson.getMark();
                                         int type = lesson.getType();
                                         int course = lesson.getCourse();
-                                        String color = "";
+                                        String color = "ffffff";
                                         if(type==0){
                                             color = "#51cde7";
                                         }else if(type==1){
@@ -205,15 +209,16 @@ public class CalendarActivity extends AppCompatActivity implements AdapterView.O
                                         }else if(type==2){
                                             color = "#9ece2b";
                                         }
+                                        int colorInt = Color.parseColor(color);
                                         String subjectName = calendar.getTimetable().getSubjects().get(String.valueOf(course));
                                         //time, name, info, mark, color
                                         Quintet<String,String,String,String, String> dayTimetable =
-                                                new Quintet<>("-1",subjectName,"-1",String.valueOf(mark),color);
+                                                new Quintet<>("-1",subjectName,"-1",String.valueOf(mark),String.valueOf(colorInt));
                                         dayTimetableArray.add(dayTimetable);
                                     }
                                 }
                             }
-
+                            dayTimetableArray.add(new Quintet<>("-2","-1","-1","-1","-1"));
                             for(HashMap entrie:calendar.getTimetable().getEntries()){
                                 if(entrie.get("lessonDay").equals(day)){
                                     String hour = calendar.getTimetable().getHours().get(entrie.get("hour"));
@@ -231,6 +236,36 @@ public class CalendarActivity extends AppCompatActivity implements AdapterView.O
                             Intent intent = new Intent(context, CalendarDayActivity.class);
                             Bundle bundle = new Bundle();
                             bundle.putSerializable("calendarDay",dayTimetableArray);
+
+                            int dayMonth = selectedDay.getMonth();
+                            String dayMonthStr = "";
+
+                            if(dayMonth==0){
+                                dayMonthStr = "Января";
+                            }else if(dayMonth==1){
+                                dayMonthStr = "Февряля";
+                            }else if(dayMonth==2){
+                                dayMonthStr = "Марта";
+                            }else if(dayMonth==3){
+                                dayMonthStr = "Апреля";
+                            }else if(dayMonth==4){
+                                dayMonthStr = "Мая";
+                            }else if(dayMonth==5){
+                                dayMonthStr = "Июня";
+                            }else if(dayMonth==6){
+                                dayMonthStr = "Июля";
+                            }else if(dayMonth==7){
+                                dayMonthStr = "Августа";
+                            }else if(dayMonth==8){
+                                dayMonthStr = "Скнтября";
+                            }else if(dayMonth==9){
+                                dayMonthStr = "Октября";
+                            }else if(dayMonth==10){
+                                dayMonthStr = "Ноября";
+                            }else if(dayMonth==11){
+                                dayMonthStr = "Декабря";
+                            }
+                            bundle.putString("date",selectedDay.getDay()+" "+dayMonthStr+" "+selectedDay.getYear());
                             intent.putExtras(bundle);
                             startActivity(intent);
                         }
@@ -261,5 +296,16 @@ public class CalendarActivity extends AppCompatActivity implements AdapterView.O
                 }
             }
         }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
     }
 

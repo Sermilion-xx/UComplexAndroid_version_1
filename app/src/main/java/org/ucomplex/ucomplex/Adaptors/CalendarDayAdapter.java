@@ -2,6 +2,7 @@ package org.ucomplex.ucomplex.Adaptors;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,8 +12,6 @@ import android.widget.TextView;
 
 import com.amulyakhare.textdrawable.TextDrawable;
 
-import org.javatuples.Pair;
-import org.javatuples.Quartet;
 import org.javatuples.Quintet;
 import org.ucomplex.ucomplex.R;
 
@@ -103,6 +102,7 @@ public class CalendarDayAdapter extends ArrayAdapter<Quintet<String,String,Strin
         int viewType = getItemViewType(position);
         if (convertView == null) {
             convertView = createHolder(viewHolder, convertView, viewType);
+            viewHolder = (ViewHolder) convertView.getTag();
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
             if(viewHolder.holderId != viewType){
@@ -118,16 +118,21 @@ public class CalendarDayAdapter extends ArrayAdapter<Quintet<String,String,Strin
                     .width(20)
                     .height(20)
                     .endConfig()
-                    .buildRound(getLetter(Integer.parseInt(getItem(position).getValue3())), Color.parseColor("#51cde7"));
+                    .buildRound(getLetter(Integer.parseInt(getItem(position).getValue3())), Integer.parseInt(color));
                 viewHolder.markTextView.setImageDrawable(drawable);
         }else if(viewType==TYPE_SUBJECT){
             viewHolder.timeTextView.setText(getItem(position).getValue0());
             viewHolder.subjectTextView.setText(getItem(position).getValue1());
             viewHolder.subjectInfoTextView.setText(getItem(position).getValue2());
+        }else if(viewType==TYPE_SUBJECT_TITLE){
+            viewHolder.titleTextView.setText("Расписание");
+        }else if(viewType==TYPE_MARK_TITLE){
+            viewHolder.titleTextView.setText("Успеваемость");
         }
         return convertView;
     }
 
+    @NonNull
     private static String getLetter(int mark){
 
         if(mark==-1){

@@ -121,7 +121,7 @@ public class CalendarDayDecorator implements DayViewDecorator {
         HashSet<CalendarDay> dates = new HashSet<>();
         ArrayList<HashMap<String, String>> list = (ArrayList<HashMap<String, String>>) timetableDays;
         for(HashMap<String, String> day : list){
-            CalendarDay calendarDay = CalendarDay.from(Integer.parseInt(year), Integer.parseInt(month)-1, Integer.parseInt(day.get("day")));
+            CalendarDay calendarDay = CalendarDay.from(Integer.parseInt(year), Integer.parseInt(month)-1, Integer.parseInt(day.get("lessonDay")));
             dates.add(calendarDay);
         }
         return dates;
