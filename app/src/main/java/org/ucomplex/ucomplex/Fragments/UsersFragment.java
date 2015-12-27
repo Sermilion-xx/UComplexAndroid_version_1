@@ -181,7 +181,7 @@ public class UsersFragment extends ListFragment {
 
             final ViewHolder viewHolder;
             if (convertView == null) {
-                convertView = inflater.inflate(R.layout.list_users_item, null);
+                convertView = inflater.inflate(R.layout.list_item_users, null);
                 viewHolder = new ViewHolder(convertView, position, this);
                 if (convertView != null) {
                     convertView.setTag(viewHolder);

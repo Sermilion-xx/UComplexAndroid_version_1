@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import org.ucomplex.ucomplex.Activities.CalendarActivity;
 import org.ucomplex.ucomplex.Activities.EventsActivity;
+import org.ucomplex.ucomplex.Activities.LibraryActivity;
 import org.ucomplex.ucomplex.Activities.LoginActivity;
 import org.ucomplex.ucomplex.Activities.MyFilesActivity;
 import org.ucomplex.ucomplex.Activities.ReferenceActivity;
@@ -27,13 +28,13 @@ import org.ucomplex.ucomplex.R;
 public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder>  {
 
     private static final int TYPE_HEADER = 0;  // Declaring Variable to Understand which View is being worked on
-    // IF the viaew under inflation and population is list_menu_header or Item
+    // IF the viaew under inflation and population is list_item_menu_header or Item
     private static final int TYPE_ITEM = 1;
     private String mNavTitles[]; // String Array to store the passed titles Value from MainActivity.java
     private int mIcons[];       // Int Array to store the passed icons resource value from MainActivity.java
-    private String name;        //String Resource for list_menu_header View Name
-    private int profile;        //int Resource for list_menu_header view profile picture
-    private String email;       //String Resource for list_menu_header view email
+    private String name;        //String Resource for list_item_menu_header View Name
+    private int profile;        //int Resource for list_item_menu_header view profile picture
+    private String email;       //String Resource for list_item_menu_header view email
     private Context context;
 
 
@@ -65,10 +66,10 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder>  {
                 Holderid = 1;                                               // setting holder id as 1 as the object being populated are of type item row
             }
             else{
-                Name = (TextView) itemView.findViewById(R.id.name);         // Creating Text View object from list_menu_header.xmlheader.xml for name
+                Name = (TextView) itemView.findViewById(R.id.name);         // Creating Text View object from list_item_menu_header.xmlheader.xml for name
                 email = (TextView) itemView.findViewById(R.id.email);       // Creating Text View object from list_menu_headerenu_header.xml for email
-                profile = (ImageView) itemView.findViewById(R.id.circleView);// Creating Image view object from list_menu_header.xmlheader.xml for profile pic
-                Holderid = 0;                                                // Setting holder id = 0 as the object being populated are of type list_menu_header view
+                profile = (ImageView) itemView.findViewById(R.id.circleView);// Creating Image view object from list_item_menu_header.xmlheader.xml for profile pic
+                Holderid = 0;                                                // Setting holder id = 0 as the object being populated are of type list_item_menu_header view
             }
         }
 
@@ -94,7 +95,7 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder>  {
                 Intent intent = new Intent(contxt, UsersActivity.class);
                 contxt.startActivity(intent);
             }else if(getAdapterPosition()==7){
-                Intent intent = new Intent(contxt, CalendarActivity.class);
+                Intent intent = new Intent(contxt, LibraryActivity.class);
                 contxt.startActivity(intent);
             }else if(getAdapterPosition()==8){
                 Intent intent = new Intent(contxt, CalendarActivity.class);
@@ -139,10 +140,10 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder>  {
     public MenuAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
         if (viewType == TYPE_ITEM) {
-            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_menu_item,parent,false); //Inflating the layout
+            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_menu,parent,false); //Inflating the layout
             return new ViewHolder(v,viewType,context); // Returning the created object
         } else if (viewType == TYPE_HEADER) {
-            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_menu_header,parent,false); //Inflating the layout
+            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_menu_header,parent,false); //Inflating the layout
             return new ViewHolder(v,viewType,context); //returning the object created
         }
         return null;
@@ -154,12 +155,12 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder>  {
     // which view type is being created 1 for item row
     @Override
     public void onBindViewHolder(MenuAdapter.ViewHolder holder, int position) {
-        if(holder.Holderid ==1) {                              // as the list view is going to be called after the list_menu_header view so we decrement the
+        if(holder.Holderid ==1) {                              // as the list view is going to be called after the list_item_menu_header view so we decrement the
             // position by 1 and pass it to the holder while setting the text and image
             holder.textView.setText(mNavTitles[position - 1]); // Setting the Text with the array of our Titles
             holder.imageView.setImageResource(mIcons[position -1]);// Settimg the image with array of our icons
         }else{
-            holder.profile.setImageResource(profile);           // Similarly we set the resources for list_menu_header view
+            holder.profile.setImageResource(profile);           // Similarly we set the resources for list_item_menu_header view
             holder.Name.setText(name);
 
         }
@@ -168,7 +169,7 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder>  {
     // This method returns the number of items present in the list
     @Override
     public int getItemCount() {
-        return mNavTitles.length+1; // the number of items in the list will be +1 the titles including the list_menu_header view.
+        return mNavTitles.length+1; // the number of items in the list will be +1 the titles including the list_item_menu_header view.
     }
 
     // Witht the following method we check what type of view is being passed

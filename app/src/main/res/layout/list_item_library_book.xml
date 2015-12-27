@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="100dp">
+
+    <ImageView
+        android:layout_width="60dp"
+        android:layout_height="70dp"
+        android:id="@+id/list_item_library_book_icon"
+        android:src="@drawable/ic_book"
+        android:layout_gravity="center_vertical"
+        />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_marginLeft="10dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/list_item_library_book_name"
+            android:text="Название крутой книги"
+            android:layout_marginTop="10dp"
+            android:textColor="#222222"
+            android:textSize="18sp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Название крутой книги"
+            android:id="@+id/list_item_library_book_edition"
+            android:textColor="#999999"
+            android:layout_marginTop="5dp"
+            android:textSize="14sp"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Название крутой книги"
+            android:id="@+id/list_item_library_book_quantity"
+            android:layout_marginTop="5dp"
+            android:textColor="#999999"
+            android:textSize="14sp"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Название крутой книги"
+            android:id="@+id/list_item_library_book_year"
+            android:layout_marginTop="5dp"
+            android:textColor="#999999"
+            android:textSize="14sp"/>
+    </LinearLayout>
+
+</LinearLayout>

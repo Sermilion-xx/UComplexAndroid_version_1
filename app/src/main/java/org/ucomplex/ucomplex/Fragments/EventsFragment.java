@@ -150,7 +150,7 @@ public class EventsFragment extends AbsListViewBaseFragment {
             final ViewHolder viewHolder;
 			if (view == null){
 
-				view = inflater.inflate(R.layout.list_events_item, parent, false);
+				view = inflater.inflate(R.layout.list_item_events, parent, false);
             viewHolder = new ViewHolder();
                 assert view != null;
             viewHolder.eventsImageView = (ImageView) view.findViewById(R.id.list_events_item_image);

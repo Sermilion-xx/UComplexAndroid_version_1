@@ -1,7 +1,6 @@
 package org.ucomplex.ucomplex.Adaptors;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,6 +25,7 @@ public class CalendarDayAdapter extends ArrayAdapter<Quintet<String,String,Strin
     private final Context context;
     ArrayList values = new ArrayList();
     int separatorPosition=1;
+
 
     private static final int TYPE_MARK_TITLE = 0;
     private static final int TYPE_MARK = 1;
@@ -67,26 +67,26 @@ public class CalendarDayAdapter extends ArrayAdapter<Quintet<String,String,Strin
     private View createHolder(ViewHolder viewHolder,View convertView, int viewType){
         viewHolder = new ViewHolder();
         inflater = LayoutInflater.from(getContext());
-        if(viewType==TYPE_MARK ){
-            convertView = inflater.inflate(R.layout.list_calendar_day_item_mark, null);
+            if(viewType==TYPE_MARK ){
+                convertView = inflater.inflate(R.layout.list_item_calendar_day_mark, null);
             viewHolder.subjectTextView = (TextView) convertView.findViewById(R.id.list_calendar_day_mark_subject);
             viewHolder.markTextView = (ImageView) convertView.findViewById(R.id.list_calendar_day_mark_mark);
             viewHolder.holderId=TYPE_MARK;
 
         }else if(viewType==TYPE_MARK_TITLE){
-            convertView = inflater.inflate(R.layout.list_calendar_day_item_title, null);
+            convertView = inflater.inflate(R.layout.list_item_calendar_day_title, null);
             viewHolder.titleTextView = (TextView) convertView.findViewById(R.id.list_calendar_day_title);
             viewHolder.holderId=TYPE_MARK_TITLE;
 
         }else if(viewType==TYPE_SUBJECT){
-            convertView = inflater.inflate(R.layout.list_calendar_day_item_timetable, null);
+            convertView = inflater.inflate(R.layout.list_item_calendar_day_timetable, null);
             viewHolder.subjectTextView = (TextView) convertView.findViewById(R.id.list_calendar_day_subject);
             viewHolder.timeTextView = (TextView) convertView.findViewById(R.id.list_calendar_day_subject_time);
             viewHolder.subjectInfoTextView = (TextView) convertView.findViewById(R.id.list_calendar_day_subject_info);
             viewHolder.holderId=TYPE_SUBJECT;
 
         }else if(viewType==TYPE_SUBJECT_TITLE){
-            convertView = inflater.inflate(R.layout.list_calendar_day_item_title, null);
+            convertView = inflater.inflate(R.layout.list_item_calendar_day_title, null);
             viewHolder.titleTextView = (TextView) convertView.findViewById(R.id.list_calendar_day_title);
             viewHolder.holderId = TYPE_SUBJECT_TITLE;
         }

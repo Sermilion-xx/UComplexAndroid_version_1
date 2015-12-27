@@ -18,7 +18,7 @@ import java.util.List;
 public class SubjectsAdapter extends ArrayAdapter<Triplet<String, String, Integer>> {
 
     public SubjectsAdapter(Context context, List<Triplet<String, String, Integer>> items) {
-        super(context, R.layout.list_subject_item, items);
+        super(context, R.layout.list_item_subject, items);
     }
 
     @Override
@@ -28,7 +28,7 @@ public class SubjectsAdapter extends ArrayAdapter<Triplet<String, String, Intege
         if(convertView == null) {
             // inflate the GridView item layout
             LayoutInflater inflater = LayoutInflater.from(getContext());
-            convertView = inflater.inflate(R.layout.list_subject_item, parent, false);
+            convertView = inflater.inflate(R.layout.list_item_subject, parent, false);
             // initialize the view holder
             viewHolder = new ViewHolder();
             viewHolder.mSubjectNameTextView = (TextView) convertView.findViewById(R.id.subject_listview_item_text1);
