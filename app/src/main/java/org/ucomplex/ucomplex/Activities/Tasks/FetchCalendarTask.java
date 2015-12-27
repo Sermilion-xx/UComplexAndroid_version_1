@@ -28,7 +28,6 @@ public class FetchCalendarTask extends AsyncTask<String, String, UCCalendar> {
     CalendarActivity caller;
     UCCalendar calendar;
 
-    private Boolean mResult;
     private String mProgressMessage;
     private IProgressTracker mProgressTracker;
 

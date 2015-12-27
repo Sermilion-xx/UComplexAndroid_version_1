@@ -3,6 +3,7 @@ package org.ucomplex.ucomplex.Activities;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -154,7 +155,7 @@ public class CalendarActivity extends AppCompatActivity implements AdapterView.O
 
     }
         @Override
-        public void onTaskComplete (FetchCalendarTask task){
+        public void onTaskComplete (AsyncTask task, Object ...o){
             if (task.isCancelled()) {
                 // Report about cancel
                 Toast.makeText(this, "Cancelled Task", Toast.LENGTH_LONG)
@@ -163,7 +164,7 @@ public class CalendarActivity extends AppCompatActivity implements AdapterView.O
                 // Get result
                 UCCalendar result = null;
                 try {
-                    calendar = task.get();
+                    calendar = (UCCalendar) task.get();
                     try {
                         refreshMonth();
                     } catch (NullPointerException ignored) {
