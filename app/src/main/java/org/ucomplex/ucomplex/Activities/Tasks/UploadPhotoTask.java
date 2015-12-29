@@ -1,11 +1,9 @@
 package org.ucomplex.ucomplex.Activities.Tasks;
 
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.util.Base64;
@@ -19,7 +17,6 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.ucomplex.ucomplex.MyServices;
 
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 
 /**
  * Created by Sermilion on 29/12/2015.

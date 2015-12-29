@@ -2,33 +2,36 @@ package org.ucomplex.ucomplex.Activities;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffXfermode;
-import android.graphics.Rect;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.apache.http.entity.mime.content.ByteArrayBody;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.ucomplex.ucomplex.Activities.Tasks.OnTaskCompleteListener;
 import org.ucomplex.ucomplex.Activities.Tasks.UploadPhotoTask;
+import org.ucomplex.ucomplex.Common;
+import org.ucomplex.ucomplex.Model.Users.User;
 import org.ucomplex.ucomplex.MyServices;
 import org.ucomplex.ucomplex.R;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
 
 
@@ -53,9 +56,8 @@ public class SettingsActivity extends AppCompatActivity implements OnTaskComplet
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         photoImageView = (ImageView) findViewById(R.id.settings_photo);
-            Bitmap photoBitmap = MyServices.decodePhotoPref(context, "tempProfilePhoto");
-            photoImageView.setImageBitmap(photoBitmap);
-
+        Bitmap photoBitmap = MyServices.decodePhotoPref(context, "tempProfilePhoto");
+        photoImageView.setImageBitmap(photoBitmap);
         photoImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -74,9 +76,113 @@ public class SettingsActivity extends AppCompatActivity implements OnTaskComplet
                     uploadPhotoTask.setupTask(contentBody);
                     chose = false;
                 }
-
             }
         });
+
+
+
+            final TextView currentPasswordTextView = (TextView) findViewById(R.id.settings_password_current);
+            final TextView newPasswordTextView = (TextView) findViewById(R.id.settings_password_new);
+            final TextView newPasswordAgainTextView = (TextView) findViewById(R.id.settings_password_again);
+            final User user = MyServices.getUserDataFromPref(this);
+
+            Button changePassButton = (Button) findViewById(R.id.settings_password_reset_button);
+            changePassButton.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    final String oldPass = currentPasswordTextView.getText().toString();
+                    final String newPass = newPasswordTextView.getText().toString();
+                    final String newPassAgain = newPasswordAgainTextView.getText().toString();
+                    currentPasswordTextView.setError(null);
+                    newPasswordTextView.setError(null);
+                    newPasswordAgainTextView.setError(null);
+                    boolean cancel = false;
+                    View focusView = null;
+
+                    currentPasswordTextView.setError(null);
+                    newPasswordTextView.setError(null);
+                    newPasswordAgainTextView.setError(null);
+
+
+                    if ((!TextUtils.isEmpty(oldPass) && !isPasswordValid(oldPass)) || TextUtils.isEmpty(oldPass)) {
+                        currentPasswordTextView.setError("Слишком короткий пароль");
+                        focusView = currentPasswordTextView;
+                        cancel = true;
+                    }
+
+                    if ((!TextUtils.isEmpty(newPass) && !isPasswordValid(newPass)) || TextUtils.isEmpty(newPass)) {
+                        newPasswordTextView.setError("Слишком короткий пароль");
+                        focusView = newPasswordTextView;
+                        cancel = true;
+                    }
+
+                    if ((!TextUtils.isEmpty(newPassAgain) && !isPasswordValid(newPassAgain)) || TextUtils.isEmpty(newPassAgain)) {
+                        newPasswordAgainTextView.setError("Слишком короткий пароль");
+                        focusView = newPasswordAgainTextView;
+                        cancel = true;
+                    }
+
+                    if (!newPass.equals(newPassAgain)) {
+                        newPasswordAgainTextView.setError("Введенные новые пароли не совпадают.");
+                        focusView = newPasswordAgainTextView;
+                        cancel = true;
+                    }
+
+                    if(!cancel) {
+                        if (oldPass.equals(user.getPass())) {
+                            if (newPass.equals(newPassAgain)) {
+                                new AsyncTask<Void, Void, String>() {
+                                    @Override
+                                    protected String doInBackground(Void... params) {
+                                        String url = "http://you.com.ru/student/profile/save";
+                                        HashMap<String, String> httpParams = new HashMap<>();
+                                        httpParams.put("oldpass", oldPass);
+                                        httpParams.put("pass", newPass);
+                                        String response = Common.httpPost(url, MyServices.getLoginDataFromPref(context), httpParams);
+                                        try {
+                                            JSONObject responseJson = new JSONObject(response);
+                                            response = responseJson.getString("status");
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+
+                                        return response;
+                                    }
+
+                                    @Override
+                                    protected void onPostExecute(String s) {
+                                        super.onPostExecute(s);
+                                        if (s.equals("success")) {
+                                            SharedPreferences.Editor prefsEditor = PreferenceManager.getDefaultSharedPreferences(context).edit();
+                                            prefsEditor.putBoolean("logged", false).apply();
+                                            User user = MyServices.getUserDataFromPref(context);
+                                            user.setPass(newPass);
+                                            MyServices.setUserDataToPref(context, user);
+                                            Toast.makeText(context, "Пароль был изменен.", Toast.LENGTH_LONG).show();
+                                        }
+                                    }
+                                }.execute();
+                            } else {
+                                Toast.makeText(context, "Введенные новые пароли не совпадают.", Toast.LENGTH_LONG).show();
+                            }
+                        } else {
+                            currentPasswordTextView.setError("Вы ввели не верный пароль, повторите попытку.");
+                            focusView = currentPasswordTextView;
+                            cancel = true;
+                        }
+                        currentPasswordTextView.clearComposingText();
+                        newPasswordTextView.clearComposingText();
+                        newPasswordAgainTextView.clearComposingText();
+                    }else{
+                        focusView.requestFocus();
+                    }
+                }
+            });
+
+    }
+
+    private boolean isPasswordValid(String password) {
+        //TODO: Replace this with your own logic
+        return password.length() > 3;
     }
 
     @Override
@@ -87,9 +193,8 @@ public class SettingsActivity extends AppCompatActivity implements OnTaskComplet
             Uri uri = data.getData();
             try {
                 profileBitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
-                profileBitmap = getCroppedBitmap(profileBitmap, 604);
+                profileBitmap = Common.getCroppedBitmap(profileBitmap, 604);
                 photoImageView.setImageBitmap(profileBitmap);
-
                 ByteArrayOutputStream bos = new ByteArrayOutputStream();
                 profileBitmap.compress(Bitmap.CompressFormat.JPEG, 60, bos);
                 contentBody = new ByteArrayBody(bos.toByteArray(), "filename");
@@ -97,39 +202,6 @@ public class SettingsActivity extends AppCompatActivity implements OnTaskComplet
                 e.printStackTrace();
             }
         }
-    }
-
-
-    public static Bitmap getCroppedBitmap(Bitmap bmp, int radius) {
-        Bitmap sbmp;
-        if (bmp.getWidth() != radius || bmp.getHeight() != radius)
-            sbmp = Bitmap.createScaledBitmap(bmp, radius, radius, false);
-        else
-            sbmp = bmp;
-        Bitmap output = Bitmap.createBitmap(sbmp.getWidth(), sbmp.getHeight(),
-                Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(output);
-        final Paint paint = new Paint();
-        final Rect rect = new Rect(0, 0, sbmp.getWidth(), sbmp.getHeight());
-
-        paint.setAntiAlias(true);
-        paint.setFilterBitmap(true);
-        paint.setDither(true);
-        canvas.drawARGB(0, 0, 0, 0);
-        paint.setColor(Color.parseColor("#BAB399"));
-        Paint paint1 = new Paint();
-        paint1.setStyle(Paint.Style.STROKE);
-        paint1.setAntiAlias(true);
-        paint1.setARGB(255, 237, 238, 240);
-        paint1.setStrokeWidth(2);
-
-        canvas.drawCircle(sbmp.getWidth() / 2 + 0.7f,
-                sbmp.getHeight() / 2 + 0.7f, sbmp.getWidth() / 2.2f, paint);
-        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
-        canvas.drawBitmap(sbmp, rect, rect, paint);
-        canvas.drawCircle(sbmp.getWidth() / 2 + 0.7f,
-                sbmp.getHeight() / 2 + 0.7f, sbmp.getWidth() / 2.2f, paint1);
-        return output;
     }
 
 

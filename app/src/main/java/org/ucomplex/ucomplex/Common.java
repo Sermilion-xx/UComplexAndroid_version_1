@@ -3,7 +3,12 @@ package org.ucomplex.ucomplex;
 import android.annotation.TargetApi;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.util.Base64;
@@ -157,52 +162,37 @@ public class Common {
     }
 
 
+    public static Bitmap getCroppedBitmap(Bitmap bmp, int radius) {
+        Bitmap sbmp;
+        if (bmp.getWidth() != radius || bmp.getHeight() != radius)
+            sbmp = Bitmap.createScaledBitmap(bmp, radius, radius, false);
+        else
+            sbmp = bmp;
+        Bitmap output = Bitmap.createBitmap(sbmp.getWidth(), sbmp.getHeight(),
+                Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(output);
+        final Paint paint = new Paint();
+        final Rect rect = new Rect(0, 0, sbmp.getWidth(), sbmp.getHeight());
 
+        paint.setAntiAlias(true);
+        paint.setFilterBitmap(true);
+        paint.setDither(true);
+        canvas.drawARGB(0, 0, 0, 0);
+        paint.setColor(Color.parseColor("#BAB399"));
+        Paint paint1 = new Paint();
+        paint1.setStyle(Paint.Style.STROKE);
+        paint1.setAntiAlias(true);
+        paint1.setARGB(255, 237, 238, 240);
+        paint1.setStrokeWidth(2);
 
-
-//    @TargetApi(Build.VERSION_CODES.KITKAT)
-//    public static String downloadPhoto(String code) {
-//        final String UC_BASE_URL = "https://ucomplex.org/files/photos/"+code+".jpg";
-//
-//        String dataUrlParameters = "";
-//
-//        try {
-//            URL url = new URL(UC_BASE_URL);
-//            MyServices.connection = (HttpURLConnection) url.openConnection();
-//            MyServices.connection.setRequestMethod("POST");
-//            MyServices.connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-//            MyServices.connection.setRequestProperty("Content-Length", "" + Integer.toString(dataUrlParameters.getBytes().length));
-//            MyServices.connection.setRequestProperty("Content-Language", "en-US");
-//            MyServices.connection.setUseCaches(false);
-//            MyServices.connection.setDoInput(true);
-//            MyServices.connection.setDoOutput(true);
-//
-//            DataOutputStream wr = new DataOutputStream(
-//                    MyServices.connection.getOutputStream());
-//            wr.writeBytes(dataUrlParameters);
-//            wr.flush();
-//            wr.close();
-//            // Get Response
-//            InputStream is = MyServices.connection.getInputStream();
-//            BufferedReader rd = new BufferedReader(new InputStreamReader(is));
-//            String line;
-//            StringBuilder response = new StringBuilder();
-//            while ((line = rd.readLine()) != null) {
-//                response.append(line);
-//                response.append('\r');
-//            }
-//            rd.close();
-//            return response.toString();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        } finally {
-//
-//            if (MyServices.connection != null) {
-//                MyServices.connection.disconnect();
-//            }
-//        }
-//        return null;
-//    }
+        canvas.drawCircle(sbmp.getWidth() / 2 + 0.7f,
+                sbmp.getHeight() / 2 + 0.7f, sbmp.getWidth() / 2.2f, paint);
+        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+        canvas.drawBitmap(sbmp, rect, rect, paint);
+        canvas.drawCircle(sbmp.getWidth() / 2 + 0.7f,
+                sbmp.getHeight() / 2 + 0.7f, sbmp.getWidth() / 2.2f, paint1);
+        return output;
+    }
 
 
     public static String makeDate(String time) {
