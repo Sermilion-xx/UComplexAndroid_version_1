@@ -2,12 +2,10 @@ package org.ucomplex.ucomplex.Activities;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -21,8 +19,7 @@ import android.widget.Toast;
 
 import org.apache.http.entity.mime.content.ByteArrayBody;
 import org.javatuples.Pair;
-import org.json.JSONException;
-import org.json.JSONObject;
+
 import org.ucomplex.ucomplex.Activities.Tasks.OnTaskCompleteListener;
 import org.ucomplex.ucomplex.Activities.Tasks.SettingsTask;
 import org.ucomplex.ucomplex.Activities.Tasks.UploadPhotoTask;
@@ -33,7 +30,6 @@ import org.ucomplex.ucomplex.R;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
 
 
@@ -45,6 +41,9 @@ public class SettingsActivity extends AppCompatActivity implements OnTaskComplet
     SettingsActivity context = this;
     ByteArrayBody contentBody;
     boolean chose = false;
+    User user;
+
+    TextView oldPhoneTextView;
 
 
         @Override
@@ -57,6 +56,8 @@ public class SettingsActivity extends AppCompatActivity implements OnTaskComplet
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        user = MyServices.getUserDataFromPref(this);
+        //Photo settings
         photoImageView = (ImageView) findViewById(R.id.settings_photo);
         Bitmap photoBitmap = MyServices.decodePhotoPref(context, "tempProfilePhoto");
         photoImageView.setImageBitmap(photoBitmap);
@@ -81,10 +82,11 @@ public class SettingsActivity extends AppCompatActivity implements OnTaskComplet
             }
         });
 
+            //Password settings
             final TextView currentPasswordTextView = (TextView) findViewById(R.id.settings_password_current);
             final TextView newPasswordTextView = (TextView) findViewById(R.id.settings_password_new);
             final TextView newPasswordAgainTextView = (TextView) findViewById(R.id.settings_password_again);
-            final User user = MyServices.getUserDataFromPref(this);
+
 
             Button changePassButton = (Button) findViewById(R.id.settings_password_reset_button);
             changePassButton.setOnClickListener(new View.OnClickListener() {
@@ -93,15 +95,22 @@ public class SettingsActivity extends AppCompatActivity implements OnTaskComplet
                 }
             });
 
-
+            //Phone settings
             final TextView newPhoneTextView = (TextView) findViewById(R.id.settings_phone_new);
             final TextView oldPasswordPhoneTextView = (TextView) findViewById(R.id.settings_phone_password_current_phone);
+            oldPhoneTextView = (TextView) findViewById(R.id.settings_phone_number);
+            String phone = formatPhoneNumber(user.getPhone());
+            oldPhoneTextView.setText(phone);
             Button changePhoneButton = (Button) findViewById(R.id.settings_phone_reset_button);
             changePhoneButton.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
                    changePhoneNumber(newPhoneTextView,oldPasswordPhoneTextView);
                 }
             });
+    }
+
+    private String formatPhoneNumber(String phoneNumber){
+        return phoneNumber.replace(" ","").replaceAll("\\b(\\d{4})\\d+(\\d{2})", "$1*****$2");
     }
 
 
@@ -119,6 +128,12 @@ public class SettingsActivity extends AppCompatActivity implements OnTaskComplet
             cancel = true;
         }
 
+        if (newPhoneNumber.charAt(0) != '+') {
+            newPhoneTextView.setError("Неверный формат номера");
+            focusView = newPhoneTextView;
+            cancel = true;
+        }
+
         if ((!TextUtils.isEmpty(currentPassword) && !isPasswordValid(currentPassword)) || TextUtils.isEmpty(currentPassword)) {
             oldPasswordPhoneTextView.setError("Слишком короткий пароль");
             focusView = oldPasswordPhoneTextView;
@@ -129,7 +144,7 @@ public class SettingsActivity extends AppCompatActivity implements OnTaskComplet
             Pair<String, String> httpParams1 = new Pair<>("phone", newPhoneNumber);
             Pair<String, String> httpParams2 = new Pair<>("currpass", currentPassword);
             Pair<String, String> httpParams3 = new Pair<>("phone", newPhoneNumber);
-            SettingsTask settingsTask = new SettingsTask();
+            SettingsTask settingsTask = new SettingsTask(this, this);
             settingsTask.setContext(context);
             settingsTask.execute(httpParams1,httpParams2,httpParams3);
         }else{
@@ -179,7 +194,7 @@ public class SettingsActivity extends AppCompatActivity implements OnTaskComplet
                     Pair<String, String> httpParams1 = new Pair<>("pass", newPass);
                     Pair<String, String> httpParams2 = new Pair<>("oldpass", oldPass);
                     Pair<String, String> httpParams3 = new Pair<>("pass", newPass);
-                    SettingsTask settingsTask = new SettingsTask();
+                    SettingsTask settingsTask = new SettingsTask(this, this);
                     settingsTask.setContext(context);
                     settingsTask.execute(httpParams1,httpParams2,httpParams3);
 
@@ -240,22 +255,52 @@ public class SettingsActivity extends AppCompatActivity implements OnTaskComplet
 
     @Override
     public void onTaskComplete(AsyncTask task, Object... o) {
-        if (task.isCancelled()) {
-            // Report about cancel
-            Toast.makeText(this, "Загрузка была отменена", Toast.LENGTH_LONG)
-                    .show();
-        } else {
-            try {
-                if((Integer)task.get()==200){
-                    Toast.makeText(this, "Ваше фото отправленно на модерацию", Toast.LENGTH_LONG)
-                            .show();
-                    MyServices.encodePhotoPref(context, profileBitmap, "tempProfilePhoto");
-                }else{
-                    Toast.makeText(this, "Произошла ошибка", Toast.LENGTH_LONG)
-                            .show();
+        if(task instanceof UploadPhotoTask) {
+            if (task.isCancelled()) {
+                // Report about cancel
+                Toast.makeText(this, "Загрузка была отменена", Toast.LENGTH_LONG)
+                        .show();
+            } else {
+                try {
+
+                    if ((Integer) task.get() == 200) {
+                        Toast.makeText(this, "Ваше фото отправленно на модерацию", Toast.LENGTH_LONG)
+                                .show();
+                        MyServices.encodePhotoPref(context, profileBitmap, "tempProfilePhoto");
+                    } else {
+                        Toast.makeText(this, "Произошла ошибка", Toast.LENGTH_LONG)
+                                .show();
+                    }
+
+                } catch (InterruptedException | ExecutionException e) {
+                    e.printStackTrace();
                 }
-            } catch (InterruptedException | ExecutionException e) {
-                e.printStackTrace();
+            }
+        }else if(task instanceof SettingsTask){
+            if (task.isCancelled()) {
+                Toast.makeText(this, "Операция отменена", Toast.LENGTH_LONG)
+                        .show();
+            } else {
+                try {
+                    user = MyServices.getUserDataFromPref(this);
+                    if (task.get().equals("success")) {
+                        Toast.makeText(this, "Настройки сохранены", Toast.LENGTH_LONG)
+                                .show();
+                        if((int)o[0]==3) {
+                            String phone = formatPhoneNumber(user.getPhone());
+                            oldPhoneTextView.setText(phone);
+                        }else if((int)o[0]==2){
+                            //email
+                        }
+
+                    } else {
+                        Toast.makeText(this, "Произошла ошибка", Toast.LENGTH_LONG)
+                                .show();
+                    }
+
+                } catch (InterruptedException | ExecutionException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
