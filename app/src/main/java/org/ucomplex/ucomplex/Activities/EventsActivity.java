@@ -1,5 +1,8 @@
 package org.ucomplex.ucomplex.Activities;
 
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -12,19 +15,22 @@ import android.view.MenuItem;
 import android.view.View;
 
 import org.ucomplex.ucomplex.Activities.Tasks.FetchUserEventsTask;
+import org.ucomplex.ucomplex.Activities.Tasks.OnTaskCompleteListener;
 import org.ucomplex.ucomplex.Adaptors.MenuAdapter;
 import org.ucomplex.ucomplex.Fragments.EventsFragment;
+import org.ucomplex.ucomplex.MyServices;
 import org.ucomplex.ucomplex.R;
 
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
 
-public class EventsActivity extends AppCompatActivity {
+public class EventsActivity extends AppCompatActivity implements OnTaskCompleteListener {
 
     ArrayList eventsArray = null;
+    Context contex = this;
     FetchUserEventsTask mEventsTask = null;
-    final String[] TITLES = { "События", "Анкетирование", "Дисциплины", "Материалы", "Справки","Пользователи","Библиотека","Календарь", "Выход" };
+    final String[] TITLES = { "События", "Анкетирование", "Дисциплины", "Материалы", "Справки","Пользователи","Библиотека","Календарь","Настройки", "Выход" };
     final int[] ICONS = { R.drawable.ic_menu_event,
             R.drawable.ic_menu_questionare,
             R.drawable.ic_menu_materials,
@@ -33,6 +39,7 @@ public class EventsActivity extends AppCompatActivity {
             R.drawable.ic_menu_users,
             R.drawable.ic_menu_materials,
             R.drawable.ic_menu_calendar,
+            R.drawable.ic_menu_materials,
             R.drawable.ic_menu_exit};
 
     String NAME = "Авторханова Мадина";
@@ -61,17 +68,15 @@ public class EventsActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(layoutManager);
 
-
-
         mRecyclerView = (RecyclerView) findViewById(R.id.RecyclerView); // Assigning the RecyclerView Object to the xml View
-        mRecyclerView.setHasFixedSize(true);                            // Letting the system know that the list objects are of fixed size
-        mAdapter = new MenuAdapter(TITLES,ICONS,NAME,EMAIL,PROFILE, this);       // Creating the Adapter of MyAdapter class(which we are going to see in a bit)
+        mRecyclerView.setHasFixedSize(true);
+        Bitmap photoBitmap = MyServices.decodePhotoPref(contex, "profilePhoto");
+        mAdapter = new MenuAdapter(TITLES,ICONS,NAME,EMAIL,PROFILE, this, photoBitmap);
         mRecyclerView.setAdapter(mAdapter);                              // Setting the adapter to RecyclerView
         mLayoutManager = new LinearLayoutManager(this);                 // Creating a layout Manager
         mRecyclerView.setLayoutManager(mLayoutManager);                 // Setting the layout Manager
@@ -120,9 +125,14 @@ public class EventsActivity extends AppCompatActivity {
             return true;
         }
         if(id==android.R.id.home) {
-            onBackPressed();
-            return true;
+//            onBackPressed();
+//            return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onTaskComplete(AsyncTask task, Object... o) {
+
     }
 }

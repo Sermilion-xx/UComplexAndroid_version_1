@@ -37,7 +37,7 @@
         android:id="@+id/reference_field"
         android:lines="1"
         android:layout_below="@+id/reference_org_name"
-        android:background="@drawable/textview_border"/>
+        android:background="@drawable/textview_border_round_corner"/>
 
     <TextView
         android:layout_width="match_parent"

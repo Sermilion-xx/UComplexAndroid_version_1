@@ -6,18 +6,17 @@ package org.ucomplex.ucomplex.Activities.Tasks;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
-
-import com.google.gson.Gson;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.ucomplex.ucomplex.Common;
-import org.ucomplex.ucomplex.Model.Role;
 import org.ucomplex.ucomplex.Model.Users.Student;
 import org.ucomplex.ucomplex.Model.Users.User;
+import org.ucomplex.ucomplex.MyServices;
 
 import java.util.ArrayList;
 
@@ -25,7 +24,7 @@ import java.util.ArrayList;
  * Represents an asynchronous mLogin/registration task used to authenticate
  * the user.
  */
-public class FetchUserLoginTask extends AsyncTask<Void, Void, Boolean> {
+public class FetchUserLoginTask extends AsyncTask<Void, Void, Student> {
 
     private final String mLogin;
     private final String mPassword;
@@ -71,33 +70,33 @@ public class FetchUserLoginTask extends AsyncTask<Void, Void, Boolean> {
     }
 
     @Override
-    protected Boolean doInBackground(Void... params) {
+    protected Student doInBackground(Void... params) {
         if (params.length == 0) {
             return null;
         }
-        String urlString = "http://you.com.ru/auth?json";
+        String urlString = "http://you.com.ru/auth?mobile=1";
         jsonData = Common.httpPost(urlString, mLogin+":"+mPassword);
-        return jsonData != null;
+
+        Student student = null;
+        try {
+            student = getUserFromJson(jsonData);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        Bitmap photoBitmap = Common.getBitmapFromURL(student.getCode());
+        MyServices.encodePhotoPref(mContext, photoBitmap, "profilePhoto");
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(mContext);
+        String tempPhoto = "";
+        tempPhoto = pref.getString("tempProfilePhoto","");
+        if(tempPhoto.length()<1){
+            MyServices.encodePhotoPref(mContext, photoBitmap, "tempProfilePhoto");
+        }
+        return student;
     }
 
     @Override
-    protected void onPostExecute(final Boolean success) {
-        if (success) {
-            try {
-            Student student = getUserFromJson(jsonData);
-            SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(mContext).edit();
-                Gson gson = new Gson();
-                String json = gson.toJson(student);
-                editor.putString("loggedUser", json);
-            editor.apply();
-
-                delegate.processFinish(student);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        } else {
-
-        }
+    protected void onPostExecute(final Student student) {
+        delegate.processFinish(student);
     }
 
     @Override

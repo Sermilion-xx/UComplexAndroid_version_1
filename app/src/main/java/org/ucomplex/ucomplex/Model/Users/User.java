@@ -36,6 +36,11 @@ public class User implements Serializable {
     private boolean is_black;
     private boolean me_black;
     private boolean req_friend;
+    private String encodedBitmap;
+
+    public void setEncodedBitmap(String encodedBitmap) {
+        this.encodedBitmap = encodedBitmap;
+    }
 
     public void addRole(User role){
         roles.add(role);

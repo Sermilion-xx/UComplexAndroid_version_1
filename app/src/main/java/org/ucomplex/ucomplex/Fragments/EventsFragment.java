@@ -52,6 +52,7 @@ public class EventsFragment extends AbsListViewBaseFragment {
 
     private ArrayList<EventRowItem> eventItems = null;
     ProgressDialog progressDialog;
+	ImageAdapter imageAdapter;
 
 
 
@@ -82,8 +83,8 @@ public class EventsFragment extends AbsListViewBaseFragment {
 
 		View rootView = inflater.inflate(R.layout.fragment_events, container, false);
 		listView = (ListView) rootView.findViewById(R.id.listview_events);
-
-        (listView).setAdapter(new ImageAdapter(getActivity()));
+		imageAdapter = new ImageAdapter(getActivity());
+        (listView).setAdapter(imageAdapter);
         listView.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

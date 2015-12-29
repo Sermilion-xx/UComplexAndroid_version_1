@@ -22,9 +22,9 @@ public class FetchLibraryTask extends AsyncTask<Integer, String, ArrayList> impl
 
     Activity mContext;
     LibraryActivity caller;
+
     private String mProgressMessage;
     private IProgressTracker mProgressTracker;
-
     private final OnTaskCompleteListener mTaskCompleteListener;
     private final ProgressDialog mProgressDialog;
 

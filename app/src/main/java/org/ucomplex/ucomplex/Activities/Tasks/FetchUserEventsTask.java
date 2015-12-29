@@ -34,7 +34,7 @@ public class FetchUserEventsTask extends AsyncTask<Void, Void, ArrayList<EventRo
 
     @Override
     protected ArrayList<EventRowItem> doInBackground(Void... params) {
-        String urlString = "http://you.com.ru/student?json";
+        String urlString = "http://you.com.ru/student?mobile=1";
 //        String authParams = this.user.getLogin()+":"+this.user.getPass()+":"+this.user.getRoles().get(0).getId();
         jsonData = Common.httpPost(urlString, MyServices.getLoginDataFromPref(mContext));
         try {
@@ -51,10 +51,9 @@ public class FetchUserEventsTask extends AsyncTask<Void, Void, ArrayList<EventRo
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
         String uc_version_pref = prefs.getString("X-UVERSION", "");
         //!uc_version.equals(uc_version_pref)
-        if(true){
+        if(!uc_version.equals(uc_version_pref)){
             FetchLangTask flt = new FetchLangTask();
             flt.setmContext(mContext);
-//            flt.setParams(student.getLogin()+":"+student.getPass()+":"+student.getRoles().get(0).getId());
             boolean success = false;
             try {
                 success = flt.execute().get();

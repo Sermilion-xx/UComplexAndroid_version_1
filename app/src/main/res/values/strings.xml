@@ -60,5 +60,7 @@
     <string name="calendar_show_all">Показать все</string>
     <string name="title_activity_calendar_day">CalendarDayActivity</string>
     <string name="title_activity_library">LibraryActivity</string>
+    <string name="title_activity_settings">SettingsActivity</string>
+    <string name="settings_new_number">Новый номер (без пробелов)</string>
 
 </resources>

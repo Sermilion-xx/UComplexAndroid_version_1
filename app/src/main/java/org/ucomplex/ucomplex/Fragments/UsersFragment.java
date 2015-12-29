@@ -133,7 +133,7 @@ public class UsersFragment extends ListFragment {
         User item = mItems.get(position);
         Intent intent = new Intent(getContext(), PersonActivity.class);
         final Bundle extra = new Bundle();
-        extra.putString("userId", String.valueOf(item.getId()));
+        extra.putString("person", String.valueOf(item.getId()));
         intent.putExtras(extra);
         startActivity(intent);
     }

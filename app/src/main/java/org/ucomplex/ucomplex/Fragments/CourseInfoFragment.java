@@ -1,10 +1,8 @@
 package org.ucomplex.ucomplex.Fragments;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -42,7 +40,7 @@ public class CourseInfoFragment extends Fragment {
     Bitmap bitmap;
     //4 - student, 3 - teacher
     int usetType;
-    int userId = -1;
+    int person = -1;
 
 
     ImageView userImageView;
@@ -64,12 +62,12 @@ public class CourseInfoFragment extends Fragment {
     Button blacklistButton;
 
 
-    public int getUserId() {
-        return userId;
+    public int getPerson() {
+        return person;
     }
 
-    public void setUserId(int userId) {
-        this.userId = userId;
+    public void setPerson(int person) {
+        this.person = person;
     }
 
     public int getUsetType() {
@@ -228,14 +226,14 @@ public class CourseInfoFragment extends Fragment {
             rootView.findViewById(R.id.course_info_course_average_mark_label).setVisibility(View.GONE);
             rootView.findViewById(R.id.course_info_course_attendance_label).setVisibility(View.GONE);
         }
-                if (userId == -1) {
-                    userId = courseData.getTeacher(0).getId();
+                if (person == -1) {
+                    person = courseData.getTeacher(0).getPerson();
                 }
 
                 if (user == null) {
                     //fetch data about person
                     FetchPersonTask fetchPersonTask = new FetchPersonTask();
-                    fetchPersonTask.setUserId(String.valueOf(userId));
+                    fetchPersonTask.setPerson(String.valueOf(person));
                     fetchPersonTask.setmContext(mContext);
                     try {
                         user = fetchPersonTask.execute().get();

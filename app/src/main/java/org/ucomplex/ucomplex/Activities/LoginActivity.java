@@ -24,6 +24,7 @@ import com.google.gson.Gson;
 import org.ucomplex.ucomplex.Activities.Tasks.FetchUserEventsTask;
 import org.ucomplex.ucomplex.Activities.Tasks.FetchUserLoginTask;
 import org.ucomplex.ucomplex.Model.Users.Student;
+import org.ucomplex.ucomplex.MyServices;
 import org.ucomplex.ucomplex.R;
 
 
@@ -50,10 +51,12 @@ public class LoginActivity extends AppCompatActivity implements FetchUserLoginTa
     @Override
     protected void onResume() {
         super.onResume();
-//        if(isLoggedIn){
-//            Intent intent = new Intent(this, EventsActivity.class);
-//            startActivity(intent);
-//        }
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean logged = prefs.getBoolean("logged", false);
+        if(logged){
+            Intent intent = new Intent(this, EventsActivity.class);
+            startActivity(intent);
+        }
     }
 
     @Override
@@ -68,10 +71,8 @@ public class LoginActivity extends AppCompatActivity implements FetchUserLoginTa
             mLogin = obj.getLogin();
             mPass = obj.getPass();
         }
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-//         Set up the mLogin form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         mPasswordView = (EditText) findViewById(R.id.password);
 
@@ -194,11 +195,15 @@ public class LoginActivity extends AppCompatActivity implements FetchUserLoginTa
     @Override
     public void processFinish(Student output) {
         if(output!=null){
-
+            MyServices.setUserDataToPref(this, output);
+            SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(this).edit();
+            editor.putBoolean("logged", true);
+            editor.apply();
             Intent intent = new Intent(this, EventsActivity.class);
             intent.putExtra("student", output);
             startActivity(intent);
             showProgress(false);
+            mAuthTask = null;
         }else{
             mPasswordView.setError(getString(R.string.error_incorrect_password));
             mPasswordView.requestFocus();

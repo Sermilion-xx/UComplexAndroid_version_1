@@ -45,11 +45,11 @@ public class FetchUsersTask extends AsyncTask<Integer, Void, ArrayList<User>> {
     @Override
     protected ArrayList<User> doInBackground(Integer... params) {
         String urlString = null;
-        String urlString0 = "http://you.com.ru/student/online?json";
-        String urlString1 = "http://you.com.ru/user/friends?json";
-        String urlString2 = "http://you.com.ru/student/ajax/my_group?json";
-        String urlString3 = "http://you.com.ru/student/ajax/my_teachers?json";
-        String urlString4 = "http://you.com.ru/user/blacklist?json";
+        String urlString0 = "http://you.com.ru/student/online?mobile=1";
+        String urlString1 = "http://you.com.ru/user/friends?mobile=1";
+        String urlString2 = "http://you.com.ru/student/ajax/my_group?mobile=1";
+        String urlString3 = "http://you.com.ru/student/ajax/my_teachers?mobile=1";
+        String urlString4 = "http://you.com.ru/user/blacklist?mobile=1";
         HashMap<String, String> postData = new HashMap<>();
         if(params[0]==0){
             urlString = urlString0;

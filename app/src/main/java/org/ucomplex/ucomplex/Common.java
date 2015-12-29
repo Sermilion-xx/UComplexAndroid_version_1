@@ -110,7 +110,7 @@ public class Common {
         return null;
     }
 
-    private static String getPostDataString(HashMap<String, String> params) throws UnsupportedEncodingException {
+    public static String getPostDataString(HashMap<String, String> params) throws UnsupportedEncodingException {
         StringBuilder result = new StringBuilder();
         boolean first = true;
         for(Map.Entry<String, String> entry : params.entrySet()){

@@ -1,6 +1,5 @@
 package org.ucomplex.ucomplex.Activities;
 
-import android.content.Intent;
 import android.os.Bundle;
 
 import android.support.v4.app.FragmentManager;
@@ -35,7 +34,7 @@ public class PersonActivity extends AppCompatActivity {
         }
 
         CourseInfoFragment courseInfoFragment = new CourseInfoFragment();
-        courseInfoFragment.setUserId(userId);
+        courseInfoFragment.setPerson(userId);
         courseInfoFragment.setmContext(this);
 
         FragmentManager fragmentManager = getSupportFragmentManager();

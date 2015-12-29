@@ -19,7 +19,7 @@ import org.ucomplex.ucomplex.MyServices;
  */
 public class FetchPersonTask extends AsyncTask<Void, Void, User> {
 
-    String userId;
+    String person;
     Activity mContext;
 
     public FetchPersonTask(){
@@ -34,17 +34,17 @@ public class FetchPersonTask extends AsyncTask<Void, Void, User> {
         this.mContext = mContext;
     }
 
-    public String getUserId() {
-        return userId;
+    public String getPerson() {
+        return person;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setPerson(String person) {
+        this.person = person;
     }
 
     @Override
     protected User doInBackground(Void... params) {
-        String urlString = "http://you.com.ru/user/person/"+this.userId+"?json";
+        String urlString = "http://you.com.ru/user/person/"+this.person +"?json";
         String jsonData = Common.httpPost(urlString, MyServices.getLoginDataFromPref(mContext));
         User user = null;
         if(jsonData.length()>2){
