@@ -205,6 +205,7 @@ public class LoginActivity extends AppCompatActivity implements FetchUserLoginTa
             showProgress(false);
             mAuthTask = null;
         }else{
+            showProgress(false);
             mPasswordView.setError(getString(R.string.error_incorrect_password));
             mPasswordView.requestFocus();
         }

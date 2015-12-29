@@ -77,21 +77,25 @@ public class FetchUserLoginTask extends AsyncTask<Void, Void, Student> {
         String urlString = "http://you.com.ru/auth?mobile=1";
         jsonData = Common.httpPost(urlString, mLogin+":"+mPassword);
 
-        Student student = null;
-        try {
-            student = getUserFromJson(jsonData);
-        } catch (JSONException e) {
-            e.printStackTrace();
+        if(jsonData!=null) {
+            Student student = null;
+            try {
+                student = getUserFromJson(jsonData);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            Bitmap photoBitmap = Common.getBitmapFromURL(student.getCode());
+            MyServices.encodePhotoPref(mContext, photoBitmap, "profilePhoto");
+            SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(mContext);
+            String tempPhoto = "";
+            tempPhoto = pref.getString("tempProfilePhoto", "");
+            if (tempPhoto.length() < 1) {
+                MyServices.encodePhotoPref(mContext, photoBitmap, "tempProfilePhoto");
+            }
+            return student;
         }
-        Bitmap photoBitmap = Common.getBitmapFromURL(student.getCode());
-        MyServices.encodePhotoPref(mContext, photoBitmap, "profilePhoto");
-        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(mContext);
-        String tempPhoto = "";
-        tempPhoto = pref.getString("tempProfilePhoto","");
-        if(tempPhoto.length()<1){
-            MyServices.encodePhotoPref(mContext, photoBitmap, "tempProfilePhoto");
-        }
-        return student;
+
+        return null;
     }
 
     @Override

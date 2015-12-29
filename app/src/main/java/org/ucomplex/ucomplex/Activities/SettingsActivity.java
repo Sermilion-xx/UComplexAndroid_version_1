@@ -20,9 +20,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.apache.http.entity.mime.content.ByteArrayBody;
+import org.javatuples.Pair;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.ucomplex.ucomplex.Activities.Tasks.OnTaskCompleteListener;
+import org.ucomplex.ucomplex.Activities.Tasks.SettingsTask;
 import org.ucomplex.ucomplex.Activities.Tasks.UploadPhotoTask;
 import org.ucomplex.ucomplex.Common;
 import org.ucomplex.ucomplex.Model.Users.User;
@@ -79,8 +81,6 @@ public class SettingsActivity extends AppCompatActivity implements OnTaskComplet
             }
         });
 
-
-
             final TextView currentPasswordTextView = (TextView) findViewById(R.id.settings_password_current);
             final TextView newPasswordTextView = (TextView) findViewById(R.id.settings_password_new);
             final TextView newPasswordAgainTextView = (TextView) findViewById(R.id.settings_password_again);
@@ -89,100 +89,123 @@ public class SettingsActivity extends AppCompatActivity implements OnTaskComplet
             Button changePassButton = (Button) findViewById(R.id.settings_password_reset_button);
             changePassButton.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
-                    final String oldPass = currentPasswordTextView.getText().toString();
-                    final String newPass = newPasswordTextView.getText().toString();
-                    final String newPassAgain = newPasswordAgainTextView.getText().toString();
-                    currentPasswordTextView.setError(null);
-                    newPasswordTextView.setError(null);
-                    newPasswordAgainTextView.setError(null);
-                    boolean cancel = false;
-                    View focusView = null;
-
-                    currentPasswordTextView.setError(null);
-                    newPasswordTextView.setError(null);
-                    newPasswordAgainTextView.setError(null);
-
-
-                    if ((!TextUtils.isEmpty(oldPass) && !isPasswordValid(oldPass)) || TextUtils.isEmpty(oldPass)) {
-                        currentPasswordTextView.setError("Слишком короткий пароль");
-                        focusView = currentPasswordTextView;
-                        cancel = true;
-                    }
-
-                    if ((!TextUtils.isEmpty(newPass) && !isPasswordValid(newPass)) || TextUtils.isEmpty(newPass)) {
-                        newPasswordTextView.setError("Слишком короткий пароль");
-                        focusView = newPasswordTextView;
-                        cancel = true;
-                    }
-
-                    if ((!TextUtils.isEmpty(newPassAgain) && !isPasswordValid(newPassAgain)) || TextUtils.isEmpty(newPassAgain)) {
-                        newPasswordAgainTextView.setError("Слишком короткий пароль");
-                        focusView = newPasswordAgainTextView;
-                        cancel = true;
-                    }
-
-                    if (!newPass.equals(newPassAgain)) {
-                        newPasswordAgainTextView.setError("Введенные новые пароли не совпадают.");
-                        focusView = newPasswordAgainTextView;
-                        cancel = true;
-                    }
-
-                    if(!cancel) {
-                        if (oldPass.equals(user.getPass())) {
-                            if (newPass.equals(newPassAgain)) {
-                                new AsyncTask<Void, Void, String>() {
-                                    @Override
-                                    protected String doInBackground(Void... params) {
-                                        String url = "http://you.com.ru/student/profile/save";
-                                        HashMap<String, String> httpParams = new HashMap<>();
-                                        httpParams.put("oldpass", oldPass);
-                                        httpParams.put("pass", newPass);
-                                        String response = Common.httpPost(url, MyServices.getLoginDataFromPref(context), httpParams);
-                                        try {
-                                            JSONObject responseJson = new JSONObject(response);
-                                            response = responseJson.getString("status");
-                                        } catch (JSONException e) {
-                                            e.printStackTrace();
-                                        }
-
-                                        return response;
-                                    }
-
-                                    @Override
-                                    protected void onPostExecute(String s) {
-                                        super.onPostExecute(s);
-                                        if (s.equals("success")) {
-                                            SharedPreferences.Editor prefsEditor = PreferenceManager.getDefaultSharedPreferences(context).edit();
-                                            prefsEditor.putBoolean("logged", false).apply();
-                                            User user = MyServices.getUserDataFromPref(context);
-                                            user.setPass(newPass);
-                                            MyServices.setUserDataToPref(context, user);
-                                            Toast.makeText(context, "Пароль был изменен.", Toast.LENGTH_LONG).show();
-                                        }
-                                    }
-                                }.execute();
-                            } else {
-                                Toast.makeText(context, "Введенные новые пароли не совпадают.", Toast.LENGTH_LONG).show();
-                            }
-                        } else {
-                            currentPasswordTextView.setError("Вы ввели не верный пароль, повторите попытку.");
-                            focusView = currentPasswordTextView;
-                            cancel = true;
-                        }
-                        currentPasswordTextView.clearComposingText();
-                        newPasswordTextView.clearComposingText();
-                        newPasswordAgainTextView.clearComposingText();
-                    }else{
-                        focusView.requestFocus();
-                    }
+                    resetPassword(currentPasswordTextView, newPasswordTextView, newPasswordAgainTextView, user);
                 }
             });
 
+
+            final TextView newPhoneTextView = (TextView) findViewById(R.id.settings_phone_new);
+            final TextView oldPasswordPhoneTextView = (TextView) findViewById(R.id.settings_phone_password_current_phone);
+            Button changePhoneButton = (Button) findViewById(R.id.settings_phone_reset_button);
+            changePhoneButton.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                   changePhoneNumber(newPhoneTextView,oldPasswordPhoneTextView);
+                }
+            });
+    }
+
+
+    private void changePhoneNumber(TextView newPhoneTextView, TextView oldPasswordPhoneTextView){
+        final String newPhoneNumber = newPhoneTextView.getText().toString();
+        final String currentPassword = oldPasswordPhoneTextView.getText().toString();
+        newPhoneTextView.setError(null);
+        oldPasswordPhoneTextView.setError(null);
+        boolean cancel = false;
+        View focusView = null;
+
+        if ((!TextUtils.isEmpty(newPhoneNumber) && !isPhoneNumberValid(newPhoneNumber)) || TextUtils.isEmpty(newPhoneNumber)) {
+            newPhoneTextView.setError("Слишком короткий номер телефона");
+            focusView = newPhoneTextView;
+            cancel = true;
+        }
+
+        if ((!TextUtils.isEmpty(currentPassword) && !isPasswordValid(currentPassword)) || TextUtils.isEmpty(currentPassword)) {
+            oldPasswordPhoneTextView.setError("Слишком короткий пароль");
+            focusView = oldPasswordPhoneTextView;
+            cancel = true;
+        }
+
+        if(!cancel){
+            Pair<String, String> httpParams1 = new Pair<>("phone", newPhoneNumber);
+            Pair<String, String> httpParams2 = new Pair<>("currpass", currentPassword);
+            Pair<String, String> httpParams3 = new Pair<>("phone", newPhoneNumber);
+            SettingsTask settingsTask = new SettingsTask();
+            settingsTask.setContext(context);
+            settingsTask.execute(httpParams1,httpParams2,httpParams3);
+        }else{
+            focusView.requestFocus();
+        }
+
+    }
+
+    private void resetPassword(TextView currentPasswordTextView, TextView newPasswordTextView, TextView newPasswordAgainTextView,
+    User user){
+        final String oldPass = currentPasswordTextView.getText().toString();
+        final String newPass = newPasswordTextView.getText().toString();
+        final String newPassAgain = newPasswordAgainTextView.getText().toString();
+        currentPasswordTextView.setError(null);
+        newPasswordTextView.setError(null);
+        newPasswordAgainTextView.setError(null);
+        boolean cancel = false;
+        View focusView = null;
+
+        if ((!TextUtils.isEmpty(oldPass) && !isPasswordValid(oldPass)) || TextUtils.isEmpty(oldPass)) {
+            currentPasswordTextView.setError("Слишком короткий пароль");
+            focusView = currentPasswordTextView;
+            cancel = true;
+        }
+
+        if ((!TextUtils.isEmpty(newPass) && !isPasswordValid(newPass)) || TextUtils.isEmpty(newPass)) {
+            newPasswordTextView.setError("Слишком короткий пароль");
+            focusView = newPasswordTextView;
+            cancel = true;
+        }
+
+        if ((!TextUtils.isEmpty(newPassAgain) && !isPasswordValid(newPassAgain)) || TextUtils.isEmpty(newPassAgain)) {
+            newPasswordAgainTextView.setError("Слишком короткий пароль");
+            focusView = newPasswordAgainTextView;
+            cancel = true;
+        }
+
+        if (!newPass.equals(newPassAgain)) {
+            newPasswordAgainTextView.setError("Введенные новые пароли не совпадают.");
+            focusView = newPasswordAgainTextView;
+            cancel = true;
+        }
+
+        if(!cancel) {
+            if (oldPass.equals(user.getPass())) {
+                if (newPass.equals(newPassAgain)) {
+                    Pair<String, String> httpParams1 = new Pair<>("pass", newPass);
+                    Pair<String, String> httpParams2 = new Pair<>("oldpass", oldPass);
+                    Pair<String, String> httpParams3 = new Pair<>("pass", newPass);
+                    SettingsTask settingsTask = new SettingsTask();
+                    settingsTask.setContext(context);
+                    settingsTask.execute(httpParams1,httpParams2,httpParams3);
+
+                } else {
+                    Toast.makeText(context, "Введенные новые пароли не совпадают.", Toast.LENGTH_LONG).show();
+                }
+            } else {
+                currentPasswordTextView.setError("Вы ввели не верный пароль, повторите попытку.");
+                focusView = currentPasswordTextView;
+                cancel = true;
+            }
+            currentPasswordTextView.clearComposingText();
+            newPasswordTextView.clearComposingText();
+            newPasswordAgainTextView.clearComposingText();
+        }else{
+            focusView.requestFocus();
+        }
     }
 
     private boolean isPasswordValid(String password) {
         //TODO: Replace this with your own logic
         return password.length() > 3;
+    }
+
+    private boolean isPhoneNumberValid(String phoneNumber){
+        return phoneNumber.length()>6;
     }
 
     @Override
