@@ -163,7 +163,6 @@ public class EventsFragment extends AbsListViewBaseFragment {
 			}
 
 			if(!loaded) {
-
 				ImageLoader.getInstance()
 						.displayImage("http://ucomplex.org/files/photos/" + eventItems.get(position).getParams().getCode() + ".jpg", viewHolder.eventsImageView, options, new SimpleImageLoadingListener() {
 							@Override

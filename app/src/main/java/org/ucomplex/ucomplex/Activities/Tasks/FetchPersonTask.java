@@ -1,6 +1,8 @@
 package org.ucomplex.ucomplex.Activities.Tasks;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 
@@ -17,13 +19,30 @@ import org.ucomplex.ucomplex.MyServices;
 /**
  * Created by Sermilion on 19/12/2015.
  */
-public class FetchPersonTask extends AsyncTask<Void, Void, User> {
+public class FetchPersonTask extends AsyncTask<Void, String, User> implements IProgressTracker, DialogInterface.OnCancelListener {
 
     String person;
     Activity mContext;
+    User user;
 
-    public FetchPersonTask(){
+    private String mProgressMessage;
+    private IProgressTracker mProgressTracker;
+    private final OnTaskCompleteListener mTaskCompleteListener;
+    private final ProgressDialog mProgressDialog;
 
+    public FetchPersonTask(Activity context, OnTaskCompleteListener taskCompleteListener) {
+        this.mContext = context;
+
+        this.mTaskCompleteListener = taskCompleteListener;
+        mProgressDialog = new ProgressDialog(context);
+        mProgressDialog.setIndeterminate(true);
+        mProgressDialog.setCancelable(true);
+        mProgressDialog.setOnCancelListener(this);
+    }
+
+    public void setupTask(Void ... params) {
+        this.setProgressTracker(this);
+        this.execute(params);
     }
 
     public Activity getmContext() {
@@ -46,11 +65,13 @@ public class FetchPersonTask extends AsyncTask<Void, Void, User> {
     protected User doInBackground(Void... params) {
         String urlString = "http://you.com.ru/user/person/"+this.person +"?json";
         String jsonData = Common.httpPost(urlString, MyServices.getLoginDataFromPref(mContext));
-        User user = null;
+        publishProgress("50%");
+
         if(jsonData.length()>2){
             user = getUserDataFromJson(jsonData);
             if(user.getCode()!=null){
                 Bitmap photoBitmap = Common.getBitmapFromURL(user.getCode());
+                publishProgress("100%");
                 user.setPhotoBitmap(photoBitmap);
             }
         }
@@ -127,5 +148,64 @@ public class FetchPersonTask extends AsyncTask<Void, Void, User> {
         e.printStackTrace();
     }
         return null;
+    }
+
+    @Override
+    protected void onPostExecute(User user) {
+        super.onPostExecute(user);
+        onComplete();
+        if (mProgressTracker != null) {
+            mProgressTracker.onComplete();
+        }
+        mProgressTracker = null;
+    }
+
+    @Override
+    protected void onProgressUpdate(String... values) {
+        // Update progress message
+        mProgressMessage = values[0];
+        // And send it to progress tracker
+        if (mProgressTracker != null) {
+            mProgressTracker.onProgress(mProgressMessage);
+        }
+    }
+
+    public void setProgressTracker(IProgressTracker progressTracker) {
+        mProgressTracker = progressTracker;
+        if (mProgressTracker != null) {
+            mProgressTracker.onProgress("Загружаем пользователя");
+            if (user != null) {
+                mProgressTracker.onComplete();
+            }
+        }
+    }
+
+    @Override
+    public void onProgress(String message) {
+        if (!mProgressDialog.isShowing()) {
+            mProgressDialog.show();
+        }
+        // Show current message in progress dialog
+        mProgressDialog.setMessage(message);
+    }
+
+    @Override
+    public void onComplete() {
+        mTaskCompleteListener.onTaskComplete(this);
+        mProgressDialog.dismiss();
+    }
+
+    @Override
+    public void onCancel(DialogInterface dialog) {
+        // Cancel task
+        this.cancel(true);
+        // Notify activity about completion
+        mTaskCompleteListener.onTaskComplete(this);
+    }
+
+    @Override
+    protected void onCancelled() {
+        // Detach from progress tracker
+        mProgressTracker = null;
     }
 }

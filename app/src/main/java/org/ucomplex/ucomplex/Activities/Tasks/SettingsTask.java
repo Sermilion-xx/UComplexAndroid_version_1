@@ -9,6 +9,8 @@ import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+
 import org.javatuples.Pair;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -17,7 +19,6 @@ import org.ucomplex.ucomplex.Common;
 import org.ucomplex.ucomplex.Model.Users.User;
 import org.ucomplex.ucomplex.MyServices;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -79,9 +80,11 @@ public class SettingsTask extends AsyncTask<Pair<String, String>, Void, String> 
                 }else if(change.getValue0().equals("pass")){
                     user.setPass(change.getValue1());
                     type = 1;
+                }else if(change.getValue0().equals("privacy")){
+                    type = 4;
                 }
                 MyServices.setUserDataToPref(context, user);
-                Toast.makeText(context, "Пароль был изменен.", Toast.LENGTH_LONG).show();
+
                 onComplete();
             }
 

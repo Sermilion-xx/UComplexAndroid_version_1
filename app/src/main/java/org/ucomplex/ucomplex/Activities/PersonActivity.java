@@ -16,8 +16,6 @@ public class PersonActivity extends AppCompatActivity {
 
     int userId;
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,7 +28,7 @@ public class PersonActivity extends AppCompatActivity {
 
         final Bundle extra = getIntent().getExtras();
         if (extra != null) {
-            userId = Integer.parseInt(extra.getString("userId"));
+            userId = Integer.parseInt(extra.getString("person"));
         }
 
         CourseInfoFragment courseInfoFragment = new CourseInfoFragment();

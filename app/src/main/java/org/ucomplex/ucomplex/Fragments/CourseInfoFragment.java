@@ -1,6 +1,7 @@
 package org.ucomplex.ucomplex.Fragments;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
@@ -19,6 +20,8 @@ import android.widget.Toast;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.ucomplex.ucomplex.Activities.Tasks.FetchPersonTask;
+import org.ucomplex.ucomplex.Activities.Tasks.IProgressTracker;
+import org.ucomplex.ucomplex.Activities.Tasks.OnTaskCompleteListener;
 import org.ucomplex.ucomplex.Common;
 import org.ucomplex.ucomplex.Model.StudyStructure.Course;
 import org.ucomplex.ucomplex.Model.Users.Teacher;
@@ -32,7 +35,7 @@ import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
 
 
-public class CourseInfoFragment extends Fragment {
+public class CourseInfoFragment extends Fragment implements OnTaskCompleteListener {
 
     private Course courseData;
     User user;
@@ -187,7 +190,6 @@ public class CourseInfoFragment extends Fragment {
         if(bundle!=null){
             if(bundle.containsKey("courseData")){
                 courseData = (Course) bundle.getSerializable("courseData");
-
                 int post = courseData.getTeacher(0).getPost();
                 SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
                 String langStr = prefs.getString("lang", "");
@@ -200,7 +202,6 @@ public class CourseInfoFragment extends Fragment {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-
                 if(courseData.getDepartment().getId()==-1){
                     departmentNameView.setVisibility(View.GONE);
                 }else{
@@ -226,62 +227,69 @@ public class CourseInfoFragment extends Fragment {
             rootView.findViewById(R.id.course_info_course_average_mark_label).setVisibility(View.GONE);
             rootView.findViewById(R.id.course_info_course_attendance_label).setVisibility(View.GONE);
         }
-                if (person == -1) {
-                    person = courseData.getTeacher(0).getPerson();
+                if (person == -1 || person == -1) {
+                    person = courseData.getTeacher(0).getId();
                 }
 
                 if (user == null) {
                     //fetch data about person
-                    FetchPersonTask fetchPersonTask = new FetchPersonTask();
+                    FetchPersonTask fetchPersonTask = new FetchPersonTask(getActivity(), this);
                     fetchPersonTask.setPerson(String.valueOf(person));
                     fetchPersonTask.setmContext(mContext);
-                    try {
-                        user = fetchPersonTask.execute().get();
-                    } catch (InterruptedException | ExecutionException e) {
-                        e.printStackTrace();
-                    }
+                    fetchPersonTask.setupTask();
                 }
-
-        if(user != null) {
-            mailTextView.setText(user.getEmail());
-            userNameView.setText(user.getName());
-            if (user.getPhotoBitmap() != null) {
-                bitmap = user.getPhotoBitmap();
-                userImageView.setImageBitmap(this.bitmap);
-            } else {
-                userImageView.setImageDrawable(Common.getDrawable(user));
-            }
-
-            int roleCount = user.getRoles().size();
-            TextView[] positionViews = new TextView[roleCount];
-            ;
-            positionViews[0] = userPositionTextView;
-            if (roleCount > 1) {
-                positionViews[1] = userPositionTextView2;
-                userIconTextView2.setVisibility(View.VISIBLE);
-                userPositionTextView2.setVisibility(View.VISIBLE);
-            }
-
-            for (int i = 0; i < roleCount; i++) {
-                String positionName = user.getRoles().get(i).getPositionName();
-                if (user.getRoles().get(i).getType() == 4) {
-                    if (positionViews != null) {
-                        positionViews[i].setText("Студент - " + positionName);
-                    }
-                } else if (user.getRoles().get(i).getType() == 3) {
-                    Teacher teach = (Teacher) user.getRoles().get(i);
-                    if (positionViews != null) {
-                        String position = String.valueOf(positionName.charAt(0)).toUpperCase() + positionName.substring(1, positionName.length())
-                                + " - " + teach.getSectionName();
-                        positionViews[i].setText(position);
-                    }
-                }
-            }
-
-        }else{
-            Toast.makeText(getActivity(), "Ошибка при загрузни пользователя!", Toast.LENGTH_SHORT).show();
-        }
         return rootView;
+    }
+
+
+    @Override
+    public void onTaskComplete(AsyncTask task, Object... o) {
+        try {
+            user = (User) task.get();
+
+            if(user != null) {
+                mailTextView.setText(user.getEmail());
+                userNameView.setText(user.getName());
+                if (user.getPhotoBitmap() != null) {
+                    bitmap = user.getPhotoBitmap();
+                    userImageView.setImageBitmap(this.bitmap);
+                } else {
+                    userImageView.setImageDrawable(Common.getDrawable(user));
+                }
+
+                int roleCount = user.getRoles().size();
+                TextView[] positionViews = new TextView[roleCount];
+                ;
+                positionViews[0] = userPositionTextView;
+                if (roleCount > 1) {
+                    positionViews[1] = userPositionTextView2;
+                    userIconTextView2.setVisibility(View.VISIBLE);
+                    userPositionTextView2.setVisibility(View.VISIBLE);
+                }
+
+                for (int i = 0; i < roleCount; i++) {
+                    String positionName = user.getRoles().get(i).getPositionName();
+                    if (user.getRoles().get(i).getType() == 4) {
+                        if (positionViews != null) {
+                            positionViews[i].setText("Студент - " + positionName);
+                        }
+                    } else if (user.getRoles().get(i).getType() == 3) {
+                        Teacher teach = (Teacher) user.getRoles().get(i);
+                        if (positionViews != null) {
+                            String position = String.valueOf(positionName.charAt(0)).toUpperCase() + positionName.substring(1, positionName.length())
+                                    + " - " + teach.getSectionName();
+                            positionViews[i].setText(position);
+                        }
+                    }
+                }
+
+            }else{
+                Toast.makeText(getActivity(), "Ошибка при загрузни пользователя!", Toast.LENGTH_SHORT).show();
+            }
+
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
     }
 
     class HandleMenuPress extends AsyncTask <Object, Void, Void> {

@@ -21,6 +21,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.javatuples.Pair;
 import org.ucomplex.ucomplex.Activities.PersonActivity;
 import org.ucomplex.ucomplex.Activities.Tasks.FetchUsersTask;
 import org.ucomplex.ucomplex.Activities.UsersActivity;
@@ -133,7 +134,14 @@ public class UsersFragment extends ListFragment {
         User item = mItems.get(position);
         Intent intent = new Intent(getContext(), PersonActivity.class);
         final Bundle extra = new Bundle();
-        extra.putString("person", String.valueOf(item.getId()));
+        String idOrPerson = "";
+        if(usersType==3){
+            idOrPerson = String.valueOf(item.getId());
+        }else{
+            idOrPerson = String.valueOf(item.getPerson());
+        }
+
+        extra.putString("person", idOrPerson);
         intent.putExtras(extra);
         startActivity(intent);
     }
