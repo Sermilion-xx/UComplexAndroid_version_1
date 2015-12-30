@@ -30,12 +30,13 @@ public class EventsActivity extends AppCompatActivity implements OnTaskCompleteL
     ArrayList eventsArray = null;
     Context contex = this;
     FetchUserEventsTask mEventsTask = null;
-    final String[] TITLES = { "События", "Анкетирование", "Дисциплины", "Материалы", "Справки","Пользователи","Библиотека","Календарь","Настройки", "Выход" };
+    final String[] TITLES = { "События", "Анкетирование", "Дисциплины", "Материалы", "Справки","Пользователи","Сообщения","Библиотека","Календарь","Настройки", "Выход" };
     final int[] ICONS = { R.drawable.ic_menu_event,
             R.drawable.ic_menu_questionare,
             R.drawable.ic_menu_materials,
             R.drawable.ic_menu_subject,
             R.drawable.ic_menu_materials,
+            R.drawable.ic_menu_users,
             R.drawable.ic_menu_users,
             R.drawable.ic_menu_materials,
             R.drawable.ic_menu_calendar,

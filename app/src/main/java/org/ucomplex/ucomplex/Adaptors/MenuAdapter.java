@@ -16,6 +16,7 @@ import org.ucomplex.ucomplex.Activities.CalendarActivity;
 import org.ucomplex.ucomplex.Activities.EventsActivity;
 import org.ucomplex.ucomplex.Activities.LibraryActivity;
 import org.ucomplex.ucomplex.Activities.LoginActivity;
+import org.ucomplex.ucomplex.Activities.MessagesListActivity;
 import org.ucomplex.ucomplex.Activities.MyFilesActivity;
 import org.ucomplex.ucomplex.Activities.ReferenceActivity;
 import org.ucomplex.ucomplex.Activities.SettingsActivity;
@@ -95,12 +96,15 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder>  {
                 Intent intent = new Intent(contxt, UsersActivity.class);
                 contxt.startActivity(intent);
             }else if(getAdapterPosition()==7){
-                Intent intent = new Intent(contxt, LibraryActivity.class);
+                Intent intent = new Intent(contxt, MessagesListActivity.class);
                 contxt.startActivity(intent);
             }else if(getAdapterPosition()==8){
-                Intent intent = new Intent(contxt, CalendarActivity.class);
+                Intent intent = new Intent(contxt, LibraryActivity.class);
                 contxt.startActivity(intent);
             }else if(getAdapterPosition()==9){
+                Intent intent = new Intent(contxt, CalendarActivity.class);
+                contxt.startActivity(intent);
+            }else if(getAdapterPosition()==10){
                 Intent intent = new Intent(contxt, SettingsActivity.class);
                 contxt.startActivity(intent);
             }

@@ -18,7 +18,7 @@ import java.util.ArrayList;
 //id, name, edition, quantity, year
 public class LibraryAdapter extends ArrayAdapter<Quintet<String,String,String,String, String>> {
 
-    private final Context context;
+
     private ArrayList<Quintet<String, String, String, String, String>> values;
 
     private LayoutInflater inflater;
@@ -30,7 +30,6 @@ public class LibraryAdapter extends ArrayAdapter<Quintet<String,String,String,St
 
     public LibraryAdapter(Context context, ArrayList<Quintet<String, String, String, String, String>> values, int type) {
         super(context, -1, values);
-        this.context = context;
         this.values = values;
         this.type = type;
     }
