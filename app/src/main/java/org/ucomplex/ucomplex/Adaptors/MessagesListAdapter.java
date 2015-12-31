@@ -130,6 +130,8 @@ public class MessagesListAdapter extends ArrayAdapter<Dialog> {
 
     }
 
+
+
     public Drawable getDrawable(int position){
         final int colorsCount = 16;
         final int number = (getItem(position).getFrom() <= colorsCount) ? getItem(position).getFrom() : getItem(position).getFrom() % colorsCount;

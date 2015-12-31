@@ -1,10 +1,13 @@
 package org.ucomplex.ucomplex.Activities;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -41,7 +44,6 @@ public class MessagesListActivity extends AppCompatActivity implements OnTaskCom
                 onBackPressed();
                 return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -56,6 +58,15 @@ public class MessagesListActivity extends AppCompatActivity implements OnTaskCom
                 dialogs = (ArrayList<Dialog>) task.get();
                 MessagesListAdapter messagesListAdapter = new MessagesListAdapter(this,dialogs);
                 ListView listView = (ListView) findViewById(R.id.messages_listview);
+                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position,
+                                            long id) {
+                        Intent intent = new Intent(MessagesListActivity.this, MessagesActivity.class);
+                        intent.putExtra("companion", String.valueOf(dialogs.get(position).getCompanion()));
+                        startActivity(intent);
+                    }
+                });
                 listView.setAdapter(messagesListAdapter);
             } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();

@@ -24,6 +24,7 @@ public class MyServices {
     public static String lang_version;
     public static String X_UVERSION;
     public static int usersDataChanged=-1;
+    public static String messageCompanionName = "-";
 
     public static String getLoginDataFromPref(Context mContext){
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(mContext);

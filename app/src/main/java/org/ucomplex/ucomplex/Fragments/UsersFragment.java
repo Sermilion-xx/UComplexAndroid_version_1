@@ -129,22 +129,7 @@ public class UsersFragment extends ListFragment {
     }
 
 
-    @Override
-    public void onListItemClick(ListView l, View v, int position, long id) {
-        User item = mItems.get(position);
-        Intent intent = new Intent(getContext(), PersonActivity.class);
-        final Bundle extra = new Bundle();
-        String idOrPerson = "";
-        if(usersType==3){
-            idOrPerson = String.valueOf(item.getId());
-        }else{
-            idOrPerson = String.valueOf(item.getPerson());
-        }
 
-        extra.putString("person", idOrPerson);
-        intent.putExtras(extra);
-        startActivity(intent);
-    }
 
 
     private class ImageAdapter extends BaseAdapter {
