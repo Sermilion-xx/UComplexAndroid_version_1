@@ -1,9 +1,11 @@
 package org.ucomplex.ucomplex.Model.StudyStructure;
 
+import java.io.Serializable;
+
 /**
  * Created by Sermilion on 05/12/2015.
  */
-public class Department {
+public class Department implements Serializable{
     private int id;
     private String name;
     private String postcode;

@@ -2,10 +2,12 @@ package org.ucomplex.ucomplex.Model.StudyStructure;
 
 import org.ucomplex.ucomplex.Model.Users.User;
 
+import java.io.Serializable;
+
 /**
  * Created by Sermilion on 05/12/2015.
  */
-public class File {
+public class File implements Serializable{
     private String id;
     private User owner;
     private String name;

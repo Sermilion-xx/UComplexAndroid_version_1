@@ -187,18 +187,17 @@ public class CourseInfoFragment extends Fragment implements OnTaskCompleteListen
         attendanceView = (TextView) rootView.findViewById(R.id.course_info_course_attendance_value);
 
         Bundle bundle = this.getArguments();
-        if(bundle!=null){
+        if(bundle!=null || courseData!=null){
             if(bundle.containsKey("courseData")){
                 courseData = (Course) bundle.getSerializable("courseData");
                 int post = courseData.getTeacher(0).getPost();
                 SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
                 String langStr = prefs.getString("lang", "");
-                String postStr = "";
+
                 try {
                     JSONObject langJsonObj = new JSONObject(langStr);
                     JSONObject langJson = langJsonObj.getJSONObject("lang");
-                    JSONObject postJson = langJson.getJSONObject("post");
-                    postStr = postJson.getString(String.valueOf(post));
+//                    JSONObject postJson = langJson.getJSONObject("post");
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -230,15 +229,53 @@ public class CourseInfoFragment extends Fragment implements OnTaskCompleteListen
                 if (person == -1 || person == -1) {
                     person = courseData.getTeacher(0).getId();
                 }
-
                 if (user == null) {
                     //fetch data about person
                     FetchPersonTask fetchPersonTask = new FetchPersonTask(getActivity(), this);
                     fetchPersonTask.setPerson(String.valueOf(person));
                     fetchPersonTask.setmContext(mContext);
                     fetchPersonTask.setupTask();
+                }else{
+                    fillUserInfo();
                 }
         return rootView;
+    }
+
+    private void fillUserInfo(){
+        mailTextView.setText(user.getEmail());
+        userNameView.setText(user.getName());
+        if (user.getPhotoBitmap() != null) {
+            bitmap = user.getPhotoBitmap();
+            userImageView.setImageBitmap(this.bitmap);
+        } else {
+            userImageView.setImageDrawable(Common.getDrawable(user));
+        }
+
+        int roleCount = user.getRoles().size();
+        TextView[] positionViews = new TextView[roleCount];
+        ;
+        positionViews[0] = userPositionTextView;
+        if (roleCount > 1) {
+            positionViews[1] = userPositionTextView2;
+            userIconTextView2.setVisibility(View.VISIBLE);
+            userPositionTextView2.setVisibility(View.VISIBLE);
+        }
+
+        for (int i = 0; i < roleCount; i++) {
+            String positionName = user.getRoles().get(i).getPositionName();
+            if (user.getRoles().get(i).getType() == 4) {
+                if (positionViews != null) {
+                    positionViews[i].setText("Студент - " + positionName);
+                }
+            } else if (user.getRoles().get(i).getType() == 3) {
+                Teacher teach = (Teacher) user.getRoles().get(i);
+                if (positionViews != null) {
+                    String position = String.valueOf(positionName.charAt(0)).toUpperCase() + positionName.substring(1, positionName.length())
+                            + " - " + teach.getSectionName();
+                    positionViews[i].setText(position);
+                }
+            }
+        }
     }
 
 
@@ -248,41 +285,7 @@ public class CourseInfoFragment extends Fragment implements OnTaskCompleteListen
             user = (User) task.get();
 
             if(user != null) {
-                mailTextView.setText(user.getEmail());
-                userNameView.setText(user.getName());
-                if (user.getPhotoBitmap() != null) {
-                    bitmap = user.getPhotoBitmap();
-                    userImageView.setImageBitmap(this.bitmap);
-                } else {
-                    userImageView.setImageDrawable(Common.getDrawable(user));
-                }
-
-                int roleCount = user.getRoles().size();
-                TextView[] positionViews = new TextView[roleCount];
-                ;
-                positionViews[0] = userPositionTextView;
-                if (roleCount > 1) {
-                    positionViews[1] = userPositionTextView2;
-                    userIconTextView2.setVisibility(View.VISIBLE);
-                    userPositionTextView2.setVisibility(View.VISIBLE);
-                }
-
-                for (int i = 0; i < roleCount; i++) {
-                    String positionName = user.getRoles().get(i).getPositionName();
-                    if (user.getRoles().get(i).getType() == 4) {
-                        if (positionViews != null) {
-                            positionViews[i].setText("Студент - " + positionName);
-                        }
-                    } else if (user.getRoles().get(i).getType() == 3) {
-                        Teacher teach = (Teacher) user.getRoles().get(i);
-                        if (positionViews != null) {
-                            String position = String.valueOf(positionName.charAt(0)).toUpperCase() + positionName.substring(1, positionName.length())
-                                    + " - " + teach.getSectionName();
-                            positionViews[i].setText(position);
-                        }
-                    }
-                }
-
+                fillUserInfo();
             }else{
                 Toast.makeText(getActivity(), "Ошибка при загрузни пользователя!", Toast.LENGTH_SHORT).show();
             }

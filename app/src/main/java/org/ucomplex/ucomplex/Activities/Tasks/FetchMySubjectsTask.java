@@ -112,8 +112,7 @@ public class FetchMySubjectsTask extends AsyncTask<Void, Void, Course> {
                 JSONObject jsonFiles = filesArray.getJSONObject(i);
                 JSONObject teacher = jsonFiles.getJSONObject("teacher");
 
-                if (teacher.getString("id") != null) {
-
+                if (!teacher.isNull("id")) {
                     int teacherId = teacher.getInt("id");
 
                     JSONArray filesArrayObject = jsonFiles.getJSONArray("files");
@@ -146,7 +145,6 @@ public class FetchMySubjectsTask extends AsyncTask<Void, Void, Course> {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-
 //used
                     Progress progress = new Progress();
                     progress.setType(progressArray.getInt("type"));

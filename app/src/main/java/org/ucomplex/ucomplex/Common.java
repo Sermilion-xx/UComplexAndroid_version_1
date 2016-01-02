@@ -1,6 +1,10 @@
 package org.ucomplex.ucomplex;
 
 import android.annotation.TargetApi;
+import android.app.Activity;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -10,6 +14,7 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Build;
 import android.util.Base64;
 import android.view.LayoutInflater;
@@ -38,6 +43,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -146,6 +152,24 @@ public class Common {
             // Log exception
             return null;
         }
+    }
+
+    public static void getPdfFromURL(String address, String id, String type, Activity context) {
+            PackageManager packageManager = context.getPackageManager();
+            Intent intent = new Intent(Intent.ACTION_VIEW)
+                    .setType("application/pdf");
+            List<ResolveInfo> list = packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
+            final String UC_BASE_URL = "https://chgu.org/files/users/" +id+"/"+ address +"."+ type;
+            if (list.size() > 0) {
+                // Happy days a PDF reader exists
+                context.startActivity(intent);
+            } else {
+                // No PDF reader, ask the user to download one first
+                // or just open it in their browser like this
+                intent = new Intent(Intent.ACTION_VIEW)
+                        .setData(Uri.parse(UC_BASE_URL));
+                context.startActivity(intent);
+            }
     }
 
     public static Drawable getDrawable(User user){

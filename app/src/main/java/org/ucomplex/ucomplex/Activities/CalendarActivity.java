@@ -47,7 +47,6 @@ public class CalendarActivity extends AppCompatActivity implements AdapterView.O
     ArrayList<String> options = new ArrayList<>();
     ArrayList<String> keys;
     Spinner spinner;
-    FetchCalendarTask fetchCalendarTask;
     private AsyncTaskManager mAsyncTaskManager;
 
 

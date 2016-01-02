@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 
@@ -39,11 +40,17 @@ public class CourseMaterialsAdapter extends ArrayAdapter<File> {
             viewHolder.personIconTextView = (TextView) convertView.findViewById(R.id.course_material_listview_item_person_icon);
             viewHolder.timeIconTextView = (TextView) convertView.findViewById(R.id.course_material_listview_item_time_icon);
             viewHolder.timeTextView = (TextView) convertView.findViewById(R.id.course_material_listview_item_time);
+            viewHolder.imageView = (ImageView) convertView.findViewById(R.id.course_material_listview_item_image);
             convertView.setTag(viewHolder);
         }else{
             viewHolder = (ViewHolder) convertView.getTag();
         }
         File file = getItem(position);
+        if(file.getType().equals("f")){
+            viewHolder.imageView.setImageResource(R.drawable.ic_folder);
+        }else{
+            viewHolder.imageView.setImageResource(R.mipmap.ic_file);
+        }
         viewHolder.textView1.setText(file.getName());
         viewHolder.textView2.setText(file.getOwner().getName());
         viewHolder.weightIconTextView.setTypeface(Typeface.createFromAsset(getContext().getAssets(), "fonts/fontawesome-webfont.ttf"));
@@ -59,6 +66,7 @@ public class CourseMaterialsAdapter extends ArrayAdapter<File> {
     }
 
     public static class ViewHolder {
+        ImageView imageView;
         TextView textView1;
         TextView textView2;
         TextView weightTextView;
