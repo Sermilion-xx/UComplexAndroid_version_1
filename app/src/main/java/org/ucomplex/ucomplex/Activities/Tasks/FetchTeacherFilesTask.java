@@ -127,8 +127,6 @@ public class FetchTeacherFilesTask extends AsyncTask<String, String, ArrayList> 
         }
     }
 
-
-
     @Override
     public void onProgress(String message) {
         // Show dialog if it wasn't shown yet or was removed on configuration (rotation) change

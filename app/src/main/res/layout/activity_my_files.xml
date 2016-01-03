@@ -31,13 +31,8 @@
         android:layout_margin="@dimen/fab_margin"
         android:src="@drawable/ic_add" />
 
-    <ListView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="57dp"
-        android:id="@+id/materials_listview"
-        android:fadingEdge="none">
+    <include layout="@layout/content_my_files" />
 
-    </ListView>
+
 
 </android.support.design.widget.CoordinatorLayout>

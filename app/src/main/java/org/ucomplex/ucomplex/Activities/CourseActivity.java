@@ -5,13 +5,11 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Toast;
 
 
@@ -26,11 +24,14 @@ import org.ucomplex.ucomplex.Model.StudyStructure.File;
 import org.ucomplex.ucomplex.R;
 
 import java.util.ArrayList;
+import java.util.Stack;
 import java.util.concurrent.ExecutionException;
 
 
 
 public class CourseActivity extends AppCompatActivity implements OnTaskCompleteListener {
+
+    Stack<ArrayList<File>> stackFiles = new Stack<>();
 
     private int gcourse;
     private String jsonData;
@@ -38,6 +39,8 @@ public class CourseActivity extends AppCompatActivity implements OnTaskCompleteL
     private Bitmap bitmap;
     ArrayList<Quartet<Integer, String, String, Integer>> feedItems;
     ArrayList<Fragment> fragmentList;
+    ArrayList<File> currentFiles;
+    int position = 0;
 
     CourseMaterialsFragment courseMaterialsFragment;
     CourseInfoFragment courseInfoFragment;
@@ -84,14 +87,20 @@ public class CourseActivity extends AppCompatActivity implements OnTaskCompleteL
         tabLayout.setupWithViewPager(viewPager);
     }
 
-
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                onBackPressed();
-                return true;
+                ArrayList files;
+                if(stackFiles.size()>0){
+                    files = stackFiles.pop();
+                    courseMaterialsFragment.setFiles(files);
+                    adapter.notifyDataSetChanged();
+                    return true;
+                } else {
+                    onBackPressed();
+                    return true;
+                }
         }
         return super.onOptionsItemSelected(item);
     }
@@ -107,9 +116,13 @@ public class CourseActivity extends AppCompatActivity implements OnTaskCompleteL
         cmBundel.putSerializable("courseData",coursedata);
         courseInfoFragment.setArguments(cmBundel);
 
+
+        stackFiles.push(coursedata.getFiles());
         courseMaterialsFragment = new CourseMaterialsFragment();
+        courseMaterialsFragment.setMyFiles(false);
         courseMaterialsFragment.setmContext(this);
-        courseMaterialsFragment.setFiles(coursedata.getFiles());
+        courseMaterialsFragment.setFiles(stackFiles.peek());
+
 
         calendarBeltFragment = new CalendarBeltFragment();
         calendarBeltFragment.setGcourse(this.gcourse);
@@ -120,12 +133,12 @@ public class CourseActivity extends AppCompatActivity implements OnTaskCompleteL
         fragmentList.add(courseMaterialsFragment);
         fragmentList.add(calendarBeltFragment);
 
-
         adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFragment(courseInfoFragment, "Дисциплина");
         adapter.addFragment(courseMaterialsFragment, "Материалы");
         adapter.addFragment(calendarBeltFragment, "Лента");
         viewPager.setAdapter(adapter);
+
     }
 
     @Override
@@ -135,10 +148,15 @@ public class CourseActivity extends AppCompatActivity implements OnTaskCompleteL
             Toast.makeText(this, "Загрузка отменена", Toast.LENGTH_LONG)
                     .show();
         } else {
-            ArrayList<File> file = new ArrayList();
             try {
-                file = (ArrayList<File>) task.get();
-                courseMaterialsFragment.setFiles(file);
+                if(stackFiles.size()==0){
+                    stackFiles.push((ArrayList<File>) task.get());
+                    courseMaterialsFragment.setFiles(stackFiles.peek());
+                }else{
+                    stackFiles.push((ArrayList<File>) task.get());
+                    courseMaterialsFragment.setFiles(stackFiles.pop());
+                }
+
                 adapter.notifyDataSetChanged();
             } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();

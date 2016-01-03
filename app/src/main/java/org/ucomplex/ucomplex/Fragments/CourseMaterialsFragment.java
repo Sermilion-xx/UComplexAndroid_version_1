@@ -1,5 +1,6 @@
 package org.ucomplex.ucomplex.Fragments;
 
+import android.app.Activity;
 import android.app.DownloadManager;
 import android.content.Context;
 import android.net.Uri;
@@ -8,23 +9,27 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.ListFragment;
 import android.view.View;
-import android.webkit.WebView;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import org.ucomplex.ucomplex.Activities.CourseActivity;
+import org.ucomplex.ucomplex.Activities.Tasks.FetchMyFilesTask;
 import org.ucomplex.ucomplex.Activities.Tasks.FetchTeacherFilesTask;
+import org.ucomplex.ucomplex.Activities.Tasks.OnTaskCompleteListener;
 import org.ucomplex.ucomplex.Adaptors.CourseMaterialsAdapter;
 import org.ucomplex.ucomplex.Common;
 import org.ucomplex.ucomplex.Model.StudyStructure.File;
-import org.ucomplex.ucomplex.Model.Users.User;
 
 import java.util.ArrayList;
 
 public class CourseMaterialsFragment extends ListFragment{
 
     ArrayList<File> mItems;
-    CourseActivity mContext;
+    Activity mContext;
+    boolean myFiles = false;
+
+    public void setMyFiles(boolean myFiles) {
+        this.myFiles = myFiles;
+    }
 
     public CourseMaterialsFragment() {
         // Required empty public constructor
@@ -60,52 +65,34 @@ public class CourseMaterialsFragment extends ListFragment{
         // retrieve theListView item
         File item = mItems.get(position);
         if(item.getType().equals("f")){
-            FetchTeacherFilesTask fetchTeacherFilesTask = new FetchTeacherFilesTask(mContext, mContext);
-            fetchTeacherFilesTask.setOwner(item.getOwner());
-            fetchTeacherFilesTask.setupTask(item.getAddress());
-        }else{
-//        WebView mWebView=new WebView(getActivity());
-//        mWebView.getSettings().setJavaScriptEnabled(true);
-//        mWebView.loadUrl("https://ucomplex.org/files/users/" +item.getOwner().getId()+"/"+ item.getAddress() +"."+ item.getType());
-//        getActivity().setContentView(mWebView);
+            if(!myFiles){
+                FetchTeacherFilesTask fetchTeacherFilesTask = new FetchTeacherFilesTask(mContext, (OnTaskCompleteListener) mContext);
+                fetchTeacherFilesTask.setOwner(item.getOwner());
+                fetchTeacherFilesTask.setupTask(item.getAddress());
+            }else{
+                FetchMyFilesTask fetchMyFilesTask = new FetchMyFilesTask(mContext, (OnTaskCompleteListener) mContext);
+                fetchMyFilesTask.setupTask(item.getAddress());
+            }
 
-            if(isDownloadManagerAvailable(getContext())) {
+        }else{
+            if(Common.isDownloadManagerAvailable(getContext())) {
                 final String UC_BASE_URL = "https://chgu.org/files/users/" +String.valueOf(item.getOwner().getId())+"/"+ item.getAddress() +"."+ item.getType();
                 DownloadManager.Request request = new DownloadManager.Request(Uri.parse(UC_BASE_URL));
                 request.setDescription("Загрузка");
                 request.setTitle(item.getName());
-// in order for this if to run, you must use the android 3.2 to compile your app
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
                     request.allowScanningByMediaScanner();
                     request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
                 }
                 request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, item.getName());
-
-// get download service and enqueue file
                 DownloadManager manager = (DownloadManager) getContext().getSystemService(Context.DOWNLOAD_SERVICE);
                 manager.enqueue(request);
                 Toast.makeText(getActivity(), "Идет загрузка...", Toast.LENGTH_SHORT).show();
             }
-
-//            Common.getPdfFromURL(item.getAddress(), String.valueOf(item.getOwner().getId()), item.getType(), getActivity());
-            // do something
-
         }
-
     }
 
-    public static boolean isDownloadManagerAvailable(Context context) {
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
-            return true;
-        }
-        return false;
-    }
-
-
-
-
-    public void setmContext(CourseActivity mContext) {
+    public void setmContext(Activity mContext) {
         this.mContext = mContext;
     }
 }

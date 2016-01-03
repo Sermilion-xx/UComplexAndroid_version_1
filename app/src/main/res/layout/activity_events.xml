@@ -8,18 +8,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-
-
-
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/container"
-
         tools:context="com.hmkcode.android.recyclerview.MainActivity" >
-
-
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recyclerView"
@@ -34,8 +28,6 @@
             layout="@layout/events_tool_bar">
         </include>
     </RelativeLayout>
-
-
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/RecyclerView"

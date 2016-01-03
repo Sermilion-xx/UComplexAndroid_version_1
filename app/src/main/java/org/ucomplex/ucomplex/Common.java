@@ -2,6 +2,7 @@ package org.ucomplex.ucomplex;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -71,7 +72,7 @@ public class Common {
         String dataUrlParameters = "";
         try {
             if(postDataParams.length>0){
-                    dataUrlParameters = getPostDataString(postDataParams[0]);
+                dataUrlParameters = getPostDataString(postDataParams[0]);
             }
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
@@ -280,6 +281,14 @@ public class Common {
             keys.add(key);
         }
         return keys;
+    }
+
+    public static boolean isDownloadManagerAvailable(Context context) {
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
+            return true;
+        }
+        return false;
     }
 
 

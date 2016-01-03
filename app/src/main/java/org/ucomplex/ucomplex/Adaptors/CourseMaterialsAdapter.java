@@ -46,7 +46,7 @@ public class CourseMaterialsAdapter extends ArrayAdapter<File> {
             viewHolder = (ViewHolder) convertView.getTag();
         }
         File file = getItem(position);
-        if(file.getType().equals("f")){
+        if(file.getType().equals("f") ){
             viewHolder.imageView.setImageResource(R.drawable.ic_folder);
         }else{
             viewHolder.imageView.setImageResource(R.mipmap.ic_file);

@@ -74,7 +74,7 @@ public class FetchUserLoginTask extends AsyncTask<Void, Void, Student> {
         if (params.length == 0) {
             return null;
         }
-        String urlString = "http://you.com.ru/auth?mobile=1";
+        String urlString = "http://chgu.org/auth?mobile=1";
         jsonData = Common.httpPost(urlString, mLogin+":"+mPassword);
 
         if(jsonData!=null) {

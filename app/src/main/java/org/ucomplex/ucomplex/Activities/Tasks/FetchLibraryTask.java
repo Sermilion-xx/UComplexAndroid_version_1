@@ -46,13 +46,6 @@ public class FetchLibraryTask extends AsyncTask<Integer, String, ArrayList> impl
         this.execute(params);
     }
 
-    public Activity getmContext() {
-        return mContext;
-    }
-
-    public void setmContext(Activity mContext) {
-        this.mContext = mContext;
-    }
 
     @Override
     protected ArrayList doInBackground(Integer... params) {

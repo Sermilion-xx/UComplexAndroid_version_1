@@ -49,7 +49,7 @@ public class LibraryActivity extends AppCompatActivity implements OnTaskComplete
     public void onTaskComplete(AsyncTask task, Object ...data) {
         if (task.isCancelled()) {
             // Report about cancel
-            Toast.makeText(this, "Cancelled Task", Toast.LENGTH_LONG)
+            Toast.makeText(this, "Загрузка отменена", Toast.LENGTH_LONG)
                     .show();
         } else {
             try {
