@@ -65,13 +65,10 @@ public class FetchPersonTask extends AsyncTask<Void, String, User> implements IP
     protected User doInBackground(Void... params) {
         String urlString = "http://you.com.ru/user/person/"+this.person +"?json";
         String jsonData = Common.httpPost(urlString, MyServices.getLoginDataFromPref(mContext));
-        publishProgress("50%");
-
         if(jsonData.length()>2){
             user = getUserDataFromJson(jsonData);
             if(user.getCode()!=null){
                 Bitmap photoBitmap = Common.getBitmapFromURL(user.getCode());
-                publishProgress("100%");
                 user.setPhotoBitmap(photoBitmap);
             }
         }

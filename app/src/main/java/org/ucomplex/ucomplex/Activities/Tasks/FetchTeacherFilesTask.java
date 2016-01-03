@@ -20,7 +20,7 @@ import java.util.HashMap;
 /**
  * Created by Sermilion on 02/01/2016.
  */
-public class FetchTeacherFilesTask extends AsyncTask<String, String, ArrayList> implements IProgressTracker, DialogInterface.OnCancelListener {
+public class FetchTeacherFilesTask extends AsyncTask<String, String, ArrayList> implements  DialogInterface.OnCancelListener {
 
     Activity mContext;
     CourseActivity caller;
@@ -48,7 +48,7 @@ public class FetchTeacherFilesTask extends AsyncTask<String, String, ArrayList> 
     }
 
     public void setupTask(String ... params) {
-        this.setProgressTracker(this);
+//        this.setProgressTracker(this);
         this.execute(params);
     }
 
@@ -65,11 +65,7 @@ public class FetchTeacherFilesTask extends AsyncTask<String, String, ArrayList> 
     @Override
     protected void onPostExecute(ArrayList fileArrayList) {
         super.onPostExecute(fileArrayList);
-        if (mProgressTracker != null) {
-            mProgressTracker.onComplete();
-        }
-        // Detach from progress tracker
-        mProgressTracker = null;
+        mTaskCompleteListener.onTaskComplete(this);
     }
 
     private ArrayList<File> getFileDataFromJson(String jsonData) {
@@ -95,62 +91,12 @@ public class FetchTeacherFilesTask extends AsyncTask<String, String, ArrayList> 
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        publishProgress("100%");
         return fileArrayList;
-    }
-
-    /* UI Thread */
-    @Override
-    protected void onCancelled() {
-        // Detach from progress tracker
-        mProgressTracker = null;
-    }
-
-    /* UI Thread */
-    @Override
-    protected void onProgressUpdate(String... values) {
-        // Update progress message
-        mProgressMessage = values[0];
-        // And send it to progress tracker
-        if (mProgressTracker != null) {
-            mProgressTracker.onProgress(mProgressMessage);
-        }
-    }
-
-    public void setProgressTracker(IProgressTracker progressTracker) {
-        mProgressTracker = progressTracker;
-        if (mProgressTracker != null) {
-            mProgressTracker.onProgress("Загружаем календарь");
-            if (fileArrayList != null) {
-                mProgressTracker.onComplete();
-            }
-        }
-    }
-
-    @Override
-    public void onProgress(String message) {
-        // Show dialog if it wasn't shown yet or was removed on configuration (rotation) change
-        if (!mProgressDialog.isShowing()) {
-            mProgressDialog.show();
-        }
-        // Show current message in progress dialog
-        mProgressDialog.setMessage(message);
     }
 
     @Override
     public void onCancel(DialogInterface dialog) {
-        // Cancel task
         this.cancel(true);
-        // Notify activity about completion
         mTaskCompleteListener.onTaskComplete(this);
-    }
-
-    @Override
-    public void onComplete() {
-        // Close progress dialog
-        // Notify activity about completion
-        mTaskCompleteListener.onTaskComplete(this);
-        mProgressDialog.dismiss();
-        // Reset task
     }
 }

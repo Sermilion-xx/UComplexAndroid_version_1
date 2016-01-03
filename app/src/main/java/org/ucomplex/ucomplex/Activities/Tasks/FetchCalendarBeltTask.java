@@ -1,12 +1,14 @@
 package org.ucomplex.ucomplex.Activities.Tasks;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.os.AsyncTask;
 
 import org.javatuples.Quartet;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.ucomplex.ucomplex.Activities.CourseActivity;
 import org.ucomplex.ucomplex.Common;
 import org.ucomplex.ucomplex.MyServices;
 
@@ -20,20 +22,19 @@ import java.util.HashMap;
 /**
  * Created by Sermilion on 07/12/2015.
  */
-public class FetchCalendarBeltTask extends AsyncTask<Integer, Void, ArrayList<Quartet<Integer, String, String, Integer>>> {
+public class FetchCalendarBeltTask extends AsyncTask<Integer, Void, ArrayList<Quartet<Integer, String, String, Integer>>> implements DialogInterface.OnCancelListener{
 
     Activity mContext;
+    private final OnTaskCompleteListener mTaskCompleteListener;
+    ArrayList<Quartet<Integer, String, String, Integer>> feedItems;
 
-    public FetchCalendarBeltTask(){
-
+    public FetchCalendarBeltTask(Activity context, OnTaskCompleteListener taskCompleteListener) {
+        this.mContext = context;
+        this.mTaskCompleteListener = taskCompleteListener;
     }
 
-    public Activity getmContext() {
-        return mContext;
-    }
-
-    public void setmContext(Activity mContext) {
-        this.mContext = mContext;
+    public void setupTask(Integer ... params) {
+        this.execute(params);
     }
 
     @Override
@@ -49,7 +50,7 @@ public class FetchCalendarBeltTask extends AsyncTask<Integer, Void, ArrayList<Qu
 
     private ArrayList<Quartet<Integer, String, String, Integer>> getCalendarBeltDataFromJson(String jsonData) {
         JSONObject courseJson = null;
-        ArrayList<Quartet<Integer, String, String, Integer>> feedItem = new ArrayList<>();
+        feedItems = new ArrayList<>();
         try {
             courseJson = new JSONObject(jsonData);
             JSONObject teachers = courseJson.getJSONObject("teachers");
@@ -65,12 +66,25 @@ public class FetchCalendarBeltTask extends AsyncTask<Integer, Void, ArrayList<Qu
                 String time = sdf.format(date);
                 String teacherName = teachersMap.get(marksItemJson.getString("teacher"));
                 Quartet<Integer, String, String, Integer>markItem = new Quartet<>(mark, teacherName,time, marksItemJson.getInt("type"));
-                feedItem.add(markItem);
+                feedItems.add(markItem);
             }
-            return feedItem;
+            return feedItems;
         } catch (JSONException e) {
             e.printStackTrace();
         }
         return null;
     }
+
+    @Override
+    public void onCancel(DialogInterface dialog) {
+        this.cancel(true);
+        mTaskCompleteListener.onTaskComplete(this);
+    }
+
+    @Override
+    protected void onPostExecute(ArrayList fileArrayList) {
+        mTaskCompleteListener.onTaskComplete(this);
+    }
+
+
 }

@@ -1,6 +1,8 @@
 package org.ucomplex.ucomplex.Activities.Tasks;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
@@ -10,11 +12,11 @@ import com.google.gson.Gson;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.ucomplex.ucomplex.Activities.CourseActivity;
 import org.ucomplex.ucomplex.Common;
 import org.ucomplex.ucomplex.Model.StudyStructure.Department;
 import org.ucomplex.ucomplex.Model.StudyStructure.File;
 import org.ucomplex.ucomplex.Model.StudyStructure.Progress;
-import org.ucomplex.ucomplex.Model.Role;
 import org.ucomplex.ucomplex.Model.StudyStructure.Course;
 import org.ucomplex.ucomplex.Model.Users.Student;
 import org.ucomplex.ucomplex.Model.Users.Teacher;
@@ -26,14 +28,21 @@ import java.util.HashMap;
 /**
  * Created by Sermilion on 05/12/2015.
  */
-public class FetchMySubjectsTask extends AsyncTask<Void, Void, Course> {
+public class FetchMySubjectsTask extends AsyncTask<Void, String, Course> implements IProgressTracker, DialogInterface.OnCancelListener {
     //
     Activity mContext;
     String jsonData;
     int gcourse;
+    private IProgressTracker mProgressTracker;
+    private final OnTaskCompleteListener mTaskCompleteListener;
+    private String mProgressMessage;
+    CourseActivity caller;
+    Course course;
 
-    public FetchMySubjectsTask(){
-
+    public FetchMySubjectsTask(Activity context, OnTaskCompleteListener taskCompleteListener) {
+        this.mContext = context;
+        this.caller = (CourseActivity) mContext;
+        this.mTaskCompleteListener = taskCompleteListener;
     }
 
     public Activity getmContext() {
@@ -52,12 +61,15 @@ public class FetchMySubjectsTask extends AsyncTask<Void, Void, Course> {
         this.gcourse = gcourse;
     }
 
+    public void setupTask(Void ... params) {
+//        this.setProgressTracker(this);
+        this.execute(params);
+    }
 
     private Course getCourseDataFromJson(String jsonData){
-        ArrayList<Role> userRoles = new ArrayList<>();
         JSONObject courseJson = null;
         try {
-            Course course = new Course();
+            course = new Course();
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
             String loggedUserStr = prefs.getString("loggedUser", "");
             Gson gson = new Gson();
@@ -189,12 +201,70 @@ public class FetchMySubjectsTask extends AsyncTask<Void, Void, Course> {
     }
 
     @Override
-    protected void onPostExecute(final Course success) {
+    protected void onPostExecute(final Course course) {
+        super.onPostExecute(course);
+        mTaskCompleteListener.onTaskComplete(this);
+//        if (mProgressTracker != null) {
+//            mProgressTracker.onComplete();
+//        }
+//        // Detach from progress tracker
+//        mProgressTracker = null;
+    }
+
+//    /* UI Thread */
+//    @Override
+//    protected void onProgressUpdate(String... values) {
+//        // Update progress message
+//        mProgressMessage = values[0];
+//        // And send it to progress tracker
+//        if (mProgressTracker != null) {
+//            mProgressTracker.onProgress(mProgressMessage);
+//        }
+//    }
+
+//    @Override
+//    public void onProgress(String message) {
+//        // Show dialog if it wasn't shown yet or was removed on configuration (rotation) change
+//        if (!mProgressDialog.isShowing()) {
+//            mProgressDialog.show();
+//        }
+//        // Show current message in progress dialog
+//        mProgressDialog.setMessage(message);
+//    }
+
+    @Override
+    public void onProgress(String message) {
 
     }
 
-    public interface AsyncListener {
-        public void doStuff( Course obj );
+    @Override
+    public void onComplete() {
+        mTaskCompleteListener.onTaskComplete(this);
+    }
+
+    @Override
+    protected void onCancelled() {
+        // Detach from progress tracker
+        mProgressTracker = null;
+    }
+
+
+    public void setProgressTracker(IProgressTracker progressTracker) {
+        mProgressTracker = progressTracker;
+        if (mProgressTracker != null) {
+            mProgressTracker.onProgress("Идет загрузка данных");
+            if (course != null) {
+                mProgressTracker.onComplete();
+            }
+        }
+    }
+
+    @Override
+    public void onCancel(DialogInterface dialog) {
+        // Cancel task
+        this.cancel(true);
+        // Notify activity about completion
+        mTaskCompleteListener.onTaskComplete(this);
     }
 }
 

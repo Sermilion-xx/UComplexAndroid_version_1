@@ -15,7 +15,7 @@ import java.util.ArrayList;
 public class CalendarBeltFragment extends ListFragment {
 
     private int gcourse;
-    private ArrayList<Quartet<Integer, String, String, Integer>> feedItems;
+    private ArrayList<Quartet<Integer, String, String, Integer>> feedItems = new ArrayList<>();
 
     public ArrayList<Quartet<Integer, String, String, Integer>> getFeedItems() {
         return feedItems;
@@ -40,7 +40,6 @@ public class CalendarBeltFragment extends ListFragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        // remove the dividers from the ListView of the ListFragment
         getListView().setDivider(null);
     }
 

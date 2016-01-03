@@ -27,6 +27,10 @@ public class CourseMaterialsFragment extends ListFragment{
     Activity mContext;
     boolean myFiles = false;
 
+    public boolean isMyFiles() {
+        return myFiles;
+    }
+
     public void setMyFiles(boolean myFiles) {
         this.myFiles = myFiles;
     }
