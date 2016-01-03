@@ -34,13 +34,9 @@ public class CourseActivity extends AppCompatActivity implements OnTaskCompleteL
     Stack<ArrayList<File>> stackFiles = new Stack<>();
 
     private int gcourse;
-    private String jsonData;
     private Course coursedata;
-    private Bitmap bitmap;
     ArrayList<Quartet<Integer, String, String, Integer>> feedItems;
     ArrayList<Fragment> fragmentList;
-    ArrayList<File> currentFiles;
-    int position = 0;
 
     CourseMaterialsFragment courseMaterialsFragment;
     CourseInfoFragment courseInfoFragment;
@@ -55,7 +51,6 @@ public class CourseActivity extends AppCompatActivity implements OnTaskCompleteL
 
         Bundle extras = getIntent().getExtras();
         this.gcourse = extras.getInt("gcourse", -1);
-
 
         FetchMySubjectsTask fetchMySubjectsTask = new FetchMySubjectsTask();
         fetchMySubjectsTask.setmContext(this);
@@ -106,23 +101,18 @@ public class CourseActivity extends AppCompatActivity implements OnTaskCompleteL
     }
 
     private void setupViewPager(ViewPager viewPager) {
-
-
         courseInfoFragment = new CourseInfoFragment();
         courseInfoFragment.setmContext(this);
-        courseInfoFragment.setBitmap(this.bitmap);
 
         Bundle cmBundel = new Bundle();
         cmBundel.putSerializable("courseData",coursedata);
         courseInfoFragment.setArguments(cmBundel);
-
 
         stackFiles.push(coursedata.getFiles());
         courseMaterialsFragment = new CourseMaterialsFragment();
         courseMaterialsFragment.setMyFiles(false);
         courseMaterialsFragment.setmContext(this);
         courseMaterialsFragment.setFiles(stackFiles.peek());
-
 
         calendarBeltFragment = new CalendarBeltFragment();
         calendarBeltFragment.setGcourse(this.gcourse);
@@ -138,7 +128,6 @@ public class CourseActivity extends AppCompatActivity implements OnTaskCompleteL
         adapter.addFragment(courseMaterialsFragment, "Материалы");
         adapter.addFragment(calendarBeltFragment, "Лента");
         viewPager.setAdapter(adapter);
-
     }
 
     @Override
@@ -156,7 +145,6 @@ public class CourseActivity extends AppCompatActivity implements OnTaskCompleteL
                     stackFiles.push((ArrayList<File>) task.get());
                     courseMaterialsFragment.setFiles(stackFiles.pop());
                 }
-
                 adapter.notifyDataSetChanged();
             } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();
