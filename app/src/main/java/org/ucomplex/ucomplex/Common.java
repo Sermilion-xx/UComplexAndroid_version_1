@@ -17,6 +17,7 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
+import android.support.annotation.Nullable;
 import android.util.Base64;
 import android.view.LayoutInflater;
 
@@ -65,10 +66,12 @@ public class Common {
     private LayoutInflater inflater;
     private DisplayImageOptions options;
 
+
+
+    @SafeVarargs
+    @Nullable
     @TargetApi(Build.VERSION_CODES.KITKAT)
     public static String httpPost(String urlString, String auth, HashMap<String, String>... postDataParams) {
-        final String UC_BASE_URL = urlString;
-
         String dataUrlParameters = "";
         try {
             if(postDataParams.length>0){
@@ -77,13 +80,11 @@ public class Common {
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-
         final byte[] authBytes = auth.getBytes(StandardCharsets.UTF_8);
         int flags = Base64.NO_WRAP | Base64.URL_SAFE;
         final String encoded = Base64.encodeToString(authBytes, flags);
-
         try {
-            URL url = new URL(UC_BASE_URL);
+            URL url = new URL(urlString);
             MyServices.connection = (HttpURLConnection) url.openConnection();
             MyServices.connection.setRequestMethod("POST");
             MyServices.connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
@@ -93,14 +94,11 @@ public class Common {
             MyServices.connection.setUseCaches(false);
             MyServices.connection.setDoInput(true);
             MyServices.connection.setDoOutput(true);
-
             DataOutputStream wr = new DataOutputStream(
                     MyServices.connection.getOutputStream());
-
             wr.writeBytes(dataUrlParameters);
             wr.flush();
             wr.close();
-            // Get Response
             InputStream is = MyServices.connection.getInputStream();
             BufferedReader rd = new BufferedReader(new InputStreamReader(is));
             String line;
@@ -114,7 +112,6 @@ public class Common {
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
-
             if (MyServices.connection != null) {
                 MyServices.connection.disconnect();
             }

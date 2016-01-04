@@ -133,13 +133,12 @@ public class FetchUsersTask extends AsyncTask<Integer, Void, ArrayList<User>> {
                             teacher.setAcademicDegree(userJson.getInt("academic_degree"));
                             teacher.setAcademicRank(userJson.getInt("academic_rank"));
                             teacher.setUpqualification(userJson.getString("upqualification"));
-                        teacher.setType(getTypeInt);
+                            teacher.setType(getTypeInt);
                         user = teacher;
                     }
 
                     try{
                         if(getTypeInt!=3) {
-                            user.setPerson(userJson.getInt("person"));
                             user.setOnline(userJson.getInt("online"));
                             user.setAgent(userJson.getInt("agent"));
                         }
@@ -147,6 +146,7 @@ public class FetchUsersTask extends AsyncTask<Integer, Void, ArrayList<User>> {
                         e.printStackTrace();
                     }
                     user.setId(userJson.getInt("id"));
+                    user.setPerson(userJson.getInt("person"));
                     user.setName(userJson.getString("name"));
                     user.setCode(userJson.getString("code"));
                     user.setPhoto(userJson.getInt("photo"));

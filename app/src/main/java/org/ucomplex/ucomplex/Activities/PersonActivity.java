@@ -14,7 +14,7 @@ import org.ucomplex.ucomplex.R;
 
 public class PersonActivity extends AppCompatActivity {
 
-    int userId;
+    int personId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,11 +28,11 @@ public class PersonActivity extends AppCompatActivity {
 
         final Bundle extra = getIntent().getExtras();
         if (extra != null) {
-            userId = Integer.parseInt(extra.getString("person"));
+            personId = Integer.parseInt(extra.getString("person"));
         }
 
         CourseInfoFragment courseInfoFragment = new CourseInfoFragment();
-        courseInfoFragment.setPerson(userId);
+        courseInfoFragment.setPerson(personId);
         courseInfoFragment.setmContext(this);
 
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -50,7 +50,6 @@ public class PersonActivity extends AppCompatActivity {
                 onBackPressed();
                 return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 

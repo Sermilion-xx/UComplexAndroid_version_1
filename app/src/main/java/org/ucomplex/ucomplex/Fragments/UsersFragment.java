@@ -21,7 +21,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.javatuples.Pair;
 import org.ucomplex.ucomplex.Activities.PersonActivity;
 import org.ucomplex.ucomplex.Activities.Tasks.FetchUsersTask;
 import org.ucomplex.ucomplex.Activities.UsersActivity;
@@ -50,7 +49,6 @@ public class UsersFragment extends ListFragment {
     int usersType;
     ImageAdapter imageAdapter;
     Button btnLoadExtra;
-    private boolean isViewShown = false;
 
 
     public UsersFragment() {
@@ -61,7 +59,15 @@ public class UsersFragment extends ListFragment {
         this.usersType = usersType;
     }
 
-
+    @Override
+    public void onListItemClick(ListView l, View v, int position, long id) {
+        User user = mItems.get(position);
+        Intent intent = new Intent(getContext(), PersonActivity.class);
+        Bundle extras = new Bundle();
+        extras.putString("person", String.valueOf(user.getPerson()));
+        intent.putExtras(extras);
+        startActivity(intent);
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -124,7 +130,6 @@ public class UsersFragment extends ListFragment {
         }
         imageAdapter = new ImageAdapter(getActivity(), mItems, false);
         setListAdapter(imageAdapter);
-
 
     }
 

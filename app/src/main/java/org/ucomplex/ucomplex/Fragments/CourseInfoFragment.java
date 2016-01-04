@@ -41,8 +41,6 @@ public class CourseInfoFragment extends Fragment implements OnTaskCompleteListen
     User user;
     Activity mContext;
     Bitmap bitmap;
-    //4 - student, 3 - teacher
-    int usetType;
     int person = -1;
 
 
@@ -64,21 +62,8 @@ public class CourseInfoFragment extends Fragment implements OnTaskCompleteListen
     Button friendButton;
     Button blacklistButton;
 
-
-    public int getPerson() {
-        return person;
-    }
-
     public void setPerson(int person) {
         this.person = person;
-    }
-
-    public int getUsetType() {
-        return usetType;
-    }
-
-    public void setUsetType(int usetType) {
-        this.usetType = usetType;
     }
 
     public Activity getmContext() {
@@ -93,8 +78,6 @@ public class CourseInfoFragment extends Fragment implements OnTaskCompleteListen
         this.bitmap = bitmap;
     }
 
-
-
     public void setmContext(Activity mContext) {
         this.mContext = mContext;
     }
@@ -102,7 +85,6 @@ public class CourseInfoFragment extends Fragment implements OnTaskCompleteListen
     public CourseInfoFragment() {
         // Required empty public constructor
     }
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

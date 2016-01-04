@@ -109,7 +109,7 @@ public class LoginActivity extends AppCompatActivity implements FetchUserLoginTa
      */
     private void attemptLogin() {
         if (mAuthTask != null) {
-            return;
+            mAuthTask = null;
         }
 
         // Reset errors.
@@ -152,7 +152,6 @@ public class LoginActivity extends AppCompatActivity implements FetchUserLoginTa
     }
 
     private boolean isPasswordValid(String password) {
-        //TODO: Replace this with your own logic
         return password.length() > 3;
     }
 
