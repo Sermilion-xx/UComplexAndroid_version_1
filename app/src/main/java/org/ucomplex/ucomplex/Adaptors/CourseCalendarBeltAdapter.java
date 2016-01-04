@@ -57,10 +57,7 @@ public class CourseCalendarBeltAdapter extends ArrayAdapter<Quartet<Integer, Str
         viewHolder.markImageView.setImageDrawable(drawable);
         viewHolder.timeIconttextView.setTypeface(Typeface.createFromAsset(getContext().getAssets(), "fonts/fontawesome-webfont.ttf"));
         viewHolder.timeIconttextView.setText("\uF017");
-
-
         return convertView;
-
     }
 
     private static String getLetter(int mark){
@@ -75,8 +72,6 @@ public class CourseCalendarBeltAdapter extends ArrayAdapter<Quartet<Integer, Str
             return String.valueOf(mark);
         }
     }
-
-
 
     public static class ViewHolder {
         TextView teacherNametextView;

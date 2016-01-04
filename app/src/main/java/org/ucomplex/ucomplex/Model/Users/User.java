@@ -1,7 +1,14 @@
 package org.ucomplex.ucomplex.Model.Users;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 
+import org.ucomplex.ucomplex.Model.EventParams;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -272,6 +279,29 @@ public class User implements Serializable {
 
     public void setRoles(ArrayList<User> roles) {
         this.roles = roles;
+    }
+
+    protected class BitmapDataObject implements Serializable {
+        private static final long serialVersionUID = 111696345129311948L;
+        public byte[] imageByteArray;
+    }
+
+    private void writeObject(ObjectOutputStream out) throws IOException {
+
+        if(this.photoBitmap!=null){
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            photoBitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+            BitmapDataObject bitmapDataObject = new BitmapDataObject();
+            bitmapDataObject.imageByteArray = stream.toByteArray();
+            out.writeObject(bitmapDataObject);
+        }
+    }
+
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException{
+        if(this.photoBitmap!=null) {
+            BitmapDataObject bitmapDataObject = (BitmapDataObject) in.readObject();
+            this.photoBitmap = BitmapFactory.decodeByteArray(bitmapDataObject.imageByteArray, 0, bitmapDataObject.imageByteArray.length);
+        }
     }
 
 }

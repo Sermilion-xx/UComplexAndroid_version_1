@@ -8,7 +8,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.LinearLayout;
-import android.widget.TabHost;
 import android.widget.TextView;
 
 import org.ucomplex.ucomplex.Adaptors.ViewPagerAdapter;
@@ -21,6 +20,7 @@ public class UsersActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_users);
         final Toolbar toolbar = (Toolbar) findViewById(R.id.users_toolbar);
         toolbar.setTitle("Онлайн");
@@ -29,7 +29,11 @@ public class UsersActivity extends AppCompatActivity {
 
         final ViewPager viewPager = (ViewPager) findViewById(R.id.users_viewpager);
         setupViewPager(viewPager);
-        viewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
             @Override
             public void onPageSelected(int position) {
                 if(position==0){
@@ -43,6 +47,10 @@ public class UsersActivity extends AppCompatActivity {
                 }else if(position==4){
                     toolbar.setTitle("Заблокированные");
                 }
+            }
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
             }
         });
 
@@ -90,6 +98,7 @@ public class UsersActivity extends AppCompatActivity {
         adapter.addFragment(blacklistUsersFragment, "\uF235");
 
         viewPager.setAdapter(adapter);
+        viewPager.setOffscreenPageLimit(3);
     }
 
     @Override

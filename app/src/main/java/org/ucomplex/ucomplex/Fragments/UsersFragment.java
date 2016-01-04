@@ -45,10 +45,11 @@ import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListene
 
 public class UsersFragment extends ListFragment {
 
-    ArrayList<User> mItems;
+    ArrayList<User> mItems = new ArrayList<>();
     int usersType;
     ImageAdapter imageAdapter;
     Button btnLoadExtra;
+    private boolean finishedLoading =false;
 
 
     public UsersFragment() {
@@ -57,6 +58,20 @@ public class UsersFragment extends ListFragment {
 
     public void setUsersType(int usersType) {
         this.usersType = usersType;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putSerializable("mItems", mItems);
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        if (savedInstanceState != null) {
+            mItems = (ArrayList<User>) savedInstanceState.getSerializable("mItems");
+        }
     }
 
     @Override
@@ -72,8 +87,15 @@ public class UsersFragment extends ListFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setRetainInstance(true);
         try {
-            mItems = new FetchUsersTask(getActivity(), imageAdapter).execute(usersType).get();
+            if (savedInstanceState == null) {
+                if (mItems.size() == 0) {
+                    mItems = new FetchUsersTask(getActivity(), imageAdapter).execute(usersType).get();
+                }
+            }else{
+                mItems = (ArrayList<User>) savedInstanceState.getSerializable("mItems");
+            }
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
@@ -99,7 +121,7 @@ public class UsersFragment extends ListFragment {
         if(usersType!=3) {
             btnLoadExtra = new Button(getContext());
             btnLoadExtra.setFocusable(false);
-            btnLoadExtra.setText("Load More...");
+            btnLoadExtra.setText("Загрузить еще...");
             btnLoadExtra.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View arg0) {
@@ -115,6 +137,7 @@ public class UsersFragment extends ListFragment {
                         mItems.addAll(loadedUsers);
                         setListAdapter(new ImageAdapter(getContext(),mItems, loaded));
                         getListView().setSelection(lastPos - 2);
+                        finishedLoading = false;
 
                     } catch (InterruptedException | ExecutionException e) {
                         e.printStackTrace();
@@ -134,14 +157,10 @@ public class UsersFragment extends ListFragment {
     }
 
 
-
-
-
     private class ImageAdapter extends BaseAdapter {
 
 		private LayoutInflater inflater;
 		private DisplayImageOptions options;
-        private boolean finishedLoading =false;
         private int counter = 0;
         ArrayList<User> mItems;
 
@@ -189,7 +208,7 @@ public class UsersFragment extends ListFragment {
                 viewHolder = (ViewHolder) convertView.getTag();
             }
                 viewHolder.icon.setImageDrawable(getDrawable(position));
-                if (!finishedLoading) {
+                if (mItems.get(position).getPhotoBitmap()==null && mItems.get(position).getPhoto()==1){
                     ImageLoader.getInstance()
                             .displayImage("http://ucomplex.org/files/photos/" + mItems.get(position).getCode() + ".jpg", viewHolder.icon, options, new SimpleImageLoadingListener() {
                                 @Override
@@ -215,15 +234,8 @@ public class UsersFragment extends ListFragment {
                             }, new ImageLoadingProgressListener() {
                                 @Override
                                 public void onProgressUpdate(String imageUri, View view, int current, int total) {
-//							holder.progressBar.setProgress(Math.round(100.0f * current / total));
                                 }
                             });
-
-//                    if (counter < mItems.size()) {
-//                        counter++;
-//                    } else {
-//                        finishedLoading = true;
-//                    }
 
                 } else {
                     Bitmap image = mItems.get(position).getPhotoBitmap();
