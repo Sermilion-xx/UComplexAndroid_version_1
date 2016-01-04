@@ -2,11 +2,11 @@ package org.ucomplex.ucomplex.Activities.Tasks;
 
 import android.app.Activity;
 import android.os.AsyncTask;
+import android.support.annotation.Nullable;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.ucomplex.ucomplex.Activities.CalendarActivity;
 import org.ucomplex.ucomplex.Common;
 import org.ucomplex.ucomplex.Model.Calendar.CalendarEvent;
 import org.ucomplex.ucomplex.Model.Calendar.ChangedDay;
@@ -24,42 +24,13 @@ import java.util.HashMap;
 public class FetchCalendarTask extends AsyncTask<String, String, UCCalendar> {
 
     Activity mContext;
-
-    CalendarActivity caller;
     UCCalendar calendar;
 
     private String mProgressMessage;
     private IProgressTracker mProgressTracker;
 
-    /* UI Thread */
-    @Override
-    protected void onCancelled() {
-        // Detach from progress tracker
-        mProgressTracker = null;
-    }
-
-    /* UI Thread */
-    @Override
-    protected void onProgressUpdate(String... values) {
-        // Update progress message
-        mProgressMessage = values[0];
-        // And send it to progress tracker
-        if (mProgressTracker != null) {
-            mProgressTracker.onProgress(mProgressMessage);
-        }
-    }
-
-
-    public FetchCalendarTask(){
-
-    }
     public FetchCalendarTask(Activity context){
         this.mContext = context;
-        this.caller = (CalendarActivity) mContext;
-    }
-
-    public Activity getmContext() {
-        return mContext;
     }
 
     public void setProgressTracker(IProgressTracker progressTracker) {
@@ -71,7 +42,6 @@ public class FetchCalendarTask extends AsyncTask<String, String, UCCalendar> {
             }
         }
     }
-
 
     @Override
     protected UCCalendar doInBackground(String... params) {
@@ -88,9 +58,13 @@ public class FetchCalendarTask extends AsyncTask<String, String, UCCalendar> {
             jsonData = Common.httpPost(urlString, MyServices.getLoginDataFromPref(mContext));
         }
         publishProgress("50%");
+        if(jsonData == null){
+            return null;
+        }
         return getCalendarDataFromJson(jsonData);
     }
 
+    @Nullable
     private UCCalendar getCalendarDataFromJson(String jsonData){
         JSONObject calendarJson = null;
         calendar = new UCCalendar();
@@ -118,10 +92,7 @@ public class FetchCalendarTask extends AsyncTask<String, String, UCCalendar> {
                             calendar.addEvent(calendarEvent);
                         }
                 }
-            }catch (JSONException ignored){
-
-            }
-
+            }catch (JSONException ignored){}
             //End getting events
             //------------------
             try {
@@ -136,7 +107,6 @@ public class FetchCalendarTask extends AsyncTask<String, String, UCCalendar> {
             calendar.setGroup(calendarJson.getString("group"));
             calendar.setSubgroup(calendarJson.getString("subgroup"));
             calendar.setCourse(calendarJson.getString("course"));
-
             //Start getting courses
             try {
                 JSONObject coursesObject = calendarJson.getJSONObject("courses");
@@ -243,11 +213,29 @@ public class FetchCalendarTask extends AsyncTask<String, String, UCCalendar> {
     @Override
     protected void onPostExecute(UCCalendar calendar) {
         super.onPostExecute(calendar);
-        caller.onTaskComplete(this);
+//        caller.onTaskComplete(this);
         if (mProgressTracker != null) {
             mProgressTracker.onComplete();
         }
         // Detach from progress tracker
         mProgressTracker = null;
+    }
+
+    /* UI Thread */
+    @Override
+    protected void onCancelled() {
+        // Detach from progress tracker
+        mProgressTracker = null;
+    }
+
+    /* UI Thread */
+    @Override
+    protected void onProgressUpdate(String... values) {
+        // Update progress message
+        mProgressMessage = values[0];
+        // And send it to progress tracker
+        if (mProgressTracker != null) {
+            mProgressTracker.onProgress(mProgressMessage);
+        }
     }
 }

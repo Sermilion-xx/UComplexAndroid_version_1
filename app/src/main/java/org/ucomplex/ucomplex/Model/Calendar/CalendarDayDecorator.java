@@ -43,9 +43,8 @@ public class CalendarDayDecorator implements DayViewDecorator {
         }else if(type==6){
             dates = new HashSet<>();
             Calendar cal = Calendar.getInstance();
-            int dayOfMonth = cal.get(Calendar.DAY_OF_MONTH);
-            String dayOfMonthStr = String.valueOf(dayOfMonth);
-            dates.add(CalendarDay.from(Integer.parseInt(year),Integer.parseInt(month), dayOfMonth));
+            dates.add(CalendarDay.from(cal.get(Calendar.YEAR),cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH)));
+            System.out.println();
         }
 
     }

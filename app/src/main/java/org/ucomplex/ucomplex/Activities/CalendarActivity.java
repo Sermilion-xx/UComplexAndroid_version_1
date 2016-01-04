@@ -157,13 +157,17 @@ public class CalendarActivity extends AppCompatActivity implements AdapterView.O
         public void onTaskComplete (AsyncTask task, Object ...o){
             if (task.isCancelled()) {
                 // Report about cancel
-                Toast.makeText(this, "Cancelled Task", Toast.LENGTH_LONG)
+                Toast.makeText(this, "Операция отменена", Toast.LENGTH_LONG)
                         .show();
             } else {
                 // Get result
                 UCCalendar result = null;
                 try {
                     calendar = (UCCalendar) task.get();
+                    if(calendar == null){
+                        Toast.makeText(this, "Нету данных", Toast.LENGTH_LONG)
+                                .show();
+                    }
                     try {
                         refreshMonth();
                     } catch (NullPointerException ignored) {

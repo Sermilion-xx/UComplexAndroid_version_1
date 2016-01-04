@@ -36,6 +36,7 @@ import java.io.InputStreamReader;
 
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
+import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -86,6 +87,7 @@ public class Common {
         try {
             URL url = new URL(urlString);
             MyServices.connection = (HttpURLConnection) url.openConnection();
+            MyServices.connection.setConnectTimeout(5000);
             MyServices.connection.setRequestMethod("POST");
             MyServices.connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
             MyServices.connection.setRequestProperty("Content-Length", "" + Integer.toString(dataUrlParameters.getBytes().length));
@@ -111,12 +113,12 @@ public class Common {
             return response.toString();
         } catch (IOException e) {
             e.printStackTrace();
+            return null;
         } finally {
             if (MyServices.connection != null) {
                 MyServices.connection.disconnect();
             }
         }
-        return null;
     }
 
     public static String getPostDataString(HashMap<String, String> params) throws UnsupportedEncodingException {
