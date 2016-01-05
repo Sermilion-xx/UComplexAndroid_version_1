@@ -8,6 +8,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import org.javatuples.Quintet;
+import org.ucomplex.ucomplex.Model.Book;
 import org.ucomplex.ucomplex.R;
 
 import java.util.ArrayList;
@@ -20,11 +21,9 @@ public class LibraryAdapter extends ArrayAdapter<Quintet<String,String,String,St
 
 
     private ArrayList<Quintet<String, String, String, String, String>> values;
-
+    private ArrayList<Book> books;
     private LayoutInflater inflater;
-
     int type;
-
     private static final int TYPE_TITLE = 0;
     private static final int TYPE_BOOK= 1;
 
@@ -32,6 +31,10 @@ public class LibraryAdapter extends ArrayAdapter<Quintet<String,String,String,St
         super(context, -1, values);
         this.values = values;
         this.type = type;
+    }
+
+    public void setBooks(ArrayList<Book> books) {
+        this.books = books;
     }
 
     @Override
@@ -81,12 +84,10 @@ public class LibraryAdapter extends ArrayAdapter<Quintet<String,String,String,St
         }else if(viewType==TYPE_BOOK){
             viewHolder.nameTextView.setText(item.getValue1());
             viewHolder.editionTextView.setText(item.getValue2());
-            viewHolder.quantityTextView.setText(item.getValue3());
-            viewHolder.yearTextView.setText(item.getValue4());
+            viewHolder.quantityTextView.setText("Количество экземпляров: "+String.valueOf(item.getValue3()));
+            viewHolder.yearTextView.setText("Год издания: "+String.valueOf(item.getValue4()));
         }
-
     return convertView;
-
     }
 
     public static class ViewHolder {

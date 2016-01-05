@@ -18,6 +18,7 @@ public class LibraryFragment extends ListFragment {
     ArrayList libraryData;
     int type;
     LibraryActivity libraryActivity;
+    int level = 0;
 
     public LibraryActivity getLibraryActivity() {
         return libraryActivity;
@@ -58,14 +59,26 @@ public class LibraryFragment extends ListFragment {
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
-
+        //id, name, edition, quantity, year
+        //id, name, type, price
         Quintet<Integer, String, String, Integer,Integer> item = (Quintet<Integer, String, String, Integer, Integer>) libraryData.get(position);
-        int type = 0;
-        if(position==0){
-            type=1;
-        }
         FetchLibraryTask fetchLibraryTask = new FetchLibraryTask(this.libraryActivity,this.libraryActivity);
-        fetchLibraryTask.setupTask(type);
+        //all collection
+        if(item.getValue0()==-1){
+            type = 1;
+            fetchLibraryTask.setupTask(type);
+        //open collection
+        }else if(item.getValue4() == -1 && !item.getValue2().equals("-1")){
+            type = 3;
+            fetchLibraryTask.setupTask(type, item.getValue0());
+            //open selection
+        }else if((item.getValue4() !=-1 && item.getValue4()<1000) || item.getValue2().equals("-1")){
+            type = 2;
+            fetchLibraryTask.setupTask(type, item.getValue0());
+        }else  if(item.getValue4()>1000){
+
+        }
+
     }
 
 }

@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="100dp">
+    android:layout_height="wrap_content">
 
     <ImageView
         android:layout_width="60dp"
@@ -15,7 +15,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_marginLeft="10dp">
 
@@ -26,7 +26,7 @@
             android:text="Название крутой книги"
             android:layout_marginTop="10dp"
             android:textColor="#222222"
-            android:textSize="18sp"/>
+            android:textSize="16sp"/>
 
         <TextView
             android:layout_width="match_parent"
@@ -51,7 +51,8 @@
             android:id="@+id/list_item_library_book_year"
             android:layout_marginTop="5dp"
             android:textColor="#999999"
-            android:textSize="14sp"/>
+            android:textSize="14sp"
+            android:paddingBottom="10dp"/>
     </LinearLayout>
 
 </LinearLayout>

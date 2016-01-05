@@ -10,6 +10,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import org.javatuples.Quintet;
 import org.ucomplex.ucomplex.Activities.Tasks.FetchLibraryTask;
 import org.ucomplex.ucomplex.Activities.Tasks.OnTaskCompleteListener;
 import org.ucomplex.ucomplex.Fragments.LibraryFragment;
@@ -48,16 +49,19 @@ public class LibraryActivity extends AppCompatActivity implements OnTaskComplete
     @Override
     public void onTaskComplete(AsyncTask task, Object ...data) {
         if (task.isCancelled()) {
-            // Report about cancel
-            Toast.makeText(this, "Загрузка отменена", Toast.LENGTH_LONG)
-                    .show();
+            Toast.makeText(this, "Загрузка отменена", Toast.LENGTH_LONG).show();
         } else {
             try {
                 libraryData = (ArrayList) task.get();
                 //id, name, edition, quantity, year
+                int type = 0;
+                Quintet<Integer, String, String, Integer, Integer> item = (Quintet<Integer, String, String, Integer, Integer> )libraryData.get(0);
+                if(item.getValue4()>1000){
+                    type = 1;
+                }
                 LibraryFragment fragment = new LibraryFragment();
                     fragment.setLibraryData(libraryData);
-                    fragment.setType(0);
+                    fragment.setType(type);
                 fragment.setLibraryActivity(this);
 
                 FragmentManager fragmentManager = getSupportFragmentManager();
