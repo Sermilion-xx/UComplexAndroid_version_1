@@ -62,8 +62,12 @@ public class FetchMyFilesTask extends AsyncTask<String, String, ArrayList<File>>
         }else{
             jsonData = Common.httpPost(urlString, Common.getLoginDataFromPref(mContext));
         }
-
-        return getFileDataFromJson(jsonData);
+        if(jsonData!=null){
+            if(jsonData.length()>0){
+                return getFileDataFromJson(jsonData);
+            }
+        }
+        return null;
     }
 
     private ArrayList<File> getFileDataFromJson(String jsonData){

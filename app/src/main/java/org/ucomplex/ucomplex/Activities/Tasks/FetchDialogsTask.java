@@ -49,7 +49,13 @@ public class FetchDialogsTask extends AsyncTask<Integer, String, ArrayList> impl
     protected ArrayList doInBackground(Integer... params) {
         String urlString = "https://chgu.org/user/messages?mobile=1";
         String jsonData = Common.httpPost(urlString, Common.getLoginDataFromPref(mContext));
-        return getDialogsFromJson(jsonData);
+        if(jsonData!=null){
+            if(jsonData.length()>0) {
+                return getDialogsFromJson(jsonData);
+            }
+        }
+        return null;
+
     }
 
     private ArrayList getDialogsFromJson(String jsonData) {

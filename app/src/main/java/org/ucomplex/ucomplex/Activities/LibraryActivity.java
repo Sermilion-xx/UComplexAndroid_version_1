@@ -53,27 +53,28 @@ public class LibraryActivity extends AppCompatActivity implements OnTaskComplete
         } else {
             try {
                 libraryData = (ArrayList) task.get();
-                //id, name, edition, quantity, year
-                int type = 0;
-                Quintet<Integer, String, String, Integer, Integer> item = (Quintet<Integer, String, String, Integer, Integer> )libraryData.get(0);
-                if(item.getValue4()>1000){
-                    type = 1;
-                }
-                LibraryFragment fragment = new LibraryFragment();
+                if(libraryData!=null){
+                    //id, name, edition, quantity, year
+                    int type = 0;
+                    Quintet<Integer, String, String, Integer, Integer> item = (Quintet<Integer, String, String, Integer, Integer> )libraryData.get(0);
+                    if(item.getValue4()>1000){
+                        type = 1;
+                    }
+                    LibraryFragment fragment = new LibraryFragment();
                     fragment.setLibraryData(libraryData);
                     fragment.setType(type);
-                fragment.setLibraryActivity(this);
+                    fragment.setLibraryActivity(this);
 
-                FragmentManager fragmentManager = getSupportFragmentManager();
-                FragmentTransaction fragmentTransaction =
-                        fragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.content_library, fragment);
-                if(!first){
-                    fragmentTransaction.addToBackStack(null);
+                    FragmentManager fragmentManager = getSupportFragmentManager();
+                    FragmentTransaction fragmentTransaction =
+                            fragmentManager.beginTransaction();
+                    fragmentTransaction.replace(R.id.content_library, fragment);
+                    if(!first){
+                        fragmentTransaction.addToBackStack(null);
+                    }
+                    first=false;
+                    fragmentTransaction.commit();
                 }
-                first=false;
-                fragmentTransaction.commit();
-
             } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();
             }

@@ -70,26 +70,32 @@ public class SubjectsActivity extends AppCompatActivity implements OnTaskComplet
             } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();
             }
-            ListView listView = (ListView) findViewById(R.id.subject_listview);
-            listView.setDividerHeight(1);
-            SubjectsAdapter subjectsAdapter = new SubjectsAdapter(this,mItems);
-            listView.setAdapter(subjectsAdapter);
-            listView.setOnItemClickListener(new AdapterView.OnItemClickListener()
-            {
-                @Override
-                public void onItemClick(AdapterView<?> a, View v,int position, long id)
+            if(mItems!= null && mItems.size()>0){
+                ListView listView = (ListView) findViewById(R.id.subject_listview);
+                listView.setDividerHeight(1);
+                SubjectsAdapter subjectsAdapter = new SubjectsAdapter(this,mItems);
+                listView.setAdapter(subjectsAdapter);
+                listView.setOnItemClickListener(new AdapterView.OnItemClickListener()
                 {
-                    Intent intent = new Intent(getBaseContext(), CourseActivity.class);
-                    Bundle extras = new Bundle();
-                    extras.putInt("gcourse", mItems.get(position).getValue2());
-                    intent.putExtras(extras);
-                    dialog = ProgressDialog.show(SubjectsActivity.this, "",
-                            "Загружаются данные", true);
-                    dialog.show();
-                    startActivity(intent);
+                    @Override
+                    public void onItemClick(AdapterView<?> a, View v,int position, long id)
+                    {
+                        Intent intent = new Intent(getBaseContext(), CourseActivity.class);
+                        Bundle extras = new Bundle();
+                        extras.putInt("gcourse", mItems.get(position).getValue2());
+                        intent.putExtras(extras);
+                        dialog = ProgressDialog.show(SubjectsActivity.this, "",
+                                "Загружаются данные", true);
+                        dialog.show();
+                        startActivity(intent);
 
-                }
-            });
+                    }
+                });
+            }else{
+                Toast.makeText(this, "Ошибка загрузки", Toast.LENGTH_LONG)
+                        .show();
+            }
+
         }
     }
 }

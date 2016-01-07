@@ -34,10 +34,13 @@ public class FetchUserEventsTask extends AsyncTask<Void, Void, ArrayList<EventRo
     @Override
     protected ArrayList<EventRowItem> doInBackground(Void... params) {
         String urlString = "http://you.com.ru/student?mobile=1";
-//        String authParams = this.user.getLogin()+":"+this.user.getPass()+":"+this.user.getRoles().get(0).getId();
         jsonData = Common.httpPost(urlString, Common.getLoginDataFromPref(mContext));
         try {
-            return getEventsDataFromJson(this.jsonData);
+            if(jsonData!=null){
+                if(jsonData.length()>0) {
+                    return getEventsDataFromJson(this.jsonData);
+                }
+            }
         } catch (JSONException e) {
         e.printStackTrace();
         }
@@ -47,21 +50,23 @@ public class FetchUserEventsTask extends AsyncTask<Void, Void, ArrayList<EventRo
     @Override
     protected void onPostExecute(final ArrayList<EventRowItem> items) {
         String uc_version = Common.connection.getHeaderField("X-UVERSION");
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
-        String uc_version_pref = prefs.getString("X-UVERSION", "");
-        //!uc_version.equals(uc_version_pref)
-        if(!uc_version.equals(uc_version_pref)){
-            FetchLangTask flt = new FetchLangTask();
-            flt.setmContext(mContext);
-            boolean success = false;
-            try {
-                success = flt.execute().get();
-            } catch (InterruptedException | ExecutionException e) {
-                e.printStackTrace();
-            }
-            if(success){
-                Common.X_UVERSION = uc_version;
-                prefs.edit().putString("X-UVERSION",uc_version).apply();
+        if(uc_version!=null){
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+            String uc_version_pref = prefs.getString("X-UVERSION", "");
+            //!uc_version.equals(uc_version_pref)
+            if(!uc_version.equals(uc_version_pref)){
+                FetchLangTask flt = new FetchLangTask();
+                flt.setmContext(mContext);
+                boolean success = false;
+                try {
+                    success = flt.execute().get();
+                } catch (InterruptedException | ExecutionException e) {
+                    e.printStackTrace();
+                }
+                if(success){
+                    Common.X_UVERSION = uc_version;
+                    prefs.edit().putString("X-UVERSION",uc_version).apply();
+                }
             }
         }
     }

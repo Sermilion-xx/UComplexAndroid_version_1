@@ -25,15 +25,17 @@ public class FetchProfileTask extends AsyncTask<Void, Void, Pair<String, String>
     protected Pair<String, String> doInBackground(Void... params) {
         String urlString = "http://you.com.ru/user/profile?json";
         String jsonData = Common.httpPost(urlString, Common.getLoginDataFromPref(mContext));
-        try {
-            JSONObject jsonObject = new JSONObject(jsonData);
-            JSONObject infoJson = jsonObject.getJSONObject("info");
-            String closed = infoJson.getString("closed");
-            String searchable  = infoJson.getString("searchable");
-            Pair<String, String> privacy = new Pair<>(closed, searchable);
-            return privacy;
-        } catch (JSONException e) {
-            e.printStackTrace();
+        if(jsonData!=null){
+            try {
+                JSONObject jsonObject = new JSONObject(jsonData);
+                JSONObject infoJson = jsonObject.getJSONObject("info");
+                String closed = infoJson.getString("closed");
+                String searchable  = infoJson.getString("searchable");
+                Pair<String, String> privacy = new Pair<>(closed, searchable);
+                return privacy;
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
         return null;
     }

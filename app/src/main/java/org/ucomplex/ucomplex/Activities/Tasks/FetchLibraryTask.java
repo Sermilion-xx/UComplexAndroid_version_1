@@ -57,27 +57,49 @@ public class FetchLibraryTask extends AsyncTask<Integer, String, ArrayList> impl
             //категории
             urlString = "https://chgu.org/user/collections?mobile=1";
             jsonData = Common.httpPost(urlString, Common.getLoginDataFromPref(mContext));
-            return getCollectionDataFromJson(jsonData);
+            if(jsonData!=null){
+                if(jsonData.length()>0) {
+                    return getCollectionDataFromJson(jsonData);
+                }
+            }
+
         }else if(params[0]==1){
             //all selections
             //просто категории
             urlString = "https://chgu.org/user/collections/all_sections?mobile=1";
             jsonData = Common.httpPost(urlString, Common.getLoginDataFromPref(mContext));
-            return getSectionDataFromJson(jsonData);
+            if(jsonData!=null){
+                if(jsonData.length()>0) {
+                    return getSectionDataFromJson(jsonData);
+                }
+            }
+
         }else if(params[0]==2){
             //single selection
             urlString = "https://chgu.org/user/collections/open_section?mobile=1";
             httpParams.put("pure", "1");
             httpParams.put("collections_sections",String.valueOf(params[1]));
             jsonData = Common.httpPost(urlString, Common.getLoginDataFromPref(mContext), httpParams);
-            return getBookDataFromJson(jsonData);
+            if(jsonData!=null){
+                if(jsonData.length()>0) {
+                    return getBookDataFromJson(jsonData);
+                }
+            }
+
         }else if(params[0]==3){
             //all books for category
             urlString = "https://chgu.org/user/collections/open_collection?mobile=1";
             httpParams.put("collection",String.valueOf(params[1]));
             jsonData = Common.httpPost(urlString, Common.getLoginDataFromPref(mContext), httpParams);
-            return getSectionDataFromJson(jsonData);
+            if(jsonData!=null){
+                if(jsonData.length()>0) {
+                    return getSectionDataFromJson(jsonData);
+                }
+            }
+
         }
+
+
 
         //collections - > open_collection (colection - 10) - > open_selection (selection - 45, pure - 1)
 

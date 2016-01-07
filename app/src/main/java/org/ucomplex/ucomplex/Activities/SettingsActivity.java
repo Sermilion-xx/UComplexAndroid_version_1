@@ -436,24 +436,31 @@ public class SettingsActivity extends AppCompatActivity implements OnTaskComplet
             } else {
                   try {
                        user = Common.getUserDataFromPref(this);
-                       if (task.get().equals("success")) {
-                            if((int)o[0]==3) {
-                                String phone = formatPhoneNumber(user.getPhone());
-                                oldPhoneTextView.setText(phone);
-                            }else if((int)o[0]==2){
-                                currentEmalTextView.setText(user.getEmail());
-                            }else if((int)o[0]==4){
-                                SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(context).edit();
-                                editor.putString("closedProfile", closedPrifileStr);
-                                editor.putString("searchableProfile", searchablePrifileStr);
-                                editor.apply();
-                            }
-                        } else {
-                            Toast.makeText(this, "Произошла ошибка", Toast.LENGTH_LONG)
-                                    .show();
-                        }
-                    Toast.makeText(this, "Настройки сохранены", Toast.LENGTH_LONG)
-                            .show();
+                      if(task.get()!=null){
+                          if (task.get().equals("success")) {
+                              if((int)o[0]==3) {
+                                  String phone = formatPhoneNumber(user.getPhone());
+                                  oldPhoneTextView.setText(phone);
+                              }else if((int)o[0]==2){
+                                  currentEmalTextView.setText(user.getEmail());
+                              }else if((int)o[0]==4){
+                                  SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(context).edit();
+                                  editor.putString("closedProfile", closedPrifileStr);
+                                  editor.putString("searchableProfile", searchablePrifileStr);
+                                  editor.apply();
+                              }
+                              Toast.makeText(this, "Настройки сохранены", Toast.LENGTH_LONG)
+                                      .show();
+                          } else {
+                              Toast.makeText(this, "Произошла ошибка", Toast.LENGTH_LONG)
+                                      .show();
+                          }
+                      }else {
+                          Toast.makeText(this, "Произошла ошибка (проверьте интернет соединение)", Toast.LENGTH_LONG)
+                                  .show();
+                      }
+
+
 
                 } catch (InterruptedException | ExecutionException e) {
                     e.printStackTrace();
@@ -462,13 +469,19 @@ public class SettingsActivity extends AppCompatActivity implements OnTaskComplet
         }else if(task instanceof FetchProfileTask){
             try {
                 Pair<String, String> privacy = ((FetchProfileTask) task).get();
-                closedProfile.setChecked(false);
-                hideProfile.setChecked(false);
-                if(privacy.getValue0().equals("1")){
-                    closedProfile.setChecked(true);
+                if(privacy!=null){
+                    closedProfile.setChecked(false);
+                    hideProfile.setChecked(false);
+                    if(privacy.getValue0().equals("1")){
+                        closedProfile.setChecked(true);
+                    }
+                    if(privacy.getValue1().equals("1"))
+                        hideProfile.setChecked(true);
+                }else{
+                    Toast.makeText(this, "Произошла ошибка (проверьте интернет соединение)", Toast.LENGTH_LONG)
+                            .show();
                 }
-                if(privacy.getValue1().equals("1"))
-                    hideProfile.setChecked(true);
+
 
             } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();

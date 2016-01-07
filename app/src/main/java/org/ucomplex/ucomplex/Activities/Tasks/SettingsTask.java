@@ -50,18 +50,25 @@ public class SettingsTask extends AsyncTask<Pair<String, String>, Void, String> 
         HashMap<String, String> httpParams = new HashMap<>();
         httpParams.put(params[0].getValue0(), params[0].getValue1());
         httpParams.put(params[1].getValue0(), params[1].getValue1());
-        String response = Common.httpPost(url, Common.getLoginDataFromPref(context), httpParams);
-        try {
-            JSONObject responseJson = new JSONObject(response);
-            response = responseJson.getString("status");
-        } catch (JSONException e) {
-            e.printStackTrace();
+        String response = null;
+        response = Common.httpPost(url, Common.getLoginDataFromPref(context), httpParams);
+        if(response!=null){
+            if(response.length()>0){
+                try {
+                    JSONObject responseJson = new JSONObject(response);
+                    response = responseJson.getString("status");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
         }
+
         return response;
     }
     @Override
     protected void onPostExecute(String s) {
             super.onPostExecute(s);
+        if(s!=null){
             if (s.equals("success")) {
                 SharedPreferences.Editor prefsEditor = PreferenceManager.getDefaultSharedPreferences(context).edit();
                 prefsEditor.putBoolean("logged", false).apply();
@@ -82,6 +89,11 @@ public class SettingsTask extends AsyncTask<Pair<String, String>, Void, String> 
 
                 onComplete();
             }
+        }else{
+            type = -1;
+            onComplete();
+        }
+
 
             if (mProgressTracker != null) {
                 mProgressTracker.onComplete();

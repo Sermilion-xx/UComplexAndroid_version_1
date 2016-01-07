@@ -131,7 +131,12 @@ public class EventsFragment extends AbsListViewBaseFragment {
 
 		@Override
 		public int getCount() {
-			return outer.eventItems.size();
+			if(outer.eventItems!=null){
+				return outer.eventItems.size();
+			}else{
+				return 0;
+			}
+
 		}
 
 		@Override

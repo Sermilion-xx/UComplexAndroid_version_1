@@ -69,8 +69,14 @@ public class FetchUsersTask extends AsyncTask<Integer, Void, ArrayList<User>> {
         }
 
         String jsonData = Common.httpPost(urlString, Common.getLoginDataFromPref(mContext),postData);
-        onlineUserList = getUserDataFromJson(jsonData, params[0]);
-        return onlineUserList;
+
+        if(jsonData!=null){
+            if(jsonData.length()>0){
+                onlineUserList = getUserDataFromJson(jsonData, params[0]);
+                return onlineUserList;
+            }
+        }
+        return null;
     }
 
     @Override

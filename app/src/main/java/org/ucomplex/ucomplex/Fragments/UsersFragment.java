@@ -144,10 +144,14 @@ public class UsersFragment extends ListFragment {
                 }
             });
 
-            if (mItems.size() <= 20) {
-                btnLoadExtra.setVisibility(View.GONE);
+            if(mItems!=null){
+                if (mItems.size() <= 20) {
+                    btnLoadExtra.setVisibility(View.GONE);
+                }
+                getListView().addFooterView(btnLoadExtra);
+            }else{
+                Toast.makeText(getActivity(), "Произошла ошибка", Toast.LENGTH_SHORT).show();
             }
-            getListView().addFooterView(btnLoadExtra);
         }
 
         new FetchUsersTask(getActivity(), imageAdapter) {
@@ -185,7 +189,11 @@ public class UsersFragment extends ListFragment {
 
         @Override
         public int getCount() {
-            return mItems.size();
+            if(mItems!=null){
+                return mItems.size();
+            }else
+                return 0;
+
         }
 
         @Override
