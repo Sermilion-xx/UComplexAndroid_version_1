@@ -24,6 +24,7 @@ public class FetchUsersTask extends AsyncTask<Integer, Void, ArrayList<User>> {
     Activity mContext;
     BaseAdapter adapter;
 
+
     private ArrayList<User> onlineUserList = new ArrayList<>();
 
     public FetchUsersTask(Activity context, BaseAdapter adapter){

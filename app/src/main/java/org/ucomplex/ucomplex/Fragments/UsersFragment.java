@@ -1,6 +1,7 @@
 package org.ucomplex.ucomplex.Fragments;
 
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -48,7 +49,9 @@ public class UsersFragment extends ListFragment {
     int usersType;
     ImageAdapter imageAdapter;
     Button btnLoadExtra;
-    private boolean finishedLoading =false;
+    ArrayList<User> loadedUsers;
+    int lastPos;
+    private ProgressDialog dialog;
 
 
     public UsersFragment() {
@@ -87,18 +90,11 @@ public class UsersFragment extends ListFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
-        try {
             if (savedInstanceState == null) {
-                if (mItems.size() == 0) {
-                    mItems = new FetchUsersTask(getActivity(), imageAdapter).execute(usersType).get();
-                }
+
             }else{
                 mItems = (ArrayList<User>) savedInstanceState.getSerializable("mItems");
             }
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-        }
-
     }
 
     @Override
@@ -112,6 +108,8 @@ public class UsersFragment extends ListFragment {
 
     }
 
+
+
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -122,37 +120,45 @@ public class UsersFragment extends ListFragment {
             btnLoadExtra.setFocusable(false);
             btnLoadExtra.setText("Загрузить еще...");
             btnLoadExtra.setOnClickListener(new View.OnClickListener() {
+
                 @Override
                 public void onClick(View arg0) {
-                    // Starting a new async task
-                    try {
-                        int lastPos = mItems.size();
-                        ArrayList<User> loadedUsers = new FetchUsersTask(getActivity(),imageAdapter).execute(usersType,mItems.size()).get();
-                        boolean loaded = false;
-                        if(loadedUsers.size()<=20){
-                            loaded = true;
-                            btnLoadExtra.setVisibility(View.GONE);
+//
+                    new FetchUsersTask(getActivity(), imageAdapter) {
+                        @Override
+                        protected void onPostExecute( ArrayList<User> users ) {
+                            super.onPostExecute( users );
+                            lastPos = mItems.size();
+                            loadedUsers = users;
+                            boolean loaded = false;
+                            if(loadedUsers.size()<=20){
+                                loaded = true;
+                                btnLoadExtra.setVisibility(View.GONE);
+                            }
+                            mItems.addAll(loadedUsers);
+                            setListAdapter(new ImageAdapter(getContext(),mItems, loaded));
+                            getListView().setSelection(lastPos - 2);
+                            dialog.dismiss();
                         }
-                        mItems.addAll(loadedUsers);
-                        setListAdapter(new ImageAdapter(getContext(),mItems, loaded));
-                        getListView().setSelection(lastPos - 2);
-                        finishedLoading = false;
-
-                    } catch (InterruptedException | ExecutionException e) {
-                        e.printStackTrace();
-                    }
+                    }.execute(usersType);
                 }
             });
 
             if (mItems.size() <= 20) {
                 btnLoadExtra.setVisibility(View.GONE);
             }
-
             getListView().addFooterView(btnLoadExtra);
         }
-        imageAdapter = new ImageAdapter(getActivity(), mItems, false);
-        setListAdapter(imageAdapter);
 
+        new FetchUsersTask(getActivity(), imageAdapter) {
+            @Override
+            protected void onPostExecute( ArrayList<User> users ) {
+                super.onPostExecute( users );
+                mItems = users;
+                imageAdapter = new ImageAdapter(getActivity(), mItems, false);
+                setListAdapter(imageAdapter);
+            }
+        }.execute(usersType);
     }
 
 
