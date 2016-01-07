@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -15,7 +14,6 @@ import android.widget.EditText;
 import android.widget.Spinner;
 
 import org.ucomplex.ucomplex.Common;
-import org.ucomplex.ucomplex.MyServices;
 import org.ucomplex.ucomplex.R;
 
 import java.util.HashMap;
@@ -84,7 +82,7 @@ public class ReferenceActivity extends AppCompatActivity implements AdapterView.
             postParams.put("organization", String.valueOf(params[0]));
             postParams.put("place", String.valueOf(params[1]));
             postParams.put("send_verif", String.valueOf(1));
-            String jsonData = Common.httpPost(urlString, MyServices.getLoginDataFromPref(mContext), postParams);
+            String jsonData = Common.httpPost(urlString, Common.getLoginDataFromPref(mContext), postParams);
             return null;
         }
 

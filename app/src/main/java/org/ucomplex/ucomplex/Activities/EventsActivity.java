@@ -17,8 +17,8 @@ import android.view.View;
 import org.ucomplex.ucomplex.Activities.Tasks.FetchUserEventsTask;
 import org.ucomplex.ucomplex.Activities.Tasks.OnTaskCompleteListener;
 import org.ucomplex.ucomplex.Adaptors.MenuAdapter;
+import org.ucomplex.ucomplex.Common;
 import org.ucomplex.ucomplex.Fragments.EventsFragment;
-import org.ucomplex.ucomplex.MyServices;
 import org.ucomplex.ucomplex.R;
 
 import java.util.ArrayList;
@@ -76,7 +76,7 @@ public class EventsActivity extends AppCompatActivity implements OnTaskCompleteL
 
         mRecyclerView = (RecyclerView) findViewById(R.id.RecyclerView); // Assigning the RecyclerView Object to the xml View
         mRecyclerView.setHasFixedSize(true);
-        Bitmap photoBitmap = MyServices.decodePhotoPref(contex, "profilePhoto");
+        Bitmap photoBitmap = Common.decodePhotoPref(contex, "profilePhoto");
         mAdapter = new MenuAdapter(TITLES,ICONS,NAME,EMAIL,PROFILE, this, photoBitmap);
         mRecyclerView.setAdapter(mAdapter);                              // Setting the adapter to RecyclerView
         mLayoutManager = new LinearLayoutManager(this);                 // Creating a layout Manager

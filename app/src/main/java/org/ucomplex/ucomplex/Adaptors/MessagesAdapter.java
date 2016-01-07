@@ -14,7 +14,6 @@ import com.amulyakhare.textdrawable.TextDrawable;
 import org.ucomplex.ucomplex.Common;
 import org.ucomplex.ucomplex.Model.Message;
 import org.ucomplex.ucomplex.Model.Users.User;
-import org.ucomplex.ucomplex.MyServices;
 import org.ucomplex.ucomplex.R;
 
 import java.util.ArrayList;
@@ -44,7 +43,7 @@ public class MessagesAdapter extends ArrayAdapter {
 
     @Override
     public int getItemViewType(int position) {
-        User user = MyServices.getUserDataFromPref(context);
+        User user = Common.getUserDataFromPref(context);
         Message message = (Message) getItem(position);
         if(message.getFrom() ==user.getPerson()){
             return TYPE_OUT;

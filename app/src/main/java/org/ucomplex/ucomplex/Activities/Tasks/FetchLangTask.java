@@ -5,13 +5,6 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 
-import com.google.gson.Gson;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.ucomplex.ucomplex.Common;
-import org.ucomplex.ucomplex.MyServices;
-
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.InputStreamReader;
@@ -75,7 +68,7 @@ public class FetchLangTask extends AsyncTask<Void, Void, Boolean> {
     @Override
     protected Boolean doInBackground(Void... params) {
         String urlString = "http://ucomplex.org/public/get_uc_vars?json&lang=1";
-        String jsonData = null;// Common.httpPost(urlString, MyServices.getLoginDataFromPref(mContext));
+        String jsonData = null;
         try {
             jsonData = sendPost();
             SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(mContext);

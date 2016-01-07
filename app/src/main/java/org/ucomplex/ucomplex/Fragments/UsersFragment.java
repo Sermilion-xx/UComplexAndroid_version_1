@@ -26,7 +26,6 @@ import org.ucomplex.ucomplex.Activities.Tasks.FetchUsersTask;
 import org.ucomplex.ucomplex.Activities.UsersActivity;
 import org.ucomplex.ucomplex.Common;
 import org.ucomplex.ucomplex.Model.Users.User;
-import org.ucomplex.ucomplex.MyServices;
 import org.ucomplex.ucomplex.R;
 
 import java.util.ArrayList;
@@ -403,7 +402,7 @@ public class UsersFragment extends ListFragment {
     class HandleMenuPress extends AsyncTask <Object, Void, Void> {
         @Override
         protected Void doInBackground(Object... params) {
-            Common.httpPost((String) params[0],MyServices.getLoginDataFromPref(getContext()), (HashMap<String, String>) params[1]);
+            Common.httpPost((String) params[0],Common.getLoginDataFromPref(getContext()), (HashMap<String, String>) params[1]);
             return null;
         }
     }

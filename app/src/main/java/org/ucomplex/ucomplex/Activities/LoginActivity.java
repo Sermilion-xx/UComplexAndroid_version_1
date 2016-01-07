@@ -23,8 +23,8 @@ import com.google.gson.Gson;
 
 import org.ucomplex.ucomplex.Activities.Tasks.FetchUserEventsTask;
 import org.ucomplex.ucomplex.Activities.Tasks.FetchUserLoginTask;
+import org.ucomplex.ucomplex.Common;
 import org.ucomplex.ucomplex.Model.Users.Student;
-import org.ucomplex.ucomplex.MyServices;
 import org.ucomplex.ucomplex.R;
 
 
@@ -194,7 +194,7 @@ public class LoginActivity extends AppCompatActivity implements FetchUserLoginTa
     @Override
     public void processFinish(Student output) {
         if(output!=null){
-            MyServices.setUserDataToPref(this, output);
+            Common.setUserDataToPref(this, output);
             SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(this).edit();
             editor.putBoolean("logged", true);
             editor.apply();

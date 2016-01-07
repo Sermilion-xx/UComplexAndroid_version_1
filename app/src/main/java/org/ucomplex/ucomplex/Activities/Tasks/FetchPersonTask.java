@@ -13,7 +13,6 @@ import org.ucomplex.ucomplex.Common;
 import org.ucomplex.ucomplex.Model.Users.Student;
 import org.ucomplex.ucomplex.Model.Users.Teacher;
 import org.ucomplex.ucomplex.Model.Users.User;
-import org.ucomplex.ucomplex.MyServices;
 
 
 /**
@@ -64,7 +63,7 @@ public class FetchPersonTask extends AsyncTask<Void, String, User> implements IP
     @Override
     protected User doInBackground(Void... params) {
         String urlString = "http://you.com.ru/user/person/"+this.person +"?json";
-        String jsonData = Common.httpPost(urlString, MyServices.getLoginDataFromPref(mContext));
+        String jsonData = Common.httpPost(urlString, Common.getLoginDataFromPref(mContext));
         if(jsonData.length()>2){
             user = getUserDataFromJson(jsonData);
             if(user.getCode()!=null){

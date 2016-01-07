@@ -16,7 +16,6 @@ import org.json.JSONObject;
 import org.ucomplex.ucomplex.Common;
 import org.ucomplex.ucomplex.Model.Users.Student;
 import org.ucomplex.ucomplex.Model.Users.User;
-import org.ucomplex.ucomplex.MyServices;
 
 import java.util.ArrayList;
 
@@ -85,12 +84,12 @@ public class FetchUserLoginTask extends AsyncTask<Void, Void, Student> {
             }
 
             Bitmap photoBitmap = Common.getBitmapFromURL(student.getCode());
-            MyServices.encodePhotoPref(mContext, photoBitmap, "profilePhoto");
+            Common.encodePhotoPref(mContext, photoBitmap, "profilePhoto");
             SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(mContext);
             String tempPhoto = "";
             tempPhoto = pref.getString("tempProfilePhoto", "");
             if (tempPhoto.length() < 1) {
-                MyServices.encodePhotoPref(mContext, photoBitmap, "tempProfilePhoto");
+                Common.encodePhotoPref(mContext, photoBitmap, "tempProfilePhoto");
             }
             return student;
         }

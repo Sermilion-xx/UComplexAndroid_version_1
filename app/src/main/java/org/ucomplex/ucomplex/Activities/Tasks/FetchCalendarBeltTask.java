@@ -8,9 +8,7 @@ import org.javatuples.Quartet;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.ucomplex.ucomplex.Activities.CourseActivity;
 import org.ucomplex.ucomplex.Common;
-import org.ucomplex.ucomplex.MyServices;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -42,7 +40,7 @@ public class FetchCalendarBeltTask extends AsyncTask<Integer, Void, ArrayList<Qu
         String urlString = "http://you.com.ru/student/ajax/calendar_belt?json";
         HashMap<String, String> postParams = new HashMap<>();
         postParams.put("gcourse", String.valueOf(postParamsString[0]));
-        String jsonData = Common.httpPost(urlString, MyServices.getLoginDataFromPref(mContext), postParams);
+        String jsonData = Common.httpPost(urlString, Common.getLoginDataFromPref(mContext), postParams);
         return getCalendarBeltDataFromJson(jsonData);
     }
 

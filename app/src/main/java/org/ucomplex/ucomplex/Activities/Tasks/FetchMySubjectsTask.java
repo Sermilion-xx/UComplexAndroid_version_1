@@ -1,7 +1,6 @@
 package org.ucomplex.ucomplex.Activities.Tasks;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
@@ -20,7 +19,6 @@ import org.ucomplex.ucomplex.Model.StudyStructure.Progress;
 import org.ucomplex.ucomplex.Model.StudyStructure.Course;
 import org.ucomplex.ucomplex.Model.Users.Student;
 import org.ucomplex.ucomplex.Model.Users.Teacher;
-import org.ucomplex.ucomplex.MyServices;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -196,7 +194,7 @@ public class FetchMySubjectsTask extends AsyncTask<Void, String, Course> impleme
         String urlString = "http://you.com.ru/student/ajax/my_subjects?json";
         HashMap<String, String> postParams = new HashMap<String, String>();
         postParams.put("subjId",this.getGcourseString());
-        jsonData = Common.httpPost(urlString, MyServices.getLoginDataFromPref(mContext), postParams);
+        jsonData = Common.httpPost(urlString, Common.getLoginDataFromPref(mContext), postParams);
         return getCourseDataFromJson(jsonData);
     }
 

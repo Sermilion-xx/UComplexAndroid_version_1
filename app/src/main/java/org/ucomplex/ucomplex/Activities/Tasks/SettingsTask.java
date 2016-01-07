@@ -7,17 +7,12 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
-import android.widget.Toast;
-
-import com.google.gson.Gson;
 
 import org.javatuples.Pair;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.ucomplex.ucomplex.Activities.LibraryActivity;
 import org.ucomplex.ucomplex.Common;
 import org.ucomplex.ucomplex.Model.Users.User;
-import org.ucomplex.ucomplex.MyServices;
 
 import java.util.HashMap;
 
@@ -55,7 +50,7 @@ public class SettingsTask extends AsyncTask<Pair<String, String>, Void, String> 
         HashMap<String, String> httpParams = new HashMap<>();
         httpParams.put(params[0].getValue0(), params[0].getValue1());
         httpParams.put(params[1].getValue0(), params[1].getValue1());
-        String response = Common.httpPost(url, MyServices.getLoginDataFromPref(context), httpParams);
+        String response = Common.httpPost(url, Common.getLoginDataFromPref(context), httpParams);
         try {
             JSONObject responseJson = new JSONObject(response);
             response = responseJson.getString("status");
@@ -70,7 +65,7 @@ public class SettingsTask extends AsyncTask<Pair<String, String>, Void, String> 
             if (s.equals("success")) {
                 SharedPreferences.Editor prefsEditor = PreferenceManager.getDefaultSharedPreferences(context).edit();
                 prefsEditor.putBoolean("logged", false).apply();
-                User user = MyServices.getUserDataFromPref(context);
+                User user = Common.getUserDataFromPref(context);
                 if(change.getValue0().equals("phone")){
                     user.setPhone(change.getValue1());
                     type = 3;
@@ -83,7 +78,7 @@ public class SettingsTask extends AsyncTask<Pair<String, String>, Void, String> 
                 }else if(change.getValue0().equals("privacy")){
                     type = 4;
                 }
-                MyServices.setUserDataToPref(context, user);
+                Common.setUserDataToPref(context, user);
 
                 onComplete();
             }

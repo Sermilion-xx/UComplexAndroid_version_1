@@ -30,7 +30,6 @@ import org.ucomplex.ucomplex.Activities.Tasks.SettingsTask;
 import org.ucomplex.ucomplex.Activities.Tasks.UploadPhotoTask;
 import org.ucomplex.ucomplex.Common;
 import org.ucomplex.ucomplex.Model.Users.User;
-import org.ucomplex.ucomplex.MyServices;
 import org.ucomplex.ucomplex.R;
 
 import java.io.ByteArrayOutputStream;
@@ -67,12 +66,12 @@ public class SettingsActivity extends AppCompatActivity implements OnTaskComplet
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        user = MyServices.getUserDataFromPref(this);
+        user = Common.getUserDataFromPref(this);
         FetchProfileTask fetchProfileTask = new FetchProfileTask(this,this);
         fetchProfileTask.execute();
         //Photo settings
         photoImageView = (ImageView) findViewById(R.id.settings_photo);
-        Bitmap photoBitmap = MyServices.decodePhotoPref(context, "tempProfilePhoto");
+        Bitmap photoBitmap = Common.decodePhotoPref(context, "tempProfilePhoto");
         photoImageView.setImageBitmap(photoBitmap);
         photoImageView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -420,7 +419,7 @@ public class SettingsActivity extends AppCompatActivity implements OnTaskComplet
                     if ((Integer) task.get() == 200) {
                         Toast.makeText(this, "Ваше фото отправленно на модерацию", Toast.LENGTH_LONG)
                                 .show();
-                        MyServices.encodePhotoPref(context, profileBitmap, "tempProfilePhoto");
+                        Common.encodePhotoPref(context, profileBitmap, "tempProfilePhoto");
                     } else {
                         Toast.makeText(this, "Произошла ошибка", Toast.LENGTH_LONG)
                                 .show();
@@ -436,7 +435,7 @@ public class SettingsActivity extends AppCompatActivity implements OnTaskComplet
                         .show();
             } else {
                   try {
-                       user = MyServices.getUserDataFromPref(this);
+                       user = Common.getUserDataFromPref(this);
                        if (task.get().equals("success")) {
                             if((int)o[0]==3) {
                                 String phone = formatPhoneNumber(user.getPhone());

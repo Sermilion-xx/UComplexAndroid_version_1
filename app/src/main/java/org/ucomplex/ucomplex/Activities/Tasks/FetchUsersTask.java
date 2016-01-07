@@ -1,7 +1,6 @@
 package org.ucomplex.ucomplex.Activities.Tasks;
 
 import android.app.Activity;
-import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.widget.BaseAdapter;
 
@@ -13,7 +12,6 @@ import org.ucomplex.ucomplex.Model.Users.Administrator;
 import org.ucomplex.ucomplex.Model.Users.Student;
 import org.ucomplex.ucomplex.Model.Users.Teacher;
 import org.ucomplex.ucomplex.Model.Users.User;
-import org.ucomplex.ucomplex.MyServices;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -69,7 +67,7 @@ public class FetchUsersTask extends AsyncTask<Integer, Void, ArrayList<User>> {
 
         }
 
-        String jsonData = Common.httpPost(urlString, MyServices.getLoginDataFromPref(mContext),postData);
+        String jsonData = Common.httpPost(urlString, Common.getLoginDataFromPref(mContext),postData);
         onlineUserList = getUserDataFromJson(jsonData, params[0]);
         return onlineUserList;
     }

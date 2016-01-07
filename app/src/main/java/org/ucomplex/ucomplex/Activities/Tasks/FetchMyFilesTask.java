@@ -16,7 +16,6 @@ import org.ucomplex.ucomplex.Activities.MyFilesActivity;
 import org.ucomplex.ucomplex.Common;
 import org.ucomplex.ucomplex.Model.StudyStructure.File;
 import org.ucomplex.ucomplex.Model.Users.User;
-import org.ucomplex.ucomplex.MyServices;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -59,9 +58,9 @@ public class FetchMyFilesTask extends AsyncTask<String, String, ArrayList<File>>
         String jsonData = "";
         if(params.length>0){
             httpParams.put("folder", params[0]);
-            jsonData = Common.httpPost(urlString, MyServices.getLoginDataFromPref(mContext),httpParams);
+            jsonData = Common.httpPost(urlString, Common.getLoginDataFromPref(mContext),httpParams);
         }else{
-            jsonData = Common.httpPost(urlString, MyServices.getLoginDataFromPref(mContext));
+            jsonData = Common.httpPost(urlString, Common.getLoginDataFromPref(mContext));
         }
 
         return getFileDataFromJson(jsonData);

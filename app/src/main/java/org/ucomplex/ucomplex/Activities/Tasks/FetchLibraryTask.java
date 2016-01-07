@@ -3,7 +3,6 @@ package org.ucomplex.ucomplex.Activities.Tasks;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.AsyncTask;
 
 import org.javatuples.Quintet;
@@ -12,7 +11,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.ucomplex.ucomplex.Activities.LibraryActivity;
 import org.ucomplex.ucomplex.Common;
-import org.ucomplex.ucomplex.MyServices;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -58,26 +56,26 @@ public class FetchLibraryTask extends AsyncTask<Integer, String, ArrayList> impl
             //collections  collections (0) - > all_selections (1) - > open_selection (selection - 45, pure - 1) (2)
             //категории
             urlString = "https://chgu.org/user/collections?mobile=1";
-            jsonData = Common.httpPost(urlString, MyServices.getLoginDataFromPref(mContext));
+            jsonData = Common.httpPost(urlString, Common.getLoginDataFromPref(mContext));
             return getCollectionDataFromJson(jsonData);
         }else if(params[0]==1){
             //all selections
             //просто категории
             urlString = "https://chgu.org/user/collections/all_sections?mobile=1";
-            jsonData = Common.httpPost(urlString, MyServices.getLoginDataFromPref(mContext));
+            jsonData = Common.httpPost(urlString, Common.getLoginDataFromPref(mContext));
             return getSectionDataFromJson(jsonData);
         }else if(params[0]==2){
             //single selection
             urlString = "https://chgu.org/user/collections/open_section?mobile=1";
             httpParams.put("pure", "1");
             httpParams.put("collections_sections",String.valueOf(params[1]));
-            jsonData = Common.httpPost(urlString, MyServices.getLoginDataFromPref(mContext), httpParams);
+            jsonData = Common.httpPost(urlString, Common.getLoginDataFromPref(mContext), httpParams);
             return getBookDataFromJson(jsonData);
         }else if(params[0]==3){
             //all books for category
             urlString = "https://chgu.org/user/collections/open_collection?mobile=1";
             httpParams.put("collection",String.valueOf(params[1]));
-            jsonData = Common.httpPost(urlString, MyServices.getLoginDataFromPref(mContext), httpParams);
+            jsonData = Common.httpPost(urlString, Common.getLoginDataFromPref(mContext), httpParams);
             return getSectionDataFromJson(jsonData);
         }
 

@@ -14,7 +14,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.ByteArrayBody;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.ucomplex.ucomplex.MyServices;
+import org.ucomplex.ucomplex.Common;
 
 import java.nio.charset.StandardCharsets;
 
@@ -53,7 +53,7 @@ public class UploadPhotoTask extends AsyncTask<Object, Void, Integer> implements
             entity.addPart("photo", fileBody);
             httpPost.setEntity(entity);
 
-            String auth = MyServices.getLoginDataFromPref(context);
+            String auth = Common.getLoginDataFromPref(context);
             final byte[] authBytes = auth.getBytes(StandardCharsets.UTF_8);
             int flags = Base64.NO_WRAP | Base64.URL_SAFE;
             final String encoded = Base64.encodeToString(authBytes, flags);

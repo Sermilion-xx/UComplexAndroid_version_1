@@ -1,7 +1,6 @@
 package org.ucomplex.ucomplex.Fragments;
 
 import android.app.Activity;
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
@@ -20,13 +19,11 @@ import android.widget.Toast;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.ucomplex.ucomplex.Activities.Tasks.FetchPersonTask;
-import org.ucomplex.ucomplex.Activities.Tasks.IProgressTracker;
 import org.ucomplex.ucomplex.Activities.Tasks.OnTaskCompleteListener;
 import org.ucomplex.ucomplex.Common;
 import org.ucomplex.ucomplex.Model.StudyStructure.Course;
 import org.ucomplex.ucomplex.Model.Users.Teacher;
 import org.ucomplex.ucomplex.Model.Users.User;
-import org.ucomplex.ucomplex.MyServices;
 import org.ucomplex.ucomplex.R;
 
 import java.text.DecimalFormat;
@@ -280,7 +277,7 @@ public class CourseInfoFragment extends Fragment implements OnTaskCompleteListen
     class HandleMenuPress extends AsyncTask <Object, Void, Void> {
         @Override
         protected Void doInBackground(Object... params) {
-            Common.httpPost((String) params[0], MyServices.getLoginDataFromPref(getContext()), (HashMap<String, String>) params[1]);
+            Common.httpPost((String) params[0], Common.getLoginDataFromPref(getContext()), (HashMap<String, String>) params[1]);
             return null;
         }
     }

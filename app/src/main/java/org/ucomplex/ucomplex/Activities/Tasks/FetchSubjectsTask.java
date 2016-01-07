@@ -10,10 +10,8 @@ import org.javatuples.Triplet;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.ucomplex.ucomplex.Activities.CourseActivity;
 import org.ucomplex.ucomplex.Activities.SubjectsActivity;
 import org.ucomplex.ucomplex.Common;
-import org.ucomplex.ucomplex.MyServices;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -52,7 +50,7 @@ public class FetchSubjectsTask extends AsyncTask<Void, String, ArrayList<Triplet
     @Override
     protected ArrayList<Triplet<String, String, Integer>> doInBackground(Void... params) {
         String urlString = "http://you.com.ru/student/subjects_list?json";
-        String jsonData = Common.httpPost(urlString, MyServices.getLoginDataFromPref(mContext));
+        String jsonData = Common.httpPost(urlString, Common.getLoginDataFromPref(mContext));
         return getSubjectDataFromJson(jsonData);
     }
 

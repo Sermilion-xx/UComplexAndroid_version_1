@@ -13,7 +13,6 @@ import org.ucomplex.ucomplex.Model.Calendar.ChangedDay;
 import org.ucomplex.ucomplex.Model.Calendar.Lesson;
 import org.ucomplex.ucomplex.Model.Calendar.Timetable;
 import org.ucomplex.ucomplex.Model.Calendar.UCCalendar;
-import org.ucomplex.ucomplex.MyServices;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -53,9 +52,9 @@ public class FetchCalendarTask extends AsyncTask<String, String, UCCalendar> {
             postParams = new HashMap<>();
             postParams.put("month", String.valueOf(params[0]));
             postParams.put("time", String.valueOf(params[1]));
-            jsonData = Common.httpPost(urlString, MyServices.getLoginDataFromPref(mContext),postParams);
+            jsonData = Common.httpPost(urlString, Common.getLoginDataFromPref(mContext),postParams);
         } else {
-            jsonData = Common.httpPost(urlString, MyServices.getLoginDataFromPref(mContext));
+            jsonData = Common.httpPost(urlString, Common.getLoginDataFromPref(mContext));
         }
         publishProgress("50%");
         if(jsonData == null){

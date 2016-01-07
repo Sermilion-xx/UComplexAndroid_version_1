@@ -13,7 +13,6 @@ import org.ucomplex.ucomplex.Activities.MessagesActivity;
 import org.ucomplex.ucomplex.Common;
 import org.ucomplex.ucomplex.Model.Message;
 import org.ucomplex.ucomplex.Model.Users.User;
-import org.ucomplex.ucomplex.MyServices;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,7 +20,7 @@ import java.util.HashMap;
 /**
  * Created by Sermilion on 31/12/2015.
  */
-public class FetchMessagesTask extends AsyncTask<String, String, ArrayList> implements IProgressTracker, DialogInterface.OnCancelListener {
+public class FetchMessagesTask extends AsyncTask<String, String, ArrayList> implements DialogInterface.OnCancelListener {
 
     Activity mContext;
     MessagesActivity caller;
@@ -39,20 +38,20 @@ public class FetchMessagesTask extends AsyncTask<String, String, ArrayList> impl
     private String mProgressMessage;
     private IProgressTracker mProgressTracker;
     private final OnTaskCompleteListener mTaskCompleteListener;
-    private final ProgressDialog mProgressDialog;
+//    private final ProgressDialog mProgressDialog;
 
     public FetchMessagesTask(Activity context, OnTaskCompleteListener taskCompleteListener) {
         this.mContext = context;
         this.caller = (MessagesActivity) mContext;
         this.mTaskCompleteListener = taskCompleteListener;
-        mProgressDialog = new ProgressDialog(context);
-        mProgressDialog.setIndeterminate(true);
-        mProgressDialog.setCancelable(true);
-        mProgressDialog.setOnCancelListener(this);
+//        mProgressDialog = new ProgressDialog(context);
+//        mProgressDialog.setIndeterminate(true);
+//        mProgressDialog.setCancelable(true);
+//        mProgressDialog.setOnCancelListener(this);
     }
 
     public void setupTask(String ... params) {
-        this.setProgressTracker(this);
+//        this.setProgressTracker(this);
         this.execute(params);
     }
 
@@ -72,7 +71,7 @@ public class FetchMessagesTask extends AsyncTask<String, String, ArrayList> impl
             httpParams.put("new","1");
 
         }
-        jsonData = Common.httpPost(urlString, MyServices.getLoginDataFromPref(mContext),httpParams);
+        jsonData = Common.httpPost(urlString, Common.getLoginDataFromPref(mContext),httpParams);
 
         if(type==0){
             return getMessageData(jsonData);
@@ -95,7 +94,7 @@ public class FetchMessagesTask extends AsyncTask<String, String, ArrayList> impl
             message.setFrom(messageJson.getInt("from"));
             message.setMessage(messageJson.getString("message"));
             message.setTime(messageJson.getString("time"));
-            message.setName(MyServices.messageCompanionName);
+            message.setName(Common.messageCompanionName);
             messagesList.add(message);
             return messagesList;
         }catch (JSONException e) {
@@ -105,7 +104,7 @@ public class FetchMessagesTask extends AsyncTask<String, String, ArrayList> impl
     }
 
     private ArrayList getMessageData(String jsonData) {
-        User user = MyServices.getUserDataFromPref(mContext);
+        User user = Common.getUserDataFromPref(mContext);
         int person = user.getPerson();
         String myName = user.getName();
         user = null;
@@ -123,13 +122,15 @@ public class FetchMessagesTask extends AsyncTask<String, String, ArrayList> impl
                 message.setId(messageJson.getInt("id"));
                 message.setFrom(messageJson.getInt("from"));
                 message.setMessage(messageJson.getString("message"));
-                message.setStatus(messageJson.getInt("status"));
+                try{
+                    message.setStatus(messageJson.getInt("status"));
+                }catch (JSONException ignored){}
                 message.setTime(messageJson.getString("time"));
                 messagesList.add(message);
                 if(messageJson.getInt("from")!=person){
                     message.setName(companionJson.getString("name"));
-                    if(MyServices.messageCompanionName.equals("-")){
-                        MyServices.messageCompanionName = companionJson.getString("name");
+                    if(Common.messageCompanionName.equals("-")){
+                        Common.messageCompanionName = companionJson.getString("name");
                     }
                 }else{
                     message.setName(myName);
@@ -151,11 +152,12 @@ public class FetchMessagesTask extends AsyncTask<String, String, ArrayList> impl
     @Override
     protected void onPostExecute(ArrayList arrayList) {
         super.onPostExecute(arrayList);
-        if (mProgressTracker != null) {
-            mProgressTracker.onComplete();
-        }
-        // Detach from progress tracker
-        mProgressTracker = null;
+        mTaskCompleteListener.onTaskComplete(this);
+//        if (mProgressTracker != null) {
+//            mProgressTracker.onComplete();
+//        }
+//        // Detach from progress tracker
+//        mProgressTracker = null;
     }
 
     public void setProgressTracker(IProgressTracker progressTracker) {
@@ -168,19 +170,19 @@ public class FetchMessagesTask extends AsyncTask<String, String, ArrayList> impl
         }
     }
 
-    @Override
-    public void onProgress(String message) {
-        if (!mProgressDialog.isShowing()) {
-            mProgressDialog.show();
-        }
-        mProgressDialog.setMessage(message);
-    }
+//    @Override
+//    public void onProgress(String message) {
+//        if (!mProgressDialog.isShowing()) {
+//            mProgressDialog.show();
+//        }
+//        mProgressDialog.setMessage(message);
+//    }
 
-    @Override
-    public void onComplete() {
-        mTaskCompleteListener.onTaskComplete(this);
-        mProgressDialog.dismiss();
-    }
+//    @Override
+//    public void onComplete() {
+//        mTaskCompleteListener.onTaskComplete(this);
+////        mProgressDialog.dismiss();
+//    }
 
     @Override
     public void onCancel(DialogInterface dialog) {

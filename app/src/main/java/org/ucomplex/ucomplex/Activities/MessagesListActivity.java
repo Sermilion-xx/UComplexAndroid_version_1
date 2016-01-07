@@ -13,12 +13,15 @@ import android.widget.Toast;
 
 
 import org.ucomplex.ucomplex.Activities.Tasks.FetchDialogsTask;
+import org.ucomplex.ucomplex.Activities.Tasks.FetchMessagesTask;
 import org.ucomplex.ucomplex.Activities.Tasks.OnTaskCompleteListener;
 import org.ucomplex.ucomplex.Adaptors.MessagesListAdapter;
 import org.ucomplex.ucomplex.Model.Dialog;
 import org.ucomplex.ucomplex.R;
 
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.ExecutionException;
 
 public class MessagesListActivity extends AppCompatActivity implements OnTaskCompleteListener {
@@ -36,6 +39,7 @@ public class MessagesListActivity extends AppCompatActivity implements OnTaskCom
         FetchDialogsTask fetchDialogsTask = new FetchDialogsTask(this, this);
         fetchDialogsTask.setupTask();
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -56,18 +60,19 @@ public class MessagesListActivity extends AppCompatActivity implements OnTaskCom
         } else {
             try {
                 dialogs = (ArrayList<Dialog>) task.get();
-                MessagesListAdapter messagesListAdapter = new MessagesListAdapter(this,dialogs);
-                ListView listView = (ListView) findViewById(R.id.messages_listview);
-                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position,
-                                            long id) {
-                        Intent intent = new Intent(MessagesListActivity.this, MessagesActivity.class);
-                        intent.putExtra("companion", String.valueOf(dialogs.get(position).getCompanion()));
-                        startActivity(intent);
-                    }
-                });
-                listView.setAdapter(messagesListAdapter);
+                if(dialogs!=null && dialogs.size()>0){
+                    MessagesListAdapter messagesListAdapter = new MessagesListAdapter(this,dialogs);
+                    ListView listView = (ListView) findViewById(R.id.messages_listview);
+                    listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                            Intent intent = new Intent(MessagesListActivity.this, MessagesActivity.class);
+                            intent.putExtra("companion", String.valueOf(dialogs.get(position).getCompanion()));
+                            startActivity(intent);
+                        }
+                    });
+                    listView.setAdapter(messagesListAdapter);
+                }
             } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();
             }

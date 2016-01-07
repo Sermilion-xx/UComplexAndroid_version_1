@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
@@ -17,11 +18,13 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.util.Base64;
 import android.view.LayoutInflater;
 
 import com.amulyakhare.textdrawable.TextDrawable;
+import com.google.gson.Gson;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 
 import org.json.JSONException;
@@ -29,6 +32,7 @@ import org.json.JSONObject;
 import org.ucomplex.ucomplex.Model.Users.User;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -86,22 +90,22 @@ public class Common {
         final String encoded = Base64.encodeToString(authBytes, flags);
         try {
             URL url = new URL(urlString);
-            MyServices.connection = (HttpURLConnection) url.openConnection();
-            MyServices.connection.setConnectTimeout(5000);
-            MyServices.connection.setRequestMethod("POST");
-            MyServices.connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-            MyServices.connection.setRequestProperty("Content-Length", "" + Integer.toString(dataUrlParameters.getBytes().length));
-            MyServices.connection.setRequestProperty("Content-Language", "en-US");
-            MyServices.connection.setRequestProperty("Authorization", "Basic " + encoded);
-            MyServices.connection.setUseCaches(false);
-            MyServices.connection.setDoInput(true);
-            MyServices.connection.setDoOutput(true);
+            connection = (HttpURLConnection) url.openConnection();
+            connection.setConnectTimeout(5000);
+            connection.setRequestMethod("POST");
+            connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+            connection.setRequestProperty("Content-Length", "" + Integer.toString(dataUrlParameters.getBytes().length));
+            connection.setRequestProperty("Content-Language", "en-US");
+            connection.setRequestProperty("Authorization", "Basic " + encoded);
+            connection.setUseCaches(false);
+            connection.setDoInput(true);
+            connection.setDoOutput(true);
             DataOutputStream wr = new DataOutputStream(
-                    MyServices.connection.getOutputStream());
+                    connection.getOutputStream());
             wr.writeBytes(dataUrlParameters);
             wr.flush();
             wr.close();
-            InputStream is = MyServices.connection.getInputStream();
+            InputStream is = connection.getInputStream();
             BufferedReader rd = new BufferedReader(new InputStreamReader(is));
             String line;
             StringBuilder response = new StringBuilder();
@@ -115,8 +119,8 @@ public class Common {
             e.printStackTrace();
             return null;
         } finally {
-            if (MyServices.connection != null) {
-                MyServices.connection.disconnect();
+            if (connection != null) {
+                connection.disconnect();
             }
         }
     }
@@ -291,6 +295,58 @@ public class Common {
     }
 
 
+    public static int logingRole;
+    public static HttpURLConnection connection;
+    public static String lang_version;
+    public static String X_UVERSION;
+    public static int usersDataChanged=-1;
+    public static String messageCompanionName = "-";
+
+    public static String getLoginDataFromPref(Context mContext){
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(mContext);
+        Gson gson = new Gson();
+        String json = pref.getString("loggedUser", "");
+        User obj = gson.fromJson(json, User.class);
+        return obj.getLogin()+":"+obj.getPass()+":"+obj.getRoles().get(0).getId();
+    }
+
+    public static User getUserDataFromPref(Context mContext){
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(mContext);
+        Gson gson = new Gson();
+        String json = pref.getString("loggedUser", "");
+        User obj = gson.fromJson(json, User.class);
+        return obj;
+    }
+
+    public static void setUserDataToPref(Context mContext, User user){
+        SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(mContext).edit();
+        Gson gson = new Gson();
+        String json = gson.toJson(user);
+        editor.putString("loggedUser", json);
+        editor.apply();
+    }
+
+    public static Bitmap decodePhotoPref(Context context, String typeStr){
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
+        String encoded = pref.getString(typeStr, "");
+        if(encoded.length()>0){
+            int flags = Base64.NO_WRAP | Base64.URL_SAFE;
+            byte[] imageAsBytes = Base64.decode(encoded.getBytes(), flags);
+            Bitmap photoBitmap = BitmapFactory.decodeByteArray(imageAsBytes, 0, imageAsBytes.length);
+            return photoBitmap;
+        }
+        return null;
+    }
+
+    public static void encodePhotoPref(Context context, Bitmap photoBitmap, String typeStr){
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        photoBitmap.compress(Bitmap.CompressFormat.PNG, 100, baos); //bm is the bitmap object
+        byte[] b = baos.toByteArray();
+        String encoded = Base64.encodeToString(b, Base64.URL_SAFE);
+        SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(context).edit();
+        editor.putString(typeStr, encoded);
+        editor.apply();
+    }
 
 
 

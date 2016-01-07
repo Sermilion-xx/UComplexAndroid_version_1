@@ -12,7 +12,6 @@ import org.ucomplex.ucomplex.Activities.CourseActivity;
 import org.ucomplex.ucomplex.Common;
 import org.ucomplex.ucomplex.Model.StudyStructure.File;
 import org.ucomplex.ucomplex.Model.Users.User;
-import org.ucomplex.ucomplex.MyServices;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -57,7 +56,7 @@ public class FetchTeacherFilesTask extends AsyncTask<String, String, ArrayList> 
         String urlString = "https://chgu.org/student/ajax/teacher_files?mobile=1";
         HashMap<String, String> httpParams = new HashMap<>();
         httpParams.put("folder", params[0]);
-        String jsonData = Common.httpPost(urlString, MyServices.getLoginDataFromPref(mContext),httpParams);
+        String jsonData = Common.httpPost(urlString, Common.getLoginDataFromPref(mContext),httpParams);
         fileArrayList = getFileDataFromJson(jsonData);
         return fileArrayList;
     }

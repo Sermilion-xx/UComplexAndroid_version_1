@@ -23,7 +23,6 @@ import org.ucomplex.ucomplex.Activities.SettingsActivity;
 import org.ucomplex.ucomplex.Activities.SubjectsActivity;
 import org.ucomplex.ucomplex.Activities.UsersActivity;
 import org.ucomplex.ucomplex.Activities.WebViewActivity;
-import org.ucomplex.ucomplex.MyServices;
 import org.ucomplex.ucomplex.R;
 
 /**

@@ -12,7 +12,6 @@ import org.json.JSONObject;
 import org.ucomplex.ucomplex.Activities.MessagesListActivity;
 import org.ucomplex.ucomplex.Common;
 import org.ucomplex.ucomplex.Model.Dialog;
-import org.ucomplex.ucomplex.MyServices;
 
 import java.util.ArrayList;
 
@@ -49,7 +48,7 @@ public class FetchDialogsTask extends AsyncTask<Integer, String, ArrayList> impl
     @Override
     protected ArrayList doInBackground(Integer... params) {
         String urlString = "https://chgu.org/user/messages?mobile=1";
-        String jsonData = Common.httpPost(urlString, MyServices.getLoginDataFromPref(mContext));
+        String jsonData = Common.httpPost(urlString, Common.getLoginDataFromPref(mContext));
         return getDialogsFromJson(jsonData);
     }
 
