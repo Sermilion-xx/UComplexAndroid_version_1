@@ -66,13 +66,14 @@ public class FetchMessagesTask extends AsyncTask<String, String, ArrayList> impl
         }else if(type==1){
             urlString = "https://chgu.org/user/messages/add?mobile=1";
             httpParams.put("msg",params[1]);
+            if(params.length>2){
+                httpParams.put("file" , params[2]);
+            }
         }else if(type==2){
             urlString = "http://you.com.ru/user/messages/list?mobile=1";
             httpParams.put("new","1");
-
         }
         jsonData = Common.httpPost(urlString, Common.getLoginDataFromPref(mContext),httpParams);
-
         if(type==0){
             return getMessageData(jsonData);
         }else if(type==1){
@@ -80,7 +81,6 @@ public class FetchMessagesTask extends AsyncTask<String, String, ArrayList> impl
         }else if(type==2){
             return getMessageData(jsonData);
         }
-
         return getMessageData(jsonData);
     }
 
@@ -153,11 +153,6 @@ public class FetchMessagesTask extends AsyncTask<String, String, ArrayList> impl
     protected void onPostExecute(ArrayList arrayList) {
         super.onPostExecute(arrayList);
         mTaskCompleteListener.onTaskComplete(this);
-//        if (mProgressTracker != null) {
-//            mProgressTracker.onComplete();
-//        }
-//        // Detach from progress tracker
-//        mProgressTracker = null;
     }
 
     public void setProgressTracker(IProgressTracker progressTracker) {
@@ -169,20 +164,6 @@ public class FetchMessagesTask extends AsyncTask<String, String, ArrayList> impl
             }
         }
     }
-
-//    @Override
-//    public void onProgress(String message) {
-//        if (!mProgressDialog.isShowing()) {
-//            mProgressDialog.show();
-//        }
-//        mProgressDialog.setMessage(message);
-//    }
-
-//    @Override
-//    public void onComplete() {
-//        mTaskCompleteListener.onTaskComplete(this);
-////        mProgressDialog.dismiss();
-//    }
 
     @Override
     public void onCancel(DialogInterface dialog) {

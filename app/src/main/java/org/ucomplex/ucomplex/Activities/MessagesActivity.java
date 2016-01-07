@@ -1,28 +1,32 @@
 package org.ucomplex.ucomplex.Activities;
 
-import android.app.Activity;
-import android.app.AlarmManager;
-import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.MenuItem;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.apache.http.entity.mime.content.ByteArrayBody;
 import org.ucomplex.ucomplex.Activities.Tasks.FetchMessagesTask;
 import org.ucomplex.ucomplex.Activities.Tasks.OnTaskCompleteListener;
+import org.ucomplex.ucomplex.Activities.Tasks.UploadPhotoTask;
 import org.ucomplex.ucomplex.Adaptors.MessagesAdapter;
+import org.ucomplex.ucomplex.Common;
 import org.ucomplex.ucomplex.Model.Message;
 import org.ucomplex.ucomplex.R;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -34,8 +38,10 @@ public class MessagesActivity extends AppCompatActivity implements OnTaskComplet
     ListView listView;
     String companion;
     MessagesAdapter messagesAdapter;
-
-
+    String filePath;
+    boolean file = false;
+    private static final int FILE_SELECT_CODE = 0;
+    ByteArrayBody contentBody;
 
                 @Override
                 protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +64,26 @@ public class MessagesActivity extends AppCompatActivity implements OnTaskComplet
                         public void onClick(View v) {
                             FetchMessagesTask sendMessageTask = new FetchMessagesTask(MessagesActivity.this, MessagesActivity.this);
                             sendMessageTask.setType(1);
-                            sendMessageTask.setupTask(companion, messageTextView.getText().toString());
+                            if(file){
+                                final String message = messageTextView.getText().toString();
+                                new AsyncTask<String,Void,Void>(){
+                                    @Override
+                                    protected Void doInBackground(String... params) {
+                                        Common.uploadFile(filePath, companion, message, params[0]);
+                                        return null;
+                                    }
+                                }.execute(Common.getLoginDataFromPref(MessagesActivity.this));
+                            }else{
+                                sendMessageTask.setupTask(companion, messageTextView.getText().toString());
+                            }
+                        }
+                    });
+
+                    Button sendFileButton = (Button) findViewById(R.id.messages_file_button);
+                    sendFileButton.setOnClickListener(new View.OnClickListener() {
+                        public void onClick(View v) {
+                            file = true;
+                            showFileChooser();
                         }
                     });
 
@@ -73,14 +98,70 @@ public class MessagesActivity extends AppCompatActivity implements OnTaskComplet
 
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                onBackPressed();
-                return true;
+    private void showFileChooser() {
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("*/*");
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+
+        try {
+            startActivityForResult(
+                    Intent.createChooser(intent, "Select a File to Upload"),
+                    FILE_SELECT_CODE);
+        } catch (android.content.ActivityNotFoundException ex) {
+            // Potentially direct the user to the Market with a Dialog
+            Toast.makeText(this, "Please install a File Manager.",
+                    Toast.LENGTH_SHORT).show();
         }
-        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case FILE_SELECT_CODE:
+                if (resultCode == RESULT_OK) {
+                    // Get the Uri of the selected file
+                    Uri uri = data.getData();
+                    Log.d("", "File Uri: " + uri.toString());
+                    // Get the path
+                    String path = null;
+                    try {
+                        path = Common.getPath(this, uri);
+                    } catch (URISyntaxException e) {
+                        e.printStackTrace();
+                    }
+                    Log.d("", "File Path: " + path);
+                    filePath = path;
+                    byte[] fileByte = fileToByte(path);
+                    contentBody = new ByteArrayBody(fileByte, "filename");
+
+                }
+                break;
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    public byte[] fileToByte(String filePath){
+        File file = new File(filePath);
+        try {
+        FileInputStream fis = new FileInputStream(file);
+        //System.out.println(file.exists() + "!!");
+        //InputStream in = resource.openStream();
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        byte[] buf = new byte[1024];
+        try {
+            for (int readNum; (readNum = fis.read(buf)) != -1;) {
+                bos.write(buf, 0, readNum); //no doubt here is 0
+                //Writes len bytes from the specified byte array starting at offset off to this byte array output stream.
+                System.out.println("read " + readNum + " bytes,");
+            }
+        } catch (IOException ex) {}
+
+        return bos.toByteArray();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
 
@@ -92,28 +173,33 @@ public class MessagesActivity extends AppCompatActivity implements OnTaskComplet
                     .show();
         } else {
             try {
-                FetchMessagesTask fmt = (FetchMessagesTask) task;
-                if(fmt.getType()==0){
-                    messageArrayList = (ArrayList) task.get();
-                    messagesAdapter = new MessagesAdapter(this, messageArrayList);
-                    listView.setAdapter(messagesAdapter);
-                }else if(fmt.getType()==1 || fmt.getType()==2){
-                    ArrayList result = (ArrayList)task.get();
-                    if(result!=null && result.size()>0){
-                        messageArrayList.add((Message) result.get(0));
-                        if(result.size()>0){
-                            Toast.makeText(this, "Сообщение отправленно", Toast.LENGTH_LONG)
-                                    .show();
-                            messagesAdapter.notifyDataSetChanged();
-                        }else{
-                            Toast.makeText(this, "Ошибка при отправке сообщения", Toast.LENGTH_LONG)
-                                    .show();
+                if (task instanceof UploadPhotoTask) {
+
+                } else {
+                    FetchMessagesTask fmt = (FetchMessagesTask) task;
+                    if (fmt.getType() == 0) {
+                        messageArrayList = (ArrayList) task.get();
+                        messagesAdapter = new MessagesAdapter(this, messageArrayList);
+                        listView.setAdapter(messagesAdapter);
+                    } else if (fmt.getType() == 1 || fmt.getType() == 2) {
+                        ArrayList result = (ArrayList) task.get();
+                        if (result != null && result.size() > 0) {
+                            messageArrayList.add((Message) result.get(0));
+                            if (result.size() > 0) {
+                                Toast.makeText(this, "Сообщение отправленно", Toast.LENGTH_LONG)
+                                        .show();
+                                messagesAdapter.notifyDataSetChanged();
+                            } else {
+                                Toast.makeText(this, "Ошибка при отправке сообщения", Toast.LENGTH_LONG)
+                                        .show();
+                            }
                         }
                     }
                 }
-            } catch (InterruptedException | ExecutionException e) {
-                e.printStackTrace();
-            }
+                }catch(InterruptedException | ExecutionException e){
+                    e.printStackTrace();
+                }
+
         }
     }
 }

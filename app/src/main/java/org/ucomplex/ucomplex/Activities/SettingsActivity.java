@@ -415,7 +415,6 @@ public class SettingsActivity extends AppCompatActivity implements OnTaskComplet
                         .show();
             } else {
                 try {
-
                     if ((Integer) task.get() == 200) {
                         Toast.makeText(this, "Ваше фото отправленно на модерацию", Toast.LENGTH_LONG)
                                 .show();

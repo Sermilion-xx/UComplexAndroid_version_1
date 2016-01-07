@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -27,6 +28,17 @@ import com.amulyakhare.textdrawable.TextDrawable;
 import com.google.gson.Gson;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.mime.HttpMultipartMode;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
+import org.apache.http.entity.mime.content.FileBody;
+import org.apache.http.entity.mime.content.StringBody;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.ucomplex.ucomplex.Model.Users.User;
@@ -34,6 +46,7 @@ import org.ucomplex.ucomplex.Model.Users.User;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -41,8 +54,10 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.SocketTimeoutException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -71,6 +86,59 @@ public class Common {
     private LayoutInflater inflater;
     private DisplayImageOptions options;
 
+
+    @TargetApi(Build.VERSION_CODES.KITKAT)
+    public static void uploadFile(String path, String companion, String msg, String auth){
+        try{
+
+            File file = new File(path);
+            HttpPost httpPost = new HttpPost("http://you.com.ru/user/messages/add/");
+            final byte[] authBytes = auth.getBytes(StandardCharsets.UTF_8);
+            int flags = Base64.NO_WRAP | Base64.URL_SAFE;
+            final String encoded = Base64.encodeToString(authBytes, flags);
+            httpPost.setHeader("Authorization", "Basic " + encoded);
+            MultipartEntityBuilder builder = MultipartEntityBuilder
+                    .create();
+            builder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
+            Charset chars = Charset.forName("UTF-8");
+            builder.setCharset(chars);
+            if (file != null) {
+                FileBody fb = new FileBody(file);
+                builder.addPart("file", fb);
+            }
+
+            builder.addTextBody("companion", companion,
+                    ContentType.TEXT_PLAIN);
+            try {
+                builder.addPart("msg", new StringBody(msg, "text/plain",
+                        Charset.forName("UTF-8")));
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+            builder.setCharset(chars);
+
+            final HttpEntity yourEntity = builder.build();
+
+            httpPost.setEntity(yourEntity);
+
+            StringBuilder builderString = new StringBuilder();
+            DefaultHttpClient client = new DefaultHttpClient();
+            HttpResponse response = null;
+            response = client.execute(httpPost);
+            InputStream content = response.getEntity().getContent();
+            BufferedReader reader = new BufferedReader(
+                    new InputStreamReader(content));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                builderString.append(line);
+            }
+            String message = builderString.toString();
+            response.getEntity().consumeContent();
+            System.out.println();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
 
     @SafeVarargs
@@ -348,6 +416,125 @@ public class Common {
         editor.apply();
     }
 
+    public static String getPath(Context context, Uri uri) throws URISyntaxException {
+        if ("content".equalsIgnoreCase(uri.getScheme())) {
+            String[] projection = { "_data" };
+            Cursor cursor = null;
 
+            try {
+                cursor = context.getContentResolver().query(uri, projection, null, null, null);
+                int column_index = cursor.getColumnIndexOrThrow("_data");
+                if (cursor.moveToFirst()) {
+                    return cursor.getString(column_index);
+                }
+            } catch (Exception e) {
+                // Eat it
+            }
+        }
+        else if ("file".equalsIgnoreCase(uri.getScheme())) {
+            return uri.getPath();
+        }
+
+        return null;
+    }
+
+
+//    public static String httpPost(String urlString, String auth, HashMap<String, String>... postDataParams) {
+//        String lineEnd = "\r\n";
+//        String twoHyphens = "--";
+//        String boundary =  "*****";
+//        String dataUrlParameters = "";
+//        String pathToOurFile = "";
+//        FileInputStream fileInputStream = null;
+//        boolean sendFile = false;
+//        try {
+//            if(postDataParams.length>0){
+//                if(postDataParams[0].containsKey("file")){
+//                    sendFile = true;
+//                    pathToOurFile = postDataParams[0].get("file");
+//                    fileInputStream = new FileInputStream(new File(pathToOurFile) );
+//                }
+//                dataUrlParameters = getPostDataString(postDataParams[0]);
+//            }
+//        } catch (UnsupportedEncodingException | FileNotFoundException e) {
+//            e.printStackTrace();
+//        }
+//        final byte[] authBytes = auth.getBytes(StandardCharsets.UTF_8);
+//        int flags = Base64.NO_WRAP | Base64.URL_SAFE;
+//        final String encoded = Base64.encodeToString(authBytes, flags);
+//        try {
+//            URL url = new URL(urlString);
+//            connection = (HttpURLConnection) url.openConnection();
+//            connection.setConnectTimeout(5000);
+//            connection.setDoInput(true);
+//            connection.setDoOutput(true);
+//            connection.setUseCaches(false);
+//            connection.setRequestMethod("POST");
+//            connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+//            if(sendFile){
+//
+//            }else{
+//                connection.setRequestProperty("Content-Length", "" + Integer.toString(dataUrlParameters.getBytes().length));
+//            }
+//
+//            connection.setRequestProperty("Content-Language", "en-US");
+//            connection.setRequestProperty("Authorization", "Basic " + encoded);
+//            connection.setUseCaches(false);
+//            connection.setDoInput(true);
+//            connection.setDoOutput(true);
+//
+//            DataOutputStream dataOutputStream = new DataOutputStream(
+//                    connection.getOutputStream());
+//            dataOutputStream.writeBytes(dataUrlParameters);
+//
+//            if (sendFile) {
+//                dataOutputStream.writeBytes(twoHyphens + boundary + lineEnd);
+//                dataOutputStream.writeBytes("Content-Disposition: form-data; name=\"uploadedfile\";filename=\"" + pathToOurFile + "\"" + lineEnd);
+//                dataOutputStream.writeBytes(lineEnd);
+//
+//                int bytesRead, bytesAvailable, bufferSize;
+//                byte[] buffer;
+//                int maxBufferSize = 1024 * 1024;
+//
+//                assert fileInputStream != null;
+//                bytesAvailable = fileInputStream.available();
+//                bufferSize = Math.min(bytesAvailable, maxBufferSize);
+//                buffer = new byte[bufferSize];
+//                // Read file
+//                bytesRead = fileInputStream.read(buffer, 0, bufferSize);
+//
+//                while (bytesRead > 0) {
+//                    dataOutputStream.write(buffer, 0, bufferSize);
+//                    bytesAvailable = fileInputStream.available();
+//                    bufferSize = Math.min(bytesAvailable, maxBufferSize);
+//                    bytesRead = fileInputStream.read(buffer, 0, bufferSize);
+//                }
+//
+//                dataOutputStream.writeBytes(lineEnd);
+//                dataOutputStream.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd);
+//            }
+//
+//            dataOutputStream.flush();
+//            dataOutputStream.close();
+//
+//            InputStream is = connection.getInputStream();
+//            BufferedReader rd = new BufferedReader(new InputStreamReader(is));
+//            String line;
+//            StringBuilder response = new StringBuilder();
+//            while ((line = rd.readLine()) != null) {
+//                response.append(line);
+//                response.append('\r');
+//            }
+//            rd.close();
+//            return response.toString();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            return null;
+//        } finally {
+//            if (connection != null) {
+//                connection.disconnect();
+//            }
+//        }
+//    }
 
 }
