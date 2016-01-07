@@ -57,8 +57,9 @@ public class MessagesListAdapter extends ArrayAdapter<Dialog> {
 
     public View getView(final int position, View convertView, ViewGroup parent){
         ViewHolder viewHolder = null;
-        inflater = LayoutInflater.from(getContext());
+
         if(convertView==null) {
+            inflater = LayoutInflater.from(getContext());
             viewHolder = new ViewHolder();
             convertView = inflater.inflate(R.layout.list_item_messages_user, null);
             viewHolder.nameTextView = (TextView) convertView.findViewById(R.id.list_messages_user_name);

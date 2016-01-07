@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
@@ -20,7 +21,6 @@ import org.ucomplex.ucomplex.Activities.Tasks.FetchMessagesTask;
 import org.ucomplex.ucomplex.Activities.Tasks.OnTaskCompleteListener;
 import org.ucomplex.ucomplex.Adaptors.MessagesAdapter;
 import org.ucomplex.ucomplex.Model.Message;
-import org.ucomplex.ucomplex.MyService;
 import org.ucomplex.ucomplex.R;
 
 import java.util.ArrayList;
@@ -47,6 +47,7 @@ public class MessagesActivity extends AppCompatActivity implements OnTaskComplet
                     getSupportActionBar().setDisplayHomeAsUpEnabled(true);
                     companion = getIntent().getStringExtra("companion");
                     listView = (ListView) findViewById(R.id.list_messages_listview);
+                    listView.setScrollingCacheEnabled(false);
                     FetchMessagesTask fetchMessagesTask = new FetchMessagesTask(this, this);
                     fetchMessagesTask.setType(0);
                     fetchMessagesTask.setupTask(companion);
@@ -70,6 +71,16 @@ public class MessagesActivity extends AppCompatActivity implements OnTaskComplet
                         }
                     }, 0, 4000);
 
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
 

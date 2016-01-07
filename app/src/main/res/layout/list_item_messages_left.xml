@@ -9,7 +9,7 @@
     <de.hdodenhof.circleimageview.CircleImageView
         android:layout_width="35dp"
         android:layout_height="35dp"
-        android:src="@mipmap/ic_no_image"
+
         android:id="@+id/list_messages_message_left_image"
         android:layout_gravity="center_vertical"
         android:layout_alignParentBottom="false"

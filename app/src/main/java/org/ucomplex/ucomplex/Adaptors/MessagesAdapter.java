@@ -27,6 +27,9 @@ public class MessagesAdapter extends ArrayAdapter {
     private final Context context;
     ArrayList values = new ArrayList();
     Bitmap bitmap;
+    TextDrawable drawable;
+    User user;
+    int person;
 
     private static final int TYPE_OUT = 0;
     private static final int TYPE_IN = 1;
@@ -38,14 +41,15 @@ public class MessagesAdapter extends ArrayAdapter {
         if(values.get(values.size()-1) instanceof Bitmap){
             this.bitmap = (Bitmap) values.get(values.size());
         }
-
+        user = Common.getUserDataFromPref(context);
+        person = user.getPerson();
+        user = null;
     }
 
     @Override
     public int getItemViewType(int position) {
-        User user = Common.getUserDataFromPref(context);
         Message message = (Message) getItem(position);
-        if(message.getFrom() ==user.getPerson()){
+        if(message.getFrom() == person){
             return TYPE_OUT;
         }else{
             return TYPE_IN;
@@ -65,9 +69,11 @@ public class MessagesAdapter extends ArrayAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder viewHolder = null;
-        int viewType = getItemViewType(position);;
-        inflater = LayoutInflater.from(getContext());
+        int viewType = getItemViewType(position);
         if(convertView == null) {
+            if(inflater==null){
+                inflater = LayoutInflater.from(getContext());
+            }
             viewHolder = new ViewHolder();
             if (viewType == TYPE_OUT) {
                 convertView = inflater.inflate(R.layout.list_item_messages_right, null);
@@ -82,7 +88,6 @@ public class MessagesAdapter extends ArrayAdapter {
                 viewHolder.timeTextView = (TextView) convertView.findViewById(R.id.list_messages_message_left_time);
                 viewHolder.holderId = TYPE_IN;
             }
-
             if (convertView != null) {
                 convertView.setTag(viewHolder);
             }
@@ -93,21 +98,23 @@ public class MessagesAdapter extends ArrayAdapter {
         Message item = (Message) getItem(position);
 
         if(this.bitmap == null){
-            TextDrawable drawable;
+            if(drawable == null){
+                TextDrawable drawable;
                 String name = item.getName();
                 int colorCount = 16;
                 final int number = (item.getFrom() <= colorCount) ? item.getFrom() : item.getFrom() % colorCount;
-                drawable = TextDrawable.builder().beginConfig()
+                this.drawable = TextDrawable.builder().beginConfig()
                         .width(60)
                         .height(60)
                         .endConfig()
                         .buildRound(String.valueOf(name.split(" ")[1].charAt(0)), Common.getColor(number));
-
-            viewHolder.profileImageView.setImageDrawable(drawable);
+                viewHolder.profileImageView.setImageDrawable(this.drawable);
+            }else{
+                viewHolder.profileImageView.setImageDrawable(drawable);
+            }
         }else{
             viewHolder.profileImageView.setImageBitmap(this.bitmap);
         }
-
         viewHolder.messageTextView.setText(item.getMessage());
         viewHolder.timeTextView.setText(item.getTime().split(" ")[1]);
         return convertView;
