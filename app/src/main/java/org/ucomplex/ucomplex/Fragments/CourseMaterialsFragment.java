@@ -3,18 +3,14 @@ package org.ucomplex.ucomplex.Fragments;
 import android.app.Activity;
 import android.app.DownloadManager;
 import android.content.Context;
-import android.content.DialogInterface;
+
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.ListFragment;
-import android.support.v7.app.AlertDialog;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -24,19 +20,15 @@ import org.ucomplex.ucomplex.Activities.Tasks.OnTaskCompleteListener;
 import org.ucomplex.ucomplex.Adaptors.CourseMaterialsAdapter;
 import org.ucomplex.ucomplex.Common;
 import org.ucomplex.ucomplex.Model.StudyStructure.File;
-import org.ucomplex.ucomplex.R;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class CourseMaterialsFragment extends ListFragment{
 
     private ArrayList<File> mItems;
     private Activity mContext;
     private boolean myFiles = false;
-    private String folderCode;
     private CourseMaterialsAdapter adapter;
-
 
     public void setAdapter(CourseMaterialsAdapter adapter) {
         this.adapter = adapter;
@@ -105,17 +97,19 @@ public class CourseMaterialsFragment extends ListFragment{
         // retrieve theListView item
         File item = mItems.get(position);
         if(item.getType().equals("f")){
+            Common.folderCode = item.getAddress();
             if(!myFiles){
                 FetchTeacherFilesTask fetchTeacherFilesTask = new FetchTeacherFilesTask(mContext, (OnTaskCompleteListener) mContext);
                 fetchTeacherFilesTask.setOwner(item.getOwner());
                 fetchTeacherFilesTask.setupTask(item.getAddress());
-                folderCode = item.getAddress();
+
             }else{
                 FetchMyFilesTask fetchMyFilesTask = new FetchMyFilesTask(mContext, (OnTaskCompleteListener) mContext);
                 fetchMyFilesTask.setupTask(item.getAddress());
             }
 
         }else{
+            Common.folderCode = null;
             if(Common.isDownloadManagerAvailable(getContext())) {
                 final String UC_BASE_URL = "https://chgu.org/files/users/" +String.valueOf(item.getOwner().getId())+"/"+ item.getAddress() +"."+ item.getType();
                 DownloadManager.Request request = new DownloadManager.Request(Uri.parse(UC_BASE_URL));

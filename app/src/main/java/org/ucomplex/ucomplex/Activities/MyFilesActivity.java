@@ -89,6 +89,10 @@ public class MyFilesActivity extends AppCompatActivity implements OnTaskComplete
                 String url = "http://you.com.ru/student/my_files/create_folder?mobile=1";
                 HashMap<String, String> httpParams = new HashMap<String, String>();
                 httpParams.put("name", folderName);
+                if(Common.folderCode!=null){
+                    httpParams.put("folder", Common.folderCode);
+                }
+
                 String jsonData = Common.httpPost(url, Common.getLoginDataFromPref(MyFilesActivity.this),httpParams);
                 ArrayList<File> newFolder = Common.getFileDataFromJson(jsonData, MyFilesActivity.this);
                 return newFolder;
@@ -101,7 +105,6 @@ public class MyFilesActivity extends AppCompatActivity implements OnTaskComplete
             }
         }.execute();
     }
-
 
     protected void showInputDialog() {
         // get prompts.xml view
@@ -125,12 +128,11 @@ public class MyFilesActivity extends AppCompatActivity implements OnTaskComplete
                                 dialog.cancel();
                             }
                         });
-
         AlertDialog alert = alertDialogBuilder.create();
         alert.show();
     }
 
-    private void uplodFile(final String filePath, final String ... folderCode){
+    private void uplodFile(final String filePath){
         dialog = ProgressDialog.show(MyFilesActivity.this, "",
                 "Файл загружается...", true);
         dialog.show();
@@ -139,8 +141,9 @@ public class MyFilesActivity extends AppCompatActivity implements OnTaskComplete
             @Override
             protected ArrayList doInBackground(Void... params) {
                 String jsonData = "";
-                if(folderCode!=null){
-                    jsonData = Common.uploadFile(filePath, Common.getLoginDataFromPref(MyFilesActivity.this), folderCode);
+                if(Common.folderCode!=null){
+                    jsonData = Common.uploadFile(filePath, Common.getLoginDataFromPref(MyFilesActivity.this), Common.folderCode);
+
                 }else{
                     jsonData = Common.uploadFile(filePath, Common.getLoginDataFromPref(MyFilesActivity.this));
                 }
