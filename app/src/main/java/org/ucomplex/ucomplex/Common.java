@@ -30,8 +30,6 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.HttpMultipartMode;
@@ -39,6 +37,7 @@ import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.ucomplex.ucomplex.Model.Users.User;
@@ -47,13 +46,13 @@ import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
-import java.net.SocketTimeoutException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -74,7 +73,7 @@ import java.util.Map;
  */
 public class Common {
 
-
+    public static final int FILE_SELECT_CODE = 0;
 
     public static int getColor(int index) {
         String [] hexColors = {"#f6a6c1","#92d6eb","#4dd9e2","#68d9f0","#c69ad9","#ff83b6","#fda79d","#f8c092",
@@ -88,7 +87,7 @@ public class Common {
 
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
-    public static void uploadFile(String path, String companion, String msg, String auth){
+    public static void sendFile(String path, String companion, String msg, String auth){
         try{
 
             File file = new File(path);
@@ -138,6 +137,117 @@ public class Common {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @TargetApi(Build.VERSION_CODES.KITKAT)
+    public static String uploadFile(String path, String auth, String ... folder){
+        try{
+
+            File file = new File(path);
+            HttpPost httpPost = new HttpPost("http://you.com.ru/student/my_files/add_files?mobile=1");
+            final byte[] authBytes = auth.getBytes(StandardCharsets.UTF_8);
+            int flags = Base64.NO_WRAP | Base64.URL_SAFE;
+            final String encoded = Base64.encodeToString(authBytes, flags);
+            httpPost.setHeader("Authorization", "Basic " + encoded);
+            MultipartEntityBuilder builder = MultipartEntityBuilder
+                    .create();
+            builder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
+            Charset chars = Charset.forName("UTF-8");
+            builder.setCharset(chars);
+            if (file != null) {
+                FileBody fb = new FileBody(file);
+                builder.addPart("file", fb);
+            }
+            if(folder.length>0){
+                builder.addTextBody("folder", folder[0],
+                        ContentType.TEXT_PLAIN);
+            }
+            builder.setCharset(chars);
+
+            final HttpEntity yourEntity = builder.build();
+
+            httpPost.setEntity(yourEntity);
+
+            StringBuilder builderString = new StringBuilder();
+            DefaultHttpClient client = new DefaultHttpClient();
+            HttpResponse response = null;
+            response = client.execute(httpPost);
+            InputStream content = response.getEntity().getContent();
+            BufferedReader reader = new BufferedReader(
+                    new InputStreamReader(content));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                builderString.append(line);
+            }
+            String message = builderString.toString();
+            response.getEntity().consumeContent();
+            return message;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static ArrayList getFileDataFromJson(String jsonData, Activity contex){
+        ArrayList<org.ucomplex.ucomplex.Model.StudyStructure.File> files = new ArrayList<>();
+        JSONObject fileJson = null;
+
+        try {
+            fileJson = new JSONObject(jsonData);
+            JSONArray filesArray = fileJson.getJSONArray("files");
+
+            for(int i=0;i<filesArray.length();i++){
+                org.ucomplex.ucomplex.Model.StudyStructure.File file = new org.ucomplex.ucomplex.Model.StudyStructure.File();
+                JSONObject jsonFile = filesArray.getJSONObject(i);
+                file.setSize(jsonFile.getInt("size"));
+                if(jsonFile.has("time")){
+                    file.setTime(jsonFile.getString("time"));
+                }else{
+                    String timeStamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", new Locale("ru")).format(Calendar.getInstance().getTime());
+                    file.setTime(timeStamp);
+                }
+                file.setAddress(jsonFile.getString("address"));
+                file.setName(jsonFile.getString("name"));
+                file.setType(jsonFile.getString("type"));
+                if(jsonFile.has("check_time")){
+                    file.setCheckTime(jsonFile.getString("check_time"));
+                }
+                SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(contex);
+                Gson gson = new Gson();
+                String json = pref.getString("loggedUser", "");
+                User obj = gson.fromJson(json, User.class);
+                file.setOwner(obj);
+                files.add(file);
+            }
+            return files;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static byte[] fileToByte(String filePath){
+        File file = new File(filePath);
+        try {
+            FileInputStream fis = new FileInputStream(file);
+            //System.out.println(file.exists() + "!!");
+            //InputStream in = resource.openStream();
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            byte[] buf = new byte[1024];
+            try {
+                for (int readNum; (readNum = fis.read(buf)) != -1;) {
+                    bos.write(buf, 0, readNum); //no doubt here is 0
+                    //Writes len bytes from the specified byte array starting at offset off to this byte array output stream.
+                    System.out.println("read " + readNum + " bytes,");
+                }
+            } catch (IOException ex) {}
+
+            return bos.toByteArray();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
 

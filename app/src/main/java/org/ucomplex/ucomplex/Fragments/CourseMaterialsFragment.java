@@ -23,9 +23,19 @@ import java.util.ArrayList;
 
 public class CourseMaterialsFragment extends ListFragment{
 
-    ArrayList<File> mItems;
-    Activity mContext;
-    boolean myFiles = false;
+    private ArrayList<File> mItems;
+    private Activity mContext;
+    private boolean myFiles = false;
+    private String folderCode;
+    private CourseMaterialsAdapter adapter;
+
+    public void setAdapter(CourseMaterialsAdapter adapter) {
+        this.adapter = adapter;
+    }
+
+    public CourseMaterialsAdapter getAdapter() {
+        return adapter;
+    }
 
     public boolean isMyFiles() {
         return myFiles;
@@ -43,6 +53,10 @@ public class CourseMaterialsFragment extends ListFragment{
         return mItems;
     }
 
+    public void addFile(File file){
+        this.mItems.add(file);
+    }
+
     public void setFiles(ArrayList<File> files) {
         this.mItems = files;
     }
@@ -53,7 +67,8 @@ public class CourseMaterialsFragment extends ListFragment{
         if(mItems==null){
             mItems = new ArrayList<>();
         }
-        setListAdapter(new CourseMaterialsAdapter(getActivity(), mItems));
+        adapter = new CourseMaterialsAdapter(getActivity(), mItems);
+        setListAdapter(adapter);
 
     }
 
@@ -73,6 +88,7 @@ public class CourseMaterialsFragment extends ListFragment{
                 FetchTeacherFilesTask fetchTeacherFilesTask = new FetchTeacherFilesTask(mContext, (OnTaskCompleteListener) mContext);
                 fetchTeacherFilesTask.setOwner(item.getOwner());
                 fetchTeacherFilesTask.setupTask(item.getAddress());
+                folderCode = item.getAddress();
             }else{
                 FetchMyFilesTask fetchMyFilesTask = new FetchMyFilesTask(mContext, (OnTaskCompleteListener) mContext);
                 fetchMyFilesTask.setupTask(item.getAddress());

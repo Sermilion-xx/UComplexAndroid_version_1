@@ -88,9 +88,10 @@
         <activity
             android:name=".Activities.MessagesActivity"
             android:label="@string/title_activity_message"
-            android:theme="@style/AppTheme"/>
+            android:theme="@style/AppTheme" />
 
         <service android:name=".MyService" />
+
     </application>
 
 </manifest>

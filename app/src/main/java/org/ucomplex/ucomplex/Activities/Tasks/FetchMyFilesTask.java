@@ -64,39 +64,8 @@ public class FetchMyFilesTask extends AsyncTask<String, String, ArrayList<File>>
         }
         if(jsonData!=null){
             if(jsonData.length()>0){
-                return getFileDataFromJson(jsonData);
+                return Common.getFileDataFromJson(jsonData,mContext);
             }
-        }
-        return null;
-    }
-
-    private ArrayList<File> getFileDataFromJson(String jsonData){
-        files = new ArrayList<>();
-        JSONObject fileJson = null;
-
-        try {
-            fileJson = new JSONObject(jsonData);
-            JSONArray filesArray = fileJson.getJSONArray("files");
-
-            for(int i=0;i<filesArray.length();i++){
-                File file = new File();
-                JSONObject jsonFile = filesArray.getJSONObject(i);
-                file.setSize(jsonFile.getInt("size"));
-                file.setTime(jsonFile.getString("time"));
-                file.setAddress(jsonFile.getString("address"));
-                file.setName(jsonFile.getString("name"));
-                file.setType(jsonFile.getString("type"));
-                file.setCheckTime(jsonFile.getString("check_time"));
-                SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(mContext);
-                Gson gson = new Gson();
-                String json = pref.getString("loggedUser", "");
-                User obj = gson.fromJson(json, User.class);
-                file.setOwner(obj);
-                files.add(file);
-            }
-            return files;
-        } catch (JSONException e) {
-            e.printStackTrace();
         }
         return null;
     }

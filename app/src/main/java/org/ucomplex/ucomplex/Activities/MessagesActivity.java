@@ -22,10 +22,6 @@ import org.ucomplex.ucomplex.Common;
 import org.ucomplex.ucomplex.Model.Message;
 import org.ucomplex.ucomplex.R;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Timer;
@@ -40,7 +36,6 @@ public class MessagesActivity extends AppCompatActivity implements OnTaskComplet
     MessagesAdapter messagesAdapter;
     String filePath;
     boolean file = false;
-    private static final int FILE_SELECT_CODE = 0;
     ByteArrayBody contentBody;
 
                 @Override
@@ -69,7 +64,7 @@ public class MessagesActivity extends AppCompatActivity implements OnTaskComplet
                                 new AsyncTask<String,Void,Void>(){
                                     @Override
                                     protected Void doInBackground(String... params) {
-                                        Common.uploadFile(filePath, companion, message, params[0]);
+                                        Common.sendFile(filePath, companion, message, params[0]);
                                         return null;
                                     }
                                 }.execute(Common.getLoginDataFromPref(MessagesActivity.this));
@@ -105,11 +100,11 @@ public class MessagesActivity extends AppCompatActivity implements OnTaskComplet
 
         try {
             startActivityForResult(
-                    Intent.createChooser(intent, "Select a File to Upload"),
-                    FILE_SELECT_CODE);
+                    Intent.createChooser(intent, "Выберите файл для загрузки"),
+                    Common.FILE_SELECT_CODE);
         } catch (android.content.ActivityNotFoundException ex) {
             // Potentially direct the user to the Market with a Dialog
-            Toast.makeText(this, "Please install a File Manager.",
+            Toast.makeText(this, "Файловый менеджер не установлен",
                     Toast.LENGTH_SHORT).show();
         }
     }
@@ -117,7 +112,7 @@ public class MessagesActivity extends AppCompatActivity implements OnTaskComplet
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
-            case FILE_SELECT_CODE:
+            case Common.FILE_SELECT_CODE:
                 if (resultCode == RESULT_OK) {
                     // Get the Uri of the selected file
                     Uri uri = data.getData();
@@ -131,7 +126,7 @@ public class MessagesActivity extends AppCompatActivity implements OnTaskComplet
                     }
                     Log.d("", "File Path: " + path);
                     filePath = path;
-                    byte[] fileByte = fileToByte(path);
+                    byte[] fileByte = Common.fileToByte(path);
                     contentBody = new ByteArrayBody(fileByte, "filename");
 
                 }
@@ -140,29 +135,7 @@ public class MessagesActivity extends AppCompatActivity implements OnTaskComplet
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    public byte[] fileToByte(String filePath){
-        File file = new File(filePath);
-        try {
-        FileInputStream fis = new FileInputStream(file);
-        //System.out.println(file.exists() + "!!");
-        //InputStream in = resource.openStream();
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        byte[] buf = new byte[1024];
-        try {
-            for (int readNum; (readNum = fis.read(buf)) != -1;) {
-                bos.write(buf, 0, readNum); //no doubt here is 0
-                //Writes len bytes from the specified byte array starting at offset off to this byte array output stream.
-                System.out.println("read " + readNum + " bytes,");
-            }
-        } catch (IOException ex) {}
 
-        return bos.toByteArray();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
 
 
     @Override
