@@ -5,6 +5,7 @@ import android.app.DownloadManager;
 import android.content.Context;
 
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -22,6 +23,7 @@ import org.ucomplex.ucomplex.Common;
 import org.ucomplex.ucomplex.Model.StudyStructure.File;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class CourseMaterialsFragment extends ListFragment{
 
@@ -70,19 +72,35 @@ public class CourseMaterialsFragment extends ListFragment{
         }
         adapter = new CourseMaterialsAdapter(getActivity(), mItems);
         setListAdapter(adapter);
+
     }
 
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        // remove the dividers from the ListView of the ListFragment
         getListView().setDivider(null);
         getListView().setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
-            public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
-                                           int pos, long id) {
+            public boolean onItemLongClick(AdapterView<?> arg0, View arg1, final int pos, long id) {
+                new AsyncTask<Void, Void, ArrayList>(){
 
+                    @Override
+                    protected ArrayList doInBackground(Void... params) {
+                        String jsonData = "";
+                        String url = "http://you.com.ru/student/my_files/delete_file?mobile=1";
+                        HashMap<String, String> httpParams = new HashMap();
+                        httpParams.put("file", mItems.get(pos).getAddress());
+                        jsonData = Common.httpPost(url, Common.getLoginDataFromPref(mContext),httpParams);
+                        return null;
+                    }
+                    @Override
+                    protected void onPostExecute(ArrayList newFile) {
+                        super.onPostExecute(newFile);
+                        mItems.remove(pos);
+                        adapter.notifyDataSetChanged();
+                    }
+                }.execute();
 
 
                 return true;

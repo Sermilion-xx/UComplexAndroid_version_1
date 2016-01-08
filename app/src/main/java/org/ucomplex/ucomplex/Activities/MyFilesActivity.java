@@ -1,14 +1,11 @@
 package org.ucomplex.ucomplex.Activities;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
@@ -50,7 +47,6 @@ public class MyFilesActivity extends AppCompatActivity implements OnTaskComplete
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         FetchMyFilesTask fetchMyFilesTask = new FetchMyFilesTask(this,this);
         fetchMyFilesTask.setupTask();
-
     }
 
     @Override
@@ -59,7 +55,6 @@ public class MyFilesActivity extends AppCompatActivity implements OnTaskComplete
         getMenuInflater().inflate(R.menu.menu_my_files, menu);
         return true;
     }
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -92,7 +87,6 @@ public class MyFilesActivity extends AppCompatActivity implements OnTaskComplete
                 if(Common.folderCode!=null){
                     httpParams.put("folder", Common.folderCode);
                 }
-
                 String jsonData = Common.httpPost(url, Common.getLoginDataFromPref(MyFilesActivity.this),httpParams);
                 ArrayList<File> newFolder = Common.getFileDataFromJson(jsonData, MyFilesActivity.this);
                 return newFolder;
