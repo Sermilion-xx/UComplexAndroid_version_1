@@ -1,7 +1,9 @@
 package org.ucomplex.ucomplex.Activities;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
@@ -15,21 +17,28 @@ import android.view.MenuItem;
 import android.view.View;
 
 import org.ucomplex.ucomplex.Activities.Tasks.FetchUserEventsTask;
+import org.ucomplex.ucomplex.Activities.Tasks.FetchUserLoginTask;
 import org.ucomplex.ucomplex.Activities.Tasks.OnTaskCompleteListener;
 import org.ucomplex.ucomplex.Adaptors.MenuAdapter;
 import org.ucomplex.ucomplex.Common;
 import org.ucomplex.ucomplex.Fragments.EventsFragment;
+import org.ucomplex.ucomplex.Model.EventRowItem;
+import org.ucomplex.ucomplex.Model.Users.Student;
+import org.ucomplex.ucomplex.Model.Users.User;
 import org.ucomplex.ucomplex.R;
 
+import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
 
-public class EventsActivity extends AppCompatActivity implements OnTaskCompleteListener {
+public class EventsActivity extends AppCompatActivity implements OnTaskCompleteListener, FetchUserLoginTask.AsyncResponse{
 
     ArrayList eventsArray = null;
     Context contex = this;
     FetchUserEventsTask mEventsTask = null;
+    User user;
+    ProgressDialog dialog;
     final String[] TITLES = { "События", "Анкетирование", "Дисциплины", "Материалы", "Справки","Пользователи","Сообщения","Библиотека","Календарь","Настройки", "Выход" };
     final int[] ICONS = { R.drawable.ic_menu_event,
             R.drawable.ic_menu_questionare,
@@ -48,10 +57,30 @@ public class EventsActivity extends AppCompatActivity implements OnTaskCompleteL
     int PROFILE = R.mipmap.ic_no_image;
 
     RecyclerView mRecyclerView;                           // Declaring RecyclerView
-    RecyclerView.Adapter mAdapter;                        // Declaring Adapter For Recycler View
+    MenuAdapter mAdapter;                        // Declaring Adapter For Recycler View
     RecyclerView.LayoutManager mLayoutManager;            // Declaring Layout Manager as a linear layout manager
     DrawerLayout Drawer;                                  // Declaring DrawerLayout
     ActionBarDrawerToggle mDrawerToggle;                  // Declaring Action Bar Drawer Toggle
+
+
+    private void refresh(){
+        dialog = ProgressDialog.show(this, "",
+                "Обновляется", true);
+        dialog.show();
+        user = Common.getUserDataFromPref(this);
+        FetchUserLoginTask fetchUserLoginTask = new FetchUserLoginTask(user.getLogin(), user.getPass(), this);
+        fetchUserLoginTask.delegate = this;
+        fetchUserLoginTask.execute();
+        mEventsTask = new FetchUserEventsTask(this){
+            @Override
+            protected void onPostExecute(ArrayList<EventRowItem> items) {
+                super.onPostExecute(items);
+                eventsArray = items;
+                dialog.dismiss();
+            }
+        };
+        mEventsTask.execute();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +91,10 @@ public class EventsActivity extends AppCompatActivity implements OnTaskCompleteL
         toolbar.setTitle("События");
         setSupportActionBar(toolbar);
 
+        user = Common.getUserDataFromPref(this);
+
+
+        user.setPhotoBitmap(Common.decodePhotoPref(this,"profilePhoto"));
         mEventsTask = new FetchUserEventsTask(this);
         try {
             this.eventsArray = mEventsTask.execute((Void) null).get();
@@ -76,8 +109,7 @@ public class EventsActivity extends AppCompatActivity implements OnTaskCompleteL
 
         mRecyclerView = (RecyclerView) findViewById(R.id.RecyclerView); // Assigning the RecyclerView Object to the xml View
         mRecyclerView.setHasFixedSize(true);
-        Bitmap photoBitmap = Common.decodePhotoPref(contex, "profilePhoto");
-        mAdapter = new MenuAdapter(TITLES,ICONS,NAME,EMAIL,PROFILE, this, photoBitmap);
+        mAdapter = new MenuAdapter(TITLES,ICONS, user, this);
         mRecyclerView.setAdapter(mAdapter);                              // Setting the adapter to RecyclerView
         mLayoutManager = new LinearLayoutManager(this);                 // Creating a layout Manager
         mRecyclerView.setLayoutManager(mLayoutManager);                 // Setting the layout Manager
@@ -122,18 +154,38 @@ public class EventsActivity extends AppCompatActivity implements OnTaskCompleteL
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_refresh) {
+            refresh();
             return true;
         }
         if(id==android.R.id.home) {
-//            onBackPressed();
-//            return true;
+
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
     @Override
     public void onTaskComplete(AsyncTask task, Object... o) {
+
+    }
+
+    @Override
+    public void processFinish(Student output, Bitmap  bitmap) {
+        if(output!=null) {
+            Common.setUserDataToPref(this, output);
+            mAdapter.setProfileBitmap(bitmap);
+            mAdapter.notifyDataSetChanged();
+            final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+            mAdapter = new MenuAdapter(TITLES,ICONS, user, this);
+            mRecyclerView.setAdapter(mAdapter);                              // Setting the adapter to RecyclerView
+            mLayoutManager = new LinearLayoutManager(this);                 // Creating a layout Manager
+            mRecyclerView.setLayoutManager(mLayoutManager);
+        }
+    }
+
+    @Override
+    public void canceled(boolean canceled) {
 
     }
 }

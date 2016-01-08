@@ -29,6 +29,7 @@ public class FetchUserLoginTask extends AsyncTask<Void, Void, Student> {
     private final String mPassword;
     Activity mContext;
     private String jsonData = null;
+    Bitmap photoBitmap;
 
     public AsyncResponse delegate = null;
 
@@ -54,6 +55,7 @@ public class FetchUserLoginTask extends AsyncTask<Void, Void, Student> {
         }
         JSONObject userSession = rolesJson.getJSONObject("session");
         Student student = new Student();
+
         student.setPhoto(userSession.getInt("photo"));
         student.setCode(userSession.getString("code"));
         student.setPerson(userSession.getInt("person"));
@@ -70,9 +72,6 @@ public class FetchUserLoginTask extends AsyncTask<Void, Void, Student> {
 
     @Override
     protected Student doInBackground(Void... params) {
-        if (params.length == 0) {
-            return null;
-        }
         String urlString = "http://you.com.ru/auth?mobile=1";
         jsonData = Common.httpPost(urlString, mLogin+":"+mPassword);
         if(jsonData!=null && !jsonData.equals("")) {
@@ -82,15 +81,15 @@ public class FetchUserLoginTask extends AsyncTask<Void, Void, Student> {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-
-            Bitmap photoBitmap = Common.getBitmapFromURL(student.getCode());
-            Common.encodePhotoPref(mContext, photoBitmap, "profilePhoto");
+            photoBitmap = Common.getBitmapFromURL(student.getCode());
+//            Common.encodePhotoPref(mContext, photoBitmap, "profilePhoto");
             SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(mContext);
             String tempPhoto = "";
             tempPhoto = pref.getString("tempProfilePhoto", "");
             if (tempPhoto.length() < 1) {
                 Common.encodePhotoPref(mContext, photoBitmap, "tempProfilePhoto");
             }
+//            student.setPhotoBitmap(photoBitmap);
             return student;
         }
 
@@ -99,7 +98,7 @@ public class FetchUserLoginTask extends AsyncTask<Void, Void, Student> {
 
     @Override
     protected void onPostExecute(final Student student) {
-        delegate.processFinish(student);
+        delegate.processFinish(student, photoBitmap);
     }
 
     @Override
@@ -108,7 +107,7 @@ public class FetchUserLoginTask extends AsyncTask<Void, Void, Student> {
     }
 
     public interface AsyncResponse {
-        void processFinish(Student output);
+        void processFinish(Student output, Bitmap  bitmap);
         void canceled(boolean canceled);
     }
 }

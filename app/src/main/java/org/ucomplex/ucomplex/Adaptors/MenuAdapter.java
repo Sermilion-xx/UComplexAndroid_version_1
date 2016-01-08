@@ -12,6 +12,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.amulyakhare.textdrawable.TextDrawable;
+
 import org.ucomplex.ucomplex.Activities.CalendarActivity;
 import org.ucomplex.ucomplex.Activities.EventsActivity;
 import org.ucomplex.ucomplex.Activities.LibraryActivity;
@@ -23,6 +25,8 @@ import org.ucomplex.ucomplex.Activities.SettingsActivity;
 import org.ucomplex.ucomplex.Activities.SubjectsActivity;
 import org.ucomplex.ucomplex.Activities.UsersActivity;
 import org.ucomplex.ucomplex.Activities.WebViewActivity;
+import org.ucomplex.ucomplex.Common;
+import org.ucomplex.ucomplex.Model.Users.User;
 import org.ucomplex.ucomplex.R;
 
 /**
@@ -35,13 +39,13 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder>  {
     private String mNavTitles[];
     private int mIcons[];
     private String name;
-    private int profile;
     private String email;
     private Context context;
-    private Bitmap profileBitmap;
+    private static Bitmap profileBitmap;
+    private User user;
 
-    public void setProfileBitmap(Bitmap profileBitmap) {
-        this.profileBitmap = profileBitmap;
+    public  void setProfileBitmap(Bitmap profileBitmap) {
+        MenuAdapter.profileBitmap = profileBitmap;
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -69,6 +73,10 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder>  {
                 Name = (TextView) itemView.findViewById(R.id.name);
                 email = (TextView) itemView.findViewById(R.id.email);
                 profile = (ImageView) itemView.findViewById(R.id.circleView);
+                if(profileBitmap!=null){
+
+                    this.profile.setImageBitmap(profileBitmap);
+                }
                 Holderid = 0;
             }
         }
@@ -120,20 +128,18 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder>  {
         }
     }
 
-    public MenuAdapter(String Titles[], int Icons[], String Name, String Email, int Profile, Context passedContext, Bitmap bitmap){
-
+    public MenuAdapter(String Titles[], int Icons[], User user, Context passedContext){
         mNavTitles = Titles;
         mIcons = Icons;
-        name = Name;
-        email = Email;
-        profile = Profile;
+        name = user.getName();
+        email = user.getEmail();
         this.context = passedContext;
-        this.profileBitmap = bitmap;
+        profileBitmap = user.getPhotoBitmap();
+        this.user = user;
     }
 
     @Override
     public MenuAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-
         if (viewType == TYPE_ITEM) {
             View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_menu,parent,false);
             return new ViewHolder(v,viewType,context);
@@ -142,7 +148,6 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder>  {
             return new ViewHolder(v,viewType,context);
         }
         return null;
-
     }
 
     @Override
@@ -151,13 +156,20 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder>  {
             holder.textView.setText(mNavTitles[position - 1]);
             holder.imageView.setImageResource(mIcons[position -1]);
         }else{
-            holder.profile.setImageResource(profile);
-            holder.Name.setText(name);
             if(profileBitmap!=null){
                 holder.profile.setImageBitmap(profileBitmap);
+            }else{
+                final int colorsCount = 16;
+                final int number = (user.getPerson() <= colorsCount) ? user.getPerson() : user.getPerson() % colorsCount;
+                char  firstLetter = user.getName().split("")[1].charAt(0);
+                TextDrawable drawable = TextDrawable.builder().beginConfig()
+                        .width(60)
+                        .height(60)
+                        .endConfig()
+                        .buildRound(String.valueOf(firstLetter), Common.getColor(number));
+                holder.profile.setImageDrawable(drawable);
             }
-
-
+            holder.Name.setText(name);
         }
     }
 

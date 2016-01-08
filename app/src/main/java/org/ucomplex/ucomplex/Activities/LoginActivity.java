@@ -4,6 +4,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 
@@ -192,14 +193,16 @@ public class LoginActivity extends AppCompatActivity implements FetchUserLoginTa
     }
 
     @Override
-    public void processFinish(Student output) {
+    public void processFinish(Student output , Bitmap bitmap) {
         if(output!=null){
             Common.setUserDataToPref(this, output);
             SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(this).edit();
             editor.putBoolean("logged", true);
             editor.apply();
+
+            Common.encodePhotoPref(this, bitmap, "profilePhoto");
             Intent intent = new Intent(this, EventsActivity.class);
-            intent.putExtra("student", output);
+//            intent.putExtra("student", output);
             startActivity(intent);
             showProgress(false);
             mAuthTask = null;

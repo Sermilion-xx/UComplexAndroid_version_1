@@ -189,6 +189,7 @@ public class Common {
         return null;
     }
 
+
     public static ArrayList getFileDataFromJson(String jsonData, Activity contex){
         ArrayList<org.ucomplex.ucomplex.Model.StudyStructure.File> files = new ArrayList<>();
         JSONObject fileJson = null;
@@ -525,6 +526,7 @@ public class Common {
         byte[] b = baos.toByteArray();
         String encoded = Base64.encodeToString(b, Base64.URL_SAFE);
         SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(context).edit();
+
         editor.putString(typeStr, encoded);
         editor.apply();
     }

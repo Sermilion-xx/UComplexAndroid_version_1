@@ -290,7 +290,7 @@ public class User implements Serializable {
 
         if(this.photoBitmap!=null){
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            photoBitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+            photoBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
             BitmapDataObject bitmapDataObject = new BitmapDataObject();
             bitmapDataObject.imageByteArray = stream.toByteArray();
             out.writeObject(bitmapDataObject);
