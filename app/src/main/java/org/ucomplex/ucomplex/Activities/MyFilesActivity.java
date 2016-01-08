@@ -2,6 +2,7 @@ package org.ucomplex.ucomplex.Activities;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -10,28 +11,26 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.EditText;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.ucomplex.ucomplex.Activities.Tasks.FetchMyFilesTask;
 import org.ucomplex.ucomplex.Activities.Tasks.OnTaskCompleteListener;
 import org.ucomplex.ucomplex.Common;
 import org.ucomplex.ucomplex.Fragments.CourseMaterialsFragment;
 import org.ucomplex.ucomplex.Model.StudyStructure.File;
-import org.ucomplex.ucomplex.Model.Users.User;
 import org.ucomplex.ucomplex.R;
 
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
 
 public class MyFilesActivity extends AppCompatActivity implements OnTaskCompleteListener {
@@ -40,6 +39,7 @@ public class MyFilesActivity extends AppCompatActivity implements OnTaskComplete
     boolean first = true;
     CourseMaterialsFragment courseMaterialsFragment;
     ProgressDialog dialog;
+    String folderName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,8 +70,64 @@ public class MyFilesActivity extends AppCompatActivity implements OnTaskComplete
             case R.id.my_files_add_file:
                 showFileChooser();
                 return true;
+            case R.id.my_files_add_folder:
+                showInputDialog();
+                return true;
+            case R.id.my_files_refresh:
+                FetchMyFilesTask fetchMyFilesTask = new FetchMyFilesTask(MyFilesActivity.this,MyFilesActivity.this);
+                fetchMyFilesTask.setupTask();
+                return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    protected void createFolder(){
+        new AsyncTask<Void, Void, ArrayList>(){
+
+            @Override
+            protected ArrayList doInBackground(Void... params) {
+                String url = "http://you.com.ru/student/my_files/create_folder?mobile=1";
+                HashMap<String, String> httpParams = new HashMap<String, String>();
+                httpParams.put("name", folderName);
+                String jsonData = Common.httpPost(url, Common.getLoginDataFromPref(MyFilesActivity.this),httpParams);
+                ArrayList<File> newFolder = Common.getFileDataFromJson(jsonData, MyFilesActivity.this);
+                return newFolder;
+            }
+            @Override
+            protected void onPostExecute(ArrayList newFolder) {
+                super.onPostExecute(newFolder);
+                courseMaterialsFragment.addFile((File) newFolder.get(0));
+                courseMaterialsFragment.getAdapter().notifyDataSetChanged();
+            }
+        }.execute();
+    }
+
+
+    protected void showInputDialog() {
+        // get prompts.xml view
+        LayoutInflater layoutInflater = LayoutInflater.from(MyFilesActivity.this);
+        View promptView = layoutInflater.inflate(R.layout.dialog_input, null);
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(MyFilesActivity.this);
+        alertDialogBuilder.setView(promptView);
+
+        final EditText editText = (EditText) promptView.findViewById(R.id.edittext);
+        // setup a dialog window
+        alertDialogBuilder.setCancelable(false)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        folderName = editText.getText().toString();
+                        createFolder();
+                    }
+                })
+                .setNegativeButton("Cancel",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
+
+        AlertDialog alert = alertDialogBuilder.create();
+        alert.show();
     }
 
     private void uplodFile(final String filePath, final String ... folderCode){
@@ -90,7 +146,6 @@ public class MyFilesActivity extends AppCompatActivity implements OnTaskComplete
                 }
                 return Common.getFileDataFromJson(jsonData, MyFilesActivity.this);
             }
-
             @Override
             protected void onPostExecute(ArrayList newFile) {
                 super.onPostExecute(newFile);

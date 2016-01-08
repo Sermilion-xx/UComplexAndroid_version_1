@@ -199,7 +199,9 @@ public class Common {
             for(int i=0;i<filesArray.length();i++){
                 org.ucomplex.ucomplex.Model.StudyStructure.File file = new org.ucomplex.ucomplex.Model.StudyStructure.File();
                 JSONObject jsonFile = filesArray.getJSONObject(i);
-                file.setSize(jsonFile.getInt("size"));
+                if(!jsonFile.isNull("size")){
+                    file.setSize(jsonFile.getInt("size"));
+                }
                 if(jsonFile.has("time")){
                     file.setTime(jsonFile.getString("time"));
                 }else{

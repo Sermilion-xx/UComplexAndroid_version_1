@@ -3,12 +3,18 @@ package org.ucomplex.ucomplex.Fragments;
 import android.app.Activity;
 import android.app.DownloadManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.ListFragment;
+import android.support.v7.app.AlertDialog;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -18,8 +24,10 @@ import org.ucomplex.ucomplex.Activities.Tasks.OnTaskCompleteListener;
 import org.ucomplex.ucomplex.Adaptors.CourseMaterialsAdapter;
 import org.ucomplex.ucomplex.Common;
 import org.ucomplex.ucomplex.Model.StudyStructure.File;
+import org.ucomplex.ucomplex.R;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class CourseMaterialsFragment extends ListFragment{
 
@@ -28,6 +36,7 @@ public class CourseMaterialsFragment extends ListFragment{
     private boolean myFiles = false;
     private String folderCode;
     private CourseMaterialsAdapter adapter;
+
 
     public void setAdapter(CourseMaterialsAdapter adapter) {
         this.adapter = adapter;
@@ -69,15 +78,27 @@ public class CourseMaterialsFragment extends ListFragment{
         }
         adapter = new CourseMaterialsAdapter(getActivity(), mItems);
         setListAdapter(adapter);
-
     }
+
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         // remove the dividers from the ListView of the ListFragment
         getListView().setDivider(null);
+        getListView().setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
+                                           int pos, long id) {
+
+
+
+                return true;
+            }
+        });
     }
+
+
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {

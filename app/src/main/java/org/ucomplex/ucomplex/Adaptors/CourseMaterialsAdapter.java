@@ -53,9 +53,11 @@ public class CourseMaterialsAdapter extends ArrayAdapter<File> {
         }
         viewHolder.textView1.setText(file.getName());
         viewHolder.textView2.setText(file.getOwner().getName());
-        viewHolder.weightIconTextView.setTypeface(Typeface.createFromAsset(getContext().getAssets(), "fonts/fontawesome-webfont.ttf"));
-        viewHolder.weightIconTextView.setText("\uF24E");
-        viewHolder.weightTextView.setText(String.valueOf(Common.readableFileSize(file.getSize(), false)));
+        if(!file.getType().equals("f")){
+            viewHolder.weightIconTextView.setTypeface(Typeface.createFromAsset(getContext().getAssets(), "fonts/fontawesome-webfont.ttf"));
+            viewHolder.weightIconTextView.setText("\uF24E");
+            viewHolder.weightTextView.setText(String.valueOf(Common.readableFileSize(file.getSize(), false)));
+        }
         viewHolder.personIconTextView.setTypeface(Typeface.createFromAsset(getContext().getAssets(), "fonts/fontawesome-webfont.ttf"));
         viewHolder.personIconTextView.setText("\uF007");
         viewHolder.timeIconTextView.setTypeface(Typeface.createFromAsset(getContext().getAssets(), "fonts/fontawesome-webfont.ttf"));
