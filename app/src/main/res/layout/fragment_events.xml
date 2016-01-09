@@ -10,7 +10,7 @@
     tools:context=".Fragments.EventsFragment">
 
     <ListView
-        android:id="@+id/listview_events"
+        android:id="@android:id/list"
         android:layout_marginTop="65dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

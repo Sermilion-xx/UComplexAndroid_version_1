@@ -36,6 +36,7 @@ public class FetchUserEventsTask extends AsyncTask<Integer, Void, ArrayList<Even
     protected ArrayList<EventRowItem> doInBackground(Integer... params) {
         String urlString = "http://you.com.ru/student?mobile=1";
         if(params.length>0){
+            urlString = "http://you.com.ru/user/events?mobile=1";
             HashMap<String, String> httpParams = new HashMap<>();
             httpParams.put("start", String.valueOf(params[0]));
             jsonData = Common.httpPost(urlString, Common.getLoginDataFromPref(mContext),httpParams);
@@ -128,8 +129,10 @@ public class FetchUserEventsTask extends AsyncTask<Integer, Void, ArrayList<Even
                 params.setHourType(param_hourType);
                 params.setCode(param_code);
             }else{
-                int param_type = paramsJson.getInt(JSON_EVENTS_PARAM_TYPE);
-                params.setType(param_type);
+                try{
+                    int param_type = paramsJson.getInt(JSON_EVENTS_PARAM_TYPE);
+                    params.setType(param_type);
+                }catch (JSONException ignored){}
             }
             item.setParams(params);
             item.setEventText(displayEvent);

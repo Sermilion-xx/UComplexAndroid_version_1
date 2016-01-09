@@ -15,6 +15,7 @@
  *******************************************************************************/
 package org.ucomplex.ucomplex.Fragments;
 
+import android.app.ListFragment;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -22,16 +23,20 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -40,7 +45,10 @@ import com.nostra13.universalimageloader.core.listener.ImageLoadingProgressListe
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 
 import org.ucomplex.ucomplex.Activities.CourseActivity;
+import org.ucomplex.ucomplex.Activities.Tasks.FetchUserEventsTask;
+import org.ucomplex.ucomplex.Activities.Tasks.FetchUsersTask;
 import org.ucomplex.ucomplex.Model.EventRowItem;
+import org.ucomplex.ucomplex.Model.Users.User;
 import org.ucomplex.ucomplex.R;
 
 import java.util.ArrayList;
@@ -48,11 +56,13 @@ import java.util.ArrayList;
 /**
  * @author Sergey Tarasevich (nostra13[at]gmail[dot]com)
  */
-public class EventsFragment extends AbsListViewBaseFragment {
+public class EventsFragment extends ListFragment {
 
     private ArrayList<EventRowItem> eventItems = null;
     ProgressDialog progressDialog;
 	ImageAdapter imageAdapter;
+    Button btnLoadExtra;
+    ProgressDialog dialog;
 
 
 
@@ -72,20 +82,14 @@ public class EventsFragment extends AbsListViewBaseFragment {
         progressDialog.dismiss();
     }
 
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        getListView().setDivider(null);
 
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
-        Bundle extras = getArguments();
-
-        this.eventItems = (ArrayList<EventRowItem>) extras.getSerializable("eventItems");
-
-
-		View rootView = inflater.inflate(R.layout.fragment_events, container, false);
-		listView = (ListView) rootView.findViewById(R.id.listview_events);
-		imageAdapter = new ImageAdapter(getActivity());
-        (listView).setAdapter(imageAdapter);
-        listView.setOnItemClickListener(new OnItemClickListener() {
+        imageAdapter = new ImageAdapter(getActivity());
+        getListView().setAdapter(imageAdapter);
+        getListView().setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if(eventItems.get(position).getType()!=2){
@@ -98,11 +102,58 @@ public class EventsFragment extends AbsListViewBaseFragment {
                     intent.putExtra("type", eventItems.get(position).getType());
                     intent.putExtra("bitmap", eventItems.get(position).getEventImageBitmap());
                     startActivity(intent);
-
                 }
             }
         });
 
+        btnLoadExtra = new Button(getActivity());
+        btnLoadExtra.setFocusable(false);
+        btnLoadExtra.setText("Загрузить еще...");
+        btnLoadExtra.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View arg0) {
+                dialog = ProgressDialog.show(getActivity(), "",
+                        "Идет подгрузка", true);
+                dialog.show();
+                new FetchUserEventsTask(getActivity()){
+                    @Override
+                    protected void onPostExecute(ArrayList<EventRowItem> items) {
+                        super.onPostExecute(items);
+                        if(items!=null){
+                            eventItems.addAll(items);
+                            imageAdapter.notifyDataSetChanged();
+
+                        }else{
+                            btnLoadExtra.setVisibility(View.GONE);
+                        }
+                        dialog.dismiss();
+                        if(items.size()<10){
+                            btnLoadExtra.setVisibility(View.GONE);
+                        }
+                    }
+                }.execute(eventItems.size());
+            }
+        });
+
+        if(eventItems!=null){
+            if (eventItems.size() < 10) {
+                btnLoadExtra.setVisibility(View.GONE);
+            }
+            getListView().addFooterView(btnLoadExtra);
+        }else{
+            Toast.makeText(getActivity(), "Произошла ошибка", Toast.LENGTH_SHORT).show();
+        }
+
+
+    }
+
+    @Override
+	public View onCreateView(LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
+        super.onCreateView(inflater,container, savedInstanceState);
+        Bundle extras = getArguments();
+        this.eventItems = (ArrayList<EventRowItem>) extras.getSerializable("eventItems");
+		View rootView = inflater.inflate(R.layout.fragment_events, container, false);
 
 		return rootView;
 	}
@@ -167,41 +218,30 @@ public class EventsFragment extends AbsListViewBaseFragment {
                 viewHolder = (ViewHolder) view.getTag();
 			}
 
-			if(!loaded) {
+			if(eventItems.get(position).getEventImageBitmap()==null && eventItems.get(position).getParams().getPhoto()==1) {
 				ImageLoader.getInstance()
 						.displayImage("http://ucomplex.org/files/photos/" + eventItems.get(position).getParams().getCode() + ".jpg", viewHolder.eventsImageView, options, new SimpleImageLoadingListener() {
 							@Override
 							public void onLoadingStarted(String imageUri, View view) {
-//							holder.progressBar.setProgress(0);
-//							holder.progressBar.setVisibility(View.VISIBLE);
 							}
 
 							@Override
 							public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-//							holder.progressBar.setVisibility(View.GONE);
+
 							}
 
 							@Override
 							public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-//							holder.progressBar.setVisibility(View.GONE);
 								BitmapDrawable bitmapDrawable = ((BitmapDrawable) viewHolder.eventsImageView.getDrawable());
 								Bitmap bitmap = bitmapDrawable.getBitmap();
 								eventItems.get(position).setEventImageBitmap(bitmap);
 								viewHolder.eventsImageView.setImageBitmap(bitmap);
-
 							}
 						}, new ImageLoadingProgressListener() {
 							@Override
 							public void onProgressUpdate(String imageUri, View view, int current, int total) {
-//							holder.progressBar.setProgress(Math.round(100.0f * current / total));
 							}
 						});
-
-                if(counter<eventItems.size()){
-                    counter++;
-                }else{
-                    loaded=true;
-                }
 
 			}else{
                 Bitmap image = eventItems.get(position).getEventImageBitmap();

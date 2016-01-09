@@ -14,7 +14,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 
 import org.ucomplex.ucomplex.Activities.Tasks.FetchUserEventsTask;
 import org.ucomplex.ucomplex.Activities.Tasks.FetchUserLoginTask;
@@ -76,6 +75,23 @@ public class EventsActivity extends AppCompatActivity implements OnTaskCompleteL
             }
         };
         mEventsTask.execute();
+
+        new FetchUserEventsTask(this){
+            @Override
+            protected void onPostExecute(ArrayList<EventRowItem> items) {
+                super.onPostExecute(items);
+                eventsArray = items;
+                EventsFragment fragment = new EventsFragment();
+                Bundle data = new Bundle();
+                data.putSerializable("eventItems", eventsArray);
+                fragment.setArguments(data);
+                getFragmentManager().beginTransaction()
+                        .replace(R.id.container, fragment)
+                        .commit();
+                dialog.dismiss();
+            }
+
+        }.execute();
     }
 
     @Override
@@ -103,8 +119,8 @@ public class EventsActivity extends AppCompatActivity implements OnTaskCompleteL
                 Bundle data = new Bundle();
                 data.putSerializable("eventItems", eventsArray);
                 fragment.setArguments(data);
-                getSupportFragmentManager().beginTransaction()
-                            .add(R.id.container, fragment)
+                getFragmentManager().beginTransaction()
+                            .replace(R.id.container, fragment)
                             .commit();
                 dialog.dismiss();
             }
@@ -113,12 +129,6 @@ public class EventsActivity extends AppCompatActivity implements OnTaskCompleteL
         dialog = ProgressDialog.show(this, "",
                 "Загружаются события", true);
         dialog.show();
-
-//        try {
-//            this.eventsArray = mEventsTask.execute((Void) null).get();
-//        } catch (InterruptedException | ExecutionException e) {
-//            e.printStackTrace();
-//        }
 
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
@@ -132,41 +142,6 @@ public class EventsActivity extends AppCompatActivity implements OnTaskCompleteL
         mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
         Drawer = (DrawerLayout) findViewById(R.id.DrawerLayout);
-        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener()
-        {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy)
-            {
-                if(dy > 0){
-                    visibleItemCount = mLayoutManager.getChildCount();
-                    totalItemCount = mLayoutManager.getItemCount();
-                    pastVisiblesItems = mLayoutManager.findFirstVisibleItemPosition();
-
-                    if (loading)
-                    {
-                        if ( (visibleItemCount + pastVisiblesItems) >= totalItemCount)
-                        {
-                            loading = false;
-                            mEventsTask = (FetchUserEventsTask) new FetchUserEventsTask(EventsActivity.this){
-                                @Override
-                                protected void onPostExecute(ArrayList<EventRowItem> items) {
-                                    super.onPostExecute(items);
-                                    eventsArray.addAll(items);
-                                    EventsFragment fragment = new EventsFragment();
-                                    Bundle data = new Bundle();
-                                    data.putSerializable("eventItems", eventsArray);
-                                    fragment.setArguments(data);
-                                    getSupportFragmentManager().beginTransaction()
-                                            .add(R.id.container, fragment)
-                                            .commit();
-                                }
-
-                            }.execute(totalItemCount+1);
-                        }
-                    }
-                }
-            }
-        });
 
         mDrawerToggle = new ActionBarDrawerToggle(this,Drawer, toolbar,R.string.openDrawer,R.string.closeDrawer){
             @Override
@@ -177,12 +152,10 @@ public class EventsActivity extends AppCompatActivity implements OnTaskCompleteL
             @Override
             public void onDrawerClosed(View drawerView) {
                 super.onDrawerClosed(drawerView);
-                // Code here will execute once drawer is closed
             }
         };
-        // Drawer Toggle Object Made
-        Drawer.setDrawerListener(mDrawerToggle); // Drawer Listener set to the Drawer toggle
-        mDrawerToggle.syncState();               // Finally we set the drawer toggle sync State
+        Drawer.setDrawerListener(mDrawerToggle);
+        mDrawerToggle.syncState();
 
 
     }
@@ -203,7 +176,6 @@ public class EventsActivity extends AppCompatActivity implements OnTaskCompleteL
             return true;
         }
         if(id==android.R.id.home) {
-
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -224,10 +196,7 @@ public class EventsActivity extends AppCompatActivity implements OnTaskCompleteL
                 user.setPhotoBitmap(bitmap);
             }
             mAdapter.notifyDataSetChanged();
-            mAdapter = new MenuAdapter(TITLES,ICONS, user, this);
-            mRecyclerView.setAdapter(mAdapter);                              // Setting the adapter to RecyclerView
-            mLayoutManager = new LinearLayoutManager(this);                 // Creating a layout Manager
-            mRecyclerView.setLayoutManager(mLayoutManager);
+
         }
     }
 

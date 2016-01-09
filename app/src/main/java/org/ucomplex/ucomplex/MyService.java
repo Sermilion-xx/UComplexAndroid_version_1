@@ -4,7 +4,6 @@ package org.ucomplex.ucomplex;
             import android.app.IntentService;
             import android.content.Intent;
             import android.os.IBinder;
-            import android.widget.Toast;
 
             import org.ucomplex.ucomplex.Activities.Tasks.FetchMessagesTask;
             import org.ucomplex.ucomplex.Interfaces.OnTaskCompleteListener;
@@ -32,12 +31,10 @@ package org.ucomplex.ucomplex;
 
                 @Override
                 protected void onHandleIntent(Intent intent) {
-                    Toast.makeText(this, "onhandleintent", Toast.LENGTH_SHORT).show();
                     while(true)
                     {
                         FetchMessagesTask fetchMessagesTask = new FetchMessagesTask(context, listener);
                         fetchMessagesTask.setType(2);
-                Toast.makeText(getApplicationContext(), "getting app count", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -53,11 +50,3 @@ package org.ucomplex.ucomplex;
 
     }
 }
-
-/**
- * logged
- * loggedUser
- * student
- * profilePhoto
- * tempProfilePhoto
- */

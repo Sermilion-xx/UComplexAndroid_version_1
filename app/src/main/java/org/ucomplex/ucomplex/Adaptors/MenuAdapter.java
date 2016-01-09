@@ -31,6 +31,8 @@ import org.ucomplex.ucomplex.R;
 
 import java.io.FileOutputStream;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 /**
  * Created by hp1 on 28-12-2014.
  */
@@ -55,7 +57,7 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder>  {
 
         TextView textView;
         ImageView imageView;
-        ImageView profile;
+        de.hdodenhof.circleimageview.CircleImageView profile;
         TextView Name;
         TextView email;
         Context contxt;
@@ -74,7 +76,7 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder>  {
             else{
                 Name = (TextView) itemView.findViewById(R.id.name);
                 email = (TextView) itemView.findViewById(R.id.email);
-                profile = (ImageView) itemView.findViewById(R.id.circleView);
+                profile = (de.hdodenhof.circleimageview.CircleImageView) itemView.findViewById(R.id.circleView);
                 if(profileBitmap!=null){
                     this.profile.setImageBitmap(profileBitmap);
                 }
@@ -209,5 +211,7 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder>  {
     private boolean isPositionHeader(int position) {
         return position == 0;
     }
+
+
 
 }
