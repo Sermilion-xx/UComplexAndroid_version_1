@@ -48,10 +48,11 @@ public class CalendarActivity extends AppCompatActivity implements AdapterView.O
     ArrayList<String> keys;
     Spinner spinner;
     private AsyncTaskManager mAsyncTaskManager;
+    ArrayList<CalendarDay> checkedMonths = new ArrayList<>();
 
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calendar);
         Toolbar toolbar = (Toolbar) findViewById(R.id.calendar_toolbar);
@@ -68,15 +69,28 @@ public class CalendarActivity extends AppCompatActivity implements AdapterView.O
         options.add("События");
         mAsyncTaskManager.setupTask(new FetchCalendarTask(context));
         materialCalendarView = (MaterialCalendarView) findViewById(R.id.calendarView);
+        materialCalendarView.setOnMonthChangedListener(new OnMonthChangedListener() {
+            @Override
+            public void onMonthChanged(MaterialCalendarView widget, CalendarDay date) {
+                spinner.setSelection(0);
+                int month = date.getMonth() + 1;
+                int year = date.getYear();
 
-    }
+                String monthStr = String.valueOf(month > 9 ? month : "0" + month);
+                String dateStr = 1 + "." + monthStr + "." + year;
 
-    protected void setFragment(Fragment fragment) {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction =
-                fragmentManager.beginTransaction();
-        fragmentTransaction.replace(android.R.id.content, fragment);
-        fragmentTransaction.commit();
+                Calendar cal = Calendar.getInstance();
+                int Year = cal.get(Calendar.YEAR);
+                if (year <= Year) {
+                    if(!checkedMonths.contains(date)){
+                        mAsyncTaskManager.setupTask(new FetchCalendarTask(context),monthStr,dateStr);
+                        checkedMonths.add(date);
+                    }
+                } else {
+                    Toast.makeText(context, "Нету данных для следующего года!", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
     private void refreshMonth() {
@@ -280,27 +294,6 @@ public class CalendarActivity extends AppCompatActivity implements AdapterView.O
                             startActivity(intent);
                         }
                     });
-
-                    materialCalendarView.setOnMonthChangedListener(new OnMonthChangedListener() {
-                        @Override
-                        public void onMonthChanged(MaterialCalendarView widget, CalendarDay date) {
-                            spinner.setSelection(0);
-                            int month = date.getMonth() + 1;
-                            int year = date.getYear();
-
-                            String monthStr = String.valueOf(month > 9 ? month : "0" + month);
-                            String dateStr = 1 + "." + monthStr + "." + year;
-
-                            Calendar cal = Calendar.getInstance();
-                            int Year = cal.get(Calendar.YEAR);
-                            if (year <= Year) {
-                                mAsyncTaskManager.setupTask(new FetchCalendarTask(context),monthStr,dateStr);
-                            } else {
-                                Toast.makeText(context, "Нету данных для следующего года!", Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    });
-
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -314,7 +307,6 @@ public class CalendarActivity extends AppCompatActivity implements AdapterView.O
                 onBackPressed();
                 return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 }
