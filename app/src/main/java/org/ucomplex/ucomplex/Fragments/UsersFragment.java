@@ -272,7 +272,6 @@ public class UsersFragment extends ListFragment {
 
             viewHolder.textView1.setText(user.getName());
             viewHolder.textView2.setText(typeStr);
-
             return convertView;
         }
 

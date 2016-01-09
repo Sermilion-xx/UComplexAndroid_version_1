@@ -12,6 +12,8 @@ import org.javatuples.Pair;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.ucomplex.ucomplex.Common;
+import org.ucomplex.ucomplex.Interfaces.IProgressTracker;
+import org.ucomplex.ucomplex.Interfaces.OnTaskCompleteListener;
 import org.ucomplex.ucomplex.Model.Users.User;
 
 import java.util.HashMap;

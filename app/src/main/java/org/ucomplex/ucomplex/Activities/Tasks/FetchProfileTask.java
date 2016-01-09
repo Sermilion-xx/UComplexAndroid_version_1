@@ -7,6 +7,7 @@ import org.javatuples.Pair;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.ucomplex.ucomplex.Common;
+import org.ucomplex.ucomplex.Interfaces.OnTaskCompleteListener;
 
 /**
  * Created by Sermilion on 30/12/2015.

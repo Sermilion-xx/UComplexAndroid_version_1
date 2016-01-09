@@ -15,7 +15,7 @@ import android.widget.Toast;
 import org.javatuples.Triplet;
 
 import org.ucomplex.ucomplex.Activities.Tasks.FetchSubjectsTask;
-import org.ucomplex.ucomplex.Activities.Tasks.OnTaskCompleteListener;
+import org.ucomplex.ucomplex.Interfaces.OnTaskCompleteListener;
 import org.ucomplex.ucomplex.Adaptors.SubjectsAdapter;
 import org.ucomplex.ucomplex.R;
 

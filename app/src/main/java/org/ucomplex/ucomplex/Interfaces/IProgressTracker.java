@@ -1,4 +1,4 @@
-package org.ucomplex.ucomplex.Activities.Tasks;
+package org.ucomplex.ucomplex.Interfaces;
 
 /**
  * Created by Sermilion on 24/12/2015.

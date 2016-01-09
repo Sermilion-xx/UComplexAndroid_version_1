@@ -3,19 +3,13 @@ package org.ucomplex.ucomplex.Activities.Tasks;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
-import android.preference.PreferenceManager;
 
-import com.google.gson.Gson;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.ucomplex.ucomplex.Activities.MyFilesActivity;
 import org.ucomplex.ucomplex.Common;
+import org.ucomplex.ucomplex.Interfaces.IProgressTracker;
+import org.ucomplex.ucomplex.Interfaces.OnTaskCompleteListener;
 import org.ucomplex.ucomplex.Model.StudyStructure.File;
-import org.ucomplex.ucomplex.Model.Users.User;
 
 import java.util.ArrayList;
 import java.util.HashMap;

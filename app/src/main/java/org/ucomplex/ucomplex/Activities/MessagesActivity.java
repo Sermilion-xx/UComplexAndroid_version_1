@@ -15,7 +15,7 @@ import android.widget.Toast;
 
 import org.apache.http.entity.mime.content.ByteArrayBody;
 import org.ucomplex.ucomplex.Activities.Tasks.FetchMessagesTask;
-import org.ucomplex.ucomplex.Activities.Tasks.OnTaskCompleteListener;
+import org.ucomplex.ucomplex.Interfaces.OnTaskCompleteListener;
 import org.ucomplex.ucomplex.Activities.Tasks.UploadPhotoTask;
 import org.ucomplex.ucomplex.Adaptors.MessagesAdapter;
 import org.ucomplex.ucomplex.Common;

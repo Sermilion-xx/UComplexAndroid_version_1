@@ -3,7 +3,6 @@ package org.ucomplex.ucomplex.Activities;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
@@ -18,7 +17,7 @@ import android.view.View;
 
 import org.ucomplex.ucomplex.Activities.Tasks.FetchUserEventsTask;
 import org.ucomplex.ucomplex.Activities.Tasks.FetchUserLoginTask;
-import org.ucomplex.ucomplex.Activities.Tasks.OnTaskCompleteListener;
+import org.ucomplex.ucomplex.Interfaces.OnTaskCompleteListener;
 import org.ucomplex.ucomplex.Adaptors.MenuAdapter;
 import org.ucomplex.ucomplex.Common;
 import org.ucomplex.ucomplex.Fragments.EventsFragment;
@@ -27,7 +26,6 @@ import org.ucomplex.ucomplex.Model.Users.Student;
 import org.ucomplex.ucomplex.Model.Users.User;
 import org.ucomplex.ucomplex.R;
 
-import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
@@ -51,10 +49,6 @@ public class EventsActivity extends AppCompatActivity implements OnTaskCompleteL
             R.drawable.ic_menu_calendar,
             R.drawable.ic_menu_materials,
             R.drawable.ic_menu_exit};
-
-    String NAME = "Авторханова Мадина";
-    String EMAIL = "avtorkhanova@mail.ru";
-    int PROFILE = R.mipmap.ic_no_image;
 
     RecyclerView mRecyclerView;                           // Declaring RecyclerView
     MenuAdapter mAdapter;                        // Declaring Adapter For Recycler View
@@ -90,11 +84,12 @@ public class EventsActivity extends AppCompatActivity implements OnTaskCompleteL
         Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar);
         toolbar.setTitle("События");
         setSupportActionBar(toolbar);
-
         user = Common.getUserDataFromPref(this);
+        Bitmap bmp = Common.decodePhotoPref(this,"profilePhoto");
+        if(bmp!=null){
+            user.setPhotoBitmap(bmp);
+        }
 
-
-        user.setPhotoBitmap(Common.decodePhotoPref(this,"profilePhoto"));
         mEventsTask = new FetchUserEventsTask(this);
         try {
             this.eventsArray = mEventsTask.execute((Void) null).get();
@@ -175,8 +170,11 @@ public class EventsActivity extends AppCompatActivity implements OnTaskCompleteL
         if(output!=null) {
             Common.setUserDataToPref(this, output);
             mAdapter.setProfileBitmap(bitmap);
+            if(bitmap!=null){
+                Common.encodePhotoPref(this,bitmap, "profileBitmap");
+                user.setPhotoBitmap(bitmap);
+            }
             mAdapter.notifyDataSetChanged();
-            final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
             mAdapter = new MenuAdapter(TITLES,ICONS, user, this);
             mRecyclerView.setAdapter(mAdapter);                              // Setting the adapter to RecyclerView
             mLayoutManager = new LinearLayoutManager(this);                 // Creating a layout Manager

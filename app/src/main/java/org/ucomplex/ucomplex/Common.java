@@ -3,6 +3,7 @@ package org.ucomplex.ucomplex;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -21,8 +22,11 @@ import android.net.Uri;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.util.Base64;
 import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.EditText;
 
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.google.gson.Gson;
@@ -67,6 +71,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.Callable;
 
 /**
  * Created by Sermi lion on 04/12/2015.
@@ -335,7 +340,7 @@ public class Common {
             Bitmap myBitmap = BitmapFactory.decodeStream(input);
             return myBitmap;
         } catch (IOException e) {
-            // Log exception
+            e.printStackTrace();
             return null;
         }
     }
@@ -552,6 +557,9 @@ public class Common {
 
         return null;
     }
+
+
+
 
 
 //    public static String httpPost(String urlString, String auth, HashMap<String, String>... postDataParams) {

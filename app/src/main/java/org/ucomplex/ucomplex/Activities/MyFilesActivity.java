@@ -19,7 +19,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import org.ucomplex.ucomplex.Activities.Tasks.FetchMyFilesTask;
-import org.ucomplex.ucomplex.Activities.Tasks.OnTaskCompleteListener;
+import org.ucomplex.ucomplex.Interfaces.OnTaskCompleteListener;
 import org.ucomplex.ucomplex.Common;
 import org.ucomplex.ucomplex.Fragments.CourseMaterialsFragment;
 import org.ucomplex.ucomplex.Model.StudyStructure.File;
@@ -76,7 +76,7 @@ public class MyFilesActivity extends AppCompatActivity implements OnTaskComplete
         return super.onOptionsItemSelected(item);
     }
 
-    protected void createFolder(){
+    protected void createFolder(final String folderName){
         new AsyncTask<Void, Void, ArrayList>(){
 
             @Override
@@ -112,8 +112,8 @@ public class MyFilesActivity extends AppCompatActivity implements OnTaskComplete
         alertDialogBuilder.setCancelable(false)
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        folderName = editText.getText().toString();
-                        createFolder();
+                        String folderName = editText.getText().toString();
+                        createFolder(folderName);
                     }
                 })
                 .setNegativeButton("Cancel",

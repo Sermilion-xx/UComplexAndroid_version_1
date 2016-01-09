@@ -78,18 +78,13 @@ public class FetchUserLoginTask extends AsyncTask<Void, Void, Student> {
             Student student = null;
             try {
                 student = getUserFromJson(jsonData);
+                if(student.getPhoto()==1){
+                    photoBitmap = Common.getBitmapFromURL(student.getCode());
+                    System.out.println();
+                }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            photoBitmap = Common.getBitmapFromURL(student.getCode());
-//            Common.encodePhotoPref(mContext, photoBitmap, "profilePhoto");
-            SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(mContext);
-            String tempPhoto = "";
-            tempPhoto = pref.getString("tempProfilePhoto", "");
-            if (tempPhoto.length() < 1) {
-                Common.encodePhotoPref(mContext, photoBitmap, "tempProfilePhoto");
-            }
-//            student.setPhotoBitmap(photoBitmap);
             return student;
         }
 

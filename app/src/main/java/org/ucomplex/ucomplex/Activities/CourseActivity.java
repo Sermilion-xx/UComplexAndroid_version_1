@@ -17,7 +17,7 @@ import org.javatuples.Quartet;
 import org.ucomplex.ucomplex.Activities.Tasks.FetchCalendarBeltTask;
 import org.ucomplex.ucomplex.Activities.Tasks.FetchMySubjectsTask;
 import org.ucomplex.ucomplex.Activities.Tasks.FetchTeacherFilesTask;
-import org.ucomplex.ucomplex.Activities.Tasks.OnTaskCompleteListener;
+import org.ucomplex.ucomplex.Interfaces.OnTaskCompleteListener;
 import org.ucomplex.ucomplex.Adaptors.ViewPagerAdapter;
 import org.ucomplex.ucomplex.Fragments.*;
 import org.ucomplex.ucomplex.Model.StudyStructure.Course;

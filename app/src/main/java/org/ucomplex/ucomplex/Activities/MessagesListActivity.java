@@ -13,15 +13,12 @@ import android.widget.Toast;
 
 
 import org.ucomplex.ucomplex.Activities.Tasks.FetchDialogsTask;
-import org.ucomplex.ucomplex.Activities.Tasks.FetchMessagesTask;
-import org.ucomplex.ucomplex.Activities.Tasks.OnTaskCompleteListener;
+import org.ucomplex.ucomplex.Interfaces.OnTaskCompleteListener;
 import org.ucomplex.ucomplex.Adaptors.MessagesListAdapter;
 import org.ucomplex.ucomplex.Model.Dialog;
 import org.ucomplex.ucomplex.R;
 
 import java.util.ArrayList;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.ExecutionException;
 
 public class MessagesListActivity extends AppCompatActivity implements OnTaskCompleteListener {

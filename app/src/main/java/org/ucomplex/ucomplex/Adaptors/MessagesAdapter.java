@@ -39,7 +39,7 @@ public class MessagesAdapter extends ArrayAdapter {
         this.context = context;
         this.values = messages;
         if(values.get(values.size()-1) instanceof Bitmap){
-            this.bitmap = (Bitmap) values.get(values.size());
+            this.bitmap = (Bitmap) values.get(values.size()-1);
         }
         user = Common.getUserDataFromPref(context);
         person = user.getPerson();

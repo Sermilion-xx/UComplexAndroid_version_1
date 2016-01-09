@@ -12,7 +12,7 @@ import android.widget.Toast;
 
 import org.javatuples.Quintet;
 import org.ucomplex.ucomplex.Activities.Tasks.FetchLibraryTask;
-import org.ucomplex.ucomplex.Activities.Tasks.OnTaskCompleteListener;
+import org.ucomplex.ucomplex.Interfaces.OnTaskCompleteListener;
 import org.ucomplex.ucomplex.Fragments.LibraryFragment;
 import org.ucomplex.ucomplex.R;
 

@@ -26,7 +26,7 @@ import com.prolificinteractive.materialcalendarview.OnMonthChangedListener;
 import org.javatuples.Quintet;
 import org.ucomplex.ucomplex.Activities.Tasks.AsyncTaskManager;
 import org.ucomplex.ucomplex.Activities.Tasks.FetchCalendarTask;
-import org.ucomplex.ucomplex.Activities.Tasks.OnTaskCompleteListener;
+import org.ucomplex.ucomplex.Interfaces.OnTaskCompleteListener;
 import org.ucomplex.ucomplex.Model.Calendar.CalendarDayDecorator;
 import org.ucomplex.ucomplex.Model.Calendar.ChangedDay;
 import org.ucomplex.ucomplex.Model.Calendar.Lesson;

@@ -10,13 +10,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Введите название папки"
+        android:text="@string/dialog_enter_name_str"
         android:id="@+id/textView" />
 
     <EditText
         android:id="@+id/edittext"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:hint="Название папки"
+        android:hint="@string/dialog_name_str"
         android:padding="10dp" />
 </LinearLayout>

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -21,11 +22,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.amulyakhare.textdrawable.TextDrawable;
+
 import org.apache.http.entity.mime.content.ByteArrayBody;
 import org.javatuples.Pair;
 
 import org.ucomplex.ucomplex.Activities.Tasks.FetchProfileTask;
-import org.ucomplex.ucomplex.Activities.Tasks.OnTaskCompleteListener;
+import org.ucomplex.ucomplex.Interfaces.OnTaskCompleteListener;
 import org.ucomplex.ucomplex.Activities.Tasks.SettingsTask;
 import org.ucomplex.ucomplex.Activities.Tasks.UploadPhotoTask;
 import org.ucomplex.ucomplex.Common;
@@ -33,6 +36,7 @@ import org.ucomplex.ucomplex.Model.Users.User;
 import org.ucomplex.ucomplex.R;
 
 import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
@@ -71,8 +75,30 @@ public class SettingsActivity extends AppCompatActivity implements OnTaskComplet
         fetchProfileTask.execute();
         //Photo settings
         photoImageView = (ImageView) findViewById(R.id.settings_photo);
-        Bitmap photoBitmap = Common.decodePhotoPref(context, "tempProfilePhoto");
-        photoImageView.setImageBitmap(photoBitmap);
+
+        Bitmap bmp = null;
+
+        String filename = getIntent().getStringExtra("image");
+        try {
+            FileInputStream is = this.openFileInput(filename);
+            bmp = BitmapFactory.decodeStream(is);
+            is.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if(bmp==null){
+            final int colorsCount = 16;
+            final int number = (user.getPerson() <= colorsCount) ? user.getPerson() : user.getPerson() % colorsCount;
+            char  firstLetter = user.getName().split(" ")[1].charAt(0);
+            TextDrawable drawable = TextDrawable.builder().beginConfig()
+                    .width(604)
+                    .height(604)
+                    .endConfig()
+                    .buildRect(String.valueOf(firstLetter), Common.getColor(number));
+            photoImageView.setImageDrawable(drawable);
+        }else {
+            photoImageView.setImageBitmap(bmp);
+        }
         photoImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -384,7 +410,7 @@ public class SettingsActivity extends AppCompatActivity implements OnTaskComplet
             Uri uri = data.getData();
             try {
                 profileBitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
-                profileBitmap = Common.getCroppedBitmap(profileBitmap, 604);
+//                profileBitmap = Common.getCroppedBitmap(profileBitmap, 604);
                 photoImageView.setImageBitmap(profileBitmap);
                 ByteArrayOutputStream bos = new ByteArrayOutputStream();
                 profileBitmap.compress(Bitmap.CompressFormat.JPEG, 60, bos);

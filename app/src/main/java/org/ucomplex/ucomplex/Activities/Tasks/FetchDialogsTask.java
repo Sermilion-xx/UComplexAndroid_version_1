@@ -11,6 +11,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.ucomplex.ucomplex.Activities.MessagesListActivity;
 import org.ucomplex.ucomplex.Common;
+import org.ucomplex.ucomplex.Interfaces.IProgressTracker;
+import org.ucomplex.ucomplex.Interfaces.OnTaskCompleteListener;
 import org.ucomplex.ucomplex.Model.Dialog;
 
 import java.util.ArrayList;

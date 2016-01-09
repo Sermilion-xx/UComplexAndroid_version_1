@@ -15,6 +15,8 @@ import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.ByteArrayBody;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.ucomplex.ucomplex.Common;
+import org.ucomplex.ucomplex.Interfaces.IProgressTracker;
+import org.ucomplex.ucomplex.Interfaces.OnTaskCompleteListener;
 
 import java.nio.charset.StandardCharsets;
 

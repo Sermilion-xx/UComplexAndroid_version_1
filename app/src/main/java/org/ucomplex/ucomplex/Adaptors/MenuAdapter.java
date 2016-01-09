@@ -29,6 +29,8 @@ import org.ucomplex.ucomplex.Common;
 import org.ucomplex.ucomplex.Model.Users.User;
 import org.ucomplex.ucomplex.R;
 
+import java.io.FileOutputStream;
+
 /**
  * Created by hp1 on 28-12-2014.
  */
@@ -74,7 +76,6 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder>  {
                 email = (TextView) itemView.findViewById(R.id.email);
                 profile = (ImageView) itemView.findViewById(R.id.circleView);
                 if(profileBitmap!=null){
-
                     this.profile.setImageBitmap(profileBitmap);
                 }
                 Holderid = 0;
@@ -112,8 +113,29 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder>  {
                 Intent intent = new Intent(contxt, CalendarActivity.class);
                 contxt.startActivity(intent);
             }else if(getAdapterPosition()==10){
-                Intent intent = new Intent(contxt, SettingsActivity.class);
-                contxt.startActivity(intent);
+
+                try {
+                    Intent intent = new Intent(contxt, SettingsActivity.class);
+                    //Write file
+                    String filename = "bitmap.png";
+                    FileOutputStream stream = contxt.openFileOutput(filename, Context.MODE_PRIVATE);
+                    try {
+                        profileBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    //Cleanup
+                    stream.close();
+                    if(profileBitmap!=null){
+                        profileBitmap.recycle();
+                    }
+                    //Pop intent
+                    intent.putExtra("image", filename);
+                    contxt.startActivity(intent);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
             }else if(getAdapterPosition()==11){
                 this.logout();
             }
@@ -161,12 +183,12 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder>  {
             }else{
                 final int colorsCount = 16;
                 final int number = (user.getPerson() <= colorsCount) ? user.getPerson() : user.getPerson() % colorsCount;
-                char  firstLetter = user.getName().split("")[1].charAt(0);
+                char  firstLetter = user.getName().split(" ")[1].charAt(0);
                 TextDrawable drawable = TextDrawable.builder().beginConfig()
-                        .width(60)
-                        .height(60)
+                        .width(604)
+                        .height(604)
                         .endConfig()
-                        .buildRound(String.valueOf(firstLetter), Common.getColor(number));
+                        .buildRect(String.valueOf(firstLetter), Common.getColor(number));
                 holder.profile.setImageDrawable(drawable);
             }
             holder.Name.setText(name);

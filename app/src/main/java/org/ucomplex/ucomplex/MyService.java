@@ -2,14 +2,12 @@ package org.ucomplex.ucomplex;
 
             import android.app.Activity;
             import android.app.IntentService;
-            import android.app.Service;
             import android.content.Intent;
-            import android.os.Handler;
             import android.os.IBinder;
             import android.widget.Toast;
 
             import org.ucomplex.ucomplex.Activities.Tasks.FetchMessagesTask;
-            import org.ucomplex.ucomplex.Activities.Tasks.OnTaskCompleteListener;
+            import org.ucomplex.ucomplex.Interfaces.OnTaskCompleteListener;
 
 
 /**

@@ -8,6 +8,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 
+import org.ucomplex.ucomplex.Interfaces.IProgressTracker;
+import org.ucomplex.ucomplex.Interfaces.OnTaskCompleteListener;
+
 public final class AsyncTaskManager implements IProgressTracker, OnCancelListener {
 
     private final OnTaskCompleteListener mTaskCompleteListener;

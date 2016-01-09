@@ -21,7 +21,6 @@ import java.util.List;
  */
 public class CourseMaterialsAdapter extends ArrayAdapter<File> {
 
-
     public CourseMaterialsAdapter(Context context, List<File> items){
         super(context, R.layout.course_material_listview_item,items);
     }

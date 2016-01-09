@@ -19,7 +19,7 @@ import android.widget.Toast;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.ucomplex.ucomplex.Activities.Tasks.FetchPersonTask;
-import org.ucomplex.ucomplex.Activities.Tasks.OnTaskCompleteListener;
+import org.ucomplex.ucomplex.Interfaces.OnTaskCompleteListener;
 import org.ucomplex.ucomplex.Common;
 import org.ucomplex.ucomplex.Model.StudyStructure.Course;
 import org.ucomplex.ucomplex.Model.Users.Teacher;
