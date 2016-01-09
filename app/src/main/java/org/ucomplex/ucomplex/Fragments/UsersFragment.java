@@ -22,10 +22,12 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.ucomplex.ucomplex.Activities.MessagesActivity;
 import org.ucomplex.ucomplex.Activities.PersonActivity;
 import org.ucomplex.ucomplex.Activities.Tasks.FetchUsersTask;
 import org.ucomplex.ucomplex.Activities.UsersActivity;
 import org.ucomplex.ucomplex.Common;
+import org.ucomplex.ucomplex.Model.Message;
 import org.ucomplex.ucomplex.Model.Users.User;
 import org.ucomplex.ucomplex.R;
 
@@ -107,8 +109,6 @@ public class UsersFragment extends ListFragment {
 
     }
 
-
-
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -122,20 +122,19 @@ public class UsersFragment extends ListFragment {
 
                 @Override
                 public void onClick(View arg0) {
-//
+
                     new FetchUsersTask(getActivity(), imageAdapter) {
                         @Override
                         protected void onPostExecute( ArrayList<User> users ) {
                             super.onPostExecute( users );
                             lastPos = mItems.size();
                             loadedUsers = users;
-                            boolean loaded = false;
                             if(loadedUsers.size()<=20){
-                                loaded = true;
+
                                 btnLoadExtra.setVisibility(View.GONE);
                             }
                             mItems.addAll(loadedUsers);
-                            setListAdapter(new ImageAdapter(getContext(),mItems, loaded));
+                            setListAdapter(new ImageAdapter(getContext(),mItems));
                             getListView().setSelection(lastPos - 2);
                             dialog.dismiss();
                         }
@@ -158,7 +157,7 @@ public class UsersFragment extends ListFragment {
             protected void onPostExecute( ArrayList<User> users ) {
                 super.onPostExecute( users );
                 mItems = users;
-                imageAdapter = new ImageAdapter(getActivity(), mItems, false);
+                imageAdapter = new ImageAdapter(getActivity(), mItems);
                 setListAdapter(imageAdapter);
             }
         }.execute(usersType);
@@ -172,7 +171,7 @@ public class UsersFragment extends ListFragment {
         private int counter = 0;
         ArrayList<User> mItems;
 
-		ImageAdapter(Context context, ArrayList<User> items,  boolean loaded) {
+		ImageAdapter(Context context, ArrayList<User> items) {
 			inflater = LayoutInflater.from(context);
 			options = new DisplayImageOptions.Builder()
 					.showImageOnLoading(null)
@@ -317,12 +316,12 @@ public class UsersFragment extends ListFragment {
                             break;
                         case 3:
                             actionsArrayList.add("Написать сообщение");
-                            actionsArrayList.add("Удалить из друзей");
+                            actionsArrayList.add("Добавить в друзья");
                             break;
                         case 1:
                             actionsArrayList.add("Написать сообщение");
                             if(mItems.get(position).isFriendRequested()){
-                                actionsArrayList.add("Добавить в друзья");
+                                actionsArrayList.add("Принять заявку");
                             }else{
                                 actionsArrayList.add("Удалить из друзей");
                             }
@@ -338,67 +337,77 @@ public class UsersFragment extends ListFragment {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             final HashMap<String, String> params = new HashMap<>();
-                                switch (which){
+                                switch (which) {
                                     case 0:
-                                        //write a message to friend
-                                        if(usersType==1){
-
+                                        if (usersType == 0 || usersType == 1 || usersType == 2 || usersType == 3) {
+                                            Intent intent = new Intent(getContext(), MessagesActivity.class);
+                                            String companion = String.valueOf(mItems.get(which).getPerson());
+                                            intent.putExtra("companion", companion);
+                                            getContext().startActivity(intent);
                                         }// Remove form blacklist
-                                        else if(usersType==4){
+                                        else if (usersType == 4) {
                                             params.put("user", String.valueOf(mItems.get(position).getId()));
                                             HandleMenuPress handleMenuPress1 = new HandleMenuPress();
                                             handleMenuPress1.execute("http://you.com.ru/user/blacklist/delete", params);
                                             mItems.remove(position);
                                             Toast.makeText(getActivity(), "Пользователь удален из черного списка :)", Toast.LENGTH_SHORT).show();
-
-                                            //Add friend form online list
-                                        }else if(usersType==0){
+                                        }
+                                        break;
+                                    case 1:
+                                        if (usersType == 0 || usersType == 3 || usersType == 3) {
                                             params.put("user", String.valueOf(mItems.get(position).getId()));
                                             HandleMenuPress handleMenuPress1 = new HandleMenuPress();
                                             handleMenuPress1.execute("http://you.com.ru/user/friends/add", params);
                                             Toast.makeText(getActivity(), "Заявка на дружбу отправлена :)", Toast.LENGTH_SHORT).show();
-                                        }
-                                        break;
-                                    case 1:
-                                        //Add/Remove friend request
-                                        if(usersType==1){
+                                        } else if (usersType == 1) {
                                             params.put("user", String.valueOf(mItems.get(position).getId()));
-                                            if(mItems.get(position).isFriendRequested()) {
+                                            if (mItems.get(position).isFriendRequested()) {
                                                 HandleMenuPress handleMenuPress = new HandleMenuPress();
                                                 handleMenuPress.execute("http://you.com.ru/user/friends/accept", params);
                                                 mItems.get(position).setFriendRequested(false);
                                                 Toast.makeText(getActivity(), mItems.get(position).getName() + " теперь ваш друг :)", Toast.LENGTH_SHORT).show();
-                                            }else {
+                                            } else {
                                                 HandleMenuPress handleMenuPress = new HandleMenuPress();
                                                 handleMenuPress.execute("http://you.com.ru/user/friends/delete", params);
                                                 mItems.remove(position);
                                                 Toast.makeText(getActivity(), "Пользователь удален из друзей :(", Toast.LENGTH_SHORT).show();
                                             }
-
-                                            //write a message to not friend
-                                        }else if(usersType==0){
-
-                                            //Add friend form group list
-                                        }else if(usersType==2){
-                                            params.put("user", String.valueOf(mItems.get(position).getId()));
-                                            HandleMenuPress handleMenuPress1 = new HandleMenuPress();
-                                            handleMenuPress1.execute("http://you.com.ru/user/friends/add", params);
-                                            Toast.makeText(getActivity(), "Заявка на дружбу отправлена :)", Toast.LENGTH_SHORT).show();
                                         }
-                                        break;
-                                    case 2:
-                                        //add to blacklist
-                                        if(usersType==1) {
-                                            params.put("user", String.valueOf(mItems.get(position).getId()));
-                                            HandleMenuPress handleMenuPress = new HandleMenuPress();
-                                            handleMenuPress.execute("http://you.com.ru/user/blacklist/add", params);
-                                            mItems.remove(position);
-                                            Toast.makeText(getActivity(), "Пользователь добавлен в черный список :(", Toast.LENGTH_SHORT).show();
-                                            break;
-                                        }
-                                    case 4:
-                                        break;
+
+//                                            else if(usersType==0){
+//                                                params.put("user", String.valueOf(mItems.get(position).getId()));
+//                                                HandleMenuPress handleMenuPress1 = new HandleMenuPress();
+//                                                handleMenuPress1.execute("http://you.com.ru/user/friends/add", params);
+//                                                Toast.makeText(getActivity(), "Заявка на дружбу отправлена :)", Toast.LENGTH_SHORT).show();
+//                                            }
+//
+//                                            //write a message to not friend
+//                                        }else if(usersType==0){
+//                                            Intent intent = new Intent(getContext(), MessagesActivity.class);
+//                                            String companion = String.valueOf(mItems.get(which).getPerson());
+//                                            intent.putExtra("companion", companion);
+//                                            getContext().startActivity(intent);
+//                                            //Add friend form group list
+//                                        }else if(usersType==2){
+//                                            params.put("user", String.valueOf(mItems.get(position).getId()));
+//                                            HandleMenuPress handleMenuPress1 = new HandleMenuPress();
+//                                            handleMenuPress1.execute("http://you.com.ru/user/friends/add", params);
+//                                            Toast.makeText(getActivity(), "Заявка на дружбу отправлена :)", Toast.LENGTH_SHORT).show();
+//                                        }
+//                                        break;
+//                                    case 2:
+//                                        //add to blacklist
+//                                        if(usersType==1) {
+//                                            params.put("user", String.valueOf(mItems.get(position).getId()));
+//                                            HandleMenuPress handleMenuPress = new HandleMenuPress();
+//                                            handleMenuPress.execute("http://you.com.ru/user/blacklist/add", params);
+//                                            mItems.remove(position);
+//                                            Toast.makeText(getActivity(), "Пользователь добавлен в черный список :(", Toast.LENGTH_SHORT).show();
+//                                            break;
+//                                        }
+//                                    case 4:
                                 }
+
                             UsersActivity act = (UsersActivity)getActivity();
                             ViewPager viewPager = (ViewPager) getActivity().findViewById(R.id.users_viewpager);
                             act.setupViewPager(viewPager);

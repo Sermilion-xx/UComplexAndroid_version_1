@@ -1,6 +1,7 @@
 package org.ucomplex.ucomplex.Activities;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -156,7 +157,15 @@ public class MessagesActivity extends AppCompatActivity implements OnTaskComplet
                         listView.setAdapter(messagesAdapter);
                     } else if (fmt.getType() == 1 || fmt.getType() == 2) {
                         ArrayList result = (ArrayList) task.get();
-                        if (result != null && result.size() > 0) {
+                        int cycles = 0;
+                        if(result.size()>0) {
+                            if (result.get(result.size() - 1) instanceof Bitmap) {
+                                cycles = result.size() - 1;
+                            } else {
+                                cycles = result.size();
+                            }
+                        }
+                        if (result != null && cycles > 0) {
                             messageArrayList.add((Message) result.get(0));
                             if (result.size() > 0) {
                                 Toast.makeText(this, "Сообщение отправленно", Toast.LENGTH_LONG)

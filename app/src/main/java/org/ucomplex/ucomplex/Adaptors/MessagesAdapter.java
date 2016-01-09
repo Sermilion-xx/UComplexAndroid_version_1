@@ -24,7 +24,6 @@ import java.util.ArrayList;
 public class MessagesAdapter extends ArrayAdapter {
 
     private LayoutInflater inflater;
-    private final Context context;
     ArrayList values = new ArrayList();
     Bitmap bitmap;
     TextDrawable drawable;
@@ -36,10 +35,11 @@ public class MessagesAdapter extends ArrayAdapter {
 
     public MessagesAdapter(Context context, ArrayList<Message> messages) {
         super(context, -1, messages);
-        this.context = context;
         this.values = messages;
-        if(values.get(values.size()-1) instanceof Bitmap){
-            this.bitmap = (Bitmap) values.get(values.size()-1);
+        if(values.size()>0){
+            if(values.get(values.size()-1) instanceof Bitmap){
+                this.bitmap = (Bitmap) values.get(values.size()-1);
+            }
         }
         user = Common.getUserDataFromPref(context);
         person = user.getPerson();
@@ -58,7 +58,7 @@ public class MessagesAdapter extends ArrayAdapter {
 
     @Override
     public int getCount() {
-        return this.values.size();
+        return this.values.size()-1;
     }
 
     @Override
@@ -78,13 +78,13 @@ public class MessagesAdapter extends ArrayAdapter {
             if (viewType == TYPE_OUT) {
                 convertView = inflater.inflate(R.layout.list_item_messages_right, null);
                 viewHolder.messageTextView = (TextView) convertView.findViewById(R.id.list_messages_message_right_text);
-                viewHolder.profileImageView = (ImageView) convertView.findViewById(R.id.list_messages_message_right_image);
+                viewHolder.profileImageView = (de.hdodenhof.circleimageview.CircleImageView) convertView.findViewById(R.id.list_messages_message_right_image);
                 viewHolder.timeTextView = (TextView) convertView.findViewById(R.id.list_messages_message_right_time);
                 viewHolder.holderId = TYPE_OUT;
             } else if (viewType == TYPE_IN) {
                 convertView = inflater.inflate(R.layout.list_item_messages_left, null);
                 viewHolder.messageTextView = (TextView) convertView.findViewById(R.id.list_messages_message_left_text);
-                viewHolder.profileImageView = (ImageView) convertView.findViewById(R.id.list_messages_message_left_image);
+                viewHolder.profileImageView = (de.hdodenhof.circleimageview.CircleImageView) convertView.findViewById(R.id.list_messages_message_left_image);
                 viewHolder.timeTextView = (TextView) convertView.findViewById(R.id.list_messages_message_left_time);
                 viewHolder.holderId = TYPE_IN;
             }
@@ -124,6 +124,6 @@ public class MessagesAdapter extends ArrayAdapter {
         int holderId;
         TextView messageTextView;
         TextView timeTextView;
-        ImageView profileImageView;
+        de.hdodenhof.circleimageview.CircleImageView profileImageView;
     }
 }

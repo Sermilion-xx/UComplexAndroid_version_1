@@ -21,7 +21,6 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Крутое имя препода"
             android:id="@+id/course_info_teacher_name"
             android:textSize="20sp"
             android:layout_below="@+id/course_info_teacher_image"
@@ -55,14 +54,12 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Название Кафедра"
         android:id="@+id/course_info_course_department_name"
         android:textSize="16sp"
         android:layout_gravity="center_vertical"
         android:layout_alignTop="@+id/course_info_course_department_label"
-        android:layout_toRightOf="@+id/course_info_position"
-        android:layout_toEndOf="@+id/course_info_position"
-        android:layout_marginLeft="5dp" />
+        android:layout_alignRight="@+id/course_info_course_attendance_label"
+        android:layout_alignEnd="@+id/course_info_course_attendance_label" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -78,7 +75,6 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="0.0"
         android:id="@+id/course_info_course_average_mark_value"
         android:textSize="16sp"
         android:layout_below="@id/course_info_course_name"
@@ -101,7 +97,6 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="0.0"
         android:id="@+id/course_info_course_attendance_value"
         android:textSize="16sp"
         android:layout_below="@id/course_info_course_average_mark_value"
@@ -154,7 +149,6 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="mail@mail.ru"
         android:id="@+id/course_info_mail"
         android:textSize="16sp"
         android:layout_below="@+id/course_info_teacher_name"
@@ -184,7 +178,6 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="position"
         android:id="@+id/course_info_position"
         android:layout_below="@+id/course_info_mail"
         android:layout_marginTop="5dp"
@@ -215,7 +208,6 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="position 2"
         android:id="@+id/course_info_position_2"
         android:layout_below="@+id/course_info_position"
         android:layout_marginLeft="40dp"

@@ -40,6 +40,7 @@ import android.widget.Toast;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingProgressListener;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
@@ -87,7 +88,7 @@ public class EventsFragment extends ListFragment {
         super.onViewCreated(view, savedInstanceState);
         getListView().setDivider(null);
 
-        imageAdapter = new ImageAdapter(getActivity());
+
         getListView().setAdapter(imageAdapter);
         getListView().setOnItemClickListener(new OnItemClickListener() {
             @Override
@@ -154,14 +155,14 @@ public class EventsFragment extends ListFragment {
         Bundle extras = getArguments();
         this.eventItems = (ArrayList<EventRowItem>) extras.getSerializable("eventItems");
 		View rootView = inflater.inflate(R.layout.fragment_events, container, false);
-
+        imageAdapter = new ImageAdapter(getActivity());
 		return rootView;
 	}
 
 
     private class ImageAdapter extends BaseAdapter {
 
-        final EventsFragment outer = EventsFragment.this;
+
 		private LayoutInflater inflater;
 		private DisplayImageOptions options;
         private boolean loaded=false;
@@ -182,8 +183,8 @@ public class EventsFragment extends ListFragment {
 
 		@Override
 		public int getCount() {
-			if(outer.eventItems!=null){
-				return outer.eventItems.size();
+			if(eventItems!=null){
+				return eventItems.size();
 			}else{
 				return 0;
 			}
