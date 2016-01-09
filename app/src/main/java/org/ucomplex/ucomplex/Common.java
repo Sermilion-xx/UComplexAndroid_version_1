@@ -536,6 +536,22 @@ public class Common {
         editor.apply();
     }
 
+    public static void deleteFromPref(Context context,String typeStr){
+        SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(context).edit();
+        editor.remove(typeStr);
+        editor.apply();
+    }
+
+    public static boolean hasKeyPref(Context context,String typeStr){
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        String value = preferences.getString("typeStr",null);
+        if (value == null) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
     public static String getPath(Context context, Uri uri) throws URISyntaxException {
         if ("content".equalsIgnoreCase(uri.getScheme())) {
             String[] projection = { "_data" };

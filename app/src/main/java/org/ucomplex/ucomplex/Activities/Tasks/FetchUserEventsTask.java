@@ -13,12 +13,13 @@ import org.ucomplex.ucomplex.Model.EventParams;
 import org.ucomplex.ucomplex.Model.EventRowItem;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
 
 /**
  * Created by Sermilion on 05/12/2015.
  */
-public class FetchUserEventsTask extends AsyncTask<Void, Void, ArrayList<EventRowItem>> {
+public class FetchUserEventsTask extends AsyncTask<Integer, Void, ArrayList<EventRowItem>> {
 
     Activity mContext;
     String jsonData  = null;
@@ -32,9 +33,15 @@ public class FetchUserEventsTask extends AsyncTask<Void, Void, ArrayList<EventRo
     }
 
     @Override
-    protected ArrayList<EventRowItem> doInBackground(Void... params) {
+    protected ArrayList<EventRowItem> doInBackground(Integer... params) {
         String urlString = "http://you.com.ru/student?mobile=1";
-        jsonData = Common.httpPost(urlString, Common.getLoginDataFromPref(mContext));
+        if(params.length>0){
+            HashMap<String, String> httpParams = new HashMap<>();
+            httpParams.put("start", String.valueOf(params[0]));
+            jsonData = Common.httpPost(urlString, Common.getLoginDataFromPref(mContext),httpParams);
+        }else{
+            jsonData = Common.httpPost(urlString, Common.getLoginDataFromPref(mContext));
+        }
         try {
             if(jsonData!=null){
                 if(jsonData.length()>0) {

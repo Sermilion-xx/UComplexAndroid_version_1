@@ -70,6 +70,5 @@
     <string name="menu_rename_str">Переименовать</string>
     <string name="menu_delete_str">Удалить</string>
     <string name="dialog_enter_name_str">Введите название</string>
-    <string name="dialog_name_str">Название</string>
 
 </resources>

@@ -17,6 +17,6 @@
         android:id="@+id/edittext"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/dialog_name_str"
+        android:hint="Название"
         android:padding="10dp" />
 </LinearLayout>

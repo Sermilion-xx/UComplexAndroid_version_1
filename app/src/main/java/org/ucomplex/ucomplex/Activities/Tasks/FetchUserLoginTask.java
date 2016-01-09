@@ -81,6 +81,8 @@ public class FetchUserLoginTask extends AsyncTask<Void, Void, Student> {
                 if(student.getPhoto()==1){
                     photoBitmap = Common.getBitmapFromURL(student.getCode());
                     System.out.println();
+                }else {
+                    Common.deleteFromPref(mContext, "profilePhoto");
                 }
             } catch (JSONException e) {
                 e.printStackTrace();

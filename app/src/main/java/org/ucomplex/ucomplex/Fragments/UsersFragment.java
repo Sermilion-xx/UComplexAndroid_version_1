@@ -31,7 +31,6 @@ import org.ucomplex.ucomplex.R;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.concurrent.ExecutionException;
 
 import android.widget.BaseAdapter;
 
@@ -193,7 +192,6 @@ public class UsersFragment extends ListFragment {
                 return mItems.size();
             }else
                 return 0;
-
         }
 
         @Override
