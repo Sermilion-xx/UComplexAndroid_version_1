@@ -92,9 +92,11 @@ public class CourseMaterialsFragment extends ListFragment {
         getListView().setDivider(null);
         getListView().setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             public boolean onItemLongClick(AdapterView parent, View view, int position, long id) {
-                selectedItemPos = position;
-                getActivity().startActionMode(modeCallBack);
-                view.setSelected(true);
+                if(myFiles) {
+                    selectedItemPos = position;
+                    getActivity().startActionMode(modeCallBack);
+                    view.setSelected(true);
+                }
                 return true;
             }
         });
