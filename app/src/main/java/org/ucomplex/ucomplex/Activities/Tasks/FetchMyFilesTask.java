@@ -22,7 +22,6 @@ public class FetchMyFilesTask extends AsyncTask<String, String, ArrayList<File>>
     Activity mContext;
     MyFilesActivity caller;
 
-    private String mProgressMessage;
     private IProgressTracker mProgressTracker;
     private final OnTaskCompleteListener mTaskCompleteListener;
     private final ProgressDialog mProgressDialog;
@@ -64,18 +63,14 @@ public class FetchMyFilesTask extends AsyncTask<String, String, ArrayList<File>>
         return null;
     }
 
-    /* UI Thread */
     @Override
     protected void onCancelled() {
-        // Detach from progress tracker
         mProgressTracker = null;
     }
 
-    /* UI Thread */
     @Override
     protected void onProgressUpdate(String... values) {
-        // Update progress message
-        mProgressMessage = values[0];
+        String mProgressMessage = values[0];
         // And send it to progress tracker
         if (mProgressTracker != null) {
             mProgressTracker.onProgress(mProgressMessage);
@@ -103,28 +98,21 @@ public class FetchMyFilesTask extends AsyncTask<String, String, ArrayList<File>>
 
     @Override
     public void onProgress(String message) {
-        // Show dialog if it wasn't shown yet or was removed on configuration (rotation) change
         if (!mProgressDialog.isShowing()) {
             mProgressDialog.show();
         }
-        // Show current message in progress dialog
         mProgressDialog.setMessage(message);
     }
 
     @Override
     public void onCancel(DialogInterface dialog) {
-        // Cancel task
         this.cancel(true);
-        // Notify activity about completion
         mTaskCompleteListener.onTaskComplete(this);
     }
 
     @Override
     public void onComplete() {
-        // Close progress dialog
-        // Notify activity about completion
         mTaskCompleteListener.onTaskComplete(this);
         mProgressDialog.dismiss();
-        // Reset task
     }
 }

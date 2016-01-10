@@ -1,0 +1,9 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".Activities.EventsActivity">
+
+    <item android:id="@+id/action_message_delete"
+        android:title="@string/menu_delete_str"
+        android:icon="@android:drawable/ic_menu_delete"/>
+
+</menu>

@@ -15,7 +15,6 @@ import org.ucomplex.ucomplex.Model.Message;
 import org.ucomplex.ucomplex.Model.Users.User;
 import org.ucomplex.ucomplex.R;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 
 /**
@@ -23,7 +22,6 @@ import java.util.LinkedList;
  */
 public class MessagesAdapter extends ArrayAdapter {
 
-    private LayoutInflater inflater;
     LinkedList values = new LinkedList();
     Bitmap bitmap;
     TextDrawable drawable1;
@@ -82,7 +80,7 @@ public class MessagesAdapter extends ArrayAdapter {
 
     private View createConverterView(ViewHolder viewHolder, View convertView, int viewType){
         viewHolder = new ViewHolder();
-        inflater = LayoutInflater.from(getContext());
+        LayoutInflater inflater = LayoutInflater.from(getContext());
         if (viewType == TYPE_OUT) {
             convertView = inflater.inflate(R.layout.list_item_messages_right, null);
             viewHolder.messageTextView = (TextView) convertView.findViewById(R.id.list_messages_message_right_text);
@@ -114,10 +112,10 @@ public class MessagesAdapter extends ArrayAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        ViewHolder viewHolder = null;
+        ViewHolder viewHolder;
         int viewType = getItemViewType(position);
         if (convertView == null) {
-            convertView = createConverterView(viewHolder, convertView, viewType);
+            convertView = createConverterView(null, null, viewType);
             viewHolder = (ViewHolder) convertView.getTag();
         } else {
             viewHolder = (ViewHolder) convertView.getTag();

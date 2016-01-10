@@ -114,7 +114,6 @@ public class CourseActivity extends AppCompatActivity implements OnTaskCompleteL
         courseMaterialsFragment.setFiles(stackFiles.peek());
 
         calendarBeltFragment = new CalendarBeltFragment();
-        calendarBeltFragment.setGcourse(this.gcourse);
         calendarBeltFragment.setFeedItems(this.feedItems);
 
         adapter = new ViewPagerAdapter(getSupportFragmentManager());

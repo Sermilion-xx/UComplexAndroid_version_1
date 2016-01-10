@@ -55,7 +55,7 @@ public class FetchLangTask extends AsyncTask<Void, Void, Boolean> {
         BufferedReader in = new BufferedReader(
                 new InputStreamReader(con.getInputStream()));
         String inputLine;
-        StringBuffer response = new StringBuffer();
+        StringBuilder response = new StringBuilder();
 
         while ((inputLine = in.readLine()) != null) {
             response.append(inputLine);
@@ -67,7 +67,6 @@ public class FetchLangTask extends AsyncTask<Void, Void, Boolean> {
 
     @Override
     protected Boolean doInBackground(Void... params) {
-        String urlString = "http://ucomplex.org/public/get_uc_vars?json&lang=1";
         String jsonData = null;
         try {
             jsonData = sendPost();
@@ -79,10 +78,4 @@ public class FetchLangTask extends AsyncTask<Void, Void, Boolean> {
         return jsonData != null;
     }
 
-    @Override
-    protected void onPostExecute(final Boolean success) {
-        if (success) {
-
-        }
-    }
 }

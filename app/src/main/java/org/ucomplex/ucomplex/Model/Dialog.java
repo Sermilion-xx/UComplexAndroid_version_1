@@ -8,6 +8,7 @@ import java.io.Serializable;
  * Created by Sermilion on 30/12/2015.
  */
 public class Dialog implements Serializable {
+    private int id;
     private int companion;
     private int from;
     private String message;
@@ -19,6 +20,14 @@ public class Dialog implements Serializable {
     private Bitmap photoBitmap;
 
     public Dialog() {
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public int getCompanion() {

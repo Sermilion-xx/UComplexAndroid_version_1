@@ -25,7 +25,6 @@ public class FetchLibraryTask extends AsyncTask<Integer, String, ArrayList> impl
     Activity mContext;
     LibraryActivity caller;
 
-    private String mProgressMessage;
     private IProgressTracker mProgressTracker;
     private final OnTaskCompleteListener mTaskCompleteListener;
     private final ProgressDialog mProgressDialog;
@@ -51,8 +50,8 @@ public class FetchLibraryTask extends AsyncTask<Integer, String, ArrayList> impl
 
     @Override
     protected ArrayList doInBackground(Integer... params) {
-        String urlString = "";
-        String jsonData = "";
+        String urlString;
+        String jsonData;
         HashMap<String, String> httpParams = new HashMap<>();
         if(params[0]==0){
             //collections  collections (0) - > all_selections (1) - > open_selection (selection - 45, pure - 1) (2)
@@ -121,7 +120,7 @@ public class FetchLibraryTask extends AsyncTask<Integer, String, ArrayList> impl
                 String name = jsonBookObject.getString("name");
                 int quantity = jsonBookObject.getInt("quantity");
                 int year = jsonBookObject.getInt("year");
-                int authorInt = -1;
+                int authorInt;
                 String authorStr = "";
 
                 JSONObject authorsJson = booksJson.getJSONObject("authors");
@@ -232,19 +231,15 @@ public class FetchLibraryTask extends AsyncTask<Integer, String, ArrayList> impl
         return libraryData;
     }
 
-    /* UI Thread */
+
     @Override
     protected void onCancelled() {
-        // Detach from progress tracker
         mProgressTracker = null;
     }
 
-    /* UI Thread */
     @Override
     protected void onProgressUpdate(String... values) {
-        // Update progress message
-        mProgressMessage = values[0];
-        // And send it to progress tracker
+        String mProgressMessage = values[0];
         if (mProgressTracker != null) {
             mProgressTracker.onProgress(mProgressMessage);
         }
@@ -266,35 +261,27 @@ public class FetchLibraryTask extends AsyncTask<Integer, String, ArrayList> impl
         if (mProgressTracker != null) {
             mProgressTracker.onComplete();
         }
-        // Detach from progress tracker
         mProgressTracker = null;
     }
 
     @Override
     public void onProgress(String message) {
-        // Show dialog if it wasn't shown yet or was removed on configuration (rotation) change
         if (!mProgressDialog.isShowing()) {
             mProgressDialog.show();
         }
-        // Show current message in progress dialog
         mProgressDialog.setMessage(message);
     }
 
     @Override
     public void onCancel(DialogInterface dialog) {
-        // Cancel task
         this.cancel(true);
-        // Notify activity about completion
         mTaskCompleteListener.onTaskComplete(this);
     }
 
     @Override
     public void onComplete() {
-        // Close progress dialog
-        // Notify activity about completion
         mTaskCompleteListener.onTaskComplete(this);
         mProgressDialog.dismiss();
-        // Reset task
     }
 
 

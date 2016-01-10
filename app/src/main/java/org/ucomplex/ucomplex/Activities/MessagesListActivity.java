@@ -5,6 +5,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.ActionMode;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -13,17 +15,21 @@ import android.widget.Toast;
 
 
 import org.ucomplex.ucomplex.Activities.Tasks.FetchDialogsTask;
+import org.ucomplex.ucomplex.Common;
 import org.ucomplex.ucomplex.Interfaces.OnTaskCompleteListener;
 import org.ucomplex.ucomplex.Adaptors.MessagesListAdapter;
 import org.ucomplex.ucomplex.Model.Dialog;
 import org.ucomplex.ucomplex.R;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
 
 public class MessagesListActivity extends AppCompatActivity implements OnTaskCompleteListener {
 
     ArrayList<Dialog> dialogs = new ArrayList<>();
+    MessagesListAdapter messagesListAdapter;
+    private int selectedItemPos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +54,55 @@ public class MessagesListActivity extends AppCompatActivity implements OnTaskCom
         return super.onOptionsItemSelected(item);
     }
 
+    private ActionMode.Callback modeCallBack = new ActionMode.Callback() {
+
+        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+            return false;
+        }
+
+        public void onDestroyActionMode(ActionMode mode) {
+        }
+
+        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+            mode.getMenuInflater().inflate(R.menu.menu_message_list, menu);
+            return true;
+        }
+
+        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+
+            int id = item.getItemId();
+            switch (id) {
+                case R.id.action_message_delete: {
+                    deleteDialog(selectedItemPos);
+                    mode.finish();
+                    break;
+                }
+                default:
+                    return false;
+            }
+            return false;
+        }
+    };
+
+    public void deleteDialog(final int position){
+        new AsyncTask<Void, Void, Void>(){
+            @Override
+            protected Void doInBackground(Void... params) {
+                HashMap<String, String> httpParas = new HashMap<>();
+                httpParas.put("id", String.valueOf(dialogs.get(position).getId()));
+                String url = "https://ucomplex.org/user/messages/del_dialog?mobile=1";
+                Common.httpPost(url,Common.getLoginDataFromPref(MessagesListActivity.this), httpParas);
+                return null;
+            }
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+                dialogs.remove(position);
+                messagesListAdapter.notifyDataSetChanged();
+            }
+        }.execute();
+    }
+
     @Override
     public void onTaskComplete(AsyncTask task, Object... o) {
         if (task.isCancelled()) {
@@ -58,7 +113,7 @@ public class MessagesListActivity extends AppCompatActivity implements OnTaskCom
             try {
                 dialogs = (ArrayList<Dialog>) task.get();
                 if(dialogs!=null && dialogs.size()>0){
-                    MessagesListAdapter messagesListAdapter = new MessagesListAdapter(this,dialogs);
+                    messagesListAdapter = new MessagesListAdapter(this,dialogs);
                     ListView listView = (ListView) findViewById(R.id.messages_listview);
                     listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
@@ -70,6 +125,14 @@ public class MessagesListActivity extends AppCompatActivity implements OnTaskCom
                         }
                     });
                     listView.setAdapter(messagesListAdapter);
+                    listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+                        public boolean onItemLongClick(AdapterView parent, View view, final int position, long id) {
+                            selectedItemPos = position;
+                            MessagesListActivity.this.startActionMode(modeCallBack);
+                            view.setSelected(true);
+                            return true;
+                        }
+                    });
                 }
             } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();

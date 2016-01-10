@@ -57,7 +57,6 @@ public class FetchDialogsTask extends AsyncTask<Integer, String, ArrayList> impl
             }
         }
         return null;
-
     }
 
     private ArrayList getDialogsFromJson(String jsonData) {
@@ -68,6 +67,7 @@ public class FetchDialogsTask extends AsyncTask<Integer, String, ArrayList> impl
                 JSONObject dialogJson = dialogsJson.getJSONObject(i);
                 Dialog dialog = new Dialog();
                 dialog.setCode(dialogJson.getString("code"));
+                dialog.setId(dialogJson.getInt("from"));
                 dialog.setCompanion(dialogJson.getInt("companion"));
                 dialog.setFrom(dialogJson.getInt("from"));
                 dialog.setMessage(dialogJson.getString("message"));
@@ -82,7 +82,6 @@ public class FetchDialogsTask extends AsyncTask<Integer, String, ArrayList> impl
         }catch (JSONException e) {
             e.printStackTrace();
         }
-
         return null;
     }
 

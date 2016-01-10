@@ -24,7 +24,6 @@ import org.ucomplex.ucomplex.Model.Message;
 import org.ucomplex.ucomplex.R;
 
 import java.net.URISyntaxException;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.Timer;
@@ -150,10 +149,8 @@ public class MessagesActivity extends AppCompatActivity implements OnTaskComplet
         switch (requestCode) {
             case Common.FILE_SELECT_CODE:
                 if (resultCode == RESULT_OK) {
-                    // Get the Uri of the selected file
                     Uri uri = data.getData();
                     Log.d("", "File Uri: " + uri.toString());
-                    // Get the path
                     String path = null;
                     try {
                         path = Common.getPath(this, uri);
@@ -163,7 +160,9 @@ public class MessagesActivity extends AppCompatActivity implements OnTaskComplet
                     Log.d("", "File Path: " + path);
                     filePath = path;
                     byte[] fileByte = Common.fileToByte(path);
-                    contentBody = new ByteArrayBody(fileByte, "filename");
+                    if (fileByte != null) {
+                        contentBody = new ByteArrayBody(fileByte, "filename");
+                    }
 
                 }
                 break;

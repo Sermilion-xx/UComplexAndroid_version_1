@@ -119,7 +119,7 @@ public class CourseMaterialsFragment extends ListFragment {
 
         } else {
             Common.folderCode = null;
-            if (Common.isDownloadManagerAvailable(getContext())) {
+            if (Common.isDownloadManagerAvailable()) {
                 final String UC_BASE_URL = "https://chgu.org/files/users/" + String.valueOf(item.getOwner().getId()) + "/" + item.getAddress() + "." + item.getType();
                 DownloadManager.Request request = new DownloadManager.Request(Uri.parse(UC_BASE_URL));
                 request.setDescription("Загрузка");
@@ -147,7 +147,6 @@ public class CourseMaterialsFragment extends ListFragment {
         }
 
         public void onDestroyActionMode(ActionMode mode) {
-            mode = null;
         }
 
         public boolean onCreateActionMode(ActionMode mode, Menu menu) {
@@ -206,11 +205,10 @@ public class CourseMaterialsFragment extends ListFragment {
         new AsyncTask<Void, Void, ArrayList>(){
             @Override
             protected ArrayList doInBackground(Void... params) {
-                String jsonData = "";
                 String url = "http://you.com.ru/student/my_files/delete_file?mobile=1";
                 HashMap<String, String> httpParams = new HashMap();
                 httpParams.put("file", mItems.get(pos).getAddress());
-                jsonData = Common.httpPost(url, Common.getLoginDataFromPref(mContext),httpParams);
+                Common.httpPost(url, Common.getLoginDataFromPref(mContext),httpParams);
                 return null;
             }
             @Override
@@ -243,7 +241,6 @@ public class CourseMaterialsFragment extends ListFragment {
                 }else{
                     Snackbar snackbar = Snackbar
                             .make(getView(), "Ошибка", Snackbar.LENGTH_LONG);
-
                     snackbar.show();
                 }
 

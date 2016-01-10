@@ -66,7 +66,7 @@ public class FetchCalendarTask extends AsyncTask<String, String, UCCalendar> {
 
     @Nullable
     private UCCalendar getCalendarDataFromJson(String jsonData){
-        JSONObject calendarJson = null;
+        JSONObject calendarJson;
         calendar = new UCCalendar();
         try {
             calendarJson = new JSONObject(jsonData);
@@ -188,7 +188,7 @@ public class FetchCalendarTask extends AsyncTask<String, String, UCCalendar> {
 
                 for (int i = 0; i < entriesKeys.size(); i++) {
                     JSONArray entrieJson = entriesObject.getJSONArray(entriesKeys.get(i));
-                    HashMap<String, String> kvEntry = new HashMap<>();
+                    HashMap<String, String> kvEntry;
                     for (int j = 0; j < entrieJson.length(); j++) {
                         JSONObject subEntryJSON = entrieJson.getJSONObject(j);
                         kvEntry = (HashMap<String, String>) Common.parseJsonKV(subEntryJSON);
@@ -213,27 +213,20 @@ public class FetchCalendarTask extends AsyncTask<String, String, UCCalendar> {
     @Override
     protected void onPostExecute(UCCalendar calendar) {
         super.onPostExecute(calendar);
-//        caller.onTaskComplete(this);
         if (mProgressTracker != null) {
             mProgressTracker.onComplete();
         }
-        // Detach from progress tracker
         mProgressTracker = null;
     }
 
-    /* UI Thread */
     @Override
     protected void onCancelled() {
-        // Detach from progress tracker
         mProgressTracker = null;
     }
 
-    /* UI Thread */
     @Override
     protected void onProgressUpdate(String... values) {
-        // Update progress message
         mProgressMessage = values[0];
-        // And send it to progress tracker
         if (mProgressTracker != null) {
             mProgressTracker.onProgress(mProgressMessage);
         }

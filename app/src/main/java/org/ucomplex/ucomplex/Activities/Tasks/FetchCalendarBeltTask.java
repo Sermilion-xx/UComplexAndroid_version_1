@@ -48,7 +48,7 @@ public class FetchCalendarBeltTask extends AsyncTask<Integer, Void, ArrayList<Qu
 
 
     private ArrayList<Quartet<Integer, String, String, Integer>> getCalendarBeltDataFromJson(String jsonData) {
-        JSONObject courseJson = null;
+        JSONObject courseJson;
         feedItems = new ArrayList<>();
         try {
             courseJson = new JSONObject(jsonData);

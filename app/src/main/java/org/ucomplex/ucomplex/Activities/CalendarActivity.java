@@ -6,9 +6,6 @@ import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
@@ -172,12 +169,9 @@ public class CalendarActivity extends AppCompatActivity implements AdapterView.O
         @Override
         public void onTaskComplete (AsyncTask task, Object ...o){
             if (task.isCancelled()) {
-                // Report about cancel
                 Toast.makeText(this, "Операция отменена", Toast.LENGTH_LONG)
                         .show();
             } else {
-                // Get result
-                UCCalendar result = null;
                 try {
                     calendar = (UCCalendar) task.get();
                     if(calendar == null){
@@ -209,7 +203,6 @@ public class CalendarActivity extends AppCompatActivity implements AdapterView.O
                     materialCalendarView.setOnDateChangedListener(new OnDateSelectedListener() {
                         @Override
                         public void onDateSelected(@NonNull MaterialCalendarView widget, @NonNull CalendarDay date, boolean selected) {
-                            CalendarDay selectedDay = date;
 
                             String day = date.getDay()<10 ? "0"+String.valueOf(date.getDay()) : String.valueOf(date.getDay());
 
@@ -263,7 +256,7 @@ public class CalendarActivity extends AppCompatActivity implements AdapterView.O
                             Bundle bundle = new Bundle();
                             bundle.putSerializable("calendarDay",dayTimetableArray);
 
-                            int dayMonth = selectedDay.getMonth();
+                            int dayMonth = date.getMonth();
                             String dayMonthStr = "";
 
                             if(dayMonth==0){
@@ -291,7 +284,7 @@ public class CalendarActivity extends AppCompatActivity implements AdapterView.O
                             }else if(dayMonth==11){
                                 dayMonthStr = "Декабря";
                             }
-                            bundle.putString("date",selectedDay.getDay()+" "+dayMonthStr+" "+selectedDay.getYear());
+                            bundle.putString("date", date.getDay()+" "+dayMonthStr+" "+ date.getYear());
                             intent.putExtras(bundle);
                             startActivity(intent);
                         }
