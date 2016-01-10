@@ -54,6 +54,7 @@ public class CalendarActivity extends AppCompatActivity implements AdapterView.O
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_calendar);
         Toolbar toolbar = (Toolbar) findViewById(R.id.calendar_toolbar);
         toolbar.setTitle("Календарь");
@@ -82,10 +83,11 @@ public class CalendarActivity extends AppCompatActivity implements AdapterView.O
                 Calendar cal = Calendar.getInstance();
                 int Year = cal.get(Calendar.YEAR);
                 if (year <= Year) {
-                    if(!checkedMonths.contains(date)){
+
+//                    if(!checkedMonths.contains(date)){
                         mAsyncTaskManager.setupTask(new FetchCalendarTask(context),monthStr,dateStr);
-                        checkedMonths.add(date);
-                    }
+//                        checkedMonths.add(date);
+//                    }
                 } else {
                     Toast.makeText(context, "Нету данных для следующего года!", Toast.LENGTH_SHORT).show();
                 }

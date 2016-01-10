@@ -10,8 +10,13 @@ public class Message {
     private String time;
     private int status;
     private String name;
+    private String fileType;
 
     public Message() {
+    }
+
+    public String getFileType() {
+        return fileType;
     }
 
     public String getName() {

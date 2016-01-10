@@ -24,30 +24,35 @@ import org.ucomplex.ucomplex.Model.Message;
 import org.ucomplex.ucomplex.R;
 
 import java.net.URISyntaxException;
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ExecutionException;
 
 public class MessagesActivity extends AppCompatActivity implements OnTaskCompleteListener {
 
-    ArrayList<Message> messageArrayList = new ArrayList<>();
+    LinkedList<Message> messageArrayList = new LinkedList<>();
     ListView listView;
     String companion;
     MessagesAdapter messagesAdapter;
+    String name;
     String filePath;
     boolean file = false;
     ByteArrayBody contentBody;
+    FetchMessagesTask fetchNewMessagesTask;
 
                 @Override
                 protected void onCreate(Bundle savedInstanceState) {
                     super.onCreate(savedInstanceState);
+                    companion = getIntent().getStringExtra("companion");
+                    name = getIntent().getStringExtra("name");
+                    messagesAdapter = new MessagesAdapter(this, messageArrayList, companion, name);
                     setContentView(R.layout.activity_message);
                     Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
                     toolbar.setTitle("Сообщения");
                     setSupportActionBar(toolbar);
                     getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-                    companion = getIntent().getStringExtra("companion");
+
                     listView = (ListView) findViewById(R.id.list_messages_listview);
                     listView.setScrollingCacheEnabled(false);
                     FetchMessagesTask fetchMessagesTask = new FetchMessagesTask(this, this);
@@ -60,20 +65,40 @@ public class MessagesActivity extends AppCompatActivity implements OnTaskComplet
                         public void onClick(View v) {
                             FetchMessagesTask sendMessageTask = new FetchMessagesTask(MessagesActivity.this, MessagesActivity.this);
                             sendMessageTask.setType(1);
+                            final String message = messageTextView.getText().toString();
                             if(file){
-                                final String message = messageTextView.getText().toString();
                                 new AsyncTask<String,Void,Void>(){
+
                                     @Override
                                     protected Void doInBackground(String... params) {
                                         Common.sendFile(filePath, companion, message, params[0]);
                                         return null;
                                     }
+                                    @Override
+                                    protected void onPostExecute(Void aVoid) {
+                                        super.onPostExecute(aVoid);
+                                    }
                                 }.execute(Common.getLoginDataFromPref(MessagesActivity.this));
                             }else{
                                 sendMessageTask.setupTask(companion, messageTextView.getText().toString());
                             }
+
+//                            Message messageObj  = new Message();
+//                            messageObj.setFrom(Common.getUserDataFromPref(MessagesActivity.this).getPerson());
+//                            messageObj.setMessage(message);
+//                            messageObj.setName(name);
+//                            messageObj.setStatus(0);
+//                            DateFormat dateFormat = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss");
+//                            Date date = new Date();
+//                            messageObj.setTime(dateFormat.format(date));
+//                            messageArrayList.add(messageObj);
+//                            messagesAdapter.notifyDataSetChanged();
+//                            messagesAdapter = new MessagesAdapter(MessagesActivity.this, messageArrayList);
+//                            listView.setAdapter(messagesAdapter);
+                            scrollMyListViewToBottom();
                         }
                     });
+
 
                     Button sendFileButton = (Button) findViewById(R.id.messages_file_button);
                     sendFileButton.setOnClickListener(new View.OnClickListener() {
@@ -86,12 +111,22 @@ public class MessagesActivity extends AppCompatActivity implements OnTaskComplet
                     new Timer().scheduleAtFixedRate(new TimerTask() {
                         @Override
                         public void run() {
-                            FetchMessagesTask fetchMessagesTask = new FetchMessagesTask(MessagesActivity.this, MessagesActivity.this);
-                            fetchMessagesTask.setType(2);
-                            fetchMessagesTask.setupTask(companion);
+                            if(fetchNewMessagesTask==null) {
+                                fetchNewMessagesTask = new FetchMessagesTask(MessagesActivity.this, MessagesActivity.this);
+                                fetchNewMessagesTask.setType(2);
+                                fetchNewMessagesTask.setupTask(companion);
+                            }
                         }
                     }, 0, 4000);
+    }
 
+    private void scrollMyListViewToBottom() {
+        listView.post(new Runnable() {
+            @Override
+            public void run() {
+                listView.setSelection(messagesAdapter.getCount() - 1);
+            }
+        });
     }
 
     private void showFileChooser() {
@@ -152,11 +187,15 @@ public class MessagesActivity extends AppCompatActivity implements OnTaskComplet
                 } else {
                     FetchMessagesTask fmt = (FetchMessagesTask) task;
                     if (fmt.getType() == 0) {
-                        messageArrayList = (ArrayList) task.get();
-                        messagesAdapter = new MessagesAdapter(this, messageArrayList);
-                        listView.setAdapter(messagesAdapter);
+                        messageArrayList = (LinkedList) task.get();
+//                        Collections.reverse(messageArrayList);
+                        if(messageArrayList!=null){
+                            messagesAdapter = new MessagesAdapter(this, messageArrayList, companion, name);
+                            listView.setAdapter(messagesAdapter);
+                            fetchNewMessagesTask = null;
+                        }
                     } else if (fmt.getType() == 1 || fmt.getType() == 2) {
-                        ArrayList result = (ArrayList) task.get();
+                        LinkedList result = (LinkedList) task.get();
                         int cycles = 0;
                         if(result.size()>0) {
                             if (result.get(result.size() - 1) instanceof Bitmap) {
@@ -166,11 +205,11 @@ public class MessagesActivity extends AppCompatActivity implements OnTaskComplet
                             }
                         }
                         if (result != null && cycles > 0) {
-                            messageArrayList.add((Message) result.get(0));
+                            messageArrayList.addLast((Message) result.get(0));
                             if (result.size() > 0) {
-                                Toast.makeText(this, "Сообщение отправленно", Toast.LENGTH_LONG)
-                                        .show();
                                 messagesAdapter.notifyDataSetChanged();
+//                                listView.setAdapter(messagesAdapter);
+                                fetchNewMessagesTask = null;
                             } else {
                                 Toast.makeText(this, "Ошибка при отправке сообщения", Toast.LENGTH_LONG)
                                         .show();

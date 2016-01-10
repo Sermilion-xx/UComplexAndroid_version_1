@@ -99,20 +99,22 @@ public class CourseInfoFragment extends Fragment implements OnTaskCompleteListen
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View rootView =inflater.inflate(R.layout.fragment_course_info, container, false);
         messageButton = (Button) rootView.findViewById(R.id.course_info_button_message);
         messageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String companion;
+                String name;
                 Intent intent = new Intent(getContext(), MessagesActivity.class);
                 if(user.getPerson()==0){
                     companion = String.valueOf(user.getId());
                 }else{
                     companion = String.valueOf(user.getPerson());
                 }
+                name = String.valueOf(user.getName());
                 intent.putExtra("companion", companion);
+                intent.putExtra("name", name);
                 getContext().startActivity(intent);
             }
         });
@@ -157,7 +159,6 @@ public class CourseInfoFragment extends Fragment implements OnTaskCompleteListen
                 try {
                     JSONObject langJsonObj = new JSONObject(langStr);
                     JSONObject langJson = langJsonObj.getJSONObject("lang");
-//                    JSONObject postJson = langJson.getJSONObject("post");
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }

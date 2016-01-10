@@ -135,8 +135,10 @@ public class MessagesListAdapter extends ArrayAdapter<Dialog> {
 
     public Drawable getDrawable(int position){
         final int colorsCount = 16;
-        final int number = (getItem(position).getFrom() <= colorsCount) ? getItem(position).getFrom() : getItem(position).getFrom() % colorsCount;
-        char firstLetter = getItem(position).getName().split("")[1].charAt(0);
+        int companion = getItem(position).getCompanion();
+        final int number = (companion <= colorsCount) ? companion : companion % colorsCount;
+        String name = getItem(position).getName();
+        char firstLetter = name.split(" ")[1].charAt(0);
 
         TextDrawable drawable = TextDrawable.builder().beginConfig()
                 .width(60)

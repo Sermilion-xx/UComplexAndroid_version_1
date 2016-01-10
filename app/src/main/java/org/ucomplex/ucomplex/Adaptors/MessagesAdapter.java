@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.amulyakhare.textdrawable.TextDrawable;
@@ -17,6 +16,7 @@ import org.ucomplex.ucomplex.Model.Users.User;
 import org.ucomplex.ucomplex.R;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 /**
  * Created by Sermilion on 31/12/2015.
@@ -24,16 +24,21 @@ import java.util.ArrayList;
 public class MessagesAdapter extends ArrayAdapter {
 
     private LayoutInflater inflater;
-    ArrayList values = new ArrayList();
+    LinkedList values = new LinkedList();
     Bitmap bitmap;
-    TextDrawable drawable;
-    User user;
+    TextDrawable drawable1;
+    TextDrawable drawable2;
     int person;
+    String myName;
+    Context context;
+    Bitmap myBitmap;
+    String companion;
+    String companionName;
 
     private static final int TYPE_OUT = 0;
     private static final int TYPE_IN = 1;
 
-    public MessagesAdapter(Context context, ArrayList<Message> messages) {
+    public MessagesAdapter(Context context, LinkedList<Message> messages, String companion, String name) {
         super(context, -1, messages);
         this.values = messages;
         if(values.size()>0){
@@ -42,19 +47,31 @@ public class MessagesAdapter extends ArrayAdapter {
                 values.remove(values.size()-1);
             }
         }
-        user = Common.getUserDataFromPref(context);
+        this.companion = companion;
+        this.companionName = name;
+        this.context = context;
+        User user = Common.getUserDataFromPref(context);
         person = user.getPerson();
-        user = null;
+        this.myName = user.getName();
+
+        myBitmap = Common.decodePhotoPref(context, "profilePhoto");
+        if(myBitmap==null){
+            drawable1 = createDrawable(this.myName, person);
+        }
+        if(this.bitmap == null){
+            this.drawable2 = createDrawable(companionName, Integer.valueOf(this.companion));
+        }
     }
 
     @Override
     public int getItemViewType(int position) {
         Message message = (Message) getItem(position);
-        if(message.getFrom() == person){
-            return TYPE_OUT;
-        }else{
-            return TYPE_IN;
-        }
+        int  result;
+        if(message.getFrom() == person)
+            result = TYPE_OUT;
+        else
+            result= TYPE_IN;
+        return result;
     }
 
     @Override
@@ -67,58 +84,86 @@ public class MessagesAdapter extends ArrayAdapter {
         return this.values.get(position);
     }
 
+
+    private View createConverterView(ViewHolder viewHolder, View convertView, int viewType){
+        viewHolder = new ViewHolder();
+        inflater = LayoutInflater.from(getContext());
+        if (viewType == TYPE_OUT) {
+            convertView = inflater.inflate(R.layout.list_item_messages_right, null);
+            viewHolder.messageTextView = (TextView) convertView.findViewById(R.id.list_messages_message_right_text);
+            viewHolder.profileImageView = (de.hdodenhof.circleimageview.CircleImageView) convertView.findViewById(R.id.list_messages_message_right_image);
+            viewHolder.timeTextView = (TextView) convertView.findViewById(R.id.list_messages_message_right_time);
+            viewHolder.holderId = TYPE_OUT;
+            if(this.myBitmap == null) {
+                viewHolder.profileImageView.setImageDrawable(drawable1);
+            }else{
+                viewHolder.profileImageView.setImageBitmap(this.myBitmap);
+            }
+        } else if (viewType == TYPE_IN) {
+            convertView = inflater.inflate(R.layout.list_item_messages_left, null);
+            viewHolder.messageTextView = (TextView) convertView.findViewById(R.id.list_messages_message_left_text);
+            viewHolder.profileImageView = (de.hdodenhof.circleimageview.CircleImageView) convertView.findViewById(R.id.list_messages_message_left_image);
+            viewHolder.timeTextView = (TextView) convertView.findViewById(R.id.list_messages_message_left_time);
+            if(this.bitmap == null){
+                viewHolder.profileImageView.setImageDrawable(drawable2);
+            }else{
+                viewHolder.profileImageView.setImageBitmap(this.bitmap);
+            }
+            viewHolder.holderId = TYPE_IN;
+        }
+
+        if (convertView != null) {
+            convertView.setTag(viewHolder);
+        }
+        return convertView;
+    }
+
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder viewHolder = null;
         int viewType = getItemViewType(position);
-        if(convertView == null) {
-            if(inflater==null){
-                inflater = LayoutInflater.from(getContext());
-            }
-            viewHolder = new ViewHolder();
-            if (viewType == TYPE_OUT) {
-                convertView = inflater.inflate(R.layout.list_item_messages_right, null);
-                viewHolder.messageTextView = (TextView) convertView.findViewById(R.id.list_messages_message_right_text);
-                viewHolder.profileImageView = (de.hdodenhof.circleimageview.CircleImageView) convertView.findViewById(R.id.list_messages_message_right_image);
-                viewHolder.timeTextView = (TextView) convertView.findViewById(R.id.list_messages_message_right_time);
-                viewHolder.holderId = TYPE_OUT;
-            } else if (viewType == TYPE_IN) {
-                convertView = inflater.inflate(R.layout.list_item_messages_left, null);
-                viewHolder.messageTextView = (TextView) convertView.findViewById(R.id.list_messages_message_left_text);
-                viewHolder.profileImageView = (de.hdodenhof.circleimageview.CircleImageView) convertView.findViewById(R.id.list_messages_message_left_image);
-                viewHolder.timeTextView = (TextView) convertView.findViewById(R.id.list_messages_message_left_time);
-                viewHolder.holderId = TYPE_IN;
-            }
-            if (convertView != null) {
-                convertView.setTag(viewHolder);
-            }
-        }else{
+        if (convertView == null) {
+            convertView = createConverterView(viewHolder, convertView, viewType);
             viewHolder = (ViewHolder) convertView.getTag();
+        } else {
+            viewHolder = (ViewHolder) convertView.getTag();
+            if(viewHolder.holderId != viewType){
+                convertView = createConverterView(viewHolder, convertView, viewType);
+                viewHolder = (ViewHolder) convertView.getTag();
+            }
         }
 
         Message item = (Message) getItem(position);
 
-        if(this.bitmap == null){
-            if(drawable == null){
-                TextDrawable drawable;
-                String name = item.getName();
-                int colorCount = 16;
-                final int number = (item.getFrom() <= colorCount) ? item.getFrom() : item.getFrom() % colorCount;
-                this.drawable = TextDrawable.builder().beginConfig()
-                        .width(60)
-                        .height(60)
-                        .endConfig()
-                        .buildRound(String.valueOf(name.split(" ")[1].charAt(0)), Common.getColor(number));
-                viewHolder.profileImageView.setImageDrawable(this.drawable);
-            }else{
-                viewHolder.profileImageView.setImageDrawable(drawable);
-            }
-        }else{
-            viewHolder.profileImageView.setImageBitmap(this.bitmap);
-        }
+//        if(viewHolder.holderId==TYPE_OUT){
+//            if(this.myBitmap == null) {
+//                viewHolder.profileImageView.setImageDrawable(drawable1);
+//            }else{
+//                viewHolder.profileImageView.setImageBitmap(this.myBitmap);
+//            }
+//        }else if(viewHolder.holderId==TYPE_IN) {
+//            if(this.bitmap == null){
+//                viewHolder.profileImageView.setImageDrawable(drawable2);
+//            }else{
+//                viewHolder.profileImageView.setImageBitmap(this.bitmap);
+//            }
+//        }
+
         viewHolder.messageTextView.setText(item.getMessage());
         viewHolder.timeTextView.setText(item.getTime().split(" ")[1]);
         return convertView;
+    }
+
+    private TextDrawable createDrawable(String name, int id){
+        TextDrawable drawable;
+        int colorCount = 16;
+        final int number = (id <= colorCount) ? id : id % colorCount;
+        drawable = TextDrawable.builder().beginConfig()
+                .width(60)
+                .height(60)
+                .endConfig()
+                .buildRound(String.valueOf(name.split(" ")[1].charAt(0)), Common.getColor(number));
+        return drawable;
     }
 
     public static class ViewHolder {

@@ -352,7 +352,9 @@ public class UsersFragment extends ListFragment {
                                         if (usersType == 0 || usersType == 1 || usersType == 2 || usersType == 3) {
                                             Intent intent = new Intent(getContext(), MessagesActivity.class);
                                             String companion = String.valueOf(mItems.get(which).getPerson());
+                                            String name = String.valueOf(mItems.get(which).getName());
                                             intent.putExtra("companion", companion);
+                                            intent.putExtra("name", name);
                                             getContext().startActivity(intent);
                                         }
                                         else if (usersType == 4) {

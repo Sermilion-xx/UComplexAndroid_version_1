@@ -14,19 +14,18 @@ import org.ucomplex.ucomplex.Interfaces.IProgressTracker;
 import org.ucomplex.ucomplex.Interfaces.OnTaskCompleteListener;
 import org.ucomplex.ucomplex.Model.Message;
 import org.ucomplex.ucomplex.Model.Users.User;
-
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 
 /**
  * Created by Sermilion on 31/12/2015.
  */
-public class FetchMessagesTask extends AsyncTask<String, String, ArrayList> implements DialogInterface.OnCancelListener {
+public class FetchMessagesTask extends AsyncTask<String, String, LinkedList> implements DialogInterface.OnCancelListener {
 
-    Activity mContext;
-    MessagesActivity caller;
-    ArrayList messagesList;
-    int type;
+        Activity mContext;
+        MessagesActivity caller;
+        LinkedList messagesList;
+        int type;
 
     public int getType() {
         return type;
@@ -36,28 +35,21 @@ public class FetchMessagesTask extends AsyncTask<String, String, ArrayList> impl
         this.type = type;
     }
 
-    private String mProgressMessage;
     private IProgressTracker mProgressTracker;
     private final OnTaskCompleteListener mTaskCompleteListener;
-//    private final ProgressDialog mProgressDialog;
 
     public FetchMessagesTask(Activity context, OnTaskCompleteListener taskCompleteListener) {
         this.mContext = context;
         this.caller = (MessagesActivity) mContext;
         this.mTaskCompleteListener = taskCompleteListener;
-//        mProgressDialog = new ProgressDialog(context);
-//        mProgressDialog.setIndeterminate(true);
-//        mProgressDialog.setCancelable(true);
-//        mProgressDialog.setOnCancelListener(this);
     }
 
     public void setupTask(String ... params) {
-//        this.setProgressTracker(this);
         this.execute(params);
     }
 
     @Override
-    protected ArrayList doInBackground(String... params) {
+    protected LinkedList doInBackground(String... params) {
         String urlString ="";
         HashMap<String, String> httpParams = new HashMap<>();
         httpParams.put("companion",params[0]);
@@ -85,8 +77,8 @@ public class FetchMessagesTask extends AsyncTask<String, String, ArrayList> impl
         return getMessageData(jsonData);
     }
 
-    private ArrayList getSentMessageData(String jsonData) {
-        messagesList = new ArrayList<>();
+    private LinkedList getSentMessageData(String jsonData) {
+        messagesList = new LinkedList<>();
         Message message = new Message();
         try{
             JSONArray messagesJson = new JSONObject(jsonData).getJSONArray("messages");
@@ -104,12 +96,12 @@ public class FetchMessagesTask extends AsyncTask<String, String, ArrayList> impl
         return null;
     }
 
-    private ArrayList getMessageData(String jsonData) {
+    private LinkedList getMessageData(String jsonData) {
         User user = Common.getUserDataFromPref(mContext);
         int person = user.getPerson();
         String myName = user.getName();
         user = null;
-        messagesList = new ArrayList<>();
+        messagesList = new LinkedList<>();
         try{
             JSONArray messagesJson = new JSONObject(jsonData).getJSONArray("messages");
             JSONObject companionJson = new JSONObject(jsonData).getJSONObject("companion_info");
@@ -140,7 +132,7 @@ public class FetchMessagesTask extends AsyncTask<String, String, ArrayList> impl
             publishProgress("100%");
             //Последний элемент - фото компаньона
             if(profileImage!=null){
-                messagesList.add(profileImage);
+                messagesList.addLast(profileImage);
             }
             return messagesList;
         }catch (JSONException e) {
@@ -151,7 +143,7 @@ public class FetchMessagesTask extends AsyncTask<String, String, ArrayList> impl
     }
 
     @Override
-    protected void onPostExecute(ArrayList arrayList) {
+    protected void onPostExecute(LinkedList arrayList) {
         super.onPostExecute(arrayList);
         mTaskCompleteListener.onTaskComplete(this);
     }
