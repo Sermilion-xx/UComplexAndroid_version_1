@@ -66,12 +66,7 @@ public class MessagesAdapter extends ArrayAdapter {
     @Override
     public int getItemViewType(int position) {
         Message message = (Message) getItem(position);
-        int  result;
-        if(message.getFrom() == person)
-            result = TYPE_OUT;
-        else
-            result= TYPE_IN;
-        return result;
+        return message.getFrom() == person ? TYPE_OUT : TYPE_IN;
     }
 
     @Override
