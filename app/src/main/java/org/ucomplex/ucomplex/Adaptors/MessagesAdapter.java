@@ -42,9 +42,9 @@ public class MessagesAdapter extends ArrayAdapter {
         super(context, -1, messages);
         this.values = messages;
         if(values.size()>0){
-            if(values.get(values.size()-1) instanceof Bitmap){
-                this.bitmap = (Bitmap) values.get(values.size()-1);
-                values.remove(values.size()-1);
+            if(values.getFirst() instanceof Bitmap){
+                this.bitmap = (Bitmap) values.getFirst();
+                values.removeFirst();
             }
         }
         this.companion = companion;

@@ -248,12 +248,14 @@ public class CourseInfoFragment extends Fragment implements OnTaskCompleteListen
                     HandleMenuPress handleMenuPress = new HandleMenuPress();
                     handleMenuPress.execute("http://you.com.ru/user/blacklist/add", params);
                     Toast.makeText(getActivity(), "Пользователь добавлен в черный список :(", Toast.LENGTH_SHORT).show();
+                    user.setIs_black(true);
                     blacklistButton.setText("Разблокировать");
                 }else{
                     params.put("user", String.valueOf(user.getId()));
                     HandleMenuPress handleMenuPress1 = new HandleMenuPress();
                     handleMenuPress1.execute("http://you.com.ru/user/blacklist/delete", params);
                     Toast.makeText(getActivity(), "Пользователь удален из черного списка :)", Toast.LENGTH_SHORT).show();
+                    user.setIs_black(false);
                     blacklistButton.setText("Зазблокировать");
                 }
                 Common.userListChanged = 4;

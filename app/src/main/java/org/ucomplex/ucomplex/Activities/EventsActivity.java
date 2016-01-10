@@ -60,7 +60,7 @@ public class EventsActivity extends AppCompatActivity implements OnTaskCompleteL
                 "Обновляется", true);
         dialog.show();
         user = Common.getUserDataFromPref(this);
-        FetchUserLoginTask fetchUserLoginTask = new FetchUserLoginTask(user.getLogin(), user.getPass(), this);
+        FetchUserLoginTask fetchUserLoginTask = new FetchUserLoginTask(user.getLogin(), user.getPass(), EventsActivity.this);
         fetchUserLoginTask.delegate = this;
         fetchUserLoginTask.execute();
         mEventsTask = new FetchUserEventsTask(this){
@@ -79,6 +79,7 @@ public class EventsActivity extends AppCompatActivity implements OnTaskCompleteL
                 super.onPostExecute(items);
                 eventsArray = items;
                 EventsFragment fragment = new EventsFragment();
+                fragment.setContext(EventsActivity.this);
                 Bundle data = new Bundle();
                 data.putSerializable("eventItems", eventsArray);
                 fragment.setArguments(data);
