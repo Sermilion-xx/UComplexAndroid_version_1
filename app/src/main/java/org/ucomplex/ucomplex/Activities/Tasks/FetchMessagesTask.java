@@ -53,7 +53,7 @@ public class FetchMessagesTask extends AsyncTask<String, String, LinkedList> imp
         String urlString ="";
         HashMap<String, String> httpParams = new HashMap<>();
         httpParams.put("companion",params[0]);
-        String jsonData = null;
+        String jsonData;
         if(type==0){
             urlString = "http://you.com.ru/user/messages/list?mobile=1";
         }else if(type==1){

@@ -111,7 +111,6 @@ public class MessagesAdapter extends ArrayAdapter {
             }
             viewHolder.holderId = TYPE_IN;
         }
-
         if (convertView != null) {
             convertView.setTag(viewHolder);
         }
@@ -134,21 +133,6 @@ public class MessagesAdapter extends ArrayAdapter {
         }
 
         Message item = (Message) getItem(position);
-
-//        if(viewHolder.holderId==TYPE_OUT){
-//            if(this.myBitmap == null) {
-//                viewHolder.profileImageView.setImageDrawable(drawable1);
-//            }else{
-//                viewHolder.profileImageView.setImageBitmap(this.myBitmap);
-//            }
-//        }else if(viewHolder.holderId==TYPE_IN) {
-//            if(this.bitmap == null){
-//                viewHolder.profileImageView.setImageDrawable(drawable2);
-//            }else{
-//                viewHolder.profileImageView.setImageBitmap(this.bitmap);
-//            }
-//        }
-
         viewHolder.messageTextView.setText(item.getMessage());
         viewHolder.timeTextView.setText(item.getTime().split(" ")[1]);
         return convertView;
