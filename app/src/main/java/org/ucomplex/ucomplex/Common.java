@@ -80,6 +80,7 @@ public class Common {
 
     public static final int FILE_SELECT_CODE = 0;
     public static String folderCode;
+    public static int userListChanged = -1;
 
     public static int getColor(int index) {
         String [] hexColors = {"#f6a6c1","#92d6eb","#4dd9e2","#68d9f0","#c69ad9","#ff83b6","#fda79d","#f8c092",

@@ -39,6 +39,7 @@ public class MessagesAdapter extends ArrayAdapter {
         if(values.size()>0){
             if(values.get(values.size()-1) instanceof Bitmap){
                 this.bitmap = (Bitmap) values.get(values.size()-1);
+                values.remove(values.size()-1);
             }
         }
         user = Common.getUserDataFromPref(context);
@@ -58,7 +59,7 @@ public class MessagesAdapter extends ArrayAdapter {
 
     @Override
     public int getCount() {
-        return this.values.size()-1;
+        return this.values.size();
     }
 
     @Override

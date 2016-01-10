@@ -41,11 +41,11 @@
         android:layout_marginBottom="5dp"
         android:layout_marginLeft="75dp">
 
-        <ImageView
+        <TextView
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:id="@+id/list_events_time_image"
-            android:src="@mipmap/ic_time"/>
+           />
 
         <TextView
             android:layout_width="wrap_content"
@@ -53,7 +53,6 @@
             android:id="@+id/list_events_item_date"
             android:text="Сегодня в 15:36"
             android:textSize="12sp"
-            android:layout_marginTop="4dp"
             android:layout_marginLeft="10dp"
             android:textColor="#999999"
             />

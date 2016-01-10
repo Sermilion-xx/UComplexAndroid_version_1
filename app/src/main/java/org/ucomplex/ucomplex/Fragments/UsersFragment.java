@@ -2,7 +2,6 @@ package org.ucomplex.ucomplex.Fragments;
 
 
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -27,7 +26,6 @@ import org.ucomplex.ucomplex.Activities.PersonActivity;
 import org.ucomplex.ucomplex.Activities.Tasks.FetchUsersTask;
 import org.ucomplex.ucomplex.Activities.UsersActivity;
 import org.ucomplex.ucomplex.Common;
-import org.ucomplex.ucomplex.Model.Message;
 import org.ucomplex.ucomplex.Model.Users.User;
 import org.ucomplex.ucomplex.R;
 
@@ -52,16 +50,17 @@ public class UsersFragment extends ListFragment {
     Button btnLoadExtra;
     ArrayList<User> loadedUsers;
     int lastPos;
-    private ProgressDialog dialog;
+    LayoutInflater inflater;
 
 
     public UsersFragment() {
-        // Required empty public constructor
+
     }
 
     public void setUsersType(int usersType) {
         this.usersType = usersType;
     }
+
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
@@ -72,9 +71,7 @@ public class UsersFragment extends ListFragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        if (savedInstanceState != null) {
-            mItems = (ArrayList<User>) savedInstanceState.getSerializable("mItems");
-        }
+        inflater = LayoutInflater.from(getActivity());
     }
 
     @Override
@@ -82,7 +79,11 @@ public class UsersFragment extends ListFragment {
         User user = mItems.get(position);
         Intent intent = new Intent(getContext(), PersonActivity.class);
         Bundle extras = new Bundle();
-        extras.putString("person", String.valueOf(user.getPerson()));
+        if (user.getPerson() == 0) {
+            extras.putString("person", String.valueOf(user.getId()));
+        } else {
+            extras.putString("person", String.valueOf(user.getPerson()));
+        }
         intent.putExtras(extras);
         startActivity(intent);
     }
@@ -91,16 +92,21 @@ public class UsersFragment extends ListFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
-            if (savedInstanceState == null) {
-
-            }else{
-                mItems = (ArrayList<User>) savedInstanceState.getSerializable("mItems");
-            }
+        if (savedInstanceState!= null) {
+            mItems = (ArrayList<User>) savedInstanceState.getSerializable("mItems");
+        }
+        if((mItems != null ? mItems.size() : 0) == 0){
+            fetchUsers();
+        }
     }
 
     @Override
     public void onStart() {
         super.onStart();
+        if(usersType == Common.userListChanged){
+            fetchUsers();
+            Common.userListChanged = - 1;
+        }
     }
 
     @Override
@@ -109,11 +115,22 @@ public class UsersFragment extends ListFragment {
 
     }
 
+    private void fetchUsers(){
+        new FetchUsersTask(getActivity()) {
+            @Override
+            protected void onPostExecute( ArrayList<User> users ) {
+                super.onPostExecute( users );
+                mItems = users;
+                setListAdapter(new ImageAdapter(mItems, inflater));
+            }
+        }.execute(usersType);
+    }
+
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         getListView().setDivider(null);
-
+        imageAdapter = new ImageAdapter(mItems, inflater);
         if(usersType!=3) {
             btnLoadExtra = new Button(getContext());
             btnLoadExtra.setFocusable(false);
@@ -123,7 +140,7 @@ public class UsersFragment extends ListFragment {
                 @Override
                 public void onClick(View arg0) {
 
-                    new FetchUsersTask(getActivity(), imageAdapter) {
+                    new FetchUsersTask(getActivity()) {
                         @Override
                         protected void onPostExecute( ArrayList<User> users ) {
                             super.onPostExecute( users );
@@ -134,9 +151,8 @@ public class UsersFragment extends ListFragment {
                                 btnLoadExtra.setVisibility(View.GONE);
                             }
                             mItems.addAll(loadedUsers);
-                            setListAdapter(new ImageAdapter(getContext(),mItems));
+                            setListAdapter(new ImageAdapter(mItems, inflater));
                             getListView().setSelection(lastPos - 2);
-                            dialog.dismiss();
                         }
                     }.execute(usersType);
                 }
@@ -152,15 +168,9 @@ public class UsersFragment extends ListFragment {
             }
         }
 
-        new FetchUsersTask(getActivity(), imageAdapter) {
-            @Override
-            protected void onPostExecute( ArrayList<User> users ) {
-                super.onPostExecute( users );
-                mItems = users;
-                imageAdapter = new ImageAdapter(getActivity(), mItems);
-                setListAdapter(imageAdapter);
-            }
-        }.execute(usersType);
+        if(mItems.size()==0){
+            fetchUsers();
+        }
     }
 
 
@@ -168,11 +178,10 @@ public class UsersFragment extends ListFragment {
 
 		private LayoutInflater inflater;
 		private DisplayImageOptions options;
-        private int counter = 0;
         ArrayList<User> mItems;
 
-		ImageAdapter(Context context, ArrayList<User> items) {
-			inflater = LayoutInflater.from(context);
+		ImageAdapter(ArrayList<User> items, LayoutInflater  inflater) {
+			this.inflater = inflater;
 			options = new DisplayImageOptions.Builder()
 					.showImageOnLoading(null)
 					.showImageForEmptyUri(null)
@@ -329,8 +338,9 @@ public class UsersFragment extends ListFragment {
                             break;
                         case 4:
                             actionsArrayList.add("Удалить из списка");
+                            break;
                         default:
-                            btnMenu.setVisibility(View.GONE);
+
                     }
                     AlertDialog.Builder build = new AlertDialog.Builder(getContext());
                     build.setItems(actionsArrayList.toArray(new String[actionsArrayList.size()]), new DialogInterface.OnClickListener() {
@@ -344,7 +354,7 @@ public class UsersFragment extends ListFragment {
                                             String companion = String.valueOf(mItems.get(which).getPerson());
                                             intent.putExtra("companion", companion);
                                             getContext().startActivity(intent);
-                                        }// Remove form blacklist
+                                        }
                                         else if (usersType == 4) {
                                             params.put("user", String.valueOf(mItems.get(position).getId()));
                                             HandleMenuPress handleMenuPress1 = new HandleMenuPress();
@@ -373,41 +383,16 @@ public class UsersFragment extends ListFragment {
                                                 Toast.makeText(getActivity(), "Пользователь удален из друзей :(", Toast.LENGTH_SHORT).show();
                                             }
                                         }
-
-//                                            else if(usersType==0){
-//                                                params.put("user", String.valueOf(mItems.get(position).getId()));
-//                                                HandleMenuPress handleMenuPress1 = new HandleMenuPress();
-//                                                handleMenuPress1.execute("http://you.com.ru/user/friends/add", params);
-//                                                Toast.makeText(getActivity(), "Заявка на дружбу отправлена :)", Toast.LENGTH_SHORT).show();
-//                                            }
-//
-//                                            //write a message to not friend
-//                                        }else if(usersType==0){
-//                                            Intent intent = new Intent(getContext(), MessagesActivity.class);
-//                                            String companion = String.valueOf(mItems.get(which).getPerson());
-//                                            intent.putExtra("companion", companion);
-//                                            getContext().startActivity(intent);
-//                                            //Add friend form group list
-//                                        }else if(usersType==2){
-//                                            params.put("user", String.valueOf(mItems.get(position).getId()));
-//                                            HandleMenuPress handleMenuPress1 = new HandleMenuPress();
-//                                            handleMenuPress1.execute("http://you.com.ru/user/friends/add", params);
-//                                            Toast.makeText(getActivity(), "Заявка на дружбу отправлена :)", Toast.LENGTH_SHORT).show();
-//                                        }
-//                                        break;
-//                                    case 2:
-//                                        //add to blacklist
-//                                        if(usersType==1) {
-//                                            params.put("user", String.valueOf(mItems.get(position).getId()));
-//                                            HandleMenuPress handleMenuPress = new HandleMenuPress();
-//                                            handleMenuPress.execute("http://you.com.ru/user/blacklist/add", params);
-//                                            mItems.remove(position);
-//                                            Toast.makeText(getActivity(), "Пользователь добавлен в черный список :(", Toast.LENGTH_SHORT).show();
-//                                            break;
-//                                        }
-//                                    case 4:
+                                    case 2:
+                                        if(usersType!=4) {
+                                            params.put("user", String.valueOf(mItems.get(position).getId()));
+                                            HandleMenuPress handleMenuPress = new HandleMenuPress();
+                                            handleMenuPress.execute("http://you.com.ru/user/blacklist/add", params);
+                                            mItems.remove(position);
+                                            Toast.makeText(getActivity(), "Пользователь добавлен в черный список :(", Toast.LENGTH_SHORT).show();
+                                            break;
+                                        }
                                 }
-
                             UsersActivity act = (UsersActivity)getActivity();
                             ViewPager viewPager = (ViewPager) getActivity().findViewById(R.id.users_viewpager);
                             act.setupViewPager(viewPager);

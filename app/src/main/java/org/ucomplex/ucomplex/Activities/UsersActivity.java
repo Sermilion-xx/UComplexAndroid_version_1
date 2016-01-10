@@ -58,7 +58,6 @@ public class UsersActivity extends AppCompatActivity {
         tabLayout.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
         tabLayout.setupWithViewPager(viewPager);
 
-
         TextView tv0 = (TextView)(((LinearLayout)((LinearLayout)tabLayout.getChildAt(0)).getChildAt(0)).getChildAt(1));
         tv0.setTypeface(Typeface.createFromAsset(this.getAssets(), "fonts/fontawesome-webfont.ttf"));
         tv0.setTextSize(16);
@@ -110,7 +109,5 @@ public class UsersActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-
-
 
 }

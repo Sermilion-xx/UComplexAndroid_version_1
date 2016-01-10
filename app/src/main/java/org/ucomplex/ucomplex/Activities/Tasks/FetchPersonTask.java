@@ -136,8 +136,8 @@ public class FetchPersonTask extends AsyncTask<Void, String, User> implements IP
             }
             if(userJson.has("friends")){
                 JSONObject friendJson = userJson.getJSONObject("friends");
-                user.setFriendRequested(friendJson.getBoolean("is_friend"));
-                user.setReq_friend(friendJson.getBoolean("req_sent"));
+                user.setIs_friend(friendJson.getBoolean("is_friend"));
+                user.setReq_sent(friendJson.getBoolean("req_sent"));
             }
 
             return user;

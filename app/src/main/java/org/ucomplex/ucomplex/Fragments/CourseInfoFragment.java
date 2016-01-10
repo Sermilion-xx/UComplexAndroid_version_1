@@ -1,6 +1,7 @@
 package org.ucomplex.ucomplex.Fragments;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
@@ -18,6 +19,7 @@ import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.ucomplex.ucomplex.Activities.MessagesActivity;
 import org.ucomplex.ucomplex.Activities.Tasks.FetchPersonTask;
 import org.ucomplex.ucomplex.Interfaces.OnTaskCompleteListener;
 import org.ucomplex.ucomplex.Common;
@@ -103,41 +105,20 @@ public class CourseInfoFragment extends Fragment implements OnTaskCompleteListen
         messageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                String companion;
+                Intent intent = new Intent(getContext(), MessagesActivity.class);
+                if(user.getPerson()==0){
+                    companion = String.valueOf(user.getId());
+                }else{
+                    companion = String.valueOf(user.getPerson());
+                }
+                intent.putExtra("companion", companion);
+                getContext().startActivity(intent);
             }
         });
 
         friendButton = (Button) rootView.findViewById(R.id.course_info_button_to_friend);
-        friendButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                HashMap<String, String> params = new HashMap<>();
-                params.put("user", String.valueOf(user.getId()));
-                if(user.isFriendRequested()) {
-                    HandleMenuPress handleMenuPress = new HandleMenuPress();
-                    handleMenuPress.execute("http://you.com.ru/user/friends/accept", params);
-                    user.setFriendRequested(false);
-                    Toast.makeText(getActivity(), user.getName() + " теперь ваш друг :)", Toast.LENGTH_SHORT).show();
-                }else {
-                    HandleMenuPress handleMenuPress = new HandleMenuPress();
-                    handleMenuPress.execute("http://you.com.ru/user/friends/delete", params);
-                    Toast.makeText(getActivity(), "Пользователь удален из друзей :(", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-
         blacklistButton = (Button) rootView.findViewById(R.id.course_info_button_block);
-        blacklistButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                HashMap<String, String> params = new HashMap<>();
-                params.put("user", String.valueOf(user.getId()));
-                HandleMenuPress handleMenuPress = new HandleMenuPress();
-                handleMenuPress.execute("http://you.com.ru/user/blacklist/add", params);
-                Toast.makeText(getActivity(), "Пользователь добавлен в черный список :(", Toast.LENGTH_SHORT).show();
-            }
-        });
-
         userImageView = (ImageView) rootView.findViewById(R.id.course_info_teacher_image);
         userNameView = (TextView) rootView.findViewById(R.id.course_info_teacher_name);
         mailTextView = (TextView) rootView.findViewById(R.id.course_info_mail);
@@ -206,7 +187,9 @@ public class CourseInfoFragment extends Fragment implements OnTaskCompleteListen
             rootView.findViewById(R.id.course_info_course_attendance_label).setVisibility(View.GONE);
         }
                 if (person == -1 || person == -1) {
-                    person = courseData.getTeacher(0).getId();
+                    if(courseData!=null){
+                        person = courseData.getTeacher(0).getId();
+                    }
                 }
                 if (user == null) {
                     //fetch data about person
@@ -222,6 +205,59 @@ public class CourseInfoFragment extends Fragment implements OnTaskCompleteListen
 
     private void fillUserInfo(){
         mailTextView.setText(user.getEmail());
+
+        if(user.is_friend()){
+            friendButton.setText("Удалить");
+        }else{
+            friendButton.setText("В друзья");
+        }
+        friendButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                HashMap<String, String> params = new HashMap<>();
+                params.put("user", String.valueOf(user.getId()));
+                if(user.isReq_sent()) {
+                    HandleMenuPress handleMenuPress = new HandleMenuPress();
+                    handleMenuPress.execute("http://you.com.ru/user/friends/accept?mobile=1", params);
+                    user.setReq_sent(false);
+                    Toast.makeText(getActivity(), user.getName() + " теперь ваш друг :)", Toast.LENGTH_SHORT).show();
+                    friendButton.setText("Удалить");
+                }else {
+                    HandleMenuPress handleMenuPress = new HandleMenuPress();
+                    handleMenuPress.execute("http://you.com.ru/user/friends/delete?mobile=1", params);
+                    Toast.makeText(getActivity(), "Пользователь удален из друзей :(", Toast.LENGTH_SHORT).show();
+                    user.setReq_sent(false);
+                    friendButton.setText("В друзья");
+                    Common.userListChanged = 1;
+                }
+            }
+        });
+
+        if(user.isIs_black()){
+            blacklistButton.setText("Разблокировать");
+        }else{
+            blacklistButton.setText("Зазблокировать");
+        }
+        blacklistButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                HashMap<String, String> params = new HashMap<>();
+                if(!user.isIs_black()) {
+                    params.put("user", String.valueOf(user.getId()));
+                    HandleMenuPress handleMenuPress = new HandleMenuPress();
+                    handleMenuPress.execute("http://you.com.ru/user/blacklist/add", params);
+                    Toast.makeText(getActivity(), "Пользователь добавлен в черный список :(", Toast.LENGTH_SHORT).show();
+                    blacklistButton.setText("Разблокировать");
+                }else{
+                    params.put("user", String.valueOf(user.getId()));
+                    HandleMenuPress handleMenuPress1 = new HandleMenuPress();
+                    handleMenuPress1.execute("http://you.com.ru/user/blacklist/delete", params);
+                    Toast.makeText(getActivity(), "Пользователь удален из черного списка :)", Toast.LENGTH_SHORT).show();
+                    blacklistButton.setText("Зазблокировать");
+                }
+                Common.userListChanged = 4;
+            }
+        });
         userNameView.setText(user.getName());
         if (user.getPhotoBitmap() != null) {
             bitmap = user.getPhotoBitmap();

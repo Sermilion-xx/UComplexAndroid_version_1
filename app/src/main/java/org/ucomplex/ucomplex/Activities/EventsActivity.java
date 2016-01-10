@@ -31,12 +31,9 @@ import java.util.ArrayList;
 public class EventsActivity extends AppCompatActivity implements OnTaskCompleteListener, FetchUserLoginTask.AsyncResponse{
 
     ArrayList eventsArray = null;
-    Context contex = this;
     FetchUserEventsTask mEventsTask = null;
     User user;
     ProgressDialog dialog;
-    private boolean loading = true;
-    int pastVisiblesItems, visibleItemCount, totalItemCount;
 
     final String[] TITLES = { "События", "Анкетирование", "Дисциплины", "Материалы", "Справки","Пользователи","Сообщения","Библиотека","Календарь","Настройки", "Выход" };
     final int[] ICONS = { R.drawable.ic_menu_event,
@@ -116,6 +113,7 @@ public class EventsActivity extends AppCompatActivity implements OnTaskCompleteL
                 super.onPostExecute(items);
                 eventsArray = items;
                 EventsFragment fragment = new EventsFragment();
+                fragment.setContext(EventsActivity.this);
                 Bundle data = new Bundle();
                 data.putSerializable("eventItems", eventsArray);
                 fragment.setArguments(data);
@@ -163,7 +161,6 @@ public class EventsActivity extends AppCompatActivity implements OnTaskCompleteL
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
@@ -175,10 +172,7 @@ public class EventsActivity extends AppCompatActivity implements OnTaskCompleteL
             refresh();
             return true;
         }
-        if(id==android.R.id.home) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
+        return id == android.R.id.home || super.onOptionsItemSelected(item);
     }
 
     @Override

@@ -1,18 +1,3 @@
-/*******************************************************************************
- * Copyright 2011-2014 Sergey Tarasevich
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *******************************************************************************/
 package org.ucomplex.ucomplex.Fragments;
 
 import android.app.ListFragment;
@@ -21,10 +6,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,29 +17,24 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingProgressListener;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 
 import org.ucomplex.ucomplex.Activities.CourseActivity;
 import org.ucomplex.ucomplex.Activities.Tasks.FetchUserEventsTask;
-import org.ucomplex.ucomplex.Activities.Tasks.FetchUsersTask;
 import org.ucomplex.ucomplex.Model.EventRowItem;
-import org.ucomplex.ucomplex.Model.Users.User;
 import org.ucomplex.ucomplex.R;
 
 import java.util.ArrayList;
 
 /**
- * @author Sergey Tarasevich (nostra13[at]gmail[dot]com)
+ * @author Sermilion
  */
 public class EventsFragment extends ListFragment {
 
@@ -64,13 +43,11 @@ public class EventsFragment extends ListFragment {
 	ImageAdapter imageAdapter;
     Button btnLoadExtra;
     ProgressDialog dialog;
+    Context context;
 
-
-
-    public ArrayList<EventRowItem> getEventItems() {
-        return eventItems;
+    public void setContext(Context context) {
+        this.context = context;
     }
-
 
     public EventsFragment(){
 
@@ -96,7 +73,7 @@ public class EventsFragment extends ListFragment {
                 if(eventItems.get(position).getType()!=2){
 
                 }else {
-                    progressDialog= ProgressDialog.show(getActivity(), "Загрузка...","Загружаем фото преподавателя...", true);
+                    progressDialog= ProgressDialog.show(getActivity(), "Загрузка...","BИдет загрузка", true);
                     progressDialog.getProgress();
                     Intent intent = new Intent(getActivity(), CourseActivity.class);
                     intent.putExtra("gcourse", eventItems.get(position).getParams().getGcourse());
@@ -214,6 +191,7 @@ public class EventsFragment extends ListFragment {
             viewHolder.eventsImageView = (ImageView) view.findViewById(R.id.list_events_item_image);
             viewHolder.eventTextView = (TextView) view.findViewById(R.id.list_events_item_text);
             viewHolder.eventTime = (TextView) view.findViewById(R.id.list_events_item_date);
+            viewHolder.timeTextView = (TextView) view.findViewById(R.id.list_events_time_image);
 				view.setTag(viewHolder);
 			} else {
                 viewHolder = (ViewHolder) view.getTag();
@@ -253,6 +231,8 @@ public class EventsFragment extends ListFragment {
             }
 			viewHolder.eventTextView.setText(eventItems.get(position).getEventText());
 			viewHolder.eventTime.setText(eventItems.get(position).getTime());
+            viewHolder.timeTextView.setTypeface(Typeface.createFromAsset(context.getAssets(), "fonts/fontawesome-webfont.ttf"));
+            viewHolder.timeTextView.setText("\uF017");
 
 			return view;
 		}
@@ -262,7 +242,7 @@ public class EventsFragment extends ListFragment {
 		ImageView eventsImageView;
 		TextView eventTextView;
         TextView eventTime;
-        ProgressBar progressBar;
+        TextView timeTextView;
 	}
 
 

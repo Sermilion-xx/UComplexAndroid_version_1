@@ -2,7 +2,6 @@ package org.ucomplex.ucomplex.Activities.Tasks;
 
 import android.app.Activity;
 import android.os.AsyncTask;
-import android.widget.BaseAdapter;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -22,15 +21,12 @@ import java.util.HashMap;
 public class FetchUsersTask extends AsyncTask<Integer, Void, ArrayList<User>> {
 
     Activity mContext;
-    BaseAdapter adapter;
 
 
     private ArrayList<User> onlineUserList = new ArrayList<>();
 
-    public FetchUsersTask(Activity context, BaseAdapter adapter){
-        this.mContext = context;
-        this.adapter = adapter;
-
+    public FetchUsersTask(Activity context){
+            this.mContext = context;
     }
 
     public Activity getmContext() {
@@ -82,10 +78,6 @@ public class FetchUsersTask extends AsyncTask<Integer, Void, ArrayList<User>> {
     @Override
     protected void onPostExecute(ArrayList<User> users) {
         super.onPostExecute(users);
-        if(this.adapter!=null){
-            this.adapter.notifyDataSetChanged();
-        }
-
     }
 
     private ArrayList<User> getUserDataFromJson(String jsonData, int getTypeInt) {

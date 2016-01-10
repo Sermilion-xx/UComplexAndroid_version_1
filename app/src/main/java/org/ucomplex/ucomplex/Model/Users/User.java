@@ -3,8 +3,6 @@ package org.ucomplex.ucomplex.Model.Users;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
-import org.ucomplex.ucomplex.Model.EventParams;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -42,11 +40,15 @@ public class User implements Serializable {
     private String positionName;
     private boolean is_black;
     private boolean me_black;
-    private boolean req_friend;
-    private String encodedBitmap;
+    private boolean req_sent;
+    private boolean is_friend;
 
-    public void setEncodedBitmap(String encodedBitmap) {
-        this.encodedBitmap = encodedBitmap;
+    public boolean is_friend() {
+        return is_friend;
+    }
+
+    public void setIs_friend(boolean is_friend) {
+        this.is_friend = is_friend;
     }
 
     public void addRole(User role){
@@ -65,12 +67,12 @@ public class User implements Serializable {
         this.me_black = me_black;
     }
 
-    public boolean isReq_friend() {
-        return req_friend;
+    public boolean isReq_sent() {
+        return req_sent;
     }
 
-    public void setReq_friend(boolean req_friend) {
-        this.req_friend = req_friend;
+    public void setReq_sent(boolean req_sent) {
+        this.req_sent = req_sent;
     }
 
     public boolean isIs_black() {
