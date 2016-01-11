@@ -43,6 +43,7 @@ public class MyFilesActivity extends AppCompatActivity implements OnTaskComplete
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_files);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle("Материалы");
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         FetchMyFilesTask fetchMyFilesTask = new FetchMyFilesTask(this,this);

@@ -134,12 +134,18 @@ public class MessagesAdapter extends ArrayAdapter {
     private TextDrawable createDrawable(String name, int id){
         TextDrawable drawable;
         int colorCount = 16;
+        String firstLettet;
+        if(name.split(" ").length>1){
+            firstLettet = String.valueOf(name.split(" ")[1].charAt(0));
+        }else{
+            firstLettet = String.valueOf(name.split(" ")[0].charAt(0));
+        }
         final int number = (id <= colorCount) ? id : id % colorCount;
         drawable = TextDrawable.builder().beginConfig()
                 .width(60)
                 .height(60)
                 .endConfig()
-                .buildRound(String.valueOf(name.split(" ")[1].charAt(0)), Common.getColor(number));
+                .buildRound(firstLettet, Common.getColor(number));
         return drawable;
     }
 

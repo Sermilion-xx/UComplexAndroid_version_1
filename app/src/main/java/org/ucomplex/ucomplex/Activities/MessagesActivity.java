@@ -45,15 +45,14 @@ public class MessagesActivity extends AppCompatActivity implements OnTaskComplet
                 @Override
                 protected void onCreate(Bundle savedInstanceState) {
                     super.onCreate(savedInstanceState);
-                    companion = getIntent().getStringExtra("companion");
-                    name = getIntent().getStringExtra("name");
-                    messagesAdapter = new MessagesAdapter(this, messageArrayList, companion, name);
                     setContentView(R.layout.activity_message);
                     Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
                     toolbar.setTitle("Сообщения");
                     setSupportActionBar(toolbar);
                     getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
+                    companion = getIntent().getStringExtra("companion");
+                    name = getIntent().getStringExtra("name");
+                    messagesAdapter = new MessagesAdapter(this, messageArrayList, companion, name);
                     listView = (ListView) findViewById(R.id.list_messages_listview);
                     listView.setScrollingCacheEnabled(false);
                     fetchNewMessagesTask = new FetchMessagesTask(this, this);

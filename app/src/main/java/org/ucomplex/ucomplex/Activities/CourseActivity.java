@@ -51,6 +51,12 @@ public class CourseActivity extends AppCompatActivity implements OnTaskCompleteL
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_course);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle("");
+        setSupportActionBar(toolbar);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         dialog = ProgressDialog.show(CourseActivity.this, "",
                 "Загрузка данных", true);
         dialog.show();
@@ -66,9 +72,7 @@ public class CourseActivity extends AppCompatActivity implements OnTaskCompleteL
         FetchCalendarBeltTask fetchCalendarBeltTask = new FetchCalendarBeltTask(this, this);
         fetchCalendarBeltTask.setupTask(this.gcourse);
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         viewPager = (ViewPager) findViewById(R.id.viewpager);
 
         tabLayout = (TabLayout) findViewById(R.id.tabs);

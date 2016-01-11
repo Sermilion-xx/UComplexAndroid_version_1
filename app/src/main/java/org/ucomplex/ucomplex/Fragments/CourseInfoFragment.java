@@ -270,30 +270,35 @@ public class CourseInfoFragment extends Fragment implements OnTaskCompleteListen
         }
 
         int roleCount = user.getRoles().size();
-        TextView[] positionViews = new TextView[roleCount];
-        ;
-        positionViews[0] = userPositionTextView;
-        if (roleCount > 1) {
-            positionViews[1] = userPositionTextView2;
-            userIconTextView2.setVisibility(View.VISIBLE);
-            userPositionTextView2.setVisibility(View.VISIBLE);
-        }
+        if(roleCount>0){
+            TextView[] positionViews = new TextView[roleCount];
 
-        for (int i = 0; i < roleCount; i++) {
-            String positionName = user.getRoles().get(i).getPositionName();
-            if (user.getRoles().get(i).getType() == 4) {
-                if (positionViews != null) {
-                    positionViews[i].setText("Студент - " + positionName);
-                }
-            } else if (user.getRoles().get(i).getType() == 3) {
-                Teacher teach = (Teacher) user.getRoles().get(i);
-                if (positionViews != null) {
-                    String position = String.valueOf(positionName.charAt(0)).toUpperCase() + positionName.substring(1, positionName.length())
-                            + " - " + teach.getSectionName();
-                    positionViews[i].setText(position);
+            positionViews[0] = userPositionTextView;
+            if (roleCount > 1) {
+                positionViews[1] = userPositionTextView2;
+                userIconTextView2.setVisibility(View.VISIBLE);
+                userPositionTextView2.setVisibility(View.VISIBLE);
+            }
+
+            for (int i = 0; i < roleCount; i++) {
+                String positionName = user.getRoles().get(i).getPositionName();
+                if (user.getRoles().get(i).getType() == 4) {
+                    if (positionViews != null) {
+                        positionViews[i].setText("Студент - " + positionName);
+                    }
+                } else if (user.getRoles().get(i).getType() == 3) {
+                    Teacher teach = (Teacher) user.getRoles().get(i);
+                    if (positionViews != null) {
+                        String position = String.valueOf(positionName.charAt(0)).toUpperCase() + positionName.substring(1, positionName.length())
+                                + " - " + teach.getSectionName();
+                        positionViews[i].setText(position);
+                    }
                 }
             }
+        }else{
+            userPositionTextView.setText("Администратор");
         }
+
     }
 
 
