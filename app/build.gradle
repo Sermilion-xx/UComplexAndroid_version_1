@@ -58,8 +58,15 @@ dependencies {
         exclude module: "httpclient"
 
     }
+    compile 'com.quinny898.library.persistentsearch:library:1.1.0-SNAPSHOT'
 
+}
 
+repositories {
+    mavenCentral()
+    maven {
+        url "https://oss.sonatype.org/content/repositories/snapshots"
+    }
 }
 
 

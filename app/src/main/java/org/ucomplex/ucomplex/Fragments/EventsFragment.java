@@ -22,6 +22,7 @@ import android.widget.Toast;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingProgressListener;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
@@ -123,7 +124,6 @@ public class EventsFragment extends ListFragment {
             Toast.makeText(getActivity(), "Произошла ошибка", Toast.LENGTH_SHORT).show();
         }
 
-
     }
 
     @Override
@@ -142,10 +142,11 @@ public class EventsFragment extends ListFragment {
 
 		private LayoutInflater inflater;
 		private DisplayImageOptions options;
-        private boolean loaded=false;
-        private int counter = 0;
+        protected ImageLoader imageLoader;
+        Context context;
 
 		ImageAdapter(Context context) {
+            this.context = context;
 			inflater = LayoutInflater.from(context);
 			options = new DisplayImageOptions.Builder()
 					.showImageOnLoading(R.mipmap.ic_ucomplex)
@@ -156,6 +157,8 @@ public class EventsFragment extends ListFragment {
 					.considerExifParams(true)
 					.bitmapConfig(Bitmap.Config.RGB_565)
 					.build();
+            imageLoader = ImageLoader.getInstance();
+            imageLoader.init(ImageLoaderConfiguration.createDefault(context));
 		}
 
 		@Override
@@ -198,8 +201,7 @@ public class EventsFragment extends ListFragment {
 			}
 
 			if(eventItems.get(position).getEventImageBitmap()==null && eventItems.get(position).getParams().getPhoto()==1) {
-				ImageLoader.getInstance()
-						.displayImage("http://ucomplex.org/files/photos/" + eventItems.get(position).getParams().getCode() + ".jpg", viewHolder.eventsImageView, options, new SimpleImageLoadingListener() {
+                imageLoader.displayImage("http://ucomplex.org/files/photos/" + eventItems.get(position).getParams().getCode() + ".jpg", viewHolder.eventsImageView, options, new SimpleImageLoadingListener() {
 							@Override
 							public void onLoadingStarted(String imageUri, View view) {
 							}
