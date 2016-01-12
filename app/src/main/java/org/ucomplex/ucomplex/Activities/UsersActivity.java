@@ -32,6 +32,7 @@ import org.ucomplex.ucomplex.Adaptors.ViewPagerAdapter;
 import org.ucomplex.ucomplex.Common;
 import org.ucomplex.ucomplex.Fragments.UsersFragment;
 import org.ucomplex.ucomplex.Model.Users.User;
+import org.ucomplex.ucomplex.MySearchBox;
 import org.ucomplex.ucomplex.R;
 
 import java.util.ArrayList;
@@ -40,24 +41,19 @@ import java.util.HashMap;
 
 public class UsersActivity extends AppCompatActivity {
 
-    SearchBox search;
+    MySearchBox search;
     ViewPager viewPager;
-    ArrayList<String> lastSearch = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_users);
         final Toolbar toolbar = (Toolbar) findViewById(R.id.users_toolbar);
         toolbar.setTitle("Онлайн");
         setSupportActionBar(toolbar);
-
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        search = (SearchBox) findViewById(R.id.searchbox);
-
+        search = (MySearchBox) findViewById(R.id.searchbox);
         search.setLogoText("Поиск");
-//        search.enableVoiceRecognition(UsersActivity.this);
         search.setMenuListener(new SearchBox.MenuListener(){
 
             @Override
@@ -106,6 +102,14 @@ public class UsersActivity extends AppCompatActivity {
             }
 
         });
+
+
+
+
+
+
+//        search.enableVoiceRecognition(UsersActivity.this);
+
 
         viewPager = (ViewPager) findViewById(R.id.users_viewpager);
         setupViewPager(viewPager);
