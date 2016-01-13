@@ -26,7 +26,6 @@ public class FetchPersonTask extends AsyncTask<Void, String, User> implements IP
     Activity mContext;
     User user;
 
-    private String mProgressMessage;
     private IProgressTracker mProgressTracker;
     private final OnTaskCompleteListener mTaskCompleteListener;
     private final ProgressDialog mProgressDialog;
@@ -66,19 +65,20 @@ public class FetchPersonTask extends AsyncTask<Void, String, User> implements IP
     protected User doInBackground(Void... params) {
         String urlString = "http://you.com.ru/user/person/"+this.person +"?json";
         String jsonData = Common.httpPost(urlString, Common.getLoginDataFromPref(mContext));
-        if(jsonData.length()>2){
+        if (jsonData != null && jsonData.length() > 2) {
             user = getUserDataFromJson(jsonData);
-            if(user.getCode()!=null){
-                Bitmap photoBitmap = Common.getBitmapFromURL(user.getCode());
-                user.setPhotoBitmap(photoBitmap);
-            }
+//            if (user != null && user.getCode() != null) {
+//                Bitmap photoBitmap = Common.getBitmapFromURL(user.getCode());
+//                user.setPhotoBitmap(photoBitmap);
+//            }
         }
+        publishProgress("User got");
         return user;
     }
 
     private User getUserDataFromJson(String jsonData){
         User user;
-        JSONObject userJson = null;
+        JSONObject userJson;
         try{
             userJson = new JSONObject(jsonData);
             user = new User();
@@ -156,12 +156,13 @@ public class FetchPersonTask extends AsyncTask<Void, String, User> implements IP
             mProgressTracker.onComplete();
         }
         mProgressTracker = null;
+
     }
 
     @Override
     protected void onProgressUpdate(String... values) {
         // Update progress message
-        mProgressMessage = values[0];
+        String mProgressMessage = values[0];
         // And send it to progress tracker
         if (mProgressTracker != null) {
             mProgressTracker.onProgress(mProgressMessage);

@@ -8,15 +8,11 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.NavUtils;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.KeyEvent;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -43,6 +39,11 @@ public class UsersActivity extends AppCompatActivity {
 
     MySearchBox search;
     ViewPager viewPager;
+
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,12 +74,12 @@ public class UsersActivity extends AppCompatActivity {
             @Override
             public void onSearchClosed() {
                 //Use this to un-tint the screen
-                System.out.println();
+
             }
 
             @Override
             public void onSearchTermChanged(String s) {
-                System.out.println();
+
             }
 
 
@@ -92,23 +93,14 @@ public class UsersActivity extends AppCompatActivity {
             @Override
             public void onResultClick(SearchResult result){
                 //React to a result being clicked
-                System.out.println();
             }
 
 
             @Override
             public void onSearchCleared() {
-                System.out.println();
             }
 
         });
-
-
-
-
-
-
-//        search.enableVoiceRecognition(UsersActivity.this);
 
 
         viewPager = (ViewPager) findViewById(R.id.users_viewpager);
@@ -155,11 +147,6 @@ public class UsersActivity extends AppCompatActivity {
         TextView tv4 = (TextView)(((LinearLayout)((LinearLayout)tabLayout.getChildAt(0)).getChildAt(4)).getChildAt(1));
         tv4.setTypeface(Typeface.createFromAsset(this.getAssets(), "fonts/fontawesome-webfont.ttf"));
     }
-
-
-
-
-
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -246,9 +233,6 @@ public class UsersActivity extends AppCompatActivity {
         protected void onPreExecute() {
             progressDialog.show();
         }
-
-
-
 
         @Override
         protected ArrayList<User> doInBackground(String... params) {

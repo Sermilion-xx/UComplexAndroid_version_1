@@ -122,6 +122,9 @@ public class CourseInfoFragment extends Fragment implements OnTaskCompleteListen
         friendButton = (Button) rootView.findViewById(R.id.course_info_button_to_friend);
         blacklistButton = (Button) rootView.findViewById(R.id.course_info_button_block);
         userImageView = (ImageView) rootView.findViewById(R.id.course_info_teacher_image);
+        if(this.bitmap!=null){
+            userImageView.setImageBitmap(this.bitmap);
+        }
         userNameView = (TextView) rootView.findViewById(R.id.course_info_teacher_name);
         mailTextView = (TextView) rootView.findViewById(R.id.course_info_mail);
         userPositionTextView = (TextView) rootView.findViewById(R.id.course_info_position);
@@ -150,35 +153,37 @@ public class CourseInfoFragment extends Fragment implements OnTaskCompleteListen
 
         Bundle bundle = this.getArguments();
         if(bundle!=null || courseData!=null){
-            if(bundle.containsKey("courseData")){
+            if (bundle != null && bundle.containsKey("courseData")) {
+                new AsyncTask<Void,Void,Void>(){
+                    @Override
+                    protected void onPostExecute(Void aVoid) {
+                        super.onPostExecute(aVoid);
+                        userImageView.setImageBitmap(bitmap);
+                    }
+                    @Override
+                    protected Void doInBackground(Void... params) {
+                        bitmap = Common.getBitmapFromURL(courseData.getTeacher(0).getCode());
+                        return null;
+                    }
+                }.execute();
                 courseData = (Course) bundle.getSerializable("courseData");
-                int post = courseData.getTeacher(0).getPost();
-                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
-                String langStr = prefs.getString("lang", "");
-
-                try {
-                    JSONObject langJsonObj = new JSONObject(langStr);
-                    JSONObject langJson = langJsonObj.getJSONObject("lang");
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                if (courseData != null) {
+                    if (courseData.getDepartment().getId() == -1) {
+                        departmentNameView.setVisibility(View.GONE);
+                    } else {
+                        departmentNameView.setText(courseData.getDepartment().getName());
+                    }
                 }
-                if(courseData.getDepartment().getId()==-1){
-                    departmentNameView.setVisibility(View.GONE);
-                }else{
-                    departmentNameView.setText(courseData.getDepartment().getName());
-                }
-
                 courseNameView.setText(courseData.getName());
                 int a = courseData.getProgress().getAbsence();
                 int b = courseData.getProgress().getHours();
-                double absence = ((double)a/(double)b)*100;
+                double absence = ((double) a / (double) b) * 100;
                 DecimalFormat df = new DecimalFormat("#.##");
                 absence = Double.valueOf(df.format(absence));
                 averageMarksView.setText(String.valueOf(courseData.getProgress().getMark()));
-                attendanceView.setText(String.valueOf(String.valueOf(absence)+"%"));
+                attendanceView.setText(String.valueOf(String.valueOf(absence) + "%"));
             }
         }else{
-
             courseNameView.setVisibility(View.GONE);
             departmentNameView.setVisibility(View.GONE);
             averageMarksView.setVisibility(View.GONE);
@@ -187,7 +192,7 @@ public class CourseInfoFragment extends Fragment implements OnTaskCompleteListen
             rootView.findViewById(R.id.course_info_course_average_mark_label).setVisibility(View.GONE);
             rootView.findViewById(R.id.course_info_course_attendance_label).setVisibility(View.GONE);
         }
-                if (person == -1 || person == -1) {
+                if (person == -1) {
                     if(courseData!=null){
                         person = courseData.getTeacher(0).getId();
                     }
@@ -262,10 +267,7 @@ public class CourseInfoFragment extends Fragment implements OnTaskCompleteListen
             }
         });
         userNameView.setText(user.getName());
-        if (user.getPhotoBitmap() != null) {
-            bitmap = user.getPhotoBitmap();
-            userImageView.setImageBitmap(this.bitmap);
-        } else {
+        if(this.bitmap==null){
             userImageView.setImageDrawable(Common.getDrawable(user));
         }
 
@@ -283,14 +285,12 @@ public class CourseInfoFragment extends Fragment implements OnTaskCompleteListen
             for (int i = 0; i < roleCount; i++) {
                 String positionName = user.getRoles().get(i).getPositionName();
                 if (user.getRoles().get(i).getType() == 4) {
-                    if (positionViews != null) {
-                        positionViews[i].setText("Студент - " + positionName);
-                    }
+                    positionViews[i].setText("Студент - " + positionName);
                 } else if (user.getRoles().get(i).getType() == 3) {
                     Teacher teach = (Teacher) user.getRoles().get(i);
-                    if (positionViews != null) {
-                        String position = String.valueOf(positionName.charAt(0)).toUpperCase() + positionName.substring(1, positionName.length())
-                                + " - " + teach.getSectionName();
+                    String position = String.valueOf(positionName.charAt(0)).toUpperCase() + positionName.substring(1, positionName.length())
+                            + " - " + teach.getSectionName();
+                    if(positionViews[i]!=null){
                         positionViews[i].setText(position);
                     }
                 }
@@ -310,9 +310,8 @@ public class CourseInfoFragment extends Fragment implements OnTaskCompleteListen
             if(user != null) {
                 fillUserInfo();
             }else{
-                Toast.makeText(getActivity(), "Ошибка при загрузни пользователя!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "Ошибка при загрузке пользователя!", Toast.LENGTH_SHORT).show();
             }
-
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }

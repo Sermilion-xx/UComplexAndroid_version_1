@@ -44,14 +44,10 @@ public class UsersFragment extends ListFragment {
 
     }
 
-    public void setmItems(ArrayList<User> mItems) {
-        this.mItems = mItems;
-    }
 
     public void setUsersType(int usersType) {
         this.usersType = usersType;
     }
-
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
@@ -73,6 +69,9 @@ public class UsersFragment extends ListFragment {
             extras.putString("person", String.valueOf(user.getId()));
         } else {
             extras.putString("person", String.valueOf(user.getPerson()));
+        }
+        if(user.getPhotoBitmap()!=null){
+            intent.putExtra("bitmap", user.getPhotoBitmap());
         }
         intent.putExtras(extras);
         startActivity(intent);

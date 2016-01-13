@@ -1,5 +1,6 @@
 package org.ucomplex.ucomplex.Activities;
 
+import android.graphics.Bitmap;
 import android.os.Bundle;
 
 import android.support.v4.app.FragmentManager;
@@ -15,6 +16,7 @@ import org.ucomplex.ucomplex.R;
 public class PersonActivity extends AppCompatActivity {
 
     int personId;
+    Bitmap bitmap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,10 +31,12 @@ public class PersonActivity extends AppCompatActivity {
         final Bundle extra = getIntent().getExtras();
         if (extra != null) {
             personId = Integer.parseInt(extra.getString("person"));
+            bitmap = extra.getParcelable("bitmap");
         }
 
         CourseInfoFragment courseInfoFragment = new CourseInfoFragment();
         courseInfoFragment.setPerson(personId);
+        courseInfoFragment.setBitmap(bitmap);
         courseInfoFragment.setmContext(this);
 
         FragmentManager fragmentManager = getSupportFragmentManager();

@@ -26,7 +26,6 @@ public class FetchDialogsTask extends AsyncTask<Integer, String, ArrayList> impl
     MessagesListActivity caller;
     ArrayList<Dialog> dialogsList;
 
-    private String mProgressMessage;
     private IProgressTracker mProgressTracker;
     private final OnTaskCompleteListener mTaskCompleteListener;
     private final ProgressDialog mProgressDialog;

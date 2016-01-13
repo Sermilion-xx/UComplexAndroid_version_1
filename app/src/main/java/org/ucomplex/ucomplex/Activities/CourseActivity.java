@@ -48,36 +48,42 @@ public class CourseActivity extends AppCompatActivity implements OnTaskCompleteL
     ViewPager viewPager;
 
     @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putSerializable("courseData", coursedata);
+        outState.putSerializable("feeditems", feedItems);
+    }
+
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_course);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("");
         setSupportActionBar(toolbar);
-
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        dialog = ProgressDialog.show(CourseActivity.this, "",
-                "Загрузка данных", true);
+        dialog = ProgressDialog.show(CourseActivity.this, "","Загрузка данных", true);
         dialog.show();
 
         Bundle extras = getIntent().getExtras();
         this.gcourse = extras.getInt("gcourse", -1);
+        if(savedInstanceState!=null){
+            coursedata = (Course) savedInstanceState.getSerializable("courseData");
+            feedItems = (ArrayList<Quartet<Integer, String, String, Integer>>) savedInstanceState.getSerializable("feedItems");
+        }else{
+            FetchMySubjectsTask fetchMySubjectsTask = new FetchMySubjectsTask(this, this);
+            fetchMySubjectsTask.setmContext(this);
+            fetchMySubjectsTask.setGcourse(this.gcourse);
+            fetchMySubjectsTask.setupTask();
 
-        FetchMySubjectsTask fetchMySubjectsTask = new FetchMySubjectsTask(this, this);
-        fetchMySubjectsTask.setmContext(this);
-        fetchMySubjectsTask.setGcourse(this.gcourse);
-        fetchMySubjectsTask.setupTask();
-
-        FetchCalendarBeltTask fetchCalendarBeltTask = new FetchCalendarBeltTask(this, this);
-        fetchCalendarBeltTask.setupTask(this.gcourse);
-
-
+            FetchCalendarBeltTask fetchCalendarBeltTask = new FetchCalendarBeltTask(this, this);
+            fetchCalendarBeltTask.setupTask(this.gcourse);
+        }
         viewPager = (ViewPager) findViewById(R.id.viewpager);
-
         tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-
     }
 
     @Override
@@ -85,7 +91,7 @@ public class CourseActivity extends AppCompatActivity implements OnTaskCompleteL
         switch (item.getItemId()) {
             case android.R.id.home:
                 ArrayList files;
-                if(courseMaterialsFragment.isMyFiles()){
+//                if(courseMaterialsFragment.isMyFiles()){
                     if(stackFiles.size()>0){
                         files = stackFiles.pop();
                         courseMaterialsFragment.setFiles(files);
@@ -95,10 +101,9 @@ public class CourseActivity extends AppCompatActivity implements OnTaskCompleteL
                         onBackPressed();
                         return true;
                     }
-                }
-                onBackPressed();
-                return true;
-
+//                }
+//                onBackPressed();
+//                return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -111,11 +116,16 @@ public class CourseActivity extends AppCompatActivity implements OnTaskCompleteL
         cmBundel.putSerializable("courseData",coursedata);
         courseInfoFragment.setArguments(cmBundel);
 
-        stackFiles.push(coursedata.getFiles());
+        if(stackFiles.size()==0){
+            stackFiles.push(coursedata.getFiles());
+        }
         courseMaterialsFragment = new CourseMaterialsFragment();
         courseMaterialsFragment.setMyFiles(false);
         courseMaterialsFragment.setmContext(this);
-        courseMaterialsFragment.setFiles(stackFiles.peek());
+        if(courseMaterialsFragment.getFiles() == null || courseMaterialsFragment.getFiles().size()==0){
+            courseMaterialsFragment.setFiles(stackFiles.peek());
+        }
+
 
         calendarBeltFragment = new CalendarBeltFragment();
         calendarBeltFragment.setFeedItems(this.feedItems);
@@ -130,16 +140,14 @@ public class CourseActivity extends AppCompatActivity implements OnTaskCompleteL
     @Override
     public void onTaskComplete(AsyncTask task, Object... o) {
         if (task.isCancelled()) {
-            Toast.makeText(this, "Загрузка отменена", Toast.LENGTH_LONG)
-                    .show();
+            Toast.makeText(this, "Загрузка отменена", Toast.LENGTH_LONG).show();
         } else {
             try {
                 if(task instanceof FetchTeacherFilesTask){
+                    stackFiles.push((ArrayList<File>) task.get());
                     if(stackFiles.size()==0){
-                        stackFiles.push((ArrayList<File>) task.get());
                         courseMaterialsFragment.setFiles(stackFiles.peek());
                     }else{
-                        stackFiles.push((ArrayList<File>) task.get());
                         courseMaterialsFragment.setFiles(stackFiles.pop());
                     }
                     adapter.notifyDataSetChanged();
@@ -147,7 +155,6 @@ public class CourseActivity extends AppCompatActivity implements OnTaskCompleteL
                     try {
                         this.coursedata = (Course) task.get();
                         toolbar.setTitle(coursedata.getName());
-
                         setupViewPager(viewPager);
                         tabLayout.setupWithViewPager(viewPager);
                     } catch (InterruptedException | ExecutionException e) {
@@ -170,10 +177,6 @@ public class CourseActivity extends AppCompatActivity implements OnTaskCompleteL
                 }
                 if(coursedata!=null && feedItems!=null)
                     dialog.dismiss();
-
-
-
-
             } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();
             }
