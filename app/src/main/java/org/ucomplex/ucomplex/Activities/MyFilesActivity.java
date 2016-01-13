@@ -179,11 +179,10 @@ public class MyFilesActivity extends AppCompatActivity implements OnTaskComplete
                 if (resultCode == RESULT_OK) {
                     Uri uri = data.getData();
                     String path = null;
-                    try {
-                        path = Common.getPath(this, uri);
-                    } catch (URISyntaxException e) {
-                        e.printStackTrace();
-                    }
+
+                    path = uri.getPath();
+//                        path = Common.getPath(this, uri);
+
                     uplodFile(path);
                 }
                 break;

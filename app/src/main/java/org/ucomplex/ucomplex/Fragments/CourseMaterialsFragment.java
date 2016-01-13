@@ -36,13 +36,34 @@ import java.util.HashMap;
 
 public class CourseMaterialsFragment extends ListFragment {
 
+    ArrayList<ArrayList<File>> stackFiles = new ArrayList<>();
     private ArrayList<File> mItems;
+    int level = 0;
     private Activity mContext;
     private boolean myFiles = false;
     private CourseMaterialsAdapter adapter;
     private int selectedItemPos;
+
+
     public void setAdapter(CourseMaterialsAdapter adapter) {
         this.adapter = adapter;
+    }
+
+    public ArrayList<File> getmItems() {
+        return mItems;
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
+        mItems = new ArrayList<>(stackFiles.get(level));
+    }
+
+    public ArrayList<ArrayList<File>> getStackFiles() {
+        return stackFiles;
+    }
+
+    public void addStack(ArrayList<File> files){
+        this.stackFiles.add(new ArrayList<>(files));
     }
 
     public CourseMaterialsAdapter getAdapter() {
@@ -51,6 +72,18 @@ public class CourseMaterialsFragment extends ListFragment {
 
     public boolean isMyFiles() {
         return myFiles;
+    }
+
+    public void levelUp(){
+        this.level++;
+    }
+
+    public void levelDown(){
+        this.level--;
+    }
+
+    public int getLevel() {
+        return level;
     }
 
     public void setMyFiles(boolean myFiles) {
@@ -107,16 +140,23 @@ public class CourseMaterialsFragment extends ListFragment {
         // retrieve theListView item
         File item = mItems.get(position);
         if (item.getType().equals("f")) {
+            levelUp();
             Common.folderCode = item.getAddress();
-            if (!myFiles) {
-                FetchTeacherFilesTask fetchTeacherFilesTask = new FetchTeacherFilesTask(mContext, (OnTaskCompleteListener) mContext);
-                fetchTeacherFilesTask.setOwner(item.getOwner());
-                fetchTeacherFilesTask.setupTask(item.getAddress());
-            } else {
-                FetchMyFilesTask fetchMyFilesTask = new FetchMyFilesTask(mContext, (OnTaskCompleteListener) mContext);
-                fetchMyFilesTask.setupTask(item.getAddress());
+            if(level>stackFiles.size()-1){
+                if (!myFiles) {
+                    FetchTeacherFilesTask fetchTeacherFilesTask = new FetchTeacherFilesTask(mContext, (OnTaskCompleteListener) mContext);
+                    fetchTeacherFilesTask.setOwner(item.getOwner());
+                    fetchTeacherFilesTask.setupTask(item.getAddress());
+                } else {
+                    FetchMyFilesTask fetchMyFilesTask = new FetchMyFilesTask(mContext, (OnTaskCompleteListener) mContext);
+                    fetchMyFilesTask.setupTask(item.getAddress());
+                }
+            }else{
+                mItems.clear();
+                ArrayList<File> newFiles = new ArrayList<>(stackFiles.get(level));
+                mItems.addAll(newFiles);
+                this.adapter.notifyDataSetChanged();
             }
-
         } else {
             Common.folderCode = null;
             if (Common.isDownloadManagerAvailable()) {

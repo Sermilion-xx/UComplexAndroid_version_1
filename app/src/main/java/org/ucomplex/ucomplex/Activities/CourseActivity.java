@@ -25,14 +25,12 @@ import org.ucomplex.ucomplex.Model.StudyStructure.File;
 import org.ucomplex.ucomplex.R;
 
 import java.util.ArrayList;
-import java.util.Stack;
 import java.util.concurrent.ExecutionException;
 
 
 
 public class CourseActivity extends AppCompatActivity implements OnTaskCompleteListener {
 
-    Stack<ArrayList<File>> stackFiles = new Stack<>();
     Toolbar toolbar;
     TabLayout tabLayout;
     ProgressDialog dialog;
@@ -48,14 +46,6 @@ public class CourseActivity extends AppCompatActivity implements OnTaskCompleteL
     ViewPager viewPager;
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putSerializable("courseData", coursedata);
-        outState.putSerializable("feeditems", feedItems);
-    }
-
-
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -69,10 +59,7 @@ public class CourseActivity extends AppCompatActivity implements OnTaskCompleteL
 
         Bundle extras = getIntent().getExtras();
         this.gcourse = extras.getInt("gcourse", -1);
-        if(savedInstanceState!=null){
-            coursedata = (Course) savedInstanceState.getSerializable("courseData");
-            feedItems = (ArrayList<Quartet<Integer, String, String, Integer>>) savedInstanceState.getSerializable("feedItems");
-        }else{
+
             FetchMySubjectsTask fetchMySubjectsTask = new FetchMySubjectsTask(this, this);
             fetchMySubjectsTask.setmContext(this);
             fetchMySubjectsTask.setGcourse(this.gcourse);
@@ -80,7 +67,7 @@ public class CourseActivity extends AppCompatActivity implements OnTaskCompleteL
 
             FetchCalendarBeltTask fetchCalendarBeltTask = new FetchCalendarBeltTask(this, this);
             fetchCalendarBeltTask.setupTask(this.gcourse);
-        }
+
         viewPager = (ViewPager) findViewById(R.id.viewpager);
         tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
@@ -90,20 +77,17 @@ public class CourseActivity extends AppCompatActivity implements OnTaskCompleteL
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                ArrayList files;
-//                if(courseMaterialsFragment.isMyFiles()){
-                    if(stackFiles.size()>0){
-                        files = stackFiles.pop();
-                        courseMaterialsFragment.setFiles(files);
-                        adapter.notifyDataSetChanged();
+                    if(courseMaterialsFragment.getLevel()>0){
+                        courseMaterialsFragment.levelDown();
+                        courseMaterialsFragment.getmItems().clear();
+                        ArrayList<File> newFiles = new ArrayList<>(courseMaterialsFragment.getStackFiles().get(courseMaterialsFragment.getLevel()));
+                        courseMaterialsFragment.getmItems().addAll(newFiles);
+                        courseMaterialsFragment.getAdapter().notifyDataSetChanged();
                         return true;
                     } else {
                         onBackPressed();
                         return true;
                     }
-//                }
-//                onBackPressed();
-//                return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -116,19 +100,21 @@ public class CourseActivity extends AppCompatActivity implements OnTaskCompleteL
         cmBundel.putSerializable("courseData",coursedata);
         courseInfoFragment.setArguments(cmBundel);
 
-        if(stackFiles.size()==0){
-            stackFiles.push(coursedata.getFiles());
-        }
-        courseMaterialsFragment = new CourseMaterialsFragment();
-        courseMaterialsFragment.setMyFiles(false);
-        courseMaterialsFragment.setmContext(this);
-        if(courseMaterialsFragment.getFiles() == null || courseMaterialsFragment.getFiles().size()==0){
-            courseMaterialsFragment.setFiles(stackFiles.peek());
+
+        if(courseMaterialsFragment==null) {
+            courseMaterialsFragment = new CourseMaterialsFragment();
+            courseMaterialsFragment.setMyFiles(false);
+            courseMaterialsFragment.setmContext(this);
+            if(coursedata!=null) {
+                courseMaterialsFragment.addStack(coursedata.getFiles());
+            }
+            courseMaterialsFragment.setLevel(0);
         }
 
-
-        calendarBeltFragment = new CalendarBeltFragment();
-        calendarBeltFragment.setFeedItems(this.feedItems);
+        if(calendarBeltFragment==null){
+            calendarBeltFragment = new CalendarBeltFragment();
+            calendarBeltFragment.setFeedItems(this.feedItems);
+        }
 
         adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFragment(courseInfoFragment, "Дисциплина");
@@ -144,16 +130,22 @@ public class CourseActivity extends AppCompatActivity implements OnTaskCompleteL
         } else {
             try {
                 if(task instanceof FetchTeacherFilesTask){
-                    stackFiles.push((ArrayList<File>) task.get());
-                    if(stackFiles.size()==0){
-                        courseMaterialsFragment.setFiles(stackFiles.peek());
-                    }else{
-                        courseMaterialsFragment.setFiles(stackFiles.pop());
+                    ArrayList<File> files = (ArrayList<File>) task.get();
+                    if(files.size()>0) {
+                        if(courseMaterialsFragment==null){
+                            courseMaterialsFragment = new CourseMaterialsFragment();
+                            courseMaterialsFragment.setMyFiles(false);
+                            courseMaterialsFragment.setmContext(this);
+                        }
+                        courseMaterialsFragment.addStack(files);
+                        courseMaterialsFragment.getmItems().clear();
+                        courseMaterialsFragment.getmItems().addAll(courseMaterialsFragment.getStackFiles().get(courseMaterialsFragment.getLevel()));
+                        courseMaterialsFragment.getAdapter().notifyDataSetChanged();
                     }
-                    adapter.notifyDataSetChanged();
                 }else if(task instanceof FetchMySubjectsTask){
                     try {
                         this.coursedata = (Course) task.get();
+                        dialog.dismiss();
                         toolbar.setTitle(coursedata.getName());
                         setupViewPager(viewPager);
                         tabLayout.setupWithViewPager(viewPager);
@@ -164,26 +156,21 @@ public class CourseActivity extends AppCompatActivity implements OnTaskCompleteL
                     try {
                         if(this.coursedata!=null) {
                             this.feedItems = (ArrayList<Quartet<Integer, String, String, Integer>>) task.get();
-                            calendarBeltFragment = null;
-                            courseMaterialsFragment = null;
-                            courseInfoFragment = null;
-                            adapter = null;
-                            setupViewPager(viewPager);
-                            tabLayout.setupWithViewPager(viewPager);
+                            if(calendarBeltFragment==null){
+                                calendarBeltFragment = new CalendarBeltFragment();
+                            }
+                            calendarBeltFragment.setFeedItems(feedItems);
+                            calendarBeltFragment.initAdapter(CourseActivity.this);
+                            calendarBeltFragment.getCourseCalendarBeltAdapter().notifyDataSetChanged();
                         }
                     } catch (InterruptedException | ExecutionException e) {
                         e.printStackTrace();
                     }
                 }
-                if(coursedata!=null && feedItems!=null)
-                    dialog.dismiss();
+
             } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();
             }
-
         }
     }
-
-
-
 }

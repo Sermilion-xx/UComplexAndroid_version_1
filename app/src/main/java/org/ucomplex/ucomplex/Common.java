@@ -48,6 +48,7 @@ import java.io.InputStreamReader;
 
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -122,7 +123,7 @@ public class Common {
     @TargetApi(Build.VERSION_CODES.KITKAT)
     public static String uploadFile(String path, String auth, String ... folder){
         try{
-            File file = new File(path);
+            File file = new File(new URI(path));
             HttpPost httpPost = new HttpPost("http://you.com.ru/student/my_files/add_files?mobile=1");
             final byte[] authBytes = auth.getBytes(StandardCharsets.UTF_8);
             int flags = Base64.NO_WRAP | Base64.URL_SAFE;
@@ -159,7 +160,7 @@ public class Common {
             String message = builderString.toString();
             response.getEntity().consumeContent();
             return message;
-        } catch (IOException e) {
+        } catch (IOException | URISyntaxException e) {
             e.printStackTrace();
         }
         return null;

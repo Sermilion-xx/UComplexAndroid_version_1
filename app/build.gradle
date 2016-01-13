@@ -59,7 +59,6 @@ dependencies {
 
     }
     compile 'com.quinny898.library.persistentsearch:library:1.1.0-SNAPSHOT'
-
 }
 
 repositories {
@@ -68,5 +67,7 @@ repositories {
         url "https://oss.sonatype.org/content/repositories/snapshots"
     }
 }
+
+
 
 
