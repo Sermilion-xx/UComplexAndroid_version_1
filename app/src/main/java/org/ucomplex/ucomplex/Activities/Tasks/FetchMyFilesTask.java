@@ -40,7 +40,7 @@ public class FetchMyFilesTask extends AsyncTask<String, String, ArrayList<File>>
     }
 
     public void setupTask(String ... params) {
-        this.setProgressTracker(this);
+//        this.setProgressTracker(this);
         this.execute(params);
     }
 

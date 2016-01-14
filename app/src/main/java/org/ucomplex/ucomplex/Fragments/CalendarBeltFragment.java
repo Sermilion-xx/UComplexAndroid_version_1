@@ -26,10 +26,6 @@ public class CalendarBeltFragment extends ListFragment {
         return courseCalendarBeltAdapter;
     }
 
-    public void setCourseCalendarBeltAdapter(CourseCalendarBeltAdapter courseCalendarBeltAdapter) {
-        this.courseCalendarBeltAdapter = courseCalendarBeltAdapter;
-    }
-
     public void initAdapter(Activity activity){
         courseCalendarBeltAdapter = new CourseCalendarBeltAdapter(activity, feedItems);
     }

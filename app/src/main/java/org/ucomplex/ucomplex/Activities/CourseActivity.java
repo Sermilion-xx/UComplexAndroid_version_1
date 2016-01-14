@@ -1,10 +1,10 @@
 package org.ucomplex.ucomplex.Activities;
 
-import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 
+import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 
 import android.support.v7.app.AppCompatActivity;
@@ -33,7 +33,6 @@ public class CourseActivity extends AppCompatActivity implements OnTaskCompleteL
 
     Toolbar toolbar;
     TabLayout tabLayout;
-    ProgressDialog dialog;
 
     private int gcourse;
     private Course coursedata;
@@ -48,6 +47,12 @@ public class CourseActivity extends AppCompatActivity implements OnTaskCompleteL
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Bundle extras = getIntent().getExtras();
+        this.gcourse = extras.getInt("gcourse", -1);
+        FetchMySubjectsTask fetchMySubjectsTask = new FetchMySubjectsTask(this, this);
+        fetchMySubjectsTask.setmContext(this);
+        fetchMySubjectsTask.setGcourse(this.gcourse);
+        fetchMySubjectsTask.setupTask();
 
         setContentView(R.layout.activity_course);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -55,18 +60,16 @@ public class CourseActivity extends AppCompatActivity implements OnTaskCompleteL
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        Bundle extras = getIntent().getExtras();
-        this.gcourse = extras.getInt("gcourse", -1);
-
-        FetchMySubjectsTask fetchMySubjectsTask = new FetchMySubjectsTask(this, this);
-        fetchMySubjectsTask.setmContext(this);
-        fetchMySubjectsTask.setGcourse(this.gcourse);
-        fetchMySubjectsTask.setupTask();
+        viewPager = (ViewPager) findViewById(R.id.viewpager);
+        adapter = new ViewPagerAdapter(getSupportFragmentManager());
+        adapter.addFragment(new CourseInfoFragment(), "Дисциплина");
+        adapter.addFragment(new Fragment(), "Материалы");
+        adapter.addFragment(new Fragment(), "Лента");
+        viewPager.setAdapter(adapter);
 
         FetchCalendarBeltTask fetchCalendarBeltTask = new FetchCalendarBeltTask(this, this);
         fetchCalendarBeltTask.setupTask(this.gcourse);
 
-        viewPager = (ViewPager) findViewById(R.id.viewpager);
         tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
     }
@@ -163,7 +166,6 @@ public class CourseActivity extends AppCompatActivity implements OnTaskCompleteL
                         e.printStackTrace();
                     }
                 }
-
             } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();
             }

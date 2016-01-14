@@ -1,6 +1,7 @@
 package org.ucomplex.ucomplex.Activities.Tasks;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
@@ -29,13 +30,14 @@ import java.util.HashMap;
  * Created by Sermilion on 05/12/2015.
  */
 public class FetchMySubjectsTask extends AsyncTask<Void, String, Course> implements IProgressTracker, DialogInterface.OnCancelListener {
-    //
+
     Activity mContext;
     String jsonData;
     int gcourse;
     private IProgressTracker mProgressTracker;
     private final OnTaskCompleteListener mTaskCompleteListener;
     private String mProgressMessage;
+    private final ProgressDialog mProgressDialog;
     CourseActivity caller;
     Course course;
 
@@ -43,6 +45,10 @@ public class FetchMySubjectsTask extends AsyncTask<Void, String, Course> impleme
         this.mContext = context;
         this.caller = (CourseActivity) mContext;
         this.mTaskCompleteListener = taskCompleteListener;
+        mProgressDialog = new ProgressDialog(context);
+        mProgressDialog.setIndeterminate(true);
+        mProgressDialog.setCancelable(true);
+        mProgressDialog.setOnCancelListener(this);
     }
 
     public Activity getmContext() {
@@ -62,7 +68,7 @@ public class FetchMySubjectsTask extends AsyncTask<Void, String, Course> impleme
     }
 
     public void setupTask(Void ... params) {
-//        this.setProgressTracker(this);
+        this.setProgressTracker(this);
         this.execute(params);
     }
 
@@ -182,7 +188,6 @@ public class FetchMySubjectsTask extends AsyncTask<Void, String, Course> impleme
 
                     course.setProgress(progress);
                     course.setFiles(files);
-
             }
             return course;
         } catch (JSONException e) {
@@ -204,47 +209,36 @@ public class FetchMySubjectsTask extends AsyncTask<Void, String, Course> impleme
     protected void onPostExecute(final Course course) {
         super.onPostExecute(course);
         mTaskCompleteListener.onTaskComplete(this);
-//        if (mProgressTracker != null) {
-//            mProgressTracker.onComplete();
-//        }
-//        // Detach from progress tracker
-//        mProgressTracker = null;
-    }
-
-//    /* UI Thread */
-//    @Override
-//    protected void onProgressUpdate(String... values) {
-//        // Update progress message
-//        mProgressMessage = values[0];
-//        // And send it to progress tracker
-//        if (mProgressTracker != null) {
-//            mProgressTracker.onProgress(mProgressMessage);
-//        }
-//    }
-
-//    @Override
-//    public void onProgress(String message) {
-//        // Show dialog if it wasn't shown yet or was removed on configuration (rotation) change
-//        if (!mProgressDialog.isShowing()) {
-//            mProgressDialog.show();
-//        }
-//        // Show current message in progress dialog
-//        mProgressDialog.setMessage(message);
-//    }
-
-    @Override
-    public void onProgress(String message) {
-
+        if (mProgressTracker != null) {
+            mProgressTracker.onComplete();
+        }
+        mProgressTracker = null;
     }
 
     @Override
     public void onComplete() {
         mTaskCompleteListener.onTaskComplete(this);
+        mProgressDialog.dismiss();
+    }
+    @Override
+    protected void onProgressUpdate(String... values) {
+        // Update progress message
+        mProgressMessage = values[0];
+        if (mProgressTracker != null) {
+            mProgressTracker.onProgress(mProgressMessage);
+        }
+    }
+
+    @Override
+    public void onProgress(String message) {
+        if (!mProgressDialog.isShowing()) {
+            mProgressDialog.show();
+        }
+        mProgressDialog.setMessage(message);
     }
 
     @Override
     protected void onCancelled() {
-        // Detach from progress tracker
         mProgressTracker = null;
     }
 

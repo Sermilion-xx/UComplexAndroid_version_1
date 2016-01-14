@@ -65,7 +65,7 @@ public class FetchSubjectsTask extends AsyncTask<Void, String, ArrayList<Triplet
     @Nullable
     private ArrayList<Triplet<String, String, Integer>> getSubjectDataFromJson(String jsonData){
         subjectsListArray = new ArrayList<>();
-        JSONObject subjectsJson = null;
+        JSONObject subjectsJson;
         try {
             subjectsJson = new JSONObject(jsonData);
             JSONObject courses = subjectsJson.getJSONObject("courses");

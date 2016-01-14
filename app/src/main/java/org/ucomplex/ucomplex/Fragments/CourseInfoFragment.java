@@ -30,6 +30,7 @@ import org.ucomplex.ucomplex.R;
 
 import java.text.DecimalFormat;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
 
@@ -56,10 +57,15 @@ public class CourseInfoFragment extends Fragment implements OnTaskCompleteListen
     TextView userPositionTextView;
     TextView userIconTextView2;
     TextView userPositionTextView2;
+    ArrayList<View> views = new ArrayList<>();
 
     Button messageButton;
     Button friendButton;
     Button blacklistButton;
+
+    public CourseInfoFragment() {
+        // Required empty public constructor
+    }
 
     public void setPerson(int person) {
         this.person = person;
@@ -81,13 +87,12 @@ public class CourseInfoFragment extends Fragment implements OnTaskCompleteListen
         this.mContext = mContext;
     }
 
-    public CourseInfoFragment() {
-        // Required empty public constructor
-    }
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
     }
 
     @Override
@@ -151,8 +156,32 @@ public class CourseInfoFragment extends Fragment implements OnTaskCompleteListen
         averageMarksView = (TextView) rootView.findViewById(R.id.course_info_course_average_mark_value);
         attendanceView = (TextView) rootView.findViewById(R.id.course_info_course_attendance_value);
 
+        views.add(userImageView);
+        views.add(userNameView);
+        views.add(courseNameView);
+        views.add(departmentNameView);
+        views.add(averageMarksView);
+        views.add(attendanceView);
+        views.add(departmentNameLabelView);
+        views.add(atSignIconTextView);
+        views.add(mailTextView);
+        views.add(userIconTextView);
+        views.add(userPositionTextView);
+        views.add(userIconTextView2);
+        views.add(userPositionTextView2);
+        views.add(messageButton);
+        views.add(friendButton);
+        views.add(blacklistButton);
+
+        for(View view:views){
+            view.setVisibility(View.GONE);
+        }
+
         Bundle bundle = this.getArguments();
         if(bundle!=null || courseData!=null){
+            for(View view:views){
+                view.setVisibility(View.VISIBLE);
+            }
             if (bundle != null && bundle.containsKey("courseData")) {
                 if(this.bitmap == null) {
                     new AsyncTask<Void, Void, Void>() {
@@ -203,11 +232,13 @@ public class CourseInfoFragment extends Fragment implements OnTaskCompleteListen
                     }
                 }
                 if (user == null) {
-                    //fetch data about person
-                    FetchPersonTask fetchPersonTask = new FetchPersonTask(getActivity(), this);
-                    fetchPersonTask.setPerson(String.valueOf(person));
-                    fetchPersonTask.setmContext(mContext);
-                    fetchPersonTask.setupTask();
+                    if(mContext!=null){
+                        //fetch data about person
+                        FetchPersonTask fetchPersonTask = new FetchPersonTask(getActivity(), this);
+                        fetchPersonTask.setPerson(String.valueOf(person));
+                        fetchPersonTask.setmContext(mContext);
+                        fetchPersonTask.setupTask();
+                    }
                 }else{
                     fillUserInfo();
                 }
@@ -313,6 +344,9 @@ public class CourseInfoFragment extends Fragment implements OnTaskCompleteListen
             user = (User) task.get();
 
             if(user != null) {
+                for(View view:views){
+                    view.setVisibility(View.VISIBLE);
+                }
                 fillUserInfo();
             }else{
                 Toast.makeText(getActivity(), "Ошибка при загрузке пользователя!", Toast.LENGTH_SHORT).show();

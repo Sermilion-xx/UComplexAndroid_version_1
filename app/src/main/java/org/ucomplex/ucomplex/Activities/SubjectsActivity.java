@@ -1,6 +1,5 @@
 package org.ucomplex.ucomplex.Activities;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -24,9 +23,7 @@ import java.util.concurrent.ExecutionException;
 
 public class SubjectsActivity extends AppCompatActivity implements OnTaskCompleteListener {
 
-
     private ArrayList<Triplet<String, String, Integer>> mItems;
-    ProgressDialog dialog;
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -41,8 +38,6 @@ public class SubjectsActivity extends AppCompatActivity implements OnTaskComplet
     @Override
     protected void onResume() {
         super.onResume();
-        if(dialog!=null)
-            dialog.dismiss();
     }
 
     @Override
@@ -84,9 +79,6 @@ public class SubjectsActivity extends AppCompatActivity implements OnTaskComplet
                         Bundle extras = new Bundle();
                         extras.putInt("gcourse", mItems.get(position).getValue2());
                         intent.putExtras(extras);
-//                        dialog = ProgressDialog.show(SubjectsActivity.this, "",
-//                                "Загружаются данные", true);
-//                        dialog.show();
                         startActivity(intent);
 
                     }
