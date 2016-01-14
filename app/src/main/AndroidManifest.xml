@@ -106,6 +106,7 @@
             android:screenOrientation="portrait"/>
         <activity
             android:name=".Activities.MessagesActivity"
+            android:launchMode="singleTop"
             android:label="@string/title_activity_message"
             android:theme="@style/AppTheme"
             android:screenOrientation="portrait"/>

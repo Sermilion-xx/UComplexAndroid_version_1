@@ -1,9 +1,7 @@
 package org.ucomplex.ucomplex.Activities;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -11,7 +9,6 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -42,8 +39,7 @@ public class MyFilesActivity extends AppCompatActivity implements OnTaskComplete
     boolean first = true;
     CourseMaterialsFragment courseMaterialsFragment;
     ProgressDialog dialog;
-    private static int GALLERY_INTENT_CALLED = 0;
-    private static int GALLERY_KITKAT_INTENT_CALLED = 1;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,12 +71,12 @@ public class MyFilesActivity extends AppCompatActivity implements OnTaskComplete
                     Intent intent = new Intent();
                     intent.setType("*/*");
                     intent.setAction(Intent.ACTION_GET_CONTENT);
-                    startActivityForResult(Intent.createChooser(intent, "Выберите документ"),GALLERY_INTENT_CALLED);
+                    startActivityForResult(Intent.createChooser(intent, "Выберите документ"),Common.GALLERY_INTENT_CALLED);
                 } else {
                     Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
                     intent.addCategory(Intent.CATEGORY_OPENABLE);
                     intent.setType("*/*");
-                    startActivityForResult(intent, GALLERY_KITKAT_INTENT_CALLED);
+                    startActivityForResult(intent, Common.GALLERY_KITKAT_INTENT_CALLED);
                 }
                 return true;
             case R.id.my_files_add_folder:
@@ -173,31 +169,15 @@ public class MyFilesActivity extends AppCompatActivity implements OnTaskComplete
 
 
 
-    private void showFileChooser() {
-        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.setType("*/*");
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
-
-        try {
-            startActivityForResult(
-                    Intent.createChooser(intent, "Выберите файл для загрузки"),
-                    Common.FILE_SELECT_CODE);
-        } catch (android.content.ActivityNotFoundException ex) {
-            // Potentially direct the user to the Market with a Dialog
-            Toast.makeText(this, "Файловый менеджер не установлен.",
-                    Toast.LENGTH_SHORT).show();
-        }
-    }
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode != Activity.RESULT_OK) return;
         if (null == data) return;
         Uri originalUri = null;
-        if (requestCode == GALLERY_INTENT_CALLED) {
+        if (requestCode == Common.GALLERY_INTENT_CALLED) {
             originalUri = data.getData();
-        } else if (requestCode == GALLERY_KITKAT_INTENT_CALLED) {
+        } else if (requestCode == Common.GALLERY_KITKAT_INTENT_CALLED) {
             originalUri = data.getData();
             this.grantUriPermission("org.ucomplex.ucomplex.Activities", originalUri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
         }

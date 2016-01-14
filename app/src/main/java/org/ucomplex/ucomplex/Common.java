@@ -68,6 +68,8 @@ public class Common {
     public static final int FILE_SELECT_CODE = 0;
     public static String folderCode;
     public static int userListChanged = -1;
+    public static int GALLERY_INTENT_CALLED = 0;
+    public static int GALLERY_KITKAT_INTENT_CALLED = 1;
 
     public static int getColor(int index) {
         String [] hexColors = {"#f6a6c1","#92d6eb","#4dd9e2","#68d9f0","#c69ad9","#ff83b6","#fda79d","#f8c092",
@@ -77,10 +79,10 @@ public class Common {
 
 
 
-    public static void sendFile(String path, String companion, String msg, String auth){
+    public static String sendFile(String path, String companion, String msg, String auth){
         try{
             File file = new File(path);
-            HttpPost httpPost = new HttpPost("http://you.com.ru/user/messages/add/");
+            HttpPost httpPost = new HttpPost("http://you.com.ru/user/messages/add?mobile=1");
             final byte[] authBytes = auth.getBytes("UTF-8");
             int flags = Base64.NO_WRAP | Base64.URL_SAFE;
             final String encoded = Base64.encodeToString(authBytes, flags);
@@ -110,11 +112,19 @@ public class Common {
             InputStream content = response.getEntity().getContent();
             BufferedReader reader = new BufferedReader(
                     new InputStreamReader(content));
-            response.getEntity().consumeContent();
-            System.out.println();
+            BufferedReader rd = new BufferedReader(new InputStreamReader(content));
+            String line;
+            StringBuilder responseBuilder = new StringBuilder();
+            while ((line = rd.readLine()) != null) {
+                responseBuilder.append(line);
+                responseBuilder.append('\r');
+            }
+            rd.close();
+            return responseBuilder.toString();
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return null;
     }
 
     public static String uploadFile(String path, String auth, String ... folder){
@@ -202,28 +212,6 @@ public class Common {
         }
         return null;
     }
-
-    public static byte[] fileToByte(String filePath){
-        File file = new File(filePath);
-        try {
-            FileInputStream fis = new FileInputStream(file);
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            byte[] buf = new byte[1024];
-            try {
-                for (int readNum; (readNum = fis.read(buf)) != -1;) {
-                    bos.write(buf, 0, readNum);
-                    System.out.println("read " + readNum + " bytes,");
-                }
-            } catch (IOException ignored) {}
-
-            return bos.toByteArray();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
 
     @SafeVarargs
     @Nullable

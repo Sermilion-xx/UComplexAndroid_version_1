@@ -1,21 +1,31 @@
 package org.ucomplex.ucomplex.Activities;
 
+import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import org.apache.http.entity.mime.content.ByteArrayBody;
 import org.ucomplex.ucomplex.Activities.Tasks.FetchMessagesTask;
+import org.ucomplex.ucomplex.Activities.Tasks.FetchMyFilesTask;
 import org.ucomplex.ucomplex.Interfaces.OnTaskCompleteListener;
 import org.ucomplex.ucomplex.Activities.Tasks.UploadPhotoTask;
 import org.ucomplex.ucomplex.Adaptors.MessagesAdapter;
@@ -67,38 +77,15 @@ public class MessagesActivity extends AppCompatActivity implements OnTaskComplet
                             fetchNewMessagesTask.setType(1);
                             final String message = messageTextView.getText().toString();
                             if(file){
-                                new AsyncTask<String,Void,Void>(){
-                                    @Override
-                                    protected Void doInBackground(String... params) {
-                                        Common.sendFile(filePath, companion, message, params[0]);
-                                        return null;
-                                    }
-                                    @Override
-                                    protected void onPostExecute(Void aVoid) {
-                                        super.onPostExecute(aVoid);
-                                    }
-                                }.execute(Common.getLoginDataFromPref(MessagesActivity.this));
+                                String[] splitFilename = filePath.split("/");
+                                String filename = splitFilename[splitFilename.length-1];
+                                fetchNewMessagesTask.setupTask(filePath, companion,filename, message);
                             }else{
                                 fetchNewMessagesTask.setupTask(companion, messageTextView.getText().toString());
                             }
-
-//                            Message messageObj  = new Message();
-//                            messageObj.setFrom(Common.getUserDataFromPref(MessagesActivity.this).getPerson());
-//                            messageObj.setMessage(message);
-//                            messageObj.setName(name);
-//                            messageObj.setStatus(0);
-//                            DateFormat dateFormat = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss");
-//                            Date date = new Date();
-//                            messageObj.setTime(dateFormat.format(date));
-//                            messageArrayList.add(messageObj);
-//                            messagesAdapter.notifyDataSetChanged();
-//                            messagesAdapter = new MessagesAdapter(MessagesActivity.this, messageArrayList);
-//                            listView.setAdapter(messagesAdapter);
                             scrollMyListViewToBottom();
                         }
                     });
-
-
                     Button sendFileButton = (Button) findViewById(R.id.messages_file_button);
                     sendFileButton.setOnClickListener(new View.OnClickListener() {
                         public void onClick(View v) {
@@ -106,16 +93,16 @@ public class MessagesActivity extends AppCompatActivity implements OnTaskComplet
                             showFileChooser();
                         }
                     });
-                    new Timer().scheduleAtFixedRate(new TimerTask() {
-                        @Override
-                        public void run() {
-                            if(fetchNewMessagesTask==null) {
-                                fetchNewMessagesTask = new FetchMessagesTask(MessagesActivity.this, MessagesActivity.this);
-                                fetchNewMessagesTask.setType(2);
-                                fetchNewMessagesTask.setupTask(companion);
-                            }
-                        }
-                    }, 0, 3000);
+//                    new Timer().scheduleAtFixedRate(new TimerTask() {
+//                        @Override
+//                        public void run() {
+//                            if(fetchNewMessagesTask==null) {
+//                                fetchNewMessagesTask = new FetchMessagesTask(MessagesActivity.this, MessagesActivity.this);
+//                                fetchNewMessagesTask.setType(2);
+//                                fetchNewMessagesTask.setupTask(companion);
+//                            }
+//                        }
+//                    }, 0, 3000);
     }
 
     private void scrollMyListViewToBottom() {
@@ -143,30 +130,39 @@ public class MessagesActivity extends AppCompatActivity implements OnTaskComplet
         }
     }
 
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
             case Common.FILE_SELECT_CODE:
                 if (resultCode == RESULT_OK) {
-                    Uri uri = data.getData();
-                    Log.d("", "File Uri: " + uri.toString());
-                    String path = null;
-                    try {
-                        path = Common.getPath(this, uri);
-                    } catch (URISyntaxException e) {
-                        e.printStackTrace();
+                    super.onActivityResult(requestCode, resultCode, data);
+                    if (null == data) return;
+                    Uri originalUri = null;
+                    if (requestCode == Common.GALLERY_INTENT_CALLED) {
+                        originalUri = data.getData();
+                    } else if (requestCode == Common.GALLERY_KITKAT_INTENT_CALLED) {
+                        originalUri = data.getData();
+                        this.grantUriPermission("org.ucomplex.ucomplex.Activities", originalUri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
                     }
-                    Log.d("", "File Path: " + path);
-                    filePath = path;
-                    byte[] fileByte = Common.fileToByte(path);
-                    if (fileByte != null) {
-                        contentBody = new ByteArrayBody(fileByte, "filename");
-                    }
-
+                    filePath = getPath(originalUri);
+//                    byte[] fileByte = Common.fileToByte(filePath);
+//                    if (fileByte != null) {
+//                        contentBody = new ByteArrayBody(fileByte, "filename");
+//                    }
+                    this.revokeUriPermission(originalUri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
                 }
                 break;
         }
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    public String getPath(Uri uri) {
+        String[] projection = { MediaStore.Images.Media.DATA };
+        Cursor cursor = managedQuery(uri, projection, null, null, null);
+        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+        cursor.moveToFirst();
+        return cursor.getString(column_index);
     }
 
     @Override
@@ -191,24 +187,25 @@ public class MessagesActivity extends AppCompatActivity implements OnTaskComplet
                         }
                     } else if (fmt.getType() == 1 || fmt.getType() == 2) {
                         LinkedList result = (LinkedList) task.get();
-
-                        int cycles = 0;
-                        if(result.size()>0) {
-                            if (result.get(result.size() - 1) instanceof Bitmap) {
-                                cycles = result.size() - 1;
-                            } else {
-                                cycles = result.size();
-                            }
-                        }
-
-                        if (cycles > 0) {
-                            messageArrayList.addLast((Message) result.get(0));
+                        if (result!=null) {
+                            int cycles = 0;
                             if (result.size() > 0) {
-                                messagesAdapter.notifyDataSetChanged();
-                                listView.setSelection(messagesAdapter.getCount() - 1);
-                            } else {
-                                Toast.makeText(this, "Ошибка при отправке сообщения", Toast.LENGTH_LONG)
-                                        .show();
+                                if (result.get(result.size() - 1) instanceof Bitmap) {
+                                    cycles = result.size() - 1;
+                                } else {
+                                    cycles = result.size();
+                                }
+                            }
+
+                            if (cycles > 0) {
+                                messageArrayList.addLast((Message) result.get(0));
+                                if (result.size() > 0) {
+                                    messagesAdapter.notifyDataSetChanged();
+                                    listView.setSelection(messagesAdapter.getCount() - 1);
+                                } else {
+                                    Toast.makeText(this, "Ошибка при отправке сообщения", Toast.LENGTH_LONG)
+                                            .show();
+                                }
                             }
                         }
                     }
@@ -219,5 +216,15 @@ public class MessagesActivity extends AppCompatActivity implements OnTaskComplet
                 }
 
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
