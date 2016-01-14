@@ -10,12 +10,15 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
-
+        tools:node="replace"
 
         android:name=".UILApplication"
         android:allowBackup="true"
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
+
+        <activity android:name="com.nbsp.materialfilepicker.ui.FilePickerActivity"
+            android:label="Выберите файл" />
         <activity
             android:name=".Activities.EventsActivity"
             android:label="@string/app_name" />
@@ -54,6 +57,7 @@
             android:theme="@style/AppTheme" />
         <activity
             android:name=".Activities.MyFilesActivity"
+            android:launchMode="singleTop"
             android:label="@string/title_activity_my_files"
             android:theme="@style/AppTheme" />
         <activity

@@ -1,11 +1,18 @@
 package org.ucomplex.ucomplex.Activities;
 
+import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
@@ -25,7 +32,6 @@ import org.ucomplex.ucomplex.Fragments.CourseMaterialsFragment;
 import org.ucomplex.ucomplex.Model.StudyStructure.File;
 import org.ucomplex.ucomplex.R;
 
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
@@ -36,7 +42,8 @@ public class MyFilesActivity extends AppCompatActivity implements OnTaskComplete
     boolean first = true;
     CourseMaterialsFragment courseMaterialsFragment;
     ProgressDialog dialog;
-    String folderName;
+    private static int GALLERY_INTENT_CALLED = 0;
+    private static int GALLERY_KITKAT_INTENT_CALLED = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,7 +71,17 @@ public class MyFilesActivity extends AppCompatActivity implements OnTaskComplete
                 onBackPressed();
                 return true;
             case R.id.my_files_add_file:
-                showFileChooser();
+                if (Build.VERSION.SDK_INT <19){
+                    Intent intent = new Intent();
+                    intent.setType("*/*");
+                    intent.setAction(Intent.ACTION_GET_CONTENT);
+                    startActivityForResult(Intent.createChooser(intent, "Выберите документ"),GALLERY_INTENT_CALLED);
+                } else {
+                    Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                    intent.addCategory(Intent.CATEGORY_OPENABLE);
+                    intent.setType("*/*");
+                    startActivityForResult(intent, GALLERY_KITKAT_INTENT_CALLED);
+                }
                 return true;
             case R.id.my_files_add_folder:
                 showInputDialog();
@@ -173,21 +190,29 @@ public class MyFilesActivity extends AppCompatActivity implements OnTaskComplete
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (requestCode) {
-            case Common.FILE_SELECT_CODE:
-                if (resultCode == RESULT_OK) {
-                    Uri uri = data.getData();
-                    String path = null;
-
-                    path = uri.getPath();
-//                        path = Common.getPath(this, uri);
-
-                    uplodFile(path);
-                }
-                break;
-        }
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode != Activity.RESULT_OK) return;
+        if (null == data) return;
+        Uri originalUri = null;
+        if (requestCode == GALLERY_INTENT_CALLED) {
+            originalUri = data.getData();
+        } else if (requestCode == GALLERY_KITKAT_INTENT_CALLED) {
+            originalUri = data.getData();
+            this.grantUriPermission("org.ucomplex.ucomplex.Activities", originalUri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        }
+        if (originalUri != null) {
+            uplodFile(getPath(originalUri));
+        }
+        this.revokeUriPermission(originalUri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
+    }
+
+    public String getPath(Uri uri) {
+        String[] projection = { MediaStore.Images.Media.DATA };
+        Cursor cursor = managedQuery(uri, projection, null, null, null);
+        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+        cursor.moveToFirst();
+        return cursor.getString(column_index);
     }
 
     @Override

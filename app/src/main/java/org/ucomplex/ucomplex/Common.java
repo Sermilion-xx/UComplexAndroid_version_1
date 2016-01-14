@@ -123,7 +123,8 @@ public class Common {
     @TargetApi(Build.VERSION_CODES.KITKAT)
     public static String uploadFile(String path, String auth, String ... folder){
         try{
-            File file = new File(new URI(path));
+
+            java.io.File file = new java.io.File(path);
             HttpPost httpPost = new HttpPost("http://you.com.ru/student/my_files/add_files?mobile=1");
             final byte[] authBytes = auth.getBytes(StandardCharsets.UTF_8);
             int flags = Base64.NO_WRAP | Base64.URL_SAFE;
@@ -160,7 +161,7 @@ public class Common {
             String message = builderString.toString();
             response.getEntity().consumeContent();
             return message;
-        } catch (IOException | URISyntaxException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
         return null;
