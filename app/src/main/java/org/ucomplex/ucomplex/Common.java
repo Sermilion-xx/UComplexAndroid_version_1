@@ -1,6 +1,5 @@
 package org.ucomplex.ucomplex;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -48,12 +47,10 @@ import java.io.InputStreamReader;
 
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -79,12 +76,12 @@ public class Common {
     }
 
 
-    @TargetApi(Build.VERSION_CODES.KITKAT)
+
     public static void sendFile(String path, String companion, String msg, String auth){
         try{
             File file = new File(path);
             HttpPost httpPost = new HttpPost("http://you.com.ru/user/messages/add/");
-            final byte[] authBytes = auth.getBytes(StandardCharsets.UTF_8);
+            final byte[] authBytes = auth.getBytes("UTF-8");
             int flags = Base64.NO_WRAP | Base64.URL_SAFE;
             final String encoded = Base64.encodeToString(authBytes, flags);
             httpPost.setHeader("Authorization", "Basic " + encoded);
@@ -120,13 +117,11 @@ public class Common {
         }
     }
 
-    @TargetApi(Build.VERSION_CODES.KITKAT)
     public static String uploadFile(String path, String auth, String ... folder){
         try{
-
             java.io.File file = new java.io.File(path);
             HttpPost httpPost = new HttpPost("http://you.com.ru/student/my_files/add_files?mobile=1");
-            final byte[] authBytes = auth.getBytes(StandardCharsets.UTF_8);
+            final byte[] authBytes = auth.getBytes("UTF-8");
             int flags = Base64.NO_WRAP | Base64.URL_SAFE;
             final String encoded = Base64.encodeToString(authBytes, flags);
             httpPost.setHeader("Authorization", "Basic " + encoded);
@@ -232,7 +227,6 @@ public class Common {
 
     @SafeVarargs
     @Nullable
-    @TargetApi(Build.VERSION_CODES.KITKAT)
     public static String httpPost(String urlString, String auth, HashMap<String, String>... postDataParams) {
         String dataUrlParameters = "";
         try {
@@ -242,7 +236,14 @@ public class Common {
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-        final byte[] authBytes = auth.getBytes(StandardCharsets.UTF_8);
+        byte[] authBytes = null;
+
+        try {
+            authBytes = auth.getBytes("UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
         int flags = Base64.NO_WRAP | Base64.URL_SAFE;
         final String encoded = Base64.encodeToString(authBytes, flags);
         try {

@@ -54,19 +54,17 @@ public class CourseActivity extends AppCompatActivity implements OnTaskCompleteL
         toolbar.setTitle("");
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        dialog = ProgressDialog.show(CourseActivity.this, "","Загрузка данных", true);
-        dialog.show();
 
         Bundle extras = getIntent().getExtras();
         this.gcourse = extras.getInt("gcourse", -1);
 
-            FetchMySubjectsTask fetchMySubjectsTask = new FetchMySubjectsTask(this, this);
-            fetchMySubjectsTask.setmContext(this);
-            fetchMySubjectsTask.setGcourse(this.gcourse);
-            fetchMySubjectsTask.setupTask();
+        FetchMySubjectsTask fetchMySubjectsTask = new FetchMySubjectsTask(this, this);
+        fetchMySubjectsTask.setmContext(this);
+        fetchMySubjectsTask.setGcourse(this.gcourse);
+        fetchMySubjectsTask.setupTask();
 
-            FetchCalendarBeltTask fetchCalendarBeltTask = new FetchCalendarBeltTask(this, this);
-            fetchCalendarBeltTask.setupTask(this.gcourse);
+        FetchCalendarBeltTask fetchCalendarBeltTask = new FetchCalendarBeltTask(this, this);
+        fetchCalendarBeltTask.setupTask(this.gcourse);
 
         viewPager = (ViewPager) findViewById(R.id.viewpager);
         tabLayout = (TabLayout) findViewById(R.id.tabs);
@@ -99,7 +97,6 @@ public class CourseActivity extends AppCompatActivity implements OnTaskCompleteL
         Bundle cmBundel = new Bundle();
         cmBundel.putSerializable("courseData",coursedata);
         courseInfoFragment.setArguments(cmBundel);
-
 
         if(courseMaterialsFragment==null) {
             courseMaterialsFragment = new CourseMaterialsFragment();
@@ -145,7 +142,6 @@ public class CourseActivity extends AppCompatActivity implements OnTaskCompleteL
                 }else if(task instanceof FetchMySubjectsTask){
                     try {
                         this.coursedata = (Course) task.get();
-                        dialog.dismiss();
                         toolbar.setTitle(coursedata.getName());
                         setupViewPager(viewPager);
                         tabLayout.setupWithViewPager(viewPager);

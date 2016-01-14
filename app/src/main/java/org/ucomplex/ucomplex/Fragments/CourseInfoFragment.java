@@ -154,18 +154,23 @@ public class CourseInfoFragment extends Fragment implements OnTaskCompleteListen
         Bundle bundle = this.getArguments();
         if(bundle!=null || courseData!=null){
             if (bundle != null && bundle.containsKey("courseData")) {
-                new AsyncTask<Void,Void,Void>(){
-                    @Override
-                    protected void onPostExecute(Void aVoid) {
-                        super.onPostExecute(aVoid);
-                        userImageView.setImageBitmap(bitmap);
-                    }
-                    @Override
-                    protected Void doInBackground(Void... params) {
-                        bitmap = Common.getBitmapFromURL(courseData.getTeacher(0).getCode());
-                        return null;
-                    }
-                }.execute();
+                if(this.bitmap == null) {
+                    new AsyncTask<Void, Void, Void>() {
+                        @Override
+                        protected void onPostExecute(Void aVoid) {
+                            super.onPostExecute(aVoid);
+                            userImageView.setImageBitmap(bitmap);
+                        }
+
+                        @Override
+                        protected Void doInBackground(Void... params) {
+                            bitmap = Common.getBitmapFromURL(courseData.getTeacher(0).getCode());
+                            return null;
+                        }
+                    }.execute();
+                }else {
+                    userImageView.setImageBitmap(bitmap);
+                }
                 courseData = (Course) bundle.getSerializable("courseData");
                 if (courseData != null) {
                     if (courseData.getDepartment().getId() == -1) {

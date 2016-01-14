@@ -42,7 +42,7 @@ public class SubjectsActivity extends AppCompatActivity implements OnTaskComplet
     protected void onResume() {
         super.onResume();
         if(dialog!=null)
-            dialog.dismiss();;
+            dialog.dismiss();
     }
 
     @Override
@@ -84,9 +84,9 @@ public class SubjectsActivity extends AppCompatActivity implements OnTaskComplet
                         Bundle extras = new Bundle();
                         extras.putInt("gcourse", mItems.get(position).getValue2());
                         intent.putExtras(extras);
-                        dialog = ProgressDialog.show(SubjectsActivity.this, "",
-                                "Загружаются данные", true);
-                        dialog.show();
+//                        dialog = ProgressDialog.show(SubjectsActivity.this, "",
+//                                "Загружаются данные", true);
+//                        dialog.show();
                         startActivity(intent);
 
                     }

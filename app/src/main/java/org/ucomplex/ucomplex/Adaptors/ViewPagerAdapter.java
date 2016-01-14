@@ -1,6 +1,5 @@
 package org.ucomplex.ucomplex.Adaptors;
 
-import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -15,11 +14,9 @@ public class ViewPagerAdapter extends FragmentStatePagerAdapter {
 
     private List<Fragment> mFragmentList = new ArrayList<>();
     private List<String> mFragmentTitleList = new ArrayList<>();
-    private FragmentManager mFragmentManager;
 
     public ViewPagerAdapter(FragmentManager manager) {
         super(manager);
-        mFragmentManager = manager;
     }
 
 
