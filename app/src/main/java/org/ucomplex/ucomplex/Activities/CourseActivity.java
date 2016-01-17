@@ -78,17 +78,17 @@ public class CourseActivity extends AppCompatActivity implements OnTaskCompleteL
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                    if(courseMaterialsFragment.getLevel()>0){
-                        courseMaterialsFragment.levelDown();
-                        courseMaterialsFragment.getmItems().clear();
-                        ArrayList<File> newFiles = new ArrayList<>(courseMaterialsFragment.getStackFiles().get(courseMaterialsFragment.getLevel()));
-                        courseMaterialsFragment.getmItems().addAll(newFiles);
-                        courseMaterialsFragment.getAdapter().notifyDataSetChanged();
-                        return true;
-                    } else {
-                        onBackPressed();
-                        return true;
-                    }
+                if(courseMaterialsFragment.getLevel()>0){
+                    courseMaterialsFragment.levelDown();
+                    courseMaterialsFragment.getmItems().clear();
+                    ArrayList<File> newFiles = new ArrayList<>(courseMaterialsFragment.getStackFiles().get(courseMaterialsFragment.getLevel()));
+                    courseMaterialsFragment.getmItems().addAll(newFiles);
+                    courseMaterialsFragment.getAdapter().notifyDataSetChanged();
+                    return true;
+                } else {
+                    onBackPressed();
+                    return true;
+                }
         }
         return super.onOptionsItemSelected(item);
     }

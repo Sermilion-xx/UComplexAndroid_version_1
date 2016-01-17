@@ -161,8 +161,10 @@ public class MyFilesActivity extends AppCompatActivity implements OnTaskComplete
             protected void onPostExecute(ArrayList newFile) {
                 super.onPostExecute(newFile);
                 dialog.dismiss();
-                courseMaterialsFragment.addFile((File) newFile.get(0));
-                courseMaterialsFragment.getAdapter().notifyDataSetChanged();
+                if(courseMaterialsFragment!=null) {
+                    courseMaterialsFragment.addFile((File) newFile.get(0));
+                    courseMaterialsFragment.getAdapter().notifyDataSetChanged();
+                }
             }
         }.execute();
     }
