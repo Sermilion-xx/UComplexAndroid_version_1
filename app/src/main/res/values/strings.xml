@@ -71,5 +71,12 @@
     <string name="menu_delete_str">Удалить</string>
     <string name="dialog_enter_name_str">Введите название</string>
     <string name="search_str">Поиск</string>
+    <string name="title_activity_role_select">Выберите роль</string>
+    <string name="student_str">Студент</string>
+    <string name="role_tow_str">Вторая роль</string>
+    <string name="role_one_str">Первая роль</string>
+    <string name="third_role_str">Третья роль</string>
+    <string name="logout_str">Выйти</string>
+
 
 </resources>

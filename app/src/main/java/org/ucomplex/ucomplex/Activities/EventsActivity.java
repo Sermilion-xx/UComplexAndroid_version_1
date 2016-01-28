@@ -1,7 +1,6 @@
 package org.ucomplex.ucomplex.Activities;
 
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -16,27 +15,26 @@ import android.view.MenuItem;
 import android.view.View;
 
 import org.ucomplex.ucomplex.Activities.Tasks.FetchUserEventsTask;
-import org.ucomplex.ucomplex.Activities.Tasks.FetchUserLoginTask;
-import org.ucomplex.ucomplex.Interfaces.OnTaskCompleteListener;
+import org.ucomplex.ucomplex.Activities.Tasks.LoginTask;
 import org.ucomplex.ucomplex.Adaptors.MenuAdapter;
 import org.ucomplex.ucomplex.Common;
 import org.ucomplex.ucomplex.Fragments.EventsFragment;
+import org.ucomplex.ucomplex.Interfaces.OnTaskCompleteListener;
 import org.ucomplex.ucomplex.Model.EventRowItem;
-import org.ucomplex.ucomplex.Model.Users.Student;
 import org.ucomplex.ucomplex.Model.Users.User;
 import org.ucomplex.ucomplex.R;
 
 import java.util.ArrayList;
 
-public class EventsActivity extends AppCompatActivity implements OnTaskCompleteListener, FetchUserLoginTask.AsyncResponse{
+public class EventsActivity extends AppCompatActivity implements OnTaskCompleteListener, LoginTask.AsyncResponse {
 
     ArrayList eventsArray = null;
     FetchUserEventsTask mEventsTask = null;
     User user;
     ProgressDialog dialog;
 
-    final String[] TITLES = { "События", "Анкетирование", "Дисциплины", "Материалы", "Справки","Пользователи","Сообщения","Библиотека","Календарь","Настройки", "Выход" };
-    final int[] ICONS = { R.drawable.ic_menu_event,
+    final String[] TITLES = {"События", "Анкетирование", "Дисциплины", "Материалы", "Справки", "Пользователи", "Сообщения", "Библиотека", "Календарь", "Настройки", "Выход"};
+    final int[] ICONS = {R.drawable.ic_menu_event,
             R.drawable.ic_menu_questionare,
             R.drawable.ic_menu_materials,
             R.drawable.ic_menu_subject,
@@ -55,15 +53,15 @@ public class EventsActivity extends AppCompatActivity implements OnTaskCompleteL
     ActionBarDrawerToggle mDrawerToggle;                  // Declaring Action Bar Drawer Toggle
 
 
-    private void refresh(){
+    private void refresh() {
         dialog = ProgressDialog.show(this, "",
                 "Обновляется", true);
         dialog.show();
         user = Common.getUserDataFromPref(this);
-        FetchUserLoginTask fetchUserLoginTask = new FetchUserLoginTask(user.getLogin(), user.getPass(), EventsActivity.this);
-        fetchUserLoginTask.delegate = this;
-        fetchUserLoginTask.execute();
-        mEventsTask = new FetchUserEventsTask(this){
+        LoginTask loginTask = new LoginTask(user.getLogin(), user.getPass(), EventsActivity.this);
+        loginTask.delegate = this;
+        loginTask.execute();
+        mEventsTask = new FetchUserEventsTask(this) {
             @Override
             protected void onPostExecute(ArrayList<EventRowItem> items) {
                 super.onPostExecute(items);
@@ -73,7 +71,7 @@ public class EventsActivity extends AppCompatActivity implements OnTaskCompleteL
         };
         mEventsTask.execute();
 
-        new FetchUserEventsTask(this){
+        new FetchUserEventsTask(this) {
             @Override
             protected void onPostExecute(ArrayList<EventRowItem> items) {
                 super.onPostExecute(items);
@@ -102,12 +100,12 @@ public class EventsActivity extends AppCompatActivity implements OnTaskCompleteL
         user = Common.getUserDataFromPref(this);
 
         Bitmap bmp;
-        if(Common.hasKeyPref(this, "profilePhoto")){
-            bmp = Common.decodePhotoPref(this,"profilePhoto");
+        if (Common.hasKeyPref(this, "profilePhoto")) {
+            bmp = Common.decodePhotoPref(this, "profilePhoto");
             user.setPhotoBitmap(bmp);
         }
 
-        mEventsTask = (FetchUserEventsTask) new FetchUserEventsTask(this){
+        mEventsTask = (FetchUserEventsTask) new FetchUserEventsTask(this) {
             @Override
             protected void onPostExecute(ArrayList<EventRowItem> items) {
                 super.onPostExecute(items);
@@ -118,12 +116,12 @@ public class EventsActivity extends AppCompatActivity implements OnTaskCompleteL
                 data.putSerializable("eventItems", eventsArray);
                 fragment.setArguments(data);
                 getFragmentManager().beginTransaction()
-                            .replace(R.id.container, fragment)
-                            .commit();
+                        .replace(R.id.container, fragment)
+                        .commit();
                 dialog.dismiss();
             }
 
-        }.execute();
+        }.execute(user.getType());
         dialog = ProgressDialog.show(this, "",
                 "Загружаются события", true);
         dialog.show();
@@ -135,18 +133,19 @@ public class EventsActivity extends AppCompatActivity implements OnTaskCompleteL
 
         mRecyclerView = (RecyclerView) findViewById(R.id.RecyclerView);
         mRecyclerView.setHasFixedSize(true);
-        mAdapter = new MenuAdapter(TITLES,ICONS, user, this);
+        mAdapter = new MenuAdapter(TITLES, ICONS, user, this);
         mRecyclerView.setAdapter(mAdapter);
         mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
         Drawer = (DrawerLayout) findViewById(R.id.DrawerLayout);
 
-        mDrawerToggle = new ActionBarDrawerToggle(this,Drawer, toolbar,R.string.openDrawer,R.string.closeDrawer){
+        mDrawerToggle = new ActionBarDrawerToggle(this, Drawer, toolbar, R.string.openDrawer, R.string.closeDrawer) {
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
 
             }
+
             @Override
             public void onDrawerClosed(View drawerView) {
                 super.onDrawerClosed(drawerView);
@@ -181,18 +180,19 @@ public class EventsActivity extends AppCompatActivity implements OnTaskCompleteL
     }
 
     @Override
-    public void processFinish(Student output, Bitmap  bitmap) {
-        if(output!=null) {
+    public void processFinish(User output, Bitmap bitmap) {
+        if (output != null) {
             Common.setUserDataToPref(this, output);
             mAdapter.setProfileBitmap(bitmap);
-            if(bitmap!=null){
-                Common.encodePhotoPref(this,bitmap, "profileBitmap");
+            if (bitmap != null) {
+                Common.encodePhotoPref(this, bitmap, "profileBitmap");
                 user.setPhotoBitmap(bitmap);
             }
             mAdapter.notifyDataSetChanged();
 
         }
     }
+
 
     @Override
     public void canceled(boolean canceled) {

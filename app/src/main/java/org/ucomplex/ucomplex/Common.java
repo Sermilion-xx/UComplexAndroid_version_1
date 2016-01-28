@@ -423,7 +423,7 @@ public class Common {
         Gson gson = new Gson();
         String json = pref.getString("loggedUser", "");
         User obj = gson.fromJson(json, User.class);
-        return obj.getLogin()+":"+obj.getPass()+":"+obj.getRoles().get(0).getId();
+        return obj.getLogin()+":"+obj.getPass()+":"+obj.getId();
     }
 
     public static User getUserDataFromPref(Context mContext){

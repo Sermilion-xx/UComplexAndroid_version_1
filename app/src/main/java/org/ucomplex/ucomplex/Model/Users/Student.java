@@ -8,7 +8,6 @@ import java.io.Serializable;
  * Created by Sermilion on 04/12/2015.
  */
 public class Student extends User implements Serializable{
-    private String session;
     private Progress progress;
     private String alias;
     private int group;
@@ -83,13 +82,7 @@ public class Student extends User implements Serializable{
     }
 
 
-    public String getSession() {
-        return session;
-    }
 
-    public void setSession(String session) {
-        this.session = session;
-    }
 
 
 }

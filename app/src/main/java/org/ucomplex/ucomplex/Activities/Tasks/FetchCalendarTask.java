@@ -45,14 +45,18 @@ public class FetchCalendarTask extends AsyncTask<String, String, UCCalendar> {
 
     @Override
     protected UCCalendar doInBackground(String... params) {
-
-        String urlString = "http://you.com.ru/student/ajax/calendar?json";
+        String urlString = "";
+        if(params[0].equals("3")){
+            urlString = "http://you.com.ru/teacher/ajax/calendar?json";
+        }else if(params[0].equals("4")){
+            urlString = "http://you.com.ru/student/ajax/calendar?json";
+        }
         HashMap<String, String> postParams;
         String jsonData;
-        if(params.length>0){
+        if(params.length>1){
             postParams = new HashMap<>();
-            postParams.put("month", String.valueOf(params[0]));
-            postParams.put("time", String.valueOf(params[1]));
+            postParams.put("month", String.valueOf(params[1]));
+            postParams.put("time", String.valueOf(params[2]));
             jsonData = Common.httpPost(urlString, Common.getLoginDataFromPref(mContext),postParams);
         } else {
             jsonData = Common.httpPost(urlString, Common.getLoginDataFromPref(mContext));
@@ -101,12 +105,14 @@ public class FetchCalendarTask extends AsyncTask<String, String, UCCalendar> {
 
             calendar.setYear(calendarJson.getString("year"));
             calendar.setMonth(calendarJson.getString("month"));
-            calendar.setDay(calendarJson.getString("day"));
-            calendar.setPre_month(calendarJson.getString("pre_month"));
-            calendar.setNext_month(calendarJson.getString("next_month"));
-            calendar.setGroup(calendarJson.getString("group"));
-            calendar.setSubgroup(calendarJson.getString("subgroup"));
-            calendar.setCourse(calendarJson.getString("course"));
+            try {
+                calendar.setDay(calendarJson.getString("day"));
+                calendar.setPre_month(calendarJson.getString("pre_month"));
+                calendar.setNext_month(calendarJson.getString("next_month"));
+                calendar.setGroup(calendarJson.getString("group"));
+                calendar.setSubgroup(calendarJson.getString("subgroup"));
+                calendar.setCourse(calendarJson.getString("course"));
+            }catch (JSONException ignored){}
             //Start getting courses
             try {
                 JSONObject coursesObject = calendarJson.getJSONObject("courses");
@@ -147,12 +153,21 @@ public class FetchCalendarTask extends AsyncTask<String, String, UCCalendar> {
 
             //Start getting timetable---------------------------------------------------------------
             JSONObject timetableJson = calendarJson.getJSONObject("timetable");
+
+            JSONObject teachersObject = new JSONObject();
+            JSONObject groupsObject = new JSONObject();
+            try{
+                teachersObject = timetableJson.getJSONObject("teachers");
+            }catch (JSONException ignored){}
+            try{
+                groupsObject = timetableJson.getJSONObject("groups");
+            }catch (JSONException ignored){}
+
             Timetable timetable = new Timetable();
-            JSONObject teachersObject = timetableJson.getJSONObject("teachers");
+
             JSONObject hoursObject = timetableJson.getJSONObject("hours");
             JSONObject roomsObject = timetableJson.getJSONObject("rooms");
             JSONObject subjectsObject = timetableJson.getJSONObject("subjects");
-
 
             ArrayList<String> teachersKeys = Common.getKeys(teachersObject);
             HashMap<String, String> kvTeacher = new HashMap<>();
@@ -160,6 +175,13 @@ public class FetchCalendarTask extends AsyncTask<String, String, UCCalendar> {
                 kvTeacher.put(teachersKeys.get(i),teachersObject.getString(teachersKeys.get(i)));
             }
             timetable.setTeachers(kvTeacher);
+
+            ArrayList<String> groupsKeys = Common.getKeys(groupsObject);
+            HashMap<String, String> kvGroups = new HashMap<>();
+            for(int i=0;i<groupsObject.length();i++){
+                kvGroups.put(groupsKeys.get(i),groupsObject.getString(groupsKeys.get(i)));
+            }
+            timetable.setGroups(kvGroups);
 
             HashMap<String, String> kvHour = new HashMap<>();
             for(int i=1;i<hoursObject.length()+1;i++){

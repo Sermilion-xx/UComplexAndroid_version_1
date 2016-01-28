@@ -5,5 +5,6 @@
     <color name="colorAccent">#7ac9e5</color>
     <color name="uc_dark_menu">#4d5362</color>
     <color name="uc_gray_text">#bbbbbb</color>
+    <color name="uc_button_blue">#8dd3e8</color>
 
 </resources>

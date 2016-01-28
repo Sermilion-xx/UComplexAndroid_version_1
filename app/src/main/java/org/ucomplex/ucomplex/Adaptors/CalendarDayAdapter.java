@@ -12,6 +12,8 @@ import android.widget.TextView;
 import com.amulyakhare.textdrawable.TextDrawable;
 
 import org.javatuples.Quintet;
+import org.ucomplex.ucomplex.Common;
+import org.ucomplex.ucomplex.Model.Users.User;
 import org.ucomplex.ucomplex.R;
 
 import java.util.ArrayList;
@@ -25,7 +27,7 @@ public class CalendarDayAdapter extends ArrayAdapter<Quintet<String,String,Strin
     private final Context context;
     ArrayList values = new ArrayList();
     int separatorPosition=1;
-
+    User user;
 
     private static final int TYPE_MARK_TITLE = 0;
     private static final int TYPE_MARK = 1;
@@ -37,26 +39,45 @@ public class CalendarDayAdapter extends ArrayAdapter<Quintet<String,String,Strin
         super(context, -1, values);
         this.context = context;
         this.values = values;
-        for(Quintet<String,String,String,String, String> item: values){
-            if(item.getValue0().equals("-1")){
-                separatorPosition++;
+        user = Common.getUserDataFromPref(context);
+        if(user.getType() == 3){
+            for (int i = 0; i<values.size(); i++) {
+                if (values.get(i).getValue0().equals("-1") || values.get(i).getValue0().equals("-2")) {
+                    values.remove(values.get(i));
+                }
+            }
+            separatorPosition = 0;
+        }else if(user.getType() == 4){
+            for (Quintet<String, String, String, String, String> item : values) {
+                if (item.getValue0().equals("-1")) {
+                    separatorPosition++;
+                }
             }
         }
     }
 
     @Override
     public int getItemViewType(int position) {
-        if(position==0){
-            return TYPE_MARK_TITLE;
-        }else if(position>0 && position<separatorPosition){
-            return TYPE_MARK;
-        }else if(position==separatorPosition){
-            return TYPE_SUBJECT_TITLE;
-        }else if(position>separatorPosition){
-            return TYPE_SUBJECT;
-        }else{
-            return -1;
+        if(user.getType() == 3){
+            if(position==0){
+                return TYPE_SUBJECT_TITLE;
+            }else{
+                return TYPE_SUBJECT;
+            }
+        }else if(user.getType() == 4){
+            if(position==0){
+                return TYPE_MARK_TITLE;
+            }else if(position>0 && position<separatorPosition){
+                return TYPE_MARK;
+            }else if(position==separatorPosition){
+                return TYPE_SUBJECT_TITLE;
+            }else if(position>separatorPosition){
+                return TYPE_SUBJECT;
+            }else{
+                return -1;
+            }
         }
+        return -1;
     }
 
     @Override

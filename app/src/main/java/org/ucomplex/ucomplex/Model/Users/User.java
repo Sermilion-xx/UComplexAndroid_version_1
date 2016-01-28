@@ -38,6 +38,7 @@ public class User implements Serializable {
     private boolean friendRequested;
     private int position;
     private String positionName;
+    private String session;
     private boolean is_black;
     private boolean me_black;
     private boolean req_sent;
@@ -281,6 +282,14 @@ public class User implements Serializable {
 
     public void setRoles(ArrayList<User> roles) {
         this.roles = roles;
+    }
+
+    public String getSession() {
+        return session;
+    }
+
+    public void setSession(String session) {
+        this.session = session;
     }
 
     protected class BitmapDataObject implements Serializable {

@@ -28,17 +28,19 @@ public class FetchUserEventsTask extends AsyncTask<Integer, Void, ArrayList<Even
         mContext = _context;
     }
 
-    public FetchUserEventsTask(){
-
-    }
 
     @Override
     protected ArrayList<EventRowItem> doInBackground(Integer... params) {
-        String urlString = "http://you.com.ru/student?mobile=1";
-        if(params.length>0){
+        String urlString = "";
+        if(params[0]==4){
+            urlString = "http://you.com.ru/student?mobile=1";
+        }else if(params[0]==3){
+            urlString = "http://you.com.ru/teacher?mobile=1";
+        }
+        if(params.length>1){
             urlString = "http://you.com.ru/user/events?mobile=1";
             HashMap<String, String> httpParams = new HashMap<>();
-            httpParams.put("start", String.valueOf(params[0]));
+            httpParams.put("start", String.valueOf(params[1]));
             jsonData = Common.httpPost(urlString, Common.getLoginDataFromPref(mContext),httpParams);
         }else{
             jsonData = Common.httpPost(urlString, Common.getLoginDataFromPref(mContext));
@@ -57,23 +59,24 @@ public class FetchUserEventsTask extends AsyncTask<Integer, Void, ArrayList<Even
 
     @Override
     protected void onPostExecute(final ArrayList<EventRowItem> items) {
-        String uc_version = Common.connection.getHeaderField("X-UVERSION");
-        if(uc_version!=null){
-            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
-            String uc_version_pref = prefs.getString("X-UVERSION", "");
-            //!uc_version.equals(uc_version_pref)
-            if(!uc_version.equals(uc_version_pref)){
-                FetchLangTask flt = new FetchLangTask();
-                flt.setmContext(mContext);
-                boolean success = false;
-                try {
-                    success = flt.execute().get();
-                } catch (InterruptedException | ExecutionException e) {
-                    e.printStackTrace();
-                }
-                if(success){
-                    Common.X_UVERSION = uc_version;
-                    prefs.edit().putString("X-UVERSION",uc_version).apply();
+        if(Common.connection!=null){
+            String uc_version = Common.connection.getHeaderField("X-UVERSION");
+            if(uc_version!=null){
+                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+                String uc_version_pref = prefs.getString("X-UVERSION", "");
+                if(!uc_version.equals(uc_version_pref)){
+                    FetchLangTask flt = new FetchLangTask();
+                    flt.setmContext(mContext);
+                    boolean success = false;
+                    try {
+                        success = flt.execute().get();
+                    } catch (InterruptedException | ExecutionException e) {
+                        e.printStackTrace();
+                    }
+                    if(success){
+                        Common.X_UVERSION = uc_version;
+                        prefs.edit().putString("X-UVERSION",uc_version).apply();
+                    }
                 }
             }
         }

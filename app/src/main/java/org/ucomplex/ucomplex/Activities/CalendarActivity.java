@@ -23,11 +23,13 @@ import com.prolificinteractive.materialcalendarview.OnMonthChangedListener;
 import org.javatuples.Quintet;
 import org.ucomplex.ucomplex.Activities.Tasks.AsyncTaskManager;
 import org.ucomplex.ucomplex.Activities.Tasks.FetchCalendarTask;
+import org.ucomplex.ucomplex.Common;
 import org.ucomplex.ucomplex.Interfaces.OnTaskCompleteListener;
 import org.ucomplex.ucomplex.Model.Calendar.CalendarDayDecorator;
 import org.ucomplex.ucomplex.Model.Calendar.ChangedDay;
 import org.ucomplex.ucomplex.Model.Calendar.Lesson;
 import org.ucomplex.ucomplex.Model.Calendar.UCCalendar;
+import org.ucomplex.ucomplex.Model.Users.User;
 import org.ucomplex.ucomplex.R;
 
 
@@ -44,6 +46,7 @@ public class CalendarActivity extends AppCompatActivity implements AdapterView.O
     ArrayList<String> options = new ArrayList<>();
     ArrayList<String> keys;
     Spinner spinner;
+    User user;
     private AsyncTaskManager mAsyncTaskManager;
     ArrayList<CalendarDay> checkedMonths = new ArrayList<>();
 
@@ -51,7 +54,7 @@ public class CalendarActivity extends AppCompatActivity implements AdapterView.O
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        user = Common.getUserDataFromPref(this);
         setContentView(R.layout.activity_calendar);
         Toolbar toolbar = (Toolbar) findViewById(R.id.calendar_toolbar);
         toolbar.setTitle("Календарь");
@@ -65,7 +68,7 @@ public class CalendarActivity extends AppCompatActivity implements AdapterView.O
         options.add("Показать все");
         options.add("Все дисциплины");
         options.add("События");
-        mAsyncTaskManager.setupTask(new FetchCalendarTask(context));
+        mAsyncTaskManager.setupTask(new FetchCalendarTask(context), String.valueOf(user.getType()));
         materialCalendarView = (MaterialCalendarView) findViewById(R.id.calendarView);
         materialCalendarView.setOnMonthChangedListener(new OnMonthChangedListener() {
             @Override
@@ -82,7 +85,7 @@ public class CalendarActivity extends AppCompatActivity implements AdapterView.O
                 if (year <= Year) {
 
 //                    if(!checkedMonths.contains(date)){
-                        mAsyncTaskManager.setupTask(new FetchCalendarTask(context),monthStr,dateStr);
+                        mAsyncTaskManager.setupTask(new FetchCalendarTask(context),String.valueOf(user.getType()), monthStr,dateStr);
 //                        checkedMonths.add(date);
 //                    }
                 } else {
@@ -236,7 +239,13 @@ public class CalendarActivity extends AppCompatActivity implements AdapterView.O
                                 if(entrie.get("lessonDay").equals(day)){
                                     String hour = calendar.getTimetable().getHours().get(entrie.get("hour"));
                                     String subjectName = calendar.getTimetable().getSubjects().get(entrie.get("course"));
-                                    String teacher = calendar.getTimetable().getTeachers().get(entrie.get("teacher"));
+                                    String teacher = "";
+                                    if(user.getType()==4){
+                                        teacher = calendar.getTimetable().getTeachers().get(entrie.get("teacher"));
+                                    }else if(user.getType()==3){
+                                        String key = (String) entrie.get("group");
+                                        teacher = calendar.getTimetable().getGroups().get(key);
+                                    }
                                     String room = calendar.getTimetable().getRooms().get(entrie.get("room"));
                                     String type = (String)entrie.get("type");
                                     String info = teacher+", "+" аудитория \""+room+"\"";

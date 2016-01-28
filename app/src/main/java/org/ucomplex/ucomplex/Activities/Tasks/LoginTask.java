@@ -5,16 +5,13 @@ package org.ucomplex.ucomplex.Activities.Tasks;
  */
 
 import android.app.Activity;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
-import android.preference.PreferenceManager;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.ucomplex.ucomplex.Common;
-import org.ucomplex.ucomplex.Model.Users.Student;
 import org.ucomplex.ucomplex.Model.Users.User;
 
 import java.util.ArrayList;
@@ -23,29 +20,29 @@ import java.util.ArrayList;
  * Represents an asynchronous mLogin/registration task used to authenticate
  * the user.
  */
-public class FetchUserLoginTask extends AsyncTask<Void, Void, Student> {
+public class LoginTask extends AsyncTask<Void, Void, User> {
 
     private final String mLogin;
     private final String mPassword;
     Activity mContext;
-    private String jsonData = null;
     Bitmap photoBitmap;
 
     public AsyncResponse delegate = null;
 
-    public FetchUserLoginTask(String email, String password, Activity _context) {
+    public LoginTask(String email, String password, Activity _context) {
         mLogin = email;
         mPassword = password;
         mContext = _context;
     }
 
-    private Student getUserFromJson(String rolesJsonStr) throws JSONException {
+    private User getUserFromJson(String rolesJsonStr) throws JSONException {
 
         ArrayList<User> userRoles = new ArrayList<>();
         JSONObject rolesJson = new JSONObject(rolesJsonStr);
         JSONArray rolesArray = rolesJson.getJSONArray("roles");
+        JSONObject roles = new JSONObject();
         for(int i = 0; i < rolesArray.length(); i++) {
-            JSONObject roles = rolesArray.getJSONObject(i);
+            roles = rolesArray.getJSONObject(i);
             User userRole = new User();
             userRole.setId(roles.getInt("id"));
             userRole.setName(roles.getString("name"));
@@ -53,33 +50,37 @@ public class FetchUserLoginTask extends AsyncTask<Void, Void, Student> {
             userRole.setType(roles.getInt("type"));
             userRoles.add(userRole);
         }
-        JSONObject userSession = rolesJson.getJSONObject("session");
-        Student student = new Student();
 
-        student.setPhoto(userSession.getInt("photo"));
-        student.setCode(userSession.getString("code"));
-        student.setPerson(userSession.getInt("person"));
-        student.setName(userSession.getString("name"));
-        student.setClient(userSession.getInt("client"));
-        student.setEmail(userSession.getString("email"));
-        student.setLogin(userSession.getString("login"));
-        student.setPass(userSession.getString("pass"));
-        student.setPhone(userSession.getString("phone"));
-        student.setSession(userSession.getString("session"));
-        student.setRoles(userRoles);
-        return student;
+        JSONObject userSession = rolesJson.getJSONObject("session");
+        User user = new User();
+        if(rolesArray.length()==1){
+            user.setType(roles.getInt("type"));
+            user.setId(roles.getInt("id"));
+        }
+        user.setPhoto(userSession.getInt("photo"));
+        user.setCode(userSession.getString("code"));
+        user.setPerson(userSession.getInt("person"));
+        user.setName(userSession.getString("name"));
+        user.setClient(userSession.getInt("client"));
+        user.setEmail(userSession.getString("email"));
+        user.setLogin(userSession.getString("login"));
+        user.setPass(userSession.getString("pass"));
+        user.setPhone(userSession.getString("phone"));
+        user.setSession(userSession.getString("session"));
+        user.setRoles(userRoles);
+        return user;
     }
 
     @Override
-    protected Student doInBackground(Void... params) {
+    protected User doInBackground(Void... params) {
         String urlString = "http://you.com.ru/auth?mobile=1";
-        jsonData = Common.httpPost(urlString, mLogin+":"+mPassword);
-        if(jsonData!=null && !jsonData.equals("")) {
-            Student student = null;
+        String jsonData = Common.httpPost(urlString, mLogin + ":" + mPassword);
+        if(jsonData !=null && !jsonData.equals("")) {
+            User user = null;
             try {
-                student = getUserFromJson(jsonData);
-                if(student.getPhoto()==1){
-                    photoBitmap = Common.getBitmapFromURL(student.getCode());
+                user = getUserFromJson(jsonData);
+                if(user.getPhoto()==1){
+                    photoBitmap = Common.getBitmapFromURL(user.getCode());
                     System.out.println();
                 }else {
                     Common.deleteFromPref(mContext, "profilePhoto");
@@ -87,15 +88,15 @@ public class FetchUserLoginTask extends AsyncTask<Void, Void, Student> {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            return student;
+            return user;
         }
 
         return null;
     }
 
     @Override
-    protected void onPostExecute(final Student student) {
-        delegate.processFinish(student, photoBitmap);
+    protected void onPostExecute(final User user) {
+        delegate.processFinish(user, photoBitmap);
     }
 
     @Override
@@ -104,7 +105,7 @@ public class FetchUserLoginTask extends AsyncTask<Void, Void, Student> {
     }
 
     public interface AsyncResponse {
-        void processFinish(Student output, Bitmap  bitmap);
+        void processFinish(User output, Bitmap  bitmap);
         void canceled(boolean canceled);
     }
 }

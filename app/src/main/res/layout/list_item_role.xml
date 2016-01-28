@@ -1,0 +1,26 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="5dp"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:layout_width="130dp"
+        android:layout_height="130dp"
+        android:src="@mipmap/ic_no_image"
+        android:id="@+id/role_select_image"
+        android:layout_alignParentTop="false"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="@string/role_one_str"
+        android:id="@+id/role_select_role"
+        android:layout_alignLeft="@id/role_select_image"
+        android:layout_alignRight="@id/role_select_image"
+        android:layout_below="@id/role_select_image"
+        android:textSize="20sp"
+        android:gravity="center_horizontal" />
+
+    </RelativeLayout>

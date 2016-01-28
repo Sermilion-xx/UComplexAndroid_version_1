@@ -101,7 +101,7 @@
                     android:layout_marginTop="16dp"
                     android:text="@string/action_sign_in"
                     android:textStyle="bold"
-                    android:background="#8dd3e8"
+                    android:background="@color/uc_button_blue"
                     android:layout_gravity="left" />
 
                 <Button

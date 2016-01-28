@@ -10,12 +10,21 @@ import java.util.HashMap;
  */
 public class Timetable {
     private HashMap<String, String> teachers = new HashMap<>();
+    private HashMap<String, String> groups = new HashMap<>();
     private HashMap<String, String> hours = new HashMap<>();
     private HashMap<String, String> rooms = new HashMap<>();
     private HashMap<String, String> subjects = new HashMap<>();
     private ArrayList<HashMap<String, String>> entries = new ArrayList<>();
 
     public Timetable() {
+    }
+
+    public HashMap<String, String> getGroups() {
+        return groups;
+    }
+
+    public void setGroups(HashMap<String, String> groups) {
+        this.groups = groups;
     }
 
     public void addEntry(HashMap<String, String> entries){
