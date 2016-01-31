@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -33,18 +34,17 @@ public class EventsActivity extends AppCompatActivity implements OnTaskCompleteL
     User user;
     ProgressDialog dialog;
 
-    final String[] TITLES = {"События", "Анкетирование", "Дисциплины", "Материалы", "Справки", "Пользователи", "Сообщения", "Библиотека", "Календарь", "Настройки", "Выход"};
-    final int[] ICONS = {R.drawable.ic_menu_event,
-            R.drawable.ic_menu_questionare,
-            R.drawable.ic_menu_materials,
-            R.drawable.ic_menu_subject,
-            R.drawable.ic_menu_materials,
+    final String[] TITLES = {"События", "Дисциплины", "Материалы", "Справки", "Пользователи", "Сообщения", "Библиотека", "Календарь", "Настройки", "Выход"};
+    final int[] ICONS = {R.drawable.ic_menu_events,
+            R.drawable.ic_menu_events,
+            R.drawable.ic_menu_subjects,
+            R.drawable.ic_menu_events,
             R.drawable.ic_menu_users,
-            R.drawable.ic_menu_users,
-            R.drawable.ic_menu_materials,
-            R.drawable.ic_menu_calendar,
-            R.drawable.ic_menu_materials,
-            R.drawable.ic_menu_exit};
+            R.drawable.ic_menu_messages,
+            R.drawable.ic_library,
+            R.drawable.ic_menu_timetable,
+            R.drawable.ic_menu_settings,
+            R.drawable.ic_menu_events};
 
     RecyclerView mRecyclerView;                           // Declaring RecyclerView
     MenuAdapter mAdapter;                        // Declaring Adapter For Recycler View
@@ -52,6 +52,11 @@ public class EventsActivity extends AppCompatActivity implements OnTaskCompleteL
     DrawerLayout Drawer;                                  // Declaring DrawerLayout
     ActionBarDrawerToggle mDrawerToggle;                  // Declaring Action Bar Drawer Toggle
 
+    @Override
+    protected void onSaveInstanceState(Bundle state) {
+        super.onSaveInstanceState(state);
+        state.putSerializable("eventsArray", eventsArray);
+    }
 
     private void refresh() {
         dialog = ProgressDialog.show(this, "",
@@ -61,15 +66,6 @@ public class EventsActivity extends AppCompatActivity implements OnTaskCompleteL
         LoginTask loginTask = new LoginTask(user.getLogin(), user.getPass(), EventsActivity.this);
         loginTask.delegate = this;
         loginTask.execute();
-        mEventsTask = new FetchUserEventsTask(this) {
-            @Override
-            protected void onPostExecute(ArrayList<EventRowItem> items) {
-                super.onPostExecute(items);
-                eventsArray = items;
-                dialog.dismiss();
-            }
-        };
-        mEventsTask.execute();
 
         new FetchUserEventsTask(this) {
             @Override
@@ -78,6 +74,7 @@ public class EventsActivity extends AppCompatActivity implements OnTaskCompleteL
                 eventsArray = items;
                 EventsFragment fragment = new EventsFragment();
                 fragment.setContext(EventsActivity.this);
+                fragment.setUserType(user.getType());
                 Bundle data = new Bundle();
                 data.putSerializable("eventItems", eventsArray);
                 fragment.setArguments(data);
@@ -87,12 +84,30 @@ public class EventsActivity extends AppCompatActivity implements OnTaskCompleteL
                 dialog.dismiss();
             }
 
-        }.execute();
+        }.execute(user.getType());
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+
+//        if(this.Drawer!=null) {
+//            if (this.Drawer.isDrawerOpen(GravityCompat.START)) {
+//                this.Drawer.closeDrawer(GravityCompat.START);
+//
+//            }
+//        }
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if ((savedInstanceState != null)
+                && (savedInstanceState.getSerializable("eventsArray") != null)) {
+            eventsArray = (ArrayList) savedInstanceState.getSerializable("eventsArray");
+        }
         setContentView(R.layout.activity_events);
         Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar);
         toolbar.setTitle("События");
@@ -105,23 +120,26 @@ public class EventsActivity extends AppCompatActivity implements OnTaskCompleteL
             user.setPhotoBitmap(bmp);
         }
 
-        mEventsTask = (FetchUserEventsTask) new FetchUserEventsTask(this) {
-            @Override
-            protected void onPostExecute(ArrayList<EventRowItem> items) {
-                super.onPostExecute(items);
-                eventsArray = items;
-                EventsFragment fragment = new EventsFragment();
-                fragment.setContext(EventsActivity.this);
-                Bundle data = new Bundle();
-                data.putSerializable("eventItems", eventsArray);
-                fragment.setArguments(data);
-                getFragmentManager().beginTransaction()
-                        .replace(R.id.container, fragment)
-                        .commit();
-                dialog.dismiss();
-            }
+        if (eventsArray == null) {
+            mEventsTask = (FetchUserEventsTask) new FetchUserEventsTask(this) {
+                @Override
+                protected void onPostExecute(ArrayList<EventRowItem> items) {
+                    super.onPostExecute(items);
+                    eventsArray = items;
+                    EventsFragment fragment = new EventsFragment();
+                    fragment.setContext(EventsActivity.this);
+                    fragment.setUserType(user.getType());
+                    Bundle data = new Bundle();
+                    data.putSerializable("eventItems", eventsArray);
+                    fragment.setArguments(data);
+                    getFragmentManager().beginTransaction()
+                            .replace(R.id.container, fragment)
+                            .commit();
+                    dialog.dismiss();
+                }
 
-        }.execute(user.getType());
+            }.execute(user.getType());
+        }
         dialog = ProgressDialog.show(this, "",
                 "Загружаются события", true);
         dialog.show();
@@ -165,19 +183,29 @@ public class EventsActivity extends AppCompatActivity implements OnTaskCompleteL
     }
 
     @Override
+    public void onBackPressed() {
+        if (this.Drawer.isDrawerOpen(GravityCompat.START)) {
+            this.Drawer.closeDrawer(GravityCompat.START);
+        } else {
+
+        }
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_refresh) {
             refresh();
             return true;
         }
-        return id == android.R.id.home || super.onOptionsItemSelected(item);
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
     public void onTaskComplete(AsyncTask task, Object... o) {
 
     }
+
 
     @Override
     public void processFinish(User output, Bitmap bitmap) {

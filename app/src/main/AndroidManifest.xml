@@ -60,11 +60,6 @@
             android:theme="@style/AppTheme"
             android:screenOrientation="portrait"/>
         <activity
-            android:name=".Activities.WebViewActivity"
-            android:label="@string/title_activity_web_view"
-            android:theme="@style/AppTheme"
-            android:screenOrientation="portrait"/>
-        <activity
             android:name=".Activities.MyFilesActivity"
             android:launchMode="singleTop"
             android:label="@string/title_activity_my_files"

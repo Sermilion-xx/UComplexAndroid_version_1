@@ -45,6 +45,11 @@ public class EventsFragment extends ListFragment {
     Button btnLoadExtra;
     ProgressDialog dialog;
     Context context;
+    int userType;
+
+    public void setUserType(int userType) {
+        this.userType = userType;
+    }
 
     public void setContext(Context context) {
         this.context = context;
@@ -111,7 +116,7 @@ public class EventsFragment extends ListFragment {
                             btnLoadExtra.setVisibility(View.GONE);
                         }
                     }
-                }.execute(eventItems.size());
+                }.execute(userType, eventItems.size());
             }
         });
 

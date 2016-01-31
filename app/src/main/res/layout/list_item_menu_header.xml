@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="250dp"
+    android:layout_height="130dp"
     android:background="@color/uc_dark_menu"
-    android:orientation="vertical"
+    android:orientation="horizontal"
     android:weightSum="1">
 
 
     <de.hdodenhof.circleimageview.CircleImageView
-        android:layout_width="130dp"
-        android:layout_height="130dp"
+        android:layout_width="75dp"
+        android:layout_height="65dp"
         android:src="@mipmap/ic_no_image"
-        android:layout_marginTop="50dp"
         android:id="@+id/circleView"
-        android:layout_gravity="center"
-        />
+        android:layout_gravity="left"
+        android:layout_marginTop="35dp"
+        android:layout_marginLeft="17dp" />
 
 
         <TextView
@@ -24,12 +24,35 @@
             android:textColor="#ffffff"
             android:text="Akash Bangad"
             android:textSize="18sp"
-            android:textStyle="bold"
             android:layout_gravity="center"
+            android:layout_alignTop="@+id/circleView"
+            android:layout_toRightOf="@+id/circleView"
+            android:layout_toEndOf="@+id/circleView"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="5dp" />
 
-            />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Студент"
+        android:textColor="#ffffff"
+        android:id="@+id/textView2"
+        android:layout_below="@+id/name"
+        android:layout_alignLeft="@+id/name"
+        android:layout_alignStart="@+id/name"
+        android:layout_marginTop="5dp" />
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:src="@drawable/ic_menu_user"
+        android:id="@+id/circleView1"
+        android:layout_gravity="left"
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginRight="32dp"
+        android:layout_marginEnd="32dp" />
 
 
-
-
-</LinearLayout>
+</RelativeLayout>

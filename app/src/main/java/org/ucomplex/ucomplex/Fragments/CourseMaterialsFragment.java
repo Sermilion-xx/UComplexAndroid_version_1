@@ -14,8 +14,10 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.ListFragment;
 import android.support.v7.app.AlertDialog;
 import android.view.ActionMode;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -117,22 +119,47 @@ public class CourseMaterialsFragment extends ListFragment {
 
     }
 
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        if (v.getId()==getListView().getId()) {
+            MenuInflater inflater = getActivity().getMenuInflater();
+            inflater.inflate(R.menu.menu_my_files_files, menu);
+        }
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        selectedItemPos = info.position;
+        switch(item.getItemId()) {
+            case R.id.edit:
+                showInputDialog();
+                return true;
+            case R.id.delete:
+                removeItem(selectedItemPos);
+                return true;
+            default:
+                return super.onContextItemSelected(item);
+        }
+    }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
         getListView().setDivider(null);
-        getListView().setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            public boolean onItemLongClick(AdapterView parent, View view, int position, long id) {
-                if(myFiles) {
-                    selectedItemPos = position;
-                    getActivity().startActionMode(modeCallBack);
-                    view.setSelected(true);
-                }
-                return true;
-            }
-        });
+        registerForContextMenu(getListView());
+//        getListView().setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+//            public boolean onItemLongClick(AdapterView parent, View view, int position, long id) {
+//                if(myFiles) {
+//                    selectedItemPos = position;
+//                    getActivity().startActionMode(modeCallBack);
+//                    view.setSelected(true);
+//                }
+//                return true;
+//            }
+//        });
     }
 
     @Override
