@@ -1,28 +1,23 @@
 package org.ucomplex.ucomplex.Activities;
 
 import android.app.ProgressDialog;
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.Typeface;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.LayerDrawable;
-import android.graphics.drawable.TransitionDrawable;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.speech.RecognizerIntent;
-import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.TypedValue;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.astuetz.PagerSlidingTabStrip;
@@ -46,15 +41,28 @@ import java.util.HashMap;
 
 public class UsersActivity extends AppCompatActivity {
 
-    MySearchBox search;
+//    MySearchBox search;
     ViewPager pager;
-    private final Handler handler = new Handler();
     private PagerSlidingTabStrip tabs;
     private ViewPagerAdapter adapter;
 
     @Override
     protected void onPostResume() {
         super.onPostResume();
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        handleIntent(intent);
+    }
+
+    private void handleIntent(Intent intent) {
+
+        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+            String query = intent.getStringExtra(SearchManager.QUERY);
+            runSearch(query);
+            //use the query to search
+        }
     }
 
     @Override
@@ -66,6 +74,8 @@ public class UsersActivity extends AppCompatActivity {
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        handleIntent(getIntent());
 
         tabs = (PagerSlidingTabStrip) findViewById(R.id.tabs);
         pager = (ViewPager) findViewById(R.id.users_viewpager);
@@ -79,102 +89,51 @@ public class UsersActivity extends AppCompatActivity {
         tabs.setIndicatorHeight(8);
         tabs.setUnderlineHeight(0);
 
-//        pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+//        search = (MySearchBox) findViewById(R.id.searchbox);
+//        search.setLogoText("Поиск");
+//        search.setMenuListener(new SearchBox.MenuListener(){
 //
 //            @Override
-//            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+//            public void onMenuClick() {
+//                search.showContextMenu();
+//            }
+//
+//        });
+//        search.setSearchListener(new SearchBox.SearchListener(){
+//
+//            @Override
+//            public void onSearchOpened() {
+//                System.out.println();
+//                //Use this to tint the screen
+//            }
+//
+//            @Override
+//            public void onSearchClosed() {
+//                //Use this to un-tint the screen
 //
 //            }
 //
 //            @Override
-//            public void onPageSelected(int position) {
-//                if(position==0){
-//                    toolbar.setTitle("Онлайн");
-//                }else if(position==1){
-//                    toolbar.setTitle("Друзья");
-//                }else if(position==2){
-//                    toolbar.setTitle("Группа");
-//                }else if(position==3){
-//                    toolbar.setTitle("Преподаватели");
-//                }else if(position==4){
-//                    toolbar.setTitle("Заблокированные");
-//                }
-//            }
-//            @Override
-//            public void onPageScrollStateChanged(int state) {
+//            public void onSearchTermChanged(String s) {
 //
+//            }
+//
+//            @Override
+//            public void onSearch(final String searchTerm) {
+//                SearchResult option = new SearchResult(searchTerm,getResources().getDrawable(R.drawable.ic_menu_users));
+//                search.addSearchable(option);
+//                runSearch(searchTerm);
+//            }
+//
+//            @Override
+//            public void onResultClick(SearchResult result){
+//                //React to a result being clicked
+//            }
+//
+//            @Override
+//            public void onSearchCleared() {
 //            }
 //        });
-
-        search = (MySearchBox) findViewById(R.id.searchbox);
-        search.setLogoText("Поиск");
-        search.setMenuListener(new SearchBox.MenuListener(){
-
-            @Override
-            public void onMenuClick() {
-                search.showContextMenu();
-            }
-
-        });
-        search.setSearchListener(new SearchBox.SearchListener(){
-
-            @Override
-            public void onSearchOpened() {
-                System.out.println();
-                //Use this to tint the screen
-            }
-
-            @Override
-            public void onSearchClosed() {
-                //Use this to un-tint the screen
-
-            }
-
-            @Override
-            public void onSearchTermChanged(String s) {
-
-            }
-
-
-            @Override
-            public void onSearch(final String searchTerm) {
-                SearchResult option = new SearchResult(searchTerm,getResources().getDrawable(R.drawable.ic_menu_users));
-                search.addSearchable(option);
-                runSearch(searchTerm);
-            }
-
-            @Override
-            public void onResultClick(SearchResult result){
-                //React to a result being clicked
-            }
-
-
-            @Override
-            public void onSearchCleared() {
-            }
-
-        });
-
-
-
-
-
-//        TabLayout tabLayout = (TabLayout) findViewById(R.id.users_tabs);
-//        tabLayout.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-//        tabLayout.setupWithViewPager(pager);
-//
-//        TextView tv0 = (TextView)(((LinearLayout)((LinearLayout)tabLayout.getChildAt(0)).getChildAt(0)).getChildAt(1));
-//        tv0.setTypeface(Typeface.createFromAsset(this.getAssets(), "fonts/fontawesome-webfont.ttf"));
-//        tv0.setTextSize(16);
-//        TextView tv1 = (TextView)(((LinearLayout)((LinearLayout)tabLayout.getChildAt(0)).getChildAt(1)).getChildAt(1));
-//        tv1.setTypeface(Typeface.createFromAsset(this.getAssets(), "fonts/fontawesome-webfont.ttf"));
-//        tv1.setTextSize(18);
-//        TextView tv2 = (TextView)(((LinearLayout)((LinearLayout)tabLayout.getChildAt(0)).getChildAt(2)).getChildAt(1));
-//        tv2.setTypeface(Typeface.createFromAsset(this.getAssets(), "fonts/fontawesome-webfont.ttf"));
-//        TextView tv3 = (TextView)(((LinearLayout)((LinearLayout)tabLayout.getChildAt(0)).getChildAt(3)).getChildAt(1));
-//        tv3.setTypeface(Typeface.createFromAsset(this.getAssets(), "fonts/fontawesome-webfont.ttf"));
-//        TextView tv4 = (TextView)(((LinearLayout)((LinearLayout)tabLayout.getChildAt(0)).getChildAt(4)).getChildAt(1));
-//        tv4.setTypeface(Typeface.createFromAsset(this.getAssets(), "fonts/fontawesome-webfont.ttf"));
     }
 
     @Override
@@ -182,7 +141,7 @@ public class UsersActivity extends AppCompatActivity {
         if (requestCode == SearchBox.VOICE_RECOGNITION_CODE && resultCode == RESULT_OK) {
             ArrayList<String> matches = data
                     .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-            search.populateEditText(matches.toString());
+//            search.populateEditText(matches.toString());
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
@@ -229,6 +188,23 @@ public class UsersActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        // Inflate menu to add items to action bar if it is present.
+        inflater.inflate(R.menu.menu_search, menu);
+        // Associate searchable configuration with the SearchView
+        SearchManager searchManager =
+                (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView =
+                (SearchView) menu.findItem(R.id.menu_search).getActionView();
+        searchView.setSearchableInfo(
+                searchManager.getSearchableInfo(getComponentName()));
+        return true;
+    }
+
+
 
     @Override
     public void onBackPressed() {
