@@ -14,6 +14,7 @@
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+
     </style>
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light">
@@ -22,7 +23,7 @@
         <item name="actionMenuTextColor">@color/colorPrimaryDark</item>
         <item name="android:textColorPrimary">@color/uc_dark_menu</item>
         <item name="android:textColorSecondary">@color/white</item>
-        <item name="android:colorBackground">@color/colorPrimary</item>
+        <item name="android:colorBackground">@color/white</item>
         <item name="android:textColor">@color/white</item>
     </style>
 

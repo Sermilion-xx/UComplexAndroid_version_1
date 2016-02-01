@@ -10,6 +10,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.ContentLoadingProgressBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
@@ -18,6 +19,8 @@ import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
 import android.widget.Toast;
 
 import com.astuetz.PagerSlidingTabStrip;
@@ -61,7 +64,6 @@ public class UsersActivity extends AppCompatActivity {
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
             String query = intent.getStringExtra(SearchManager.QUERY);
             runSearch(query);
-            //use the query to search
         }
     }
 
@@ -88,60 +90,11 @@ public class UsersActivity extends AppCompatActivity {
         tabs.setIndicatorColor(Color.WHITE);
         tabs.setIndicatorHeight(8);
         tabs.setUnderlineHeight(0);
-
-//        search = (MySearchBox) findViewById(R.id.searchbox);
-//        search.setLogoText("Поиск");
-//        search.setMenuListener(new SearchBox.MenuListener(){
-//
-//            @Override
-//            public void onMenuClick() {
-//                search.showContextMenu();
-//            }
-//
-//        });
-//        search.setSearchListener(new SearchBox.SearchListener(){
-//
-//            @Override
-//            public void onSearchOpened() {
-//                System.out.println();
-//                //Use this to tint the screen
-//            }
-//
-//            @Override
-//            public void onSearchClosed() {
-//                //Use this to un-tint the screen
-//
-//            }
-//
-//            @Override
-//            public void onSearchTermChanged(String s) {
-//
-//            }
-//
-//            @Override
-//            public void onSearch(final String searchTerm) {
-//                SearchResult option = new SearchResult(searchTerm,getResources().getDrawable(R.drawable.ic_menu_users));
-//                search.addSearchable(option);
-//                runSearch(searchTerm);
-//            }
-//
-//            @Override
-//            public void onResultClick(SearchResult result){
-//                //React to a result being clicked
-//            }
-//
-//            @Override
-//            public void onSearchCleared() {
-//            }
-//        });
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == SearchBox.VOICE_RECOGNITION_CODE && resultCode == RESULT_OK) {
-            ArrayList<String> matches = data
-                    .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-//            search.populateEditText(matches.toString());
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
@@ -167,7 +120,6 @@ public class UsersActivity extends AppCompatActivity {
         teachersUsersFragment.setUsersType(3);
         teachersUsersFragment.setActivity(UsersActivity.this);
         adapter.addFragment(teachersUsersFragment, "Преподаватели");
-
         UsersFragment blacklistUsersFragment = new UsersFragment();
         blacklistUsersFragment.setUsersType(4);
         blacklistUsersFragment.setActivity(UsersActivity.this);
