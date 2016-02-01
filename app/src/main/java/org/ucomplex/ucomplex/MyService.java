@@ -1,46 +1,49 @@
 package org.ucomplex.ucomplex;
 
-            import android.app.Activity;
-            import android.app.IntentService;
-            import android.content.Intent;
-            import android.os.IBinder;
+import android.app.Activity;
+import android.app.IntentService;
+import android.content.Context;
+import android.content.Intent;
+import android.os.IBinder;
 
-            import org.ucomplex.ucomplex.Activities.Tasks.FetchMessagesTask;
-            import org.ucomplex.ucomplex.Interfaces.OnTaskCompleteListener;
+import org.ucomplex.ucomplex.Interfaces.OnTaskCompleteListener;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 
 /**
  * Created by Sermilion on 03/12/2015.
  */
-            public class MyService extends IntentService {
+public class MyService extends IntentService {
 
-                Activity context;
-                OnTaskCompleteListener listener;
+    Context context = this;
+    OnTaskCompleteListener listener;
 
-                public MyService() {
-                    super("Message update");
-                    context = (Activity) getBaseContext();
-                    listener = (OnTaskCompleteListener) getBaseContext();
-                }
+    public MyService() {
+        super("Message update");
+        listener = (OnTaskCompleteListener) getBaseContext();
+    }
 
+    @Override
+    public IBinder onBind(Intent arg0) {
+        return null;
+
+    }
+
+    @Override
+    protected void onHandleIntent(final Intent intent) {
+            new Timer().scheduleAtFixedRate(new TimerTask() {
                 @Override
-                public IBinder onBind(Intent arg0) {
-                    return null;
-
+                public void run() {
+                    Common.fetchMyNews(context);
                 }
-
-                @Override
-                protected void onHandleIntent(Intent intent) {
-                    while(true)
-                    {
-                        FetchMessagesTask fetchMessagesTask = new FetchMessagesTask(context, listener);
-                        fetchMessagesTask.setType(2);
-        }
+            }, 0, 5000);
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        return super.onStartCommand(intent,flags,startId);
+        return super.onStartCommand(intent, flags, startId);
 
     }
 

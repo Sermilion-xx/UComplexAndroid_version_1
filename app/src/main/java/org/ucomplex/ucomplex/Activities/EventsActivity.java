@@ -1,6 +1,10 @@
 package org.ucomplex.ucomplex.Activities;
 
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -11,6 +15,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,16 +28,19 @@ import org.ucomplex.ucomplex.Fragments.EventsFragment;
 import org.ucomplex.ucomplex.Interfaces.OnTaskCompleteListener;
 import org.ucomplex.ucomplex.Model.EventRowItem;
 import org.ucomplex.ucomplex.Model.Users.User;
+import org.ucomplex.ucomplex.MyService;
 import org.ucomplex.ucomplex.R;
 
 import java.util.ArrayList;
 
 public class EventsActivity extends AppCompatActivity implements OnTaskCompleteListener, LoginTask.AsyncResponse {
 
+
     ArrayList eventsArray = null;
     FetchUserEventsTask mEventsTask = null;
     User user;
     ProgressDialog dialog;
+    int localMsgCount;
 
     final String[] TITLES = {"События", "Дисциплины", "Материалы", "Справки", "Пользователи", "Сообщения", "Библиотека", "Календарь", "Настройки", "Выход"};
     final int[] ICONS = {R.drawable.ic_menu_events,
@@ -52,6 +60,10 @@ public class EventsActivity extends AppCompatActivity implements OnTaskCompleteL
     DrawerLayout Drawer;                                  // Declaring DrawerLayout
     ActionBarDrawerToggle mDrawerToggle;                  // Declaring Action Bar Drawer Toggle
 
+    public EventsActivity() {
+
+    }
+
     @Override
     protected void onSaveInstanceState(Bundle state) {
         super.onSaveInstanceState(state);
@@ -62,6 +74,11 @@ public class EventsActivity extends AppCompatActivity implements OnTaskCompleteL
         dialog = ProgressDialog.show(this, "",
                 "Обновляется", true);
         dialog.show();
+        Common.fetchMyNews(EventsActivity.this);
+        if(Common.newMesg>0){
+            mAdapter.setMsgCount(Common.newMesg);
+            mAdapter.notifyDataSetChanged();
+        }
         user = Common.getUserDataFromPref(this);
         LoginTask loginTask = new LoginTask(user.getLogin(), user.getPass(), EventsActivity.this);
         loginTask.delegate = this;
@@ -87,11 +104,40 @@ public class EventsActivity extends AppCompatActivity implements OnTaskCompleteL
         }.execute(user.getType());
     }
 
+
+    BroadcastReceiver receiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Bundle bundle = intent.getExtras();
+            int messageCount = bundle.getInt("newMessage");
+            if(messageCount>0){
+                Log.e("MGS", "Received broadcast: "+messageCount);
+                localMsgCount = messageCount;
+            }
+
+        }
+    };
+
+    @Override
+    protected void onPause() {
+        unregisterReceiver(receiver);
+        super.onPause();
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("org.ucomplex.newMessageBroadcast");
+        registerReceiver(receiver, filter);
+        if(Common.fromMessages && mAdapter.getMsgCount()>0){
+            mRecyclerView.setAdapter(mAdapter);
+            Common.fromMessages = false;
+        }
 
-
+        if(mAdapter.getMsgCount() != localMsgCount){
+            mRecyclerView.setAdapter(mAdapter);
+        }
 //        if(this.Drawer!=null) {
 //            if (this.Drawer.isDrawerOpen(GravityCompat.START)) {
 //                this.Drawer.closeDrawer(GravityCompat.START);
@@ -100,9 +146,18 @@ public class EventsActivity extends AppCompatActivity implements OnTaskCompleteL
 //        }
     }
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Common.fetchMyNews(EventsActivity.this);
+
+
+        Intent i= new Intent(EventsActivity.this, MyService.class);
+        EventsActivity.this.startService(i);
+
+
 
         if ((savedInstanceState != null)
                 && (savedInstanceState.getSerializable("eventsArray") != null)) {
@@ -152,11 +207,14 @@ public class EventsActivity extends AppCompatActivity implements OnTaskCompleteL
         mRecyclerView = (RecyclerView) findViewById(R.id.RecyclerView);
         mRecyclerView.setHasFixedSize(true);
         mAdapter = new MenuAdapter(TITLES, ICONS, user, this);
+        if(Common.newMesg>0){
+            mAdapter.setMsgCount(Common.newMesg);
+            mAdapter.notifyDataSetChanged();
+        }
         mRecyclerView.setAdapter(mAdapter);
         mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
         Drawer = (DrawerLayout) findViewById(R.id.DrawerLayout);
-
         mDrawerToggle = new ActionBarDrawerToggle(this, Drawer, toolbar, R.string.openDrawer, R.string.closeDrawer) {
             @Override
             public void onDrawerOpened(View drawerView) {
@@ -186,8 +244,6 @@ public class EventsActivity extends AppCompatActivity implements OnTaskCompleteL
     public void onBackPressed() {
         if (this.Drawer.isDrawerOpen(GravityCompat.START)) {
             this.Drawer.closeDrawer(GravityCompat.START);
-        } else {
-
         }
     }
 

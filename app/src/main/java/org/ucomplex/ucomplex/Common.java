@@ -2,6 +2,7 @@ package org.ucomplex.ucomplex;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -14,10 +15,12 @@ import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.util.Base64;
+import android.util.Log;
 
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.google.gson.Gson;
@@ -70,6 +73,8 @@ public class Common {
     public static int userListChanged = -1;
     public static int GALLERY_INTENT_CALLED = 0;
     public static int GALLERY_KITKAT_INTENT_CALLED = 1;
+    public static int newMesg = 0;
+    public static boolean fromMessages = false;
 
     public static int getColor(int index) {
         String [] hexColors = {"#f6a6c1","#92d6eb","#4dd9e2","#68d9f0","#c69ad9","#ff83b6","#fda79d","#f8c092",
@@ -77,6 +82,38 @@ public class Common {
         return Color.parseColor(hexColors[index]);
     }
 
+
+    public static void fetchMyNews(final Context context){
+        new AsyncTask<Void,Void, String>(){
+
+            @Override
+            protected String doInBackground(Void... params) {
+                String url = "http://you.com.ru/user/my_news?mobile=1";
+                return Common.httpPost(url, Common.getLoginDataFromPref(context));
+            }
+
+            @Override
+            protected void onPostExecute(String jsonData) {
+                super.onPostExecute(jsonData);
+                Log.e("MGS", "checked!!!!");
+                if(jsonData!=null){
+                    try {
+                        JSONObject jsonObject = new JSONObject(jsonData);
+                        JSONObject messagesJson = jsonObject.getJSONObject("messages");
+                        if(messagesJson!=null){
+                            Common.newMesg = messagesJson.getInt("sum");
+                            Intent broadcast = new Intent();
+                            broadcast.setAction("org.ucomplex.newMessageBroadcast");
+                            broadcast.putExtra("newMessage", Common.newMesg);
+                            context.sendBroadcast(broadcast);
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }.execute();
+    }
 
 
     public static String sendFile(String path, String companion, String msg, String auth){

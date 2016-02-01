@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.preference.PreferenceManager;
 import android.support.v7.widget.RecyclerView;
@@ -38,26 +39,35 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
 
     private static final int TYPE_HEADER = 0;
     private static final int TYPE_ITEM = 1;
+    private static final int TYPE_ITEM_MSG = 2;
     private String mNavTitles[];
     private int mIcons[];
     private String name;
+    private int msgCount;
     private Context context;
     private static Bitmap profileBitmap;
     private User user;
 
+    public void setMsgCount(int msgCount) {
+        this.msgCount = msgCount;
+    }
+
+    public int getMsgCount() {
+        return msgCount;
+    }
 
     public void setProfileBitmap(Bitmap profileBitmap) {
         MenuAdapter.profileBitmap = profileBitmap;
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         int Holderid;
 
         TextView textView;
         ImageView imageView;
+        ImageView msgCountImageView;
         de.hdodenhof.circleimageview.CircleImageView profile;
         TextView Name;
-        TextView email;
         Context contxt;
         Typeface custom_font;
 
@@ -73,7 +83,7 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
                 textView.setTypeface(custom_font);
                 imageView = (ImageView) itemView.findViewById(R.id.rowIcon);
                 Holderid = 1;
-            } else {
+            } else if (ViewType == TYPE_HEADER) {
                 Name = (TextView) itemView.findViewById(R.id.name);
                 Name.setTypeface(custom_font);
                 profile = (de.hdodenhof.circleimageview.CircleImageView) itemView.findViewById(R.id.circleView);
@@ -81,12 +91,21 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
                     this.profile.setImageBitmap(profileBitmap);
                 }
                 Holderid = 0;
+            } else if (ViewType == TYPE_ITEM_MSG) {
+                textView = (TextView) itemView.findViewById(R.id.rowText);
+                textView.setTypeface(custom_font);
+                imageView = (ImageView) itemView.findViewById(R.id.rowIcon);
+                msgCountImageView = (de.hdodenhof.circleimageview.CircleImageView) itemView.findViewById(R.id.rowMsgCount);
+                Holderid = 2;
             }
+
+
         }
 
         @Override
         public void onClick(View v) {
 
+            v.setSelected(true);
             if (getAdapterPosition() == 1) {
                 Intent intent = new Intent(contxt, EventsActivity.class);
                 contxt.startActivity(intent);
@@ -103,8 +122,10 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
                 Intent intent = new Intent(contxt, UsersActivity.class);
                 contxt.startActivity(intent);
             } else if (getAdapterPosition() == 6) {
+                Common.newMesg = 0;
                 Intent intent = new Intent(contxt, MessagesListActivity.class);
                 contxt.startActivity(intent);
+
             } else if (getAdapterPosition() == 7) {
                 Intent intent = new Intent(contxt, LibraryActivity.class);
                 contxt.startActivity(intent);
@@ -153,9 +174,9 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
         mNavTitles = Titles;
         mIcons = Icons;
         String tempName = user.getName();
-        if(tempName.split(" ").length>1){
+        if (tempName.split(" ").length > 1) {
             name = tempName.split(" ")[1];
-        }else{
+        } else {
             name = tempName;
         }
         this.context = passedContext;
@@ -171,6 +192,9 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
         } else if (viewType == TYPE_HEADER) {
             View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_menu_header, parent, false);
             return new ViewHolder(v, viewType, context);
+        } else if (viewType == TYPE_ITEM_MSG) {
+            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_menu_message, parent, false);
+            return new ViewHolder(v, viewType, context);
         }
         return null;
     }
@@ -180,7 +204,7 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
         if (holder.Holderid == 1) {
             holder.textView.setText(mNavTitles[position - 1]);
             holder.imageView.setImageResource(mIcons[position - 1]);
-        } else {
+        } else if (holder.Holderid == 0) {
             if (profileBitmap != null) {
                 holder.profile.setImageBitmap(profileBitmap);
             } else {
@@ -195,6 +219,19 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
                 holder.profile.setImageDrawable(drawable);
             }
             holder.Name.setText(name);
+        } else if (holder.Holderid == 2) {
+            holder.textView.setText(mNavTitles[position - 1]);
+            holder.imageView.setImageResource(mIcons[position - 1]);
+            if (Common.newMesg > 0) {
+                TextDrawable drawable = TextDrawable.builder().beginConfig()
+                        .width(604)
+                        .height(604)
+                        .endConfig()
+                        .buildRect(String.valueOf(msgCount), Color.parseColor("#20bcfa"));
+                holder.msgCountImageView.setImageDrawable(drawable);
+                Common.newMesg = 0;
+            }
+
         }
     }
 
@@ -207,6 +244,8 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
     public int getItemViewType(int position) {
         if (isPositionHeader(position))
             return TYPE_HEADER;
+        else if (mNavTitles[position - 1].equals("Сообщения"))
+            return TYPE_ITEM_MSG;
         return TYPE_ITEM;
     }
 

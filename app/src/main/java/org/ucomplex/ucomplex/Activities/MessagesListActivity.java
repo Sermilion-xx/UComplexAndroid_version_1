@@ -34,6 +34,7 @@ public class MessagesListActivity extends AppCompatActivity implements OnTaskCom
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Common.fromMessages = true;
         setContentView(R.layout.activity_messages_list);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("Сообщения");

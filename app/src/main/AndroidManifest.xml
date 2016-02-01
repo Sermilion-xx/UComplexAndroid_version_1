@@ -10,11 +10,11 @@
 
     <application
         android:name=".UILApplication"
-
         android:allowBackup="true"
         android:label="@string/app_name"
         android:theme="@style/AppTheme"
         tools:node="replace">
+
 
         <activity
             android:name=".Activities.RoleSelectActivity"
@@ -24,7 +24,12 @@
         <activity
             android:name=".Activities.EventsActivity"
             android:label="@string/app_name"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait" >
+            <intent-filter>
+                <action android:name="org.ucomplex.newMessageBroadcast"/>
+            </intent-filter>
+
+        </activity>
         <activity
             android:name=".Activities.LoginActivity"
             android:label="@string/title_activity_login"

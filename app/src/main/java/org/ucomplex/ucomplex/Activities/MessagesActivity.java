@@ -1,39 +1,30 @@
 package org.ucomplex.ucomplex.Activities;
 
-import android.app.Activity;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import org.apache.http.entity.mime.content.ByteArrayBody;
 import org.ucomplex.ucomplex.Activities.Tasks.FetchMessagesTask;
-import org.ucomplex.ucomplex.Activities.Tasks.FetchMyFilesTask;
-import org.ucomplex.ucomplex.Interfaces.OnTaskCompleteListener;
 import org.ucomplex.ucomplex.Activities.Tasks.UploadPhotoTask;
 import org.ucomplex.ucomplex.Adaptors.MessagesAdapter;
 import org.ucomplex.ucomplex.Common;
+import org.ucomplex.ucomplex.Interfaces.OnTaskCompleteListener;
 import org.ucomplex.ucomplex.Model.Message;
 import org.ucomplex.ucomplex.R;
 
-import java.net.URISyntaxException;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.Timer;
@@ -52,57 +43,57 @@ public class MessagesActivity extends AppCompatActivity implements OnTaskComplet
     ByteArrayBody contentBody;
     FetchMessagesTask fetchNewMessagesTask;
 
-                @Override
-                protected void onCreate(Bundle savedInstanceState) {
-                    super.onCreate(savedInstanceState);
-                    setContentView(R.layout.activity_message);
-                    Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-                    toolbar.setTitle("Сообщения");
-                    setSupportActionBar(toolbar);
-                    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-                    companion = getIntent().getStringExtra("companion");
-                    name = getIntent().getStringExtra("name");
-                    messagesAdapter = new MessagesAdapter(this, messageArrayList, companion, name);
-                    listView = (ListView) findViewById(R.id.list_messages_listview);
-                    listView.setScrollingCacheEnabled(false);
-                    fetchNewMessagesTask = new FetchMessagesTask(this, this);
-                    fetchNewMessagesTask.setType(0);
-                    fetchNewMessagesTask.setupTask(companion);
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_message);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle("Сообщения");
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        companion = getIntent().getStringExtra("companion");
+        name = getIntent().getStringExtra("name");
+        messagesAdapter = new MessagesAdapter(this, messageArrayList, companion, name);
+        listView = (ListView) findViewById(R.id.list_messages_listview);
+        listView.setScrollingCacheEnabled(false);
+        fetchNewMessagesTask = new FetchMessagesTask(this, this);
+        fetchNewMessagesTask.setType(0);
+        fetchNewMessagesTask.setupTask(companion);
 
-                    Button sendMsgButton = (Button) findViewById(R.id.messages_send_button);
-                    final TextView messageTextView = (TextView) findViewById(R.id.messages_text);
-                    sendMsgButton.setOnClickListener(new View.OnClickListener() {
-                        public void onClick(View v) {
-                            fetchNewMessagesTask = new FetchMessagesTask(MessagesActivity.this, MessagesActivity.this);
-                            fetchNewMessagesTask.setType(1);
-                            final String message = messageTextView.getText().toString();
-                            if(file){
-                                String[] splitFilename = filePath.split("/");
-                                String filename = splitFilename[splitFilename.length-1];
-                                fetchNewMessagesTask.setupTask(filePath, companion,filename, message);
-                            }else{
-                                fetchNewMessagesTask.setupTask(companion, messageTextView.getText().toString());
+        Button sendMsgButton = (Button) findViewById(R.id.messages_send_button);
+        final TextView messageTextView = (TextView) findViewById(R.id.messages_text);
+        sendMsgButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                fetchNewMessagesTask = new FetchMessagesTask(MessagesActivity.this, MessagesActivity.this);
+                fetchNewMessagesTask.setType(1);
+                final String message = messageTextView.getText().toString();
+                if (file) {
+                    String[] splitFilename = filePath.split("/");
+                    String filename = splitFilename[splitFilename.length - 1];
+                    fetchNewMessagesTask.setupTask(filePath, companion, filename, message);
+                } else {
+                    fetchNewMessagesTask.setupTask(companion, messageTextView.getText().toString());
+                }
+                scrollMyListViewToBottom();
+            }
+        });
+        Button sendFileButton = (Button) findViewById(R.id.messages_file_button);
+        sendFileButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                file = true;
+                showFileChooser();
+            }
+        });
+                    new Timer().scheduleAtFixedRate(new TimerTask() {
+                        @Override
+                        public void run() {
+                            if(fetchNewMessagesTask==null) {
+                                fetchNewMessagesTask = new FetchMessagesTask(MessagesActivity.this, MessagesActivity.this);
+                                fetchNewMessagesTask.setType(2);
+                                fetchNewMessagesTask.setupTask(companion);
                             }
-                            scrollMyListViewToBottom();
                         }
-                    });
-                    Button sendFileButton = (Button) findViewById(R.id.messages_file_button);
-                    sendFileButton.setOnClickListener(new View.OnClickListener() {
-                        public void onClick(View v) {
-                            file = true;
-                            showFileChooser();
-                        }
-                    });
-//                    new Timer().scheduleAtFixedRate(new TimerTask() {
-//                        @Override
-//                        public void run() {
-//                            if(fetchNewMessagesTask==null) {
-//                                fetchNewMessagesTask = new FetchMessagesTask(MessagesActivity.this, MessagesActivity.this);
-//                                fetchNewMessagesTask.setType(2);
-//                                fetchNewMessagesTask.setupTask(companion);
-//                            }
-//                        }
-//                    }, 0, 3000);
+                    }, 0, 3000);
     }
 
     private void scrollMyListViewToBottom() {
@@ -158,7 +149,7 @@ public class MessagesActivity extends AppCompatActivity implements OnTaskComplet
     }
 
     public String getPath(Uri uri) {
-        String[] projection = { MediaStore.Images.Media.DATA };
+        String[] projection = {MediaStore.Images.Media.DATA};
         Cursor cursor = managedQuery(uri, projection, null, null, null);
         int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
         cursor.moveToFirst();
@@ -180,14 +171,14 @@ public class MessagesActivity extends AppCompatActivity implements OnTaskComplet
                     if (fmt.getType() == 0) {
                         messageArrayList = (LinkedList) task.get();
                         Collections.reverse(messageArrayList);
-                        if(messageArrayList!=null){
+                        if (messageArrayList != null) {
                             messagesAdapter = new MessagesAdapter(this, messageArrayList, companion, name);
                             listView.setAdapter(messagesAdapter);
                             listView.setSelection(messagesAdapter.getCount() - 1);
                         }
                     } else if (fmt.getType() == 1 || fmt.getType() == 2) {
                         LinkedList result = (LinkedList) task.get();
-                        if (result!=null) {
+                        if (result != null) {
                             int cycles = 0;
                             if (result.size() > 0) {
                                 if (result.get(result.size() - 1) instanceof Bitmap) {
@@ -211,9 +202,9 @@ public class MessagesActivity extends AppCompatActivity implements OnTaskComplet
                     }
                     fetchNewMessagesTask = null;
                 }
-                }catch(InterruptedException | ExecutionException e){
-                    e.printStackTrace();
-                }
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+            }
 
         }
     }
