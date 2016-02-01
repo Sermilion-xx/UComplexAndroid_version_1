@@ -3,20 +3,29 @@ package org.ucomplex.ucomplex.Activities;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
+import android.graphics.drawable.TransitionDrawable;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.speech.RecognizerIntent;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.TypedValue;
 import android.view.MenuItem;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.astuetz.PagerSlidingTabStrip;
 import com.quinny898.library.persistentsearch.SearchBox;
 import com.quinny898.library.persistentsearch.SearchResult;
 
@@ -38,7 +47,10 @@ import java.util.HashMap;
 public class UsersActivity extends AppCompatActivity {
 
     MySearchBox search;
-    ViewPager viewPager;
+    ViewPager pager;
+    private final Handler handler = new Handler();
+    private PagerSlidingTabStrip tabs;
+    private ViewPagerAdapter adapter;
 
     @Override
     protected void onPostResume() {
@@ -50,9 +62,50 @@ public class UsersActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_users);
         final Toolbar toolbar = (Toolbar) findViewById(R.id.users_toolbar);
-        toolbar.setTitle("Онлайн");
+        toolbar.setTitle("Пользователи");
+
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        tabs = (PagerSlidingTabStrip) findViewById(R.id.tabs);
+        pager = (ViewPager) findViewById(R.id.users_viewpager);
+        adapter = new ViewPagerAdapter(getSupportFragmentManager());
+        setupViewPager(pager);
+        final int pageMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4, getResources().getDisplayMetrics());
+        pager.setPageMargin(pageMargin);
+        tabs.setViewPager(pager);
+        tabs.setTextColor(Color.WHITE);
+        tabs.setIndicatorColor(Color.WHITE);
+        tabs.setIndicatorHeight(8);
+        tabs.setUnderlineHeight(0);
+
+//        pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+//
+//            @Override
+//            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+//
+//            }
+//
+//            @Override
+//            public void onPageSelected(int position) {
+//                if(position==0){
+//                    toolbar.setTitle("Онлайн");
+//                }else if(position==1){
+//                    toolbar.setTitle("Друзья");
+//                }else if(position==2){
+//                    toolbar.setTitle("Группа");
+//                }else if(position==3){
+//                    toolbar.setTitle("Преподаватели");
+//                }else if(position==4){
+//                    toolbar.setTitle("Заблокированные");
+//                }
+//            }
+//            @Override
+//            public void onPageScrollStateChanged(int state) {
+//
+//            }
+//        });
+
         search = (MySearchBox) findViewById(R.id.searchbox);
         search.setLogoText("Поиск");
         search.setMenuListener(new SearchBox.MenuListener(){
@@ -103,49 +156,25 @@ public class UsersActivity extends AppCompatActivity {
         });
 
 
-        viewPager = (ViewPager) findViewById(R.id.users_viewpager);
-        setupViewPager(viewPager);
-        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
-            }
-            @Override
-            public void onPageSelected(int position) {
-                if(position==0){
-                    toolbar.setTitle("Онлайн");
-                }else if(position==1){
-                    toolbar.setTitle("Друзья");
-                }else if(position==2){
-                    toolbar.setTitle("Группа");
-                }else if(position==3){
-                    toolbar.setTitle("Преподаватели");
-                }else if(position==4){
-                    toolbar.setTitle("Заблокированные");
-                }
-            }
-            @Override
-            public void onPageScrollStateChanged(int state) {
 
-            }
-        });
 
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.users_tabs);
-        tabLayout.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-        tabLayout.setupWithViewPager(viewPager);
-
-        TextView tv0 = (TextView)(((LinearLayout)((LinearLayout)tabLayout.getChildAt(0)).getChildAt(0)).getChildAt(1));
-        tv0.setTypeface(Typeface.createFromAsset(this.getAssets(), "fonts/fontawesome-webfont.ttf"));
-        tv0.setTextSize(16);
-        TextView tv1 = (TextView)(((LinearLayout)((LinearLayout)tabLayout.getChildAt(0)).getChildAt(1)).getChildAt(1));
-        tv1.setTypeface(Typeface.createFromAsset(this.getAssets(), "fonts/fontawesome-webfont.ttf"));
-        tv1.setTextSize(18);
-        TextView tv2 = (TextView)(((LinearLayout)((LinearLayout)tabLayout.getChildAt(0)).getChildAt(2)).getChildAt(1));
-        tv2.setTypeface(Typeface.createFromAsset(this.getAssets(), "fonts/fontawesome-webfont.ttf"));
-        TextView tv3 = (TextView)(((LinearLayout)((LinearLayout)tabLayout.getChildAt(0)).getChildAt(3)).getChildAt(1));
-        tv3.setTypeface(Typeface.createFromAsset(this.getAssets(), "fonts/fontawesome-webfont.ttf"));
-        TextView tv4 = (TextView)(((LinearLayout)((LinearLayout)tabLayout.getChildAt(0)).getChildAt(4)).getChildAt(1));
-        tv4.setTypeface(Typeface.createFromAsset(this.getAssets(), "fonts/fontawesome-webfont.ttf"));
+//        TabLayout tabLayout = (TabLayout) findViewById(R.id.users_tabs);
+//        tabLayout.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+//        tabLayout.setupWithViewPager(pager);
+//
+//        TextView tv0 = (TextView)(((LinearLayout)((LinearLayout)tabLayout.getChildAt(0)).getChildAt(0)).getChildAt(1));
+//        tv0.setTypeface(Typeface.createFromAsset(this.getAssets(), "fonts/fontawesome-webfont.ttf"));
+//        tv0.setTextSize(16);
+//        TextView tv1 = (TextView)(((LinearLayout)((LinearLayout)tabLayout.getChildAt(0)).getChildAt(1)).getChildAt(1));
+//        tv1.setTypeface(Typeface.createFromAsset(this.getAssets(), "fonts/fontawesome-webfont.ttf"));
+//        tv1.setTextSize(18);
+//        TextView tv2 = (TextView)(((LinearLayout)((LinearLayout)tabLayout.getChildAt(0)).getChildAt(2)).getChildAt(1));
+//        tv2.setTypeface(Typeface.createFromAsset(this.getAssets(), "fonts/fontawesome-webfont.ttf"));
+//        TextView tv3 = (TextView)(((LinearLayout)((LinearLayout)tabLayout.getChildAt(0)).getChildAt(3)).getChildAt(1));
+//        tv3.setTypeface(Typeface.createFromAsset(this.getAssets(), "fonts/fontawesome-webfont.ttf"));
+//        TextView tv4 = (TextView)(((LinearLayout)((LinearLayout)tabLayout.getChildAt(0)).getChildAt(4)).getChildAt(1));
+//        tv4.setTypeface(Typeface.createFromAsset(this.getAssets(), "fonts/fontawesome-webfont.ttf"));
     }
 
     @Override
@@ -159,36 +188,37 @@ public class UsersActivity extends AppCompatActivity {
     }
 
     public void setupViewPager(ViewPager viewPager) {
-        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
 
         UsersFragment onlineUsersFragment = new UsersFragment();
         onlineUsersFragment.setUsersType(0);
         onlineUsersFragment.setActivity(UsersActivity.this);
-        adapter.addFragment(onlineUsersFragment, "\uF007");
+        adapter.addFragment(onlineUsersFragment, "Онлайн");
 
         UsersFragment friendsUsersFragment = new UsersFragment();
         friendsUsersFragment.setUsersType(1);
         friendsUsersFragment.setActivity(UsersActivity.this);
-        adapter.addFragment(friendsUsersFragment, "\uF234");
+        adapter.addFragment(friendsUsersFragment, "Друзья");
 
         UsersFragment groupsUsersFragment = new UsersFragment();
         groupsUsersFragment.setUsersType(2);
         groupsUsersFragment.setActivity(UsersActivity.this);
-        adapter.addFragment(groupsUsersFragment, "\uF0C0");
+        adapter.addFragment(groupsUsersFragment, "Группа");
 
         UsersFragment teachersUsersFragment = new UsersFragment();
         teachersUsersFragment.setUsersType(3);
         teachersUsersFragment.setActivity(UsersActivity.this);
-        adapter.addFragment(teachersUsersFragment, "\uF21B");
+        adapter.addFragment(teachersUsersFragment, "Преподаватели");
 
         UsersFragment blacklistUsersFragment = new UsersFragment();
         blacklistUsersFragment.setUsersType(4);
         blacklistUsersFragment.setActivity(UsersActivity.this);
-        adapter.addFragment(blacklistUsersFragment, "\uF235");
+        adapter.addFragment(blacklistUsersFragment, "Заблокированные");
 
         viewPager.setAdapter(adapter);
         viewPager.setOffscreenPageLimit(3);
     }
+
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

@@ -12,6 +12,7 @@ import java.util.List;
  */
 public class ViewPagerAdapter extends FragmentStatePagerAdapter {
 
+    private final String[] TITLES = { "Онлайн", "Друзья", "Группа", "Преподаватели", "Заблокированные"};
     private List<Fragment> mFragmentList = new ArrayList<>();
     private List<String> mFragmentTitleList = new ArrayList<>();
 

@@ -9,5 +9,6 @@
     <color name="color_menu_text">#989eae</color>
     <color name="black">#000000</color>
     <color name="white">#ffffff</color>
+    <color name="transparentWhite">#80ffffff</color>
 
 </resources>
