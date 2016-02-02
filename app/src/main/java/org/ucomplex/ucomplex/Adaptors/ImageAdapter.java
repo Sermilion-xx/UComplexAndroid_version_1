@@ -139,12 +139,36 @@ public class ImageAdapter extends BaseAdapter {
         User user = getItem(position);
         int type = user.getType();
         String typeStr = null;
-        if (type == 1) {
+        if (type == 0) {
+            typeStr = "Сотрудник";
+        }if (type == 1) {
             typeStr = "Администратор";
-        } else if (type == 2) {
+        }if (type == 2) {
+            typeStr = "Суб-Администратор";
+        }else if (type == 3) {
             typeStr = "Преподаватель";
-        } else if (type == 4) {
+        }else if (type == 4) {
             typeStr = "Студент";
+        }else if (type == 5) {
+            typeStr = "Методист по расписанию";
+        }else if (type == 6) {
+            typeStr = "Методист КО";
+        }else if (type == 7) {
+            typeStr = "Библиотекарь";
+        }else if (type == 8) {
+            typeStr = "Техсекретарь";
+        }else if (type == 9) {
+            typeStr = "Абитуриент";
+        }else if (type == 10) {
+            typeStr = "Учебный отдел";
+        }else if (type == 11) {
+            typeStr = "Руководитель";
+        }else if (type == 12) {
+            typeStr = "Мониторинг";
+        }else if (type == 13) {
+            typeStr = "Декан";
+        }else if (type == 14) {
+            typeStr = "Отдел кадров";
         }
 
         viewHolder.textView1.setText(user.getName());
