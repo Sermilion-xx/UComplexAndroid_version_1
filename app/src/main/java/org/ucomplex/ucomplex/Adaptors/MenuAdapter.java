@@ -222,14 +222,13 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
         } else if (holder.Holderid == 2) {
             holder.textView.setText(mNavTitles[position - 1]);
             holder.imageView.setImageResource(mIcons[position - 1]);
-            if (Common.newMesg > 0) {
+            if (msgCount > 0 || holder.msgCountImageView==null) {
                 TextDrawable drawable = TextDrawable.builder().beginConfig()
                         .width(604)
                         .height(604)
                         .endConfig()
                         .buildRect(String.valueOf(msgCount), Color.parseColor("#20bcfa"));
                 holder.msgCountImageView.setImageDrawable(drawable);
-                Common.newMesg = 0;
             }
 
         }

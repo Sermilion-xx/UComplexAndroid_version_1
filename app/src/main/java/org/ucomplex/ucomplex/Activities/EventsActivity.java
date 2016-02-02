@@ -110,11 +110,14 @@ public class EventsActivity extends AppCompatActivity implements OnTaskCompleteL
         public void onReceive(Context context, Intent intent) {
             Bundle bundle = intent.getExtras();
             int messageCount = bundle.getInt("newMessage");
-            if(messageCount>0){
+            if(messageCount>0 && messageCount != mAdapter.getMsgCount()){
                 Log.e("MGS", "Received broadcast: "+messageCount);
-                localMsgCount = messageCount;
+                mAdapter.setMsgCount(messageCount);
+                mAdapter.notifyItemChanged(6);
+            }else if(messageCount == 0 && mAdapter.getMsgCount()>0){
+                mAdapter.setMsgCount(messageCount);
+                mAdapter.notifyItemChanged(6);
             }
-
         }
     };
 
@@ -130,20 +133,6 @@ public class EventsActivity extends AppCompatActivity implements OnTaskCompleteL
         IntentFilter filter = new IntentFilter();
         filter.addAction("org.ucomplex.newMessageBroadcast");
         registerReceiver(receiver, filter);
-        if(Common.fromMessages && mAdapter.getMsgCount()>0){
-            mRecyclerView.setAdapter(mAdapter);
-            Common.fromMessages = false;
-        }
-
-        if(mAdapter.getMsgCount() != localMsgCount){
-            mRecyclerView.setAdapter(mAdapter);
-        }
-//        if(this.Drawer!=null) {
-//            if (this.Drawer.isDrawerOpen(GravityCompat.START)) {
-//                this.Drawer.closeDrawer(GravityCompat.START);
-//
-//            }
-//        }
     }
 
 
@@ -152,13 +141,8 @@ public class EventsActivity extends AppCompatActivity implements OnTaskCompleteL
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Common.fetchMyNews(EventsActivity.this);
-
-
         Intent i= new Intent(EventsActivity.this, MyService.class);
         EventsActivity.this.startService(i);
-
-
-
         if ((savedInstanceState != null)
                 && (savedInstanceState.getSerializable("eventsArray") != null)) {
             eventsArray = (ArrayList) savedInstanceState.getSerializable("eventsArray");
