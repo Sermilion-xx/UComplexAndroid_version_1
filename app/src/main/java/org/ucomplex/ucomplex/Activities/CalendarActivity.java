@@ -82,8 +82,8 @@ public class CalendarActivity extends AppCompatActivity implements AdapterView.O
 
                 Calendar cal = Calendar.getInstance();
                 int Year = cal.get(Calendar.YEAR);
-                if (year <= Year) {
 
+                if (year <= Year) {
 //                    if(!checkedMonths.contains(date)){
                         mAsyncTaskManager.setupTask(new FetchCalendarTask(context),String.valueOf(user.getType()), monthStr,dateStr);
 //                        checkedMonths.add(date);
@@ -96,6 +96,9 @@ public class CalendarActivity extends AppCompatActivity implements AdapterView.O
     }
 
     private void refreshMonth() {
+        //выставленны по приоритету, так как каджый декоратор накладываеться на предыдущий
+        //сегодня
+        materialCalendarView.addDecorator(new CalendarDayDecorator(calendar, 6));
         //Расписание
         materialCalendarView.addDecorator(new CalendarDayDecorator(calendar, 5));
         //занятие
@@ -108,8 +111,7 @@ public class CalendarActivity extends AppCompatActivity implements AdapterView.O
         materialCalendarView.addDecorator(new CalendarDayDecorator(calendar, 2));
         //события
         materialCalendarView.addDecorator(new CalendarDayDecorator(calendar, 4));
-        //сегодня
-        materialCalendarView.addDecorator(new CalendarDayDecorator(calendar, 6));
+
     }
 
     @Override

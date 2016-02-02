@@ -24,6 +24,7 @@ import android.util.Log;
 
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.google.gson.Gson;
+import com.prolificinteractive.materialcalendarview.CalendarDay;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -74,6 +75,7 @@ public class Common {
     public static int GALLERY_KITKAT_INTENT_CALLED = 1;
     public static int newMesg = 0;
     public static ArrayList<Integer> fromMessages = new ArrayList<>();
+    public static ArrayList<CalendarDay> decoratedDays = new ArrayList<>();
 
     public static int getColor(int index) {
         String [] hexColors = {"#f6a6c1","#92d6eb","#4dd9e2","#68d9f0","#c69ad9","#ff83b6","#fda79d","#f8c092",

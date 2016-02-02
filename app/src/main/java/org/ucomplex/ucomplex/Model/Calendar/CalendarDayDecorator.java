@@ -23,6 +23,7 @@ public class CalendarDayDecorator implements DayViewDecorator {
     private String color;
     private String year;
     private String month;
+    private int type;
     private HashSet<CalendarDay> dates;
     String[] colors = {"#51cde7","#fecd71","#9ece2b","#d18ec0","#fe7877","#8ea3d1","#c3ccd3"};
     //"Занятие",
@@ -31,6 +32,7 @@ public class CalendarDayDecorator implements DayViewDecorator {
     //"Индивидуальное занятие"
 
     public CalendarDayDecorator(UCCalendar calendar, int type ) {
+        this.type = type;
         year = calendar.getYear();
         month = calendar.getMonth();
         this.color = colors[type];
@@ -44,7 +46,6 @@ public class CalendarDayDecorator implements DayViewDecorator {
             dates = new HashSet<>();
             Calendar cal = Calendar.getInstance();
             dates.add(CalendarDay.from(cal.get(Calendar.YEAR),cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH)));
-            System.out.println();
         }
 
     }
@@ -70,20 +71,20 @@ public class CalendarDayDecorator implements DayViewDecorator {
         return false;
     }
 
-
     @Override
     public void decorate(DayViewFacade view) {
-        TextDrawable drawable = TextDrawable.builder().beginConfig()
-                .width(20)
-                .height(20)
-                .endConfig()
-                .buildRound(null, Color.parseColor(color));
-
-        view.setBackgroundDrawable(drawable);
+        if(this.type == 6) {
+            TextDrawable drawable = TextDrawable.builder().beginConfig()
+                    .width(20)
+                    .height(20)
+                    .endConfig()
+                    .buildRound(null, Color.parseColor("#09c8fa"));
+            view.setBackgroundDrawable(drawable);
+        }else {
+            view.addSpan(new DayDecoratorSpan(9, Color.parseColor(color)));
+        }
 
     }
-
-
 
     private HashSet<CalendarDay> changedDaysToCalendarDays(List changedDays, int type){
         ArrayList<ChangedDay> list = (ArrayList<ChangedDay>) changedDays;
