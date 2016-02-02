@@ -22,18 +22,18 @@ import java.util.List;
  */
 public class CourseCalendarBeltAdapter extends ArrayAdapter<Quartet<Integer, String, String, Integer>> {
 
-     String[] colors = {"#51cde7","#fecd71","#9ece2b","#d18ec0"};
+    String[] colors = {"#51cde7", "#fecd71", "#9ece2b", "#d18ec0"};
 
-    public CourseCalendarBeltAdapter(Context context, List<Quartet<Integer, String, String, Integer>> items){
-        super(context, R.layout.course_calendar_belt_listview_item,items);
+    public CourseCalendarBeltAdapter(Context context, List<Quartet<Integer, String, String, Integer>> items) {
+        super(context, R.layout.list_item_course_calendar_belt, items);
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder viewHolder;
-        if(convertView == null) {
+        if (convertView == null) {
             LayoutInflater inflater = LayoutInflater.from(getContext());
-            convertView = inflater.inflate(R.layout.course_calendar_belt_listview_item, parent, false);
+            convertView = inflater.inflate(R.layout.list_item_course_calendar_belt, parent, false);
             viewHolder = new ViewHolder();
             viewHolder.teacherNametextView = (TextView) convertView.findViewById(R.id.course_calendar_belt_listview_item_textview1);
             viewHolder.dateTextView2 = (TextView) convertView.findViewById(R.id.course_calendar_belt_listview_item_textview2);
@@ -42,33 +42,41 @@ public class CourseCalendarBeltAdapter extends ArrayAdapter<Quartet<Integer, Str
 
 
             convertView.setTag(viewHolder);
-        }else{
+        } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
         Quartet<Integer, String, String, Integer> feedItem = getItem(position);
         viewHolder.teacherNametextView.setText(feedItem.getValue1());
         viewHolder.dateTextView2.setText(feedItem.getValue2());
-        String hex=this.colors[feedItem.getValue3()]; // green
-        long thisCol=Long.decode(hex)+4278190080L;
-        int classColor=(int)thisCol;
-        TextDrawable drawable = TextDrawable.builder()
-                .buildRound(String.valueOf(getLetter(feedItem.getValue0())), classColor);
+        String hex = this.colors[feedItem.getValue3()]; // green
+        long thisCol = Long.decode(hex) + 4278190080L;
+        int classColor = (int) thisCol;
+        TextDrawable drawable;
+        if (feedItem.getValue0() == 0) {
+            Typeface custom_font = Typeface.createFromAsset(getContext().getAssets(), "fonts/fontawesome-webfont.ttf");
+            drawable = TextDrawable.builder().beginConfig().useFont(custom_font).textColor(Color.parseColor("#0ac1f0")).endConfig()
+                    .buildRound(String.valueOf(getLetter(feedItem.getValue0())), Color.WHITE);
+
+        } else {
+            drawable = TextDrawable.builder()
+                    .buildRound(String.valueOf(getLetter(feedItem.getValue0())), classColor);
+        }
         viewHolder.markImageView.setImageDrawable(drawable);
         viewHolder.timeIconttextView.setTypeface(Typeface.createFromAsset(getContext().getAssets(), "fonts/fontawesome-webfont.ttf"));
         viewHolder.timeIconttextView.setText("\uF017");
         return convertView;
     }
 
-    private static String getLetter(int mark){
+    private static String getLetter(int mark) {
 
-        if(mark==-1){
+        if (mark == -1) {
             return "н";
-        }else if(mark==0){
-            return "✓";
-        }else if(mark==-3){
+        } else if (mark == 0) {
+            return "\uF00C";
+        } else if (mark == -3) {
             return "б";
-        }else{
+        } else {
             return String.valueOf(mark);
         }
     }

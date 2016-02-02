@@ -70,8 +70,6 @@ public class EventsFragment extends ListFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         getListView().setDivider(null);
-
-
         getListView().setAdapter(imageAdapter);
         getListView().setOnItemClickListener(new OnItemClickListener() {
             @Override
