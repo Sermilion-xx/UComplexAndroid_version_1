@@ -1,10 +1,14 @@
 package org.ucomplex.ucomplex.Activities;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -32,9 +36,37 @@ public class MessagesListActivity extends AppCompatActivity implements OnTaskCom
     private int selectedItemPos;
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        if(messagesListAdapter!=null) {
+            messagesListAdapter.notifyDataSetChanged();
+        }
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("org.ucomplex.newMessageListBroadcast");
+        registerReceiver(receiver, filter);
+    }
+
+    @Override
+    protected void onPause() {
+        unregisterReceiver(receiver);
+        super.onPause();
+    }
+
+    BroadcastReceiver receiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Bundle bundle = intent.getExtras();
+            int messageCount = bundle.getInt("newMessage");
+            if(messageCount>0){
+                FetchDialogsTask fetchDialogsTask = new FetchDialogsTask(MessagesListActivity.this, MessagesListActivity.this);
+                fetchDialogsTask.setupTask();
+            }
+        }
+    };
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Common.fromMessages = true;
         setContentView(R.layout.activity_messages_list);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("Сообщения");

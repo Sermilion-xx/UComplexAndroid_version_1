@@ -43,7 +43,6 @@ import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -74,7 +73,7 @@ public class Common {
     public static int GALLERY_INTENT_CALLED = 0;
     public static int GALLERY_KITKAT_INTENT_CALLED = 1;
     public static int newMesg = 0;
-    public static boolean fromMessages = false;
+    public static ArrayList<Integer> fromMessages = new ArrayList<>();
 
     public static int getColor(int index) {
         String [] hexColors = {"#f6a6c1","#92d6eb","#4dd9e2","#68d9f0","#c69ad9","#ff83b6","#fda79d","#f8c092",
@@ -101,9 +100,22 @@ public class Common {
                         JSONObject jsonObject = new JSONObject(jsonData);
                         JSONObject messagesJson = jsonObject.getJSONObject("messages");
                         if(messagesJson!=null){
+                            ArrayList<String> fromMessagesStr = Common.getKeys(messagesJson);
+                            fromMessagesStr.remove("sum");
+                            fromMessages.clear();
+                            for(String from: fromMessagesStr){
+                                fromMessages.add(Integer.valueOf(from));
+                            }
+                            if(newMesg!=messagesJson.getInt("sum")){
+                                Common.newMesg = messagesJson.getInt("sum");
+                                Intent broadcast = new Intent();
+                                broadcast.setAction("org.ucomplex.newMessageListBroadcast");
+                                broadcast.putExtra("newMessage", Common.newMesg);
+                                context.sendBroadcast(broadcast);
+                            }
                             Common.newMesg = messagesJson.getInt("sum");
                             Intent broadcast = new Intent();
-                            broadcast.setAction("org.ucomplex.newMessageBroadcast");
+                            broadcast.setAction("org.ucomplex.newMessageMenuBroadcast");
                             broadcast.putExtra("newMessage", Common.newMesg);
                             context.sendBroadcast(broadcast);
                         }

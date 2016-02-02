@@ -2,6 +2,7 @@ package org.ucomplex.ucomplex.Adaptors;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
@@ -31,7 +32,7 @@ public class MessagesListAdapter extends ArrayAdapter<Dialog> {
 
     private LayoutInflater inflater;
     ArrayList<Dialog> dialogs;
-    private boolean finishedLoading =false;
+    private boolean finishedLoading = false;
     private DisplayImageOptions options;
 
     public MessagesListAdapter(Context context, ArrayList<Dialog> dialogs) {
@@ -55,10 +56,10 @@ public class MessagesListAdapter extends ArrayAdapter<Dialog> {
         return dialogs.get(position);
     }
 
-    public View getView(final int position, View convertView, ViewGroup parent){
+    public View getView(final int position, View convertView, ViewGroup parent) {
         ViewHolder viewHolder = null;
 
-        if(convertView==null) {
+        if (convertView == null) {
             inflater = LayoutInflater.from(getContext());
             viewHolder = new ViewHolder();
             convertView = inflater.inflate(R.layout.list_item_messages_user, null);
@@ -69,12 +70,12 @@ public class MessagesListAdapter extends ArrayAdapter<Dialog> {
             if (convertView != null) {
                 convertView.setTag(viewHolder);
             }
-        }else {
+        } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
         Dialog item = getItem(position);
 
-        if(item.getPhoto()==1) {
+        if (item.getPhoto() == 1) {
             if (!finishedLoading) {
                 final ViewHolder finalViewHolder = viewHolder;
                 ImageLoader.getInstance()
@@ -102,16 +103,8 @@ public class MessagesListAdapter extends ArrayAdapter<Dialog> {
                         }, new ImageLoadingProgressListener() {
                             @Override
                             public void onProgressUpdate(String imageUri, View view, int current, int total) {
-//							holder.progressBar.setProgress(Math.round(100.0f * current / total));
                             }
                         });
-
-//                    if (counter < mItems.size()) {
-//                        counter++;
-//                    } else {
-//                        finishedLoading = true;
-//                    }
-
             } else {
                 Bitmap image = item.getPhotoBitmap();
                 if (image != null)
@@ -120,20 +113,22 @@ public class MessagesListAdapter extends ArrayAdapter<Dialog> {
                     viewHolder.profileImageView.setImageDrawable(getDrawable(position));
                 }
             }
-        }else{
+        } else {
             viewHolder.profileImageView.setImageDrawable(getDrawable(position));
         }
-
+        int newMessageFrom = dialogs.get(position).getFrom();
+        if (Common.fromMessages.contains(newMessageFrom)) {
+            convertView.setBackgroundColor(Color.parseColor("#ecfbfe"));
+        } else {
+            convertView.setBackgroundColor(Color.WHITE);
+        }
         viewHolder.nameTextView.setText(item.getName());
         viewHolder.lastMessageTextView.setText(item.getMessage());
-
         return convertView;
-
     }
 
 
-
-    public Drawable getDrawable(int position){
+    public Drawable getDrawable(int position) {
         final int colorsCount = 16;
         int companion = getItem(position).getCompanion();
         final int number = (companion <= colorsCount) ? companion : companion % colorsCount;
@@ -152,6 +147,5 @@ public class MessagesListAdapter extends ArrayAdapter<Dialog> {
         TextView nameTextView;
         TextView lastMessageTextView;
         ImageView profileImageView;
-
     }
 }

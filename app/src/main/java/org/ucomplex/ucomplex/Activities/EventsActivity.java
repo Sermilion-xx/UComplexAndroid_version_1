@@ -104,7 +104,6 @@ public class EventsActivity extends AppCompatActivity implements OnTaskCompleteL
         }.execute(user.getType());
     }
 
-
     BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -131,11 +130,9 @@ public class EventsActivity extends AppCompatActivity implements OnTaskCompleteL
     protected void onResume() {
         super.onResume();
         IntentFilter filter = new IntentFilter();
-        filter.addAction("org.ucomplex.newMessageBroadcast");
+        filter.addAction("org.ucomplex.newMessageMenuBroadcast");
         registerReceiver(receiver, filter);
     }
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -191,10 +188,6 @@ public class EventsActivity extends AppCompatActivity implements OnTaskCompleteL
         mRecyclerView = (RecyclerView) findViewById(R.id.RecyclerView);
         mRecyclerView.setHasFixedSize(true);
         mAdapter = new MenuAdapter(TITLES, ICONS, user, this);
-        if(Common.newMesg>0){
-            mAdapter.setMsgCount(Common.newMesg);
-            mAdapter.notifyDataSetChanged();
-        }
         mRecyclerView.setAdapter(mAdapter);
         mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);

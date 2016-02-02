@@ -110,42 +110,44 @@ public class FetchMessagesTask extends AsyncTask<String, String, LinkedList> imp
         String myName = user.getName();
         user = null;
         messagesList = new LinkedList<>();
-        try {
-            JSONArray messagesJson = new JSONObject(jsonData).getJSONArray("messages");
-            JSONObject companionJson = new JSONObject(jsonData).getJSONObject("companion_info");
-            Bitmap profileImage = null;
-            if (companionJson.getString("photo").equals("1")) {
-                profileImage = Common.getBitmapFromURL(companionJson.getString("code"));
-            }
-            for (int i = 0; i < messagesJson.length(); i++) {
-                JSONObject messageJson = messagesJson.getJSONObject(i);
-                Message message = new Message();
-                message.setId(messageJson.getInt("id"));
-                message.setFrom(messageJson.getInt("from"));
-                message.setMessage(messageJson.getString("message"));
-                try {
-                    message.setStatus(messageJson.getInt("status"));
-                } catch (JSONException ignored) {
+        if(jsonData!=null) {
+            try {
+                JSONArray messagesJson = new JSONObject(jsonData).getJSONArray("messages");
+                JSONObject companionJson = new JSONObject(jsonData).getJSONObject("companion_info");
+                Bitmap profileImage = null;
+                if (companionJson.getString("photo").equals("1")) {
+                    profileImage = Common.getBitmapFromURL(companionJson.getString("code"));
                 }
-                message.setTime(messageJson.getString("time"));
-                messagesList.add(message);
-                if (messageJson.getInt("from") != person) {
-                    message.setName(companionJson.getString("name"));
-                    if (Common.messageCompanionName.equals("-")) {
-                        Common.messageCompanionName = companionJson.getString("name");
+                for (int i = 0; i < messagesJson.length(); i++) {
+                    JSONObject messageJson = messagesJson.getJSONObject(i);
+                    Message message = new Message();
+                    message.setId(messageJson.getInt("id"));
+                    message.setFrom(messageJson.getInt("from"));
+                    message.setMessage(messageJson.getString("message"));
+                    try {
+                        message.setStatus(messageJson.getInt("status"));
+                    } catch (JSONException ignored) {
                     }
-                } else {
-                    message.setName(myName);
+                    message.setTime(messageJson.getString("time"));
+                    messagesList.add(message);
+                    if (messageJson.getInt("from") != person) {
+                        message.setName(companionJson.getString("name"));
+                        if (Common.messageCompanionName.equals("-")) {
+                            Common.messageCompanionName = companionJson.getString("name");
+                        }
+                    } else {
+                        message.setName(myName);
+                    }
                 }
+                publishProgress("100%");
+                //Последний элемент - фото компаньона
+                if (profileImage != null) {
+                    messagesList.addLast(profileImage);
+                }
+                return messagesList;
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
-            publishProgress("100%");
-            //Последний элемент - фото компаньона
-            if (profileImage != null) {
-                messagesList.addLast(profileImage);
-            }
-            return messagesList;
-        } catch (JSONException e) {
-            e.printStackTrace();
         }
 
         return null;
