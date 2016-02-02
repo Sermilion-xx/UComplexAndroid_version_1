@@ -140,35 +140,35 @@ public class ImageAdapter extends BaseAdapter {
         int type = user.getType();
         String typeStr = null;
         if (type == 0) {
-            typeStr = "Сотрудник";
+            typeStr = context.getResources().getString(R.string.sotrudnik);
         }if (type == 1) {
-            typeStr = "Администратор";
+            typeStr = context.getResources().getString(R.string.administrator);
         }if (type == 2) {
-            typeStr = "Суб-Администратор";
+            typeStr = context.getResources().getString(R.string.sub_administrator);
         }else if (type == 3) {
-            typeStr = "Преподаватель";
+            typeStr = context.getResources().getString(R.string.prepodvatel);
         }else if (type == 4) {
-            typeStr = "Студент";
+            typeStr = context.getResources().getString(R.string.student);
         }else if (type == 5) {
-            typeStr = "Методист по расписанию";
+            typeStr = context.getResources().getString(R.string.metodist_po_raspisaniyu);
         }else if (type == 6) {
-            typeStr = "Методист КО";
+            typeStr = context.getResources().getString(R.string.metodist_ko);
         }else if (type == 7) {
-            typeStr = "Библиотекарь";
+            typeStr = context.getResources().getString(R.string.bibliotekar);
         }else if (type == 8) {
-            typeStr = "Техсекретарь";
+            typeStr = context.getResources().getString(R.string.tehsekretar);
         }else if (type == 9) {
-            typeStr = "Абитуриент";
+            typeStr = context.getResources().getString(R.string.abiturient);
         }else if (type == 10) {
-            typeStr = "Учебный отдел";
+            typeStr = context.getResources().getString(R.string.uchebny_otdel);
         }else if (type == 11) {
-            typeStr = "Руководитель";
+            typeStr = context.getResources().getString(R.string.rukovoditel);
         }else if (type == 12) {
-            typeStr = "Мониторинг";
+            typeStr = context.getResources().getString(R.string.monitoring);
         }else if (type == 13) {
-            typeStr = "Декан";
+            typeStr = context.getResources().getString(R.string.dekan);
         }else if (type == 14) {
-            typeStr = "Отдел кадров";
+            typeStr = context.getResources().getString(R.string.otdel_kadrov);
         }
 
         viewHolder.textView1.setText(user.getName());

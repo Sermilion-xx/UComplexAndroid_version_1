@@ -78,5 +78,22 @@
     <string name="third_role_str">Третья роль</string>
     <string name="logout_str">Выйти</string>
 
+    <string name="sotrudnik">Сотрудник</string>
+    <string name="administrator">Администратор</string>
+    <string name="sub_administrator">Суб-Администратор</string>
+    <string name="prepodvatel">Преподаватель</string>
+    <string name="student">Студент</string>
+    <string name="metodist_po_raspisaniyu">Методист по расписанию</string>
+    <string name="metodist_ko">Методист КО</string>
+    <string name="bibliotekar">Библиотекарь</string>
+    <string name="tehsekretar">Техсекретарь</string>
+    <string name="abiturient">Абитуриент</string>
+    <string name="uchebny_otdel">Учебный отдел</string>
+    <string name="rukovoditel">Руководитель</string>
+    <string name="monitoring">Мониторинг</string>
+    <string name="dekan">Декан</string>
+    <string name="otdel_kadrov">Отдел кадров</string>
+
+
 
 </resources>
