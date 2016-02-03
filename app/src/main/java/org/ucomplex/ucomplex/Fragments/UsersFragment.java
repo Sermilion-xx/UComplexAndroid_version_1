@@ -1,7 +1,6 @@
 package org.ucomplex.ucomplex.Fragments;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
@@ -19,7 +18,6 @@ import org.ucomplex.ucomplex.Model.Users.User;
 import java.util.ArrayList;
 
 
-
 public class UsersFragment extends ListFragment {
 
     ArrayList<User> mItems = new ArrayList<>();
@@ -28,7 +26,6 @@ public class UsersFragment extends ListFragment {
     Button btnLoadExtra;
     ArrayList<User> loadedUsers;
     int lastPos;
-    Context context;
     Activity activity;
 
 
@@ -36,9 +33,6 @@ public class UsersFragment extends ListFragment {
         this.activity = activity;
     }
 
-    public void setContext(Context context) {
-        this.context = context;
-    }
 
     public UsersFragment() {
 
@@ -70,7 +64,7 @@ public class UsersFragment extends ListFragment {
         } else {
             extras.putString("person", String.valueOf(user.getPerson()));
         }
-        if(user.getPhotoBitmap()!=null){
+        if (user.getPhotoBitmap() != null) {
             intent.putExtra("bitmap", user.getPhotoBitmap());
         }
         intent.putExtras(extras);
@@ -81,10 +75,10 @@ public class UsersFragment extends ListFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
-        if (savedInstanceState!= null) {
+        if (savedInstanceState != null) {
             mItems = (ArrayList<User>) savedInstanceState.getSerializable("mItems");
         }
-        if((mItems != null ? mItems.size() : 0) == 0){
+        if ((mItems != null ? mItems.size() : 0) == 0) {
             fetchUsers();
         }
     }
@@ -92,9 +86,9 @@ public class UsersFragment extends ListFragment {
     @Override
     public void onStart() {
         super.onStart();
-        if(usersType == Common.userListChanged){
+        if (usersType == Common.userListChanged) {
             fetchUsers();
-            Common.userListChanged = - 1;
+            Common.userListChanged = -1;
         }
     }
 
@@ -104,11 +98,11 @@ public class UsersFragment extends ListFragment {
 
     }
 
-    private void fetchUsers(){
+    private void fetchUsers() {
         new FetchUsersTask(getActivity()) {
             @Override
-            protected void onPostExecute( ArrayList<User> users ) {
-                super.onPostExecute( users );
+            protected void onPostExecute(ArrayList<User> users) {
+                super.onPostExecute(users);
                 mItems = users;
                 setListAdapter(new ImageAdapter(mItems, activity, usersType));
             }
@@ -121,7 +115,7 @@ public class UsersFragment extends ListFragment {
         getListView().setDivider(null);
         imageAdapter = new ImageAdapter(mItems, getActivity(), usersType);
 
-        if(usersType!=3) {
+        if (usersType != 3) {
             btnLoadExtra = new Button(getContext());
             btnLoadExtra.setFocusable(false);
             btnLoadExtra.setText("Загрузить еще...");
@@ -132,11 +126,11 @@ public class UsersFragment extends ListFragment {
 
                     new FetchUsersTask(getActivity()) {
                         @Override
-                        protected void onPostExecute( ArrayList<User> users ) {
-                            super.onPostExecute( users );
+                        protected void onPostExecute(ArrayList<User> users) {
+                            super.onPostExecute(users);
                             lastPos = mItems.size();
                             loadedUsers = users;
-                            if(loadedUsers.size()<=20){
+                            if (loadedUsers.size() <= 20) {
                                 btnLoadExtra.setVisibility(View.GONE);
                             }
                             mItems.addAll(loadedUsers);
@@ -147,24 +141,20 @@ public class UsersFragment extends ListFragment {
                 }
             });
 
-            if(mItems!=null){
+            if (mItems != null) {
                 if (mItems.size() <= 20) {
                     btnLoadExtra.setVisibility(View.GONE);
                 }
                 getListView().addFooterView(btnLoadExtra);
-            }else{
+            } else {
                 Toast.makeText(getActivity(), "Произошла ошибка", Toast.LENGTH_SHORT).show();
             }
         }
 
-        if(mItems.size()==0){
+        if (mItems.size() == 0) {
             fetchUsers();
         }
     }
-
-
-
-
 
 
 }

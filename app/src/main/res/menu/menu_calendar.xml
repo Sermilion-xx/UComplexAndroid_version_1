@@ -3,7 +3,7 @@
 
     <!-- "Mark Favorite", should appear as action button if possible -->
     <item
-        android:id="@+id/action_favorite"
+        android:id="@+id/menu_calendar_info"
         android:icon="@drawable/ic_calendar_info"
         android:title="@string/info_str"
         app:showAsAction="ifRoom"/>

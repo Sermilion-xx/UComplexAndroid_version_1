@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -13,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ListAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -25,6 +27,7 @@ import com.prolificinteractive.materialcalendarview.format.MonthArrayTitleFormat
 import org.javatuples.Quintet;
 import org.ucomplex.ucomplex.Activities.Tasks.AsyncTaskManager;
 import org.ucomplex.ucomplex.Activities.Tasks.FetchCalendarTask;
+import org.ucomplex.ucomplex.Adaptors.CalendarInfoAdapter;
 import org.ucomplex.ucomplex.Common;
 import org.ucomplex.ucomplex.Interfaces.OnTaskCompleteListener;
 import org.ucomplex.ucomplex.Model.Calendar.CalendarDayDecorator;
@@ -50,10 +53,14 @@ public class CalendarActivity extends AppCompatActivity implements AdapterView.O
     User user;
     private AsyncTaskManager mAsyncTaskManager;
     final String[] monthsTitles = {"Январь", "Февряль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"};
+    final Integer[] infoDrawables = {R.drawable.dot_1,R.drawable.dot_2,R.drawable.dot_3,R.drawable.dot_4,R.drawable.dot_5,R.drawable.dot_6,R.drawable.dot_7};
+
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
         user = Common.getUserDataFromPref(this);
         setContentView(R.layout.activity_calendar);
         Toolbar toolbar = (Toolbar) findViewById(R.id.calendar_toolbar);
@@ -324,6 +331,15 @@ public class CalendarActivity extends AppCompatActivity implements AdapterView.O
             case android.R.id.home:
                 onBackPressed();
                 return true;
+            case R.id.menu_calendar_info:
+                final String [] items = new String[] {"Текущий день",
+                        "Занятие/Событие", "Аттестация", "Экзамен",
+                        "Индивидуальное занятие", "Нерабочий день", "Расписание"};
+
+                ListAdapter adapter = new CalendarInfoAdapter(this, items, infoDrawables);
+
+                new AlertDialog.Builder(this).setAdapter(adapter, null).show();
+
         }
         return super.onOptionsItemSelected(item);
     }
