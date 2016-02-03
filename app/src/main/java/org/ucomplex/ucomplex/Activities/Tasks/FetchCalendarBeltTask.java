@@ -40,7 +40,9 @@ public class FetchCalendarBeltTask extends AsyncTask<Integer, Void, ArrayList<Qu
     protected ArrayList<Quartet<Integer, String, String, Integer>> doInBackground(Integer... postParamsString) {
         String urlString = "http://you.com.ru/student/ajax/calendar_belt?json";
         HashMap<String, String> postParams = new HashMap<>();
-        postParams.put("gcourse", String.valueOf(postParamsString[0]));
+        if(postParamsString.length>0){
+            postParams.put("gcourse", String.valueOf(postParamsString[0]));
+        }
         String jsonData = Common.httpPost(urlString, Common.getLoginDataFromPref(mContext), postParams);
         return getCalendarBeltDataFromJson(jsonData);
     }

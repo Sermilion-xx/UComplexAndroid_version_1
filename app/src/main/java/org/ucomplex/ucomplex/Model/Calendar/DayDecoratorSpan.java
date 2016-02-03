@@ -11,12 +11,10 @@ public class DayDecoratorSpan implements LineBackgroundSpan {
 
     private int radius;
     private int color;
-    private int offset;
 
     public DayDecoratorSpan(int radius, int color) {
         this.radius = radius;
         this.color = color;
-        this.offset = offset;
     }
 
     @Override
@@ -25,7 +23,7 @@ public class DayDecoratorSpan implements LineBackgroundSpan {
         if (color != 0) {
             paint.setColor(color);
         }
-        canvas.drawCircle((left + right) / 2, bottom + radius, radius, paint);
+        canvas.drawCircle((left + right) / 2, bottom + radius+20, radius, paint);
         paint.setColor(oldColor);
     }
 }
