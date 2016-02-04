@@ -8,9 +8,6 @@
     tools:context="org.ucomplex.ucomplex.Activities.CalendarDayActivity"
     tools:showIn="@layout/activity_calendar_day">
 
-    <ListView xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/calendar_day_listview"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+
 
 </RelativeLayout>

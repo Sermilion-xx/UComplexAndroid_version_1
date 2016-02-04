@@ -102,8 +102,10 @@ public class CalendarDayAdapter extends ArrayAdapter<Quintet<String,String,Strin
         }else if(viewType==TYPE_SUBJECT){
             convertView = inflater.inflate(R.layout.list_item_calendar_day_timetable, null);
             viewHolder.subjectTextView = (TextView) convertView.findViewById(R.id.list_calendar_day_subject);
+            viewHolder.subjectTypeTextView = (TextView) convertView.findViewById(R.id.list_calendar_day_subject_type);
             viewHolder.timeTextView = (TextView) convertView.findViewById(R.id.list_calendar_day_subject_time);
-            viewHolder.subjectInfoTextView = (TextView) convertView.findViewById(R.id.list_calendar_day_subject_info);
+            viewHolder.subjectTeacherTextView = (TextView) convertView.findViewById(R.id.list_calendar_day_subject_teacher);
+            viewHolder.subjectRoomTextView = (TextView) convertView.findViewById(R.id.list_calendar_day_subject_room);
             viewHolder.holderId=TYPE_SUBJECT;
 
         }else if(viewType==TYPE_SUBJECT_TITLE){
@@ -143,8 +145,13 @@ public class CalendarDayAdapter extends ArrayAdapter<Quintet<String,String,Strin
                 viewHolder.markTextView.setImageDrawable(drawable);
         }else if(viewType==TYPE_SUBJECT){
             viewHolder.timeTextView.setText(getItem(position).getValue0());
-            viewHolder.subjectTextView.setText(getItem(position).getValue1());
-            viewHolder.subjectInfoTextView.setText(getItem(position).getValue2());
+            String[] subjectAndType = getItem(position).getValue1().split(",");
+            viewHolder.subjectTextView.setText(subjectAndType[0]);
+            viewHolder.subjectTypeTextView.setText(Character.toUpperCase(subjectAndType[1].charAt(0)) + subjectAndType[1].substring(1));
+            String[] info = getItem(position).getValue2().split(",");
+            viewHolder.subjectTeacherTextView.setText(info[0]);
+            String roomNum = info[1].replaceAll("\\s+","");
+            viewHolder.subjectRoomTextView.setText(Character.toUpperCase(roomNum.charAt(0)) + roomNum.substring(1));
         }else if(viewType==TYPE_SUBJECT_TITLE){
             viewHolder.titleTextView.setText("Расписание");
         }else if(viewType==TYPE_MARK_TITLE){
@@ -171,7 +178,9 @@ public class CalendarDayAdapter extends ArrayAdapter<Quintet<String,String,Strin
         int holderId;
         TextView timeTextView;
         TextView subjectTextView;
-        TextView subjectInfoTextView;
+        TextView subjectTypeTextView;
+        TextView subjectTeacherTextView;
+        TextView subjectRoomTextView;
         ImageView markTextView;
         TextView titleTextView;
 

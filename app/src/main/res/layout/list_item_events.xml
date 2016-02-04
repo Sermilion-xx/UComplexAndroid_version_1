@@ -28,7 +28,7 @@
                 android:paddingRight="20dp"
                 android:paddingTop="15dp"
                 android:text="Преподаватель Ялмаев Рустам Алиевич заполнил протокол занятия по дисциплине«Исследование социально-экономических и политических процессов»"
-                android:textColor="#000000"
+                android:textColor="#222222"
                 android:textSize="16sp" />
 
 

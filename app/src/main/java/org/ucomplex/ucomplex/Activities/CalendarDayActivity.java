@@ -27,6 +27,7 @@ public class CalendarDayActivity extends AppCompatActivity {
         ListView listView = (ListView) findViewById(R.id.calendar_day_listview);
         CalendarDayAdapter calendarDayAdapter = new CalendarDayAdapter(this,calendarDay);
         listView.setAdapter(calendarDayAdapter);
+        listView.setDividerHeight(0);
     }
 
     @Override
