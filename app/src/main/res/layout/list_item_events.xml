@@ -29,7 +29,7 @@
                 android:paddingTop="15dp"
                 android:text="Преподаватель Ялмаев Рустам Алиевич заполнил протокол занятия по дисциплине«Исследование социально-экономических и политических процессов»"
                 android:textColor="#000000"
-                android:textSize="14sp" />
+                android:textSize="16sp" />
 
 
             <de.hdodenhof.circleimageview.CircleImageView
@@ -40,6 +40,8 @@
                 android:layout_marginBottom="19dp"
                 android:layout_marginLeft="19dp"
                 android:layout_marginTop="18dp"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
                 android:src="@mipmap/ic_no_image" />
 
             <View

@@ -146,7 +146,6 @@ public class EventsFragment extends ListFragment {
 
     private class ImageAdapter extends BaseAdapter {
 
-
         private LayoutInflater inflater;
         private DisplayImageOptions options;
         protected ImageLoader imageLoader;
@@ -156,9 +155,6 @@ public class EventsFragment extends ListFragment {
             this.context = context;
             inflater = LayoutInflater.from(context);
             options = new DisplayImageOptions.Builder()
-                    .showImageOnLoading(R.mipmap.ic_ucomplex)
-                    .showImageForEmptyUri(R.mipmap.ic_ucomplex)
-                    .showImageOnFail(R.mipmap.ic_ucomplex)
                     .cacheInMemory(true)
                     .cacheOnDisk(true)
                     .considerExifParams(true)
@@ -190,11 +186,9 @@ public class EventsFragment extends ListFragment {
 
         @Override
         public View getView(final int position, View convertView, ViewGroup parent) {
-
             View view = convertView;
             final ViewHolder viewHolder;
             if (view == null) {
-
                 view = inflater.inflate(R.layout.list_item_events, parent, false);
                 viewHolder = new ViewHolder();
                 viewHolder.eventsImageView = (ImageView) view.findViewById(R.id.list_events_item_image);
@@ -238,7 +232,7 @@ public class EventsFragment extends ListFragment {
                 if (image != null)
                     viewHolder.eventsImageView.setImageBitmap(eventItems.get(position).getEventImageBitmap());
                 else
-                    viewHolder.eventsImageView.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_ucomplex));
+                    viewHolder.eventsImageView.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.ic_ucomplex));
             }
             viewHolder.eventTextView.setText(eventItems.get(position).getEventText());
             viewHolder.eventTime.setText(eventItems.get(position).getTime());
