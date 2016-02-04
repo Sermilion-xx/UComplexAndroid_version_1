@@ -13,6 +13,7 @@ import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -76,6 +77,13 @@ public class Common {
     public static int newMesg = 0;
     public static ArrayList<Integer> fromMessages = new ArrayList<>();
     public static ArrayList<CalendarDay> decoratedDays = new ArrayList<>();
+
+    public static Typeface getTypeFace(Context context, String typeFace){
+        Typeface tf = Typeface.createFromAsset(context.getAssets(),
+                "fonts/"+typeFace);
+        return tf;
+    }
+
 
     public static int getColor(int index) {
         String [] hexColors = {"#f6a6c1","#92d6eb","#4dd9e2","#68d9f0","#c69ad9","#ff83b6","#fda79d","#f8c092",
@@ -402,11 +410,11 @@ public class Common {
 
     public static String makeDate(String time) {
         String r = "";
-        String d = time.split(" ")[0];
-        String t = time.split(" ")[1];
+        String yyyyMMdd = time.split(" ")[0];
+        String hhMMss = time.split(" ")[1];
         try {
             Locale locale = new Locale("ru", "RU");
-            Date date = new SimpleDateFormat("y-M-d H:m:s", locale).parse(time);
+            Date date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", locale).parse(time);
             Date today = new Date();
             Calendar cal1 = Calendar.getInstance();
             cal1.setTime(today);
@@ -420,11 +428,40 @@ public class Common {
             } else if (day1 - 1 == day2) {
                 r += "Вчера";
             } else {
-                r += d;
-            }
-            r += " в " + t;
-        } catch (Exception ignored) {
+                String[] tempYyMMdd = yyyyMMdd.split("-");
+                String tempMonth = tempYyMMdd[1];
+                String month = "";
+                if(tempMonth.equals("01")){
+                    month = "января";
+                }if(tempMonth.equals("02")){
+                    month = "февряля";
+                }if(tempMonth.equals("03")){
+                    month = "марта";
+                }if(tempMonth.equals("04")){
+                    month = "апреля";
+                }if(tempMonth.equals("05")){
+                    month = "мая";
+                }if(tempMonth.equals("06")){
+                    month = "июня";
+                }if(tempMonth.equals("07")){
+                    month = "июля";
+                }if(tempMonth.equals("08")){
+                    month = "августа";
+                }if(tempMonth.equals("09")){
+                    month = "сентября";
+                }if(tempMonth.equals("10")){
+                    month = "октября";
+                }if(tempMonth.equals("11")){
+                    month = "ноября";
+                }if(tempMonth.equals("12")){
+                    month = "декабря";
+                }
 
+                r += tempYyMMdd[2]+" "+month+" "+tempYyMMdd[0]+" г.";
+            }
+            r += " в " + hhMMss;
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return r;
     }

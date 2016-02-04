@@ -29,10 +29,14 @@ import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListene
 
 import org.ucomplex.ucomplex.Activities.CourseActivity;
 import org.ucomplex.ucomplex.Activities.Tasks.FetchUserEventsTask;
+import org.ucomplex.ucomplex.Common;
 import org.ucomplex.ucomplex.Model.EventRowItem;
 import org.ucomplex.ucomplex.R;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Locale;
 
 /**
  * @author Sermilion
@@ -195,8 +199,11 @@ public class EventsFragment extends ListFragment {
                 viewHolder = new ViewHolder();
                 viewHolder.eventsImageView = (ImageView) view.findViewById(R.id.list_events_item_image);
                 viewHolder.eventTextView = (TextView) view.findViewById(R.id.list_events_item_text);
+                viewHolder.eventTextView.setTypeface(Common.getTypeFace(context,"Roboto-Regular.ttf"));
                 viewHolder.eventTime = (TextView) view.findViewById(R.id.list_events_item_date);
+                viewHolder.eventTime.setTypeface(Common.getTypeFace(context,"Roboto-Regular.ttf"));
                 viewHolder.eventPersonName = (TextView) view.findViewById(R.id.list_events_item_name);
+                viewHolder.eventPersonName.setTypeface(Common.getTypeFace(context,"Roboto-Regular.ttf"));
                 view.setTag(viewHolder);
             } else {
                 viewHolder = (ViewHolder) view.getTag();
