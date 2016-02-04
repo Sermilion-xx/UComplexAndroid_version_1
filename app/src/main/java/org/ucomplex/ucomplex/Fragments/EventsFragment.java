@@ -41,7 +41,7 @@ public class EventsFragment extends ListFragment {
 
     private ArrayList<EventRowItem> eventItems = null;
     ProgressDialog progressDialog;
-	ImageAdapter imageAdapter;
+    ImageAdapter imageAdapter;
     Button btnLoadExtra;
     ProgressDialog dialog;
     Context context;
@@ -55,15 +55,15 @@ public class EventsFragment extends ListFragment {
         this.context = context;
     }
 
-    public EventsFragment(){
+    public EventsFragment() {
 
     }
 
     @Override
-    public void onStart(){
+    public void onStart() {
         super.onStart();
-        if (progressDialog!=null)
-        progressDialog.dismiss();
+        if (progressDialog != null)
+            progressDialog.dismiss();
     }
 
     @Override
@@ -74,10 +74,10 @@ public class EventsFragment extends ListFragment {
         getListView().setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if(eventItems.get(position).getType()!=2){
+                if (eventItems.get(position).getType() != 2) {
 
-                }else {
-                    progressDialog= ProgressDialog.show(getActivity(), "Загрузка...","BИдет загрузка", true);
+                } else {
+                    progressDialog = ProgressDialog.show(getActivity(), "Загрузка...", "BИдет загрузка", true);
                     progressDialog.getProgress();
                     Intent intent = new Intent(getActivity(), CourseActivity.class);
                     intent.putExtra("gcourse", eventItems.get(position).getParams().getGcourse());
@@ -98,19 +98,19 @@ public class EventsFragment extends ListFragment {
                 dialog = ProgressDialog.show(getActivity(), "",
                         "Идет подгрузка", true);
                 dialog.show();
-                new FetchUserEventsTask(getActivity()){
+                new FetchUserEventsTask(getActivity()) {
                     @Override
                     protected void onPostExecute(ArrayList<EventRowItem> items) {
                         super.onPostExecute(items);
-                        if(items!=null){
+                        if (items != null) {
                             eventItems.addAll(items);
                             imageAdapter.notifyDataSetChanged();
 
-                        }else{
+                        } else {
                             btnLoadExtra.setVisibility(View.GONE);
                         }
                         dialog.dismiss();
-                        if(items.size()<10){
+                        if (items.size() < 10) {
                             btnLoadExtra.setVisibility(View.GONE);
                         }
                     }
@@ -118,137 +118,139 @@ public class EventsFragment extends ListFragment {
             }
         });
 
-        if(eventItems!=null){
+        if (eventItems != null) {
             if (eventItems.size() < 10) {
                 btnLoadExtra.setVisibility(View.GONE);
             }
             getListView().addFooterView(btnLoadExtra);
-        }else{
+        } else {
             Toast.makeText(getActivity(), "Произошла ошибка", Toast.LENGTH_SHORT).show();
         }
 
     }
 
     @Override
-	public View onCreateView(LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
-        super.onCreateView(inflater,container, savedInstanceState);
+    public View onCreateView(LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
+        super.onCreateView(inflater, container, savedInstanceState);
         Bundle extras = getArguments();
         this.eventItems = (ArrayList<EventRowItem>) extras.getSerializable("eventItems");
-		View rootView = inflater.inflate(R.layout.fragment_events, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_events, container, false);
         imageAdapter = new ImageAdapter(getActivity());
-		return rootView;
-	}
+        return rootView;
+    }
 
 
     private class ImageAdapter extends BaseAdapter {
 
 
-		private LayoutInflater inflater;
-		private DisplayImageOptions options;
+        private LayoutInflater inflater;
+        private DisplayImageOptions options;
         protected ImageLoader imageLoader;
         Context context;
 
-		ImageAdapter(Context context) {
+        ImageAdapter(Context context) {
             this.context = context;
-			inflater = LayoutInflater.from(context);
-			options = new DisplayImageOptions.Builder()
-					.showImageOnLoading(R.mipmap.ic_ucomplex)
-					.showImageForEmptyUri(R.mipmap.ic_ucomplex)
-					.showImageOnFail(R.mipmap.ic_ucomplex)
-					.cacheInMemory(true)
-					.cacheOnDisk(true)
-					.considerExifParams(true)
-					.bitmapConfig(Bitmap.Config.RGB_565)
-					.build();
+            inflater = LayoutInflater.from(context);
+            options = new DisplayImageOptions.Builder()
+                    .showImageOnLoading(R.mipmap.ic_ucomplex)
+                    .showImageForEmptyUri(R.mipmap.ic_ucomplex)
+                    .showImageOnFail(R.mipmap.ic_ucomplex)
+                    .cacheInMemory(true)
+                    .cacheOnDisk(true)
+                    .considerExifParams(true)
+                    .bitmapConfig(Bitmap.Config.RGB_565)
+                    .build();
             imageLoader = ImageLoader.getInstance();
             imageLoader.init(ImageLoaderConfiguration.createDefault(context));
-		}
+        }
 
-		@Override
-		public int getCount() {
-			if(eventItems!=null){
-				return eventItems.size();
-			}else{
-				return 0;
-			}
+        @Override
+        public int getCount() {
+            if (eventItems != null) {
+                return eventItems.size();
+            } else {
+                return 0;
+            }
 
-		}
+        }
 
-		@Override
-		public Object getItem(int position) {
-			return null;
-		}
+        @Override
+        public Object getItem(int position) {
+            return null;
+        }
 
-		@Override
-		public long getItemId(int position) {
-			return position;
-		}
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
 
-		@Override
-		public View getView(final int position, View convertView, ViewGroup parent) {
+        @Override
+        public View getView(final int position, View convertView, ViewGroup parent) {
 
-			View view = convertView;
+            View view = convertView;
             final ViewHolder viewHolder;
-			if (view == null){
+            if (view == null) {
 
-				view = inflater.inflate(R.layout.list_item_events, parent, false);
-            viewHolder = new ViewHolder();
-                assert view != null;
-            viewHolder.eventsImageView = (ImageView) view.findViewById(R.id.list_events_item_image);
-            viewHolder.eventTextView = (TextView) view.findViewById(R.id.list_events_item_text);
-            viewHolder.eventTime = (TextView) view.findViewById(R.id.list_events_item_date);
-            viewHolder.timeTextView = (TextView) view.findViewById(R.id.list_events_time_image);
-				view.setTag(viewHolder);
-			} else {
+                view = inflater.inflate(R.layout.list_item_events, parent, false);
+                viewHolder = new ViewHolder();
+                viewHolder.eventsImageView = (ImageView) view.findViewById(R.id.list_events_item_image);
+                viewHolder.eventTextView = (TextView) view.findViewById(R.id.list_events_item_text);
+                viewHolder.eventTime = (TextView) view.findViewById(R.id.list_events_item_date);
+                viewHolder.eventPersonName = (TextView) view.findViewById(R.id.list_events_item_name);
+                view.setTag(viewHolder);
+            } else {
                 viewHolder = (ViewHolder) view.getTag();
-			}
+            }
 
-			if(eventItems.get(position).getEventImageBitmap()==null && eventItems.get(position).getParams().getPhoto()==1) {
+            if (eventItems.get(position).getEventImageBitmap() == null && eventItems.get(position).getParams().getPhoto() == 1) {
                 imageLoader.displayImage("http://ucomplex.org/files/photos/" + eventItems.get(position).getParams().getCode() + ".jpg", viewHolder.eventsImageView, options, new SimpleImageLoadingListener() {
-							@Override
-							public void onLoadingStarted(String imageUri, View view) {
-							}
+                    @Override
+                    public void onLoadingStarted(String imageUri, View view) {
+                    }
 
-							@Override
-							public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+                    @Override
+                    public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
 
-							}
+                    }
 
-							@Override
-							public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-								BitmapDrawable bitmapDrawable = ((BitmapDrawable) viewHolder.eventsImageView.getDrawable());
-								Bitmap bitmap = bitmapDrawable.getBitmap();
-								eventItems.get(position).setEventImageBitmap(bitmap);
-								viewHolder.eventsImageView.setImageBitmap(bitmap);
-							}
-						}, new ImageLoadingProgressListener() {
-							@Override
-							public void onProgressUpdate(String imageUri, View view, int current, int total) {
-							}
-						});
+                    @Override
+                    public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                        BitmapDrawable bitmapDrawable = ((BitmapDrawable) viewHolder.eventsImageView.getDrawable());
+                        Bitmap bitmap = bitmapDrawable.getBitmap();
+                        eventItems.get(position).setEventImageBitmap(bitmap);
+                        viewHolder.eventsImageView.setImageBitmap(bitmap);
+                    }
+                }, new ImageLoadingProgressListener() {
+                    @Override
+                    public void onProgressUpdate(String imageUri, View view, int current, int total) {
+                    }
+                });
 
-			}else{
+            } else {
                 Bitmap image = eventItems.get(position).getEventImageBitmap();
-                if(image!=null)
+                if (image != null)
                     viewHolder.eventsImageView.setImageBitmap(eventItems.get(position).getEventImageBitmap());
                 else
                     viewHolder.eventsImageView.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_ucomplex));
             }
-			viewHolder.eventTextView.setText(eventItems.get(position).getEventText());
-			viewHolder.eventTime.setText(eventItems.get(position).getTime());
-            viewHolder.timeTextView.setTypeface(Typeface.createFromAsset(context.getAssets(), "fonts/fontawesome-webfont.ttf"));
-            viewHolder.timeTextView.setText("\uF017");
+            viewHolder.eventTextView.setText(eventItems.get(position).getEventText());
+            viewHolder.eventTime.setText(eventItems.get(position).getTime());
+            if(eventItems.get(position).getParams().getName()==null){
+                viewHolder.eventPersonName.setText("uComplex");
+            }else{
+                viewHolder.eventPersonName.setText(eventItems.get(position).getParams().getName());
+            }
 
-			return view;
-		}
-	}
+            return view;
+        }
+    }
 
-	static class ViewHolder {
-		ImageView eventsImageView;
-		TextView eventTextView;
+    static class ViewHolder {
+        ImageView eventsImageView;
+        TextView eventTextView;
         TextView eventTime;
-        TextView timeTextView;
-	}
+        TextView eventPersonName;
+    }
 
 
 }

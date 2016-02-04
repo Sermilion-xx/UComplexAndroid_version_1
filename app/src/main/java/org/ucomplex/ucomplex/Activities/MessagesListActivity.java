@@ -8,7 +8,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -17,11 +16,10 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
-
 import org.ucomplex.ucomplex.Activities.Tasks.FetchDialogsTask;
+import org.ucomplex.ucomplex.Adaptors.MessagesListAdapter;
 import org.ucomplex.ucomplex.Common;
 import org.ucomplex.ucomplex.Interfaces.OnTaskCompleteListener;
-import org.ucomplex.ucomplex.Adaptors.MessagesListAdapter;
 import org.ucomplex.ucomplex.Model.Dialog;
 import org.ucomplex.ucomplex.R;
 
@@ -38,7 +36,7 @@ public class MessagesListActivity extends AppCompatActivity implements OnTaskCom
     @Override
     protected void onResume() {
         super.onResume();
-        if(messagesListAdapter!=null) {
+        if (messagesListAdapter != null) {
             messagesListAdapter.notifyDataSetChanged();
         }
         IntentFilter filter = new IntentFilter();
@@ -57,7 +55,7 @@ public class MessagesListActivity extends AppCompatActivity implements OnTaskCom
         public void onReceive(Context context, Intent intent) {
             Bundle bundle = intent.getExtras();
             int messageCount = bundle.getInt("newMessage");
-            if(messageCount>0){
+            if (messageCount > 0) {
                 FetchDialogsTask fetchDialogsTask = new FetchDialogsTask(MessagesListActivity.this, MessagesListActivity.this);
                 fetchDialogsTask.setupTask();
             }
@@ -116,16 +114,17 @@ public class MessagesListActivity extends AppCompatActivity implements OnTaskCom
         }
     };
 
-    public void deleteDialog(final int position){
-        new AsyncTask<Void, Void, Void>(){
+    public void deleteDialog(final int position) {
+        new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... params) {
                 HashMap<String, String> httpParas = new HashMap<>();
                 httpParas.put("id", String.valueOf(dialogs.get(position).getId()));
                 String url = "https://ucomplex.org/user/messages/del_dialog?mobile=1";
-                Common.httpPost(url,Common.getLoginDataFromPref(MessagesListActivity.this), httpParas);
+                Common.httpPost(url, Common.getLoginDataFromPref(MessagesListActivity.this), httpParas);
                 return null;
             }
+
             @Override
             protected void onPostExecute(Void aVoid) {
                 super.onPostExecute(aVoid);
@@ -144,8 +143,8 @@ public class MessagesListActivity extends AppCompatActivity implements OnTaskCom
         } else {
             try {
                 dialogs = (ArrayList<Dialog>) task.get();
-                if(dialogs!=null && dialogs.size()>0){
-                    messagesListAdapter = new MessagesListAdapter(this,dialogs);
+                if (dialogs != null && dialogs.size() > 0) {
+                    messagesListAdapter = new MessagesListAdapter(this, dialogs);
                     ListView listView = (ListView) findViewById(R.id.messages_listview);
                     listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override

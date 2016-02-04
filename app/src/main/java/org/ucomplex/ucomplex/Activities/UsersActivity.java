@@ -38,7 +38,6 @@ import java.util.HashMap;
 
 public class UsersActivity extends AppCompatActivity {
 
-//    MySearchBox search;
     ViewPager pager;
     private PagerSlidingTabStrip tabs;
     private ViewPagerAdapter adapter;

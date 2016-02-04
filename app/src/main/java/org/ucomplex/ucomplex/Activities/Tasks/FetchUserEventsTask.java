@@ -9,6 +9,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.ucomplex.ucomplex.Common;
+import org.ucomplex.ucomplex.Interfaces.OnTaskCompleteListener;
 import org.ucomplex.ucomplex.Model.EventParams;
 import org.ucomplex.ucomplex.Model.EventRowItem;
 
@@ -23,9 +24,13 @@ public class FetchUserEventsTask extends AsyncTask<Integer, Void, ArrayList<Even
 
     Activity mContext;
     String jsonData  = null;
+    private OnTaskCompleteListener mTaskCompleteListener = null;
 
-    public FetchUserEventsTask(Activity _context) {
+    public FetchUserEventsTask(Activity _context, OnTaskCompleteListener ... taskCompleteListener) {
         mContext = _context;
+        if(taskCompleteListener.length>0){
+            this.mTaskCompleteListener = taskCompleteListener[0];
+        }
     }
 
 
@@ -59,23 +64,28 @@ public class FetchUserEventsTask extends AsyncTask<Integer, Void, ArrayList<Even
 
     @Override
     protected void onPostExecute(final ArrayList<EventRowItem> items) {
-        if(Common.connection!=null){
-            String uc_version = Common.connection.getHeaderField("X-UVERSION");
-            if(uc_version!=null){
-                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
-                String uc_version_pref = prefs.getString("X-UVERSION", "");
-                if(!uc_version.equals(uc_version_pref)){
-                    FetchLangTask flt = new FetchLangTask();
-                    flt.setmContext(mContext);
-                    boolean success = false;
-                    try {
-                        success = flt.execute().get();
-                    } catch (InterruptedException | ExecutionException e) {
-                        e.printStackTrace();
-                    }
-                    if(success){
-                        Common.X_UVERSION = uc_version;
-                        prefs.edit().putString("X-UVERSION",uc_version).apply();
+
+        if(mTaskCompleteListener!=null){
+            mTaskCompleteListener.onTaskComplete(this);
+        }else {
+            if (Common.connection != null) {
+                String uc_version = Common.connection.getHeaderField("X-UVERSION");
+                if (uc_version != null) {
+                    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+                    String uc_version_pref = prefs.getString("X-UVERSION", "");
+                    if (!uc_version.equals(uc_version_pref)) {
+                        FetchLangTask flt = new FetchLangTask();
+                        flt.setmContext(mContext);
+                        boolean success = false;
+                        try {
+                            success = flt.execute().get();
+                        } catch (InterruptedException | ExecutionException e) {
+                            e.printStackTrace();
+                        }
+                        if (success) {
+                            Common.X_UVERSION = uc_version;
+                            prefs.edit().putString("X-UVERSION", uc_version).apply();
+                        }
                     }
                 }
             }
@@ -86,7 +96,6 @@ public class FetchUserEventsTask extends AsyncTask<Integer, Void, ArrayList<Even
     private ArrayList<EventRowItem> getEventsDataFromJson(String forecastJsonStr)
             throws JSONException {
         ArrayList<EventRowItem> displayEventsArray = new ArrayList<>();
-        // These are the names of the JSON objects that need to be extracted.
         final String JSON_EVENTS_ID = "id";
         final String JSON_EVENTS = "events";
         final String JSON_EVENTS_PARAMS = "params";

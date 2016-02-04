@@ -74,6 +74,8 @@ public class ImageAdapter extends BaseAdapter {
             return 0;
     }
 
+
+
     @Override
     public User getItem(int position) {
         return mItems.get(position);

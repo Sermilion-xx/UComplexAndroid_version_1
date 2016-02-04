@@ -1,5 +1,6 @@
 package org.ucomplex.ucomplex.Activities;
 
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -8,6 +9,7 @@ import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -32,6 +34,7 @@ import org.ucomplex.ucomplex.MyService;
 import org.ucomplex.ucomplex.R;
 
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 
 public class EventsActivity extends AppCompatActivity implements OnTaskCompleteListener, LoginTask.AsyncResponse {
 
@@ -40,7 +43,6 @@ public class EventsActivity extends AppCompatActivity implements OnTaskCompleteL
     FetchUserEventsTask mEventsTask = null;
     User user;
     ProgressDialog dialog;
-    int localMsgCount;
 
     final String[] TITLES = {"События", "Дисциплины", "Материалы", "Справки", "Пользователи", "Сообщения", "Библиотека", "Календарь", "Настройки", "Выход"};
     final int[] ICONS = {R.drawable.ic_menu_events,
@@ -75,7 +77,7 @@ public class EventsActivity extends AppCompatActivity implements OnTaskCompleteL
                 "Обновляется", true);
         dialog.show();
         Common.fetchMyNews(EventsActivity.this);
-        if(Common.newMesg>0){
+        if (Common.newMesg > 0) {
             mAdapter.setMsgCount(Common.newMesg);
             mAdapter.notifyDataSetChanged();
         }
@@ -109,11 +111,11 @@ public class EventsActivity extends AppCompatActivity implements OnTaskCompleteL
         public void onReceive(Context context, Intent intent) {
             Bundle bundle = intent.getExtras();
             int messageCount = bundle.getInt("newMessage");
-            if(messageCount>0 && messageCount != mAdapter.getMsgCount()){
-                Log.e("MGS", "Received broadcast: "+messageCount);
+            if (messageCount > 0 && messageCount != mAdapter.getMsgCount()) {
+                Log.e("MGS", "Received broadcast: " + messageCount);
                 mAdapter.setMsgCount(messageCount);
                 mAdapter.notifyItemChanged(6);
-            }else if(messageCount == 0 && mAdapter.getMsgCount()>0){
+            } else if (messageCount == 0 && mAdapter.getMsgCount() > 0) {
                 mAdapter.setMsgCount(messageCount);
                 mAdapter.notifyItemChanged(6);
             }
@@ -138,7 +140,7 @@ public class EventsActivity extends AppCompatActivity implements OnTaskCompleteL
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Common.fetchMyNews(EventsActivity.this);
-        Intent i= new Intent(EventsActivity.this, MyService.class);
+        Intent i = new Intent(EventsActivity.this, MyService.class);
         EventsActivity.this.startService(i);
         if ((savedInstanceState != null)
                 && (savedInstanceState.getSerializable("eventsArray") != null)) {
@@ -157,28 +159,12 @@ public class EventsActivity extends AppCompatActivity implements OnTaskCompleteL
         }
 
         if (eventsArray == null) {
-            mEventsTask = (FetchUserEventsTask) new FetchUserEventsTask(this) {
-                @Override
-                protected void onPostExecute(ArrayList<EventRowItem> items) {
-                    super.onPostExecute(items);
-                    eventsArray = items;
-                    EventsFragment fragment = new EventsFragment();
-                    fragment.setContext(EventsActivity.this);
-                    fragment.setUserType(user.getType());
-                    Bundle data = new Bundle();
-                    data.putSerializable("eventItems", eventsArray);
-                    fragment.setArguments(data);
-                    getFragmentManager().beginTransaction()
-                            .replace(R.id.container, fragment)
-                            .commit();
-                    dialog.dismiss();
-                }
-
-            }.execute(user.getType());
+            mEventsTask = (FetchUserEventsTask) new FetchUserEventsTask(this, this).execute(user.getType());
         }
         dialog = ProgressDialog.show(this, "",
                 "Загружаются события", true);
         dialog.show();
+        timerDelayRemoveDialog(7000, dialog);
 
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
@@ -210,6 +196,14 @@ public class EventsActivity extends AppCompatActivity implements OnTaskCompleteL
 
     }
 
+    public void timerDelayRemoveDialog(long time, final Dialog d){
+        new Handler().postDelayed(new Runnable() {
+            public void run() {
+                d.dismiss();
+            }
+        }, time);
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -236,7 +230,21 @@ public class EventsActivity extends AppCompatActivity implements OnTaskCompleteL
 
     @Override
     public void onTaskComplete(AsyncTask task, Object... o) {
-
+        try {
+            eventsArray = (ArrayList) task.get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+        EventsFragment fragment = new EventsFragment();
+        fragment.setContext(EventsActivity.this);
+        fragment.setUserType(user.getType());
+        Bundle data = new Bundle();
+        data.putSerializable("eventItems", eventsArray);
+        fragment.setArguments(data);
+        getFragmentManager().beginTransaction()
+                .replace(R.id.container, fragment)
+                .commit();
+        dialog.dismiss();
     }
 
 
