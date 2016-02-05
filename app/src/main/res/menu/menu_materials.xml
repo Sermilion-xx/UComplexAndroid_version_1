@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item android:id="@+id/my_files_add_file"
+        android:title="@string/menu_rename_str"
+        android:icon="@drawable/ic_upload_file"
+        app:showAsAction="ifRoom"/>
+
+    <item android:id="@+id/my_files_add_folder"
+        android:title="@string/menu_rename_str"
+        android:icon="@drawable/ic_add_folder"
+        app:showAsAction="ifRoom"/>
+
+</menu>

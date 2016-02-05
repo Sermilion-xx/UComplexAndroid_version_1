@@ -53,12 +53,12 @@ public class MyFilesActivity extends AppCompatActivity implements OnTaskComplete
         fetchMyFilesTask.setupTask();
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_my_files, menu);
-        return true;
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        // Inflate the menu; this adds items to the action bar if it is present.
+//        getMenuInflater().inflate(R.menu.menu_my_files, menu);
+//        return true;
+//    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -96,7 +96,7 @@ public class MyFilesActivity extends AppCompatActivity implements OnTaskComplete
             @Override
             protected ArrayList doInBackground(Void... params) {
                 String url = "http://you.com.ru/student/my_files/create_folder?mobile=1";
-                HashMap<String, String> httpParams = new HashMap<String, String>();
+                HashMap<String, String> httpParams = new HashMap<>();
                 httpParams.put("name", folderName);
                 if(Common.folderCode!=null){
                     httpParams.put("folder", Common.folderCode);
@@ -112,6 +112,13 @@ public class MyFilesActivity extends AppCompatActivity implements OnTaskComplete
                 courseMaterialsFragment.getAdapter().notifyDataSetChanged();
             }
         }.execute();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_materials, menu);
+        return true;
     }
 
     protected void showInputDialog() {

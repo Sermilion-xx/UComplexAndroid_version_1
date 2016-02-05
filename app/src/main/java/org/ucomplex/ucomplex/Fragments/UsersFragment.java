@@ -39,6 +39,7 @@ public class UsersFragment extends ListFragment {
     }
 
 
+
     public void setUsersType(int usersType) {
         this.usersType = usersType;
     }

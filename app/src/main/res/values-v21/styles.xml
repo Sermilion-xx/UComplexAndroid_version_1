@@ -14,7 +14,7 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="actionMenuTextColor">@color/colorPrimary</item>
         //кнопки
-        <item name="android:textColorSecondary">@color/white</item>
+        <item name="android:textColorSecondary">@color/black</item>
     </style>
 
 
