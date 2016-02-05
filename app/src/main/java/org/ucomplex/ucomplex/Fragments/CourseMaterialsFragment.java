@@ -144,18 +144,7 @@ public class CourseMaterialsFragment extends ListFragment {
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
-        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-        selectedItemPos = info.position;
-        switch (item.getItemId()) {
-            case R.id.edit:
-                showInputDialog();
-                return true;
-            case R.id.delete:
-                removeItem(selectedItemPos);
-                return true;
-            default:
-                return super.onContextItemSelected(item);
-        }
+        return super.onContextItemSelected(item);
     }
 
     @Override
@@ -167,80 +156,6 @@ public class CourseMaterialsFragment extends ListFragment {
 
     public void setmContext(Activity mContext) {
         this.mContext = mContext;
-    }
-
-    protected void showInputDialog() {
-        // get prompts.xml view
-        LayoutInflater layoutInflater = LayoutInflater.from(getContext());
-        View promptView = layoutInflater.inflate(R.layout.dialog_input, null);
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getContext());
-        alertDialogBuilder.setView(promptView);
-
-        final EditText editText = (EditText) promptView.findViewById(R.id.edittext);
-        // setup a dialog window
-        alertDialogBuilder.setCancelable(false)
-                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        String newName = editText.getText().toString();
-                        renameItem(selectedItemPos, newName);
-                    }
-                }).setNegativeButton("Cancel",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.cancel();
-                    }
-                });
-        AlertDialog alert = alertDialogBuilder.create();
-        alert.show();
-    }
-
-    private void removeItem(final int pos) {
-        new AsyncTask<Void, Void, ArrayList>() {
-            @Override
-            protected ArrayList doInBackground(Void... params) {
-                String url = "http://you.com.ru/student/my_files/delete_file?mobile=1";
-                HashMap<String, String> httpParams = new HashMap();
-                httpParams.put("file", mItems.get(pos).getAddress());
-                Common.httpPost(url, Common.getLoginDataFromPref(mContext), httpParams);
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(ArrayList newFile) {
-                super.onPostExecute(newFile);
-                mItems.remove(pos);
-                adapter.notifyDataSetChanged();
-            }
-        }.execute();
-    }
-
-    private void renameItem(final int pos, final String newName) {
-        new AsyncTask<Void, Void, String>() {
-            @Override
-            protected String doInBackground(Void... params) {
-                String jsonData;
-                String url = "http://you.com.ru/student/my_files/rename_file?mobile=1";
-                HashMap<String, String> httpParams = new HashMap();
-                httpParams.put("file", mItems.get(pos).getAddress());
-                httpParams.put("name", newName);
-                jsonData = Common.httpPost(url, Common.getLoginDataFromPref(mContext), httpParams);
-                return jsonData;
-            }
-
-            @Override
-            protected void onPostExecute(String newFile) {
-                super.onPostExecute(newFile);
-                if (newFile != null) {
-                    mItems.get(pos).setName(newName);
-                    adapter.notifyDataSetChanged();
-                } else {
-                    Snackbar snackbar = Snackbar
-                            .make(getView(), "Ошибка", Snackbar.LENGTH_LONG);
-                    snackbar.show();
-                }
-
-            }
-        }.execute();
     }
 }
 

@@ -97,14 +97,12 @@ public class CourseMaterialsAdapter extends ArrayAdapter<File> {
                 viewHolder.timeTextView = (TextView) convertView.findViewById(R.id.course_material_listview_item_time);
                 viewHolder.imageView = (ImageView) convertView.findViewById(R.id.course_material_listview_item_image);
                 viewHolder.setButton((Button) convertView.findViewById(R.id.list_materials_item_file_menu_button_file), position);
-
-            } else {
+            } else if (viewType == TYPE_FOLDER){
                 convertView = inflater.inflate(R.layout.list_item_course_material_folder, parent, false);
                 viewHolder.nameTextView = (TextView) convertView.findViewById(R.id.list_course_material_item_name);
                 viewHolder.textView2 = (TextView) convertView.findViewById(R.id.list_course_material_item_filecount);
                 viewHolder.setButton((Button) convertView.findViewById(R.id.list_materials_item_folder_menu_button_folder), position);
             }
-
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();

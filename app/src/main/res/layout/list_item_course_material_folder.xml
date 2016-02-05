@@ -43,6 +43,7 @@
         android:layout_alignParentRight="true"
         android:background="@drawable/ic_more"
         android:id="@+id/list_materials_item_folder_menu_button_folder"
+        android:focusable="false"
         />
 
 
