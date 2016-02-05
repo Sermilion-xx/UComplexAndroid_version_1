@@ -78,10 +78,10 @@ public class CourseActivity extends AppCompatActivity implements OnTaskCompleteL
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                if(courseMaterialsFragment.getLevel()>0){
-                    courseMaterialsFragment.levelDown();
+                if(courseMaterialsFragment.getAdapter().getLevel()>0){
+                    courseMaterialsFragment.getAdapter().levelDown();
                     courseMaterialsFragment.getmItems().clear();
-                    ArrayList<File> newFiles = new ArrayList<>(courseMaterialsFragment.getStackFiles().get(courseMaterialsFragment.getLevel()));
+                    ArrayList<File> newFiles = new ArrayList<>(courseMaterialsFragment.getAdapter().getStackFiles().get(courseMaterialsFragment.getAdapter().getLevel()));
                     courseMaterialsFragment.getmItems().addAll(newFiles);
                     courseMaterialsFragment.getAdapter().notifyDataSetChanged();
                     return true;
@@ -106,9 +106,9 @@ public class CourseActivity extends AppCompatActivity implements OnTaskCompleteL
             courseMaterialsFragment.setMyFiles(false);
             courseMaterialsFragment.setmContext(this);
             if(coursedata!=null) {
-                courseMaterialsFragment.addStack(coursedata.getFiles());
+                courseMaterialsFragment.getAdapter().addStack(coursedata.getFiles());
             }
-            courseMaterialsFragment.setLevel(0);
+            courseMaterialsFragment.getAdapter().setLevel(0);
         }
 
         if(calendarBeltFragment==null){
@@ -137,9 +137,9 @@ public class CourseActivity extends AppCompatActivity implements OnTaskCompleteL
                             courseMaterialsFragment.setMyFiles(false);
                             courseMaterialsFragment.setmContext(this);
                         }
-                        courseMaterialsFragment.addStack(files);
+                        courseMaterialsFragment.getAdapter().addStack(files);
                         courseMaterialsFragment.getmItems().clear();
-                        courseMaterialsFragment.getmItems().addAll(courseMaterialsFragment.getStackFiles().get(courseMaterialsFragment.getLevel()));
+                        courseMaterialsFragment.getmItems().addAll(courseMaterialsFragment.getAdapter().getStackFiles().get(courseMaterialsFragment.getAdapter().getLevel()));
                         courseMaterialsFragment.getAdapter().notifyDataSetChanged();
                     }
                 }else if(task instanceof FetchMySubjectsTask){

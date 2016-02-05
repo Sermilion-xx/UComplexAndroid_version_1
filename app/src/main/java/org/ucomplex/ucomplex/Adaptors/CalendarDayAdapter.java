@@ -1,6 +1,7 @@
 package org.ucomplex.ucomplex.Adaptors;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,6 +29,7 @@ public class CalendarDayAdapter extends ArrayAdapter<Quintet<String,String,Strin
     ArrayList values = new ArrayList();
     int separatorPosition=1;
     User user;
+    Typeface robotoFont = Typeface.createFromAsset(getContext().getAssets(), "fonts/Roboto-Regular.ttf");
 
     private static final int TYPE_MARK_TITLE = 0;
     private static final int TYPE_MARK = 1;
@@ -144,14 +146,20 @@ public class CalendarDayAdapter extends ArrayAdapter<Quintet<String,String,Strin
                     .buildRound(getLetter(Integer.parseInt(getItem(position).getValue3())), Integer.parseInt(color));
                 viewHolder.markTextView.setImageDrawable(drawable);
         }else if(viewType==TYPE_SUBJECT){
+            viewHolder.timeTextView.setTypeface(robotoFont);
             viewHolder.timeTextView.setText(getItem(position).getValue0());
             String[] subjectAndType = getItem(position).getValue1().split(",");
+            viewHolder.subjectTextView.setTypeface(robotoFont);
             viewHolder.subjectTextView.setText(subjectAndType[0]);
+            viewHolder.subjectTypeTextView.setTypeface(robotoFont);
             viewHolder.subjectTypeTextView.setText(Character.toUpperCase(subjectAndType[1].charAt(0)) + subjectAndType[1].substring(1));
             String[] info = getItem(position).getValue2().split(",");
+            viewHolder.subjectTeacherTextView.setTypeface(robotoFont);
             viewHolder.subjectTeacherTextView.setText(info[0]);
             String roomNum = info[1].replaceAll("\\s+","");
+            viewHolder.subjectRoomTextView.setTypeface(robotoFont);
             viewHolder.subjectRoomTextView.setText(Character.toUpperCase(roomNum.charAt(0)) + roomNum.substring(1));
+            viewHolder.titleTextView.setTypeface(robotoFont);
         }else if(viewType==TYPE_SUBJECT_TITLE){
             viewHolder.titleTextView.setText("Расписание");
         }else if(viewType==TYPE_MARK_TITLE){

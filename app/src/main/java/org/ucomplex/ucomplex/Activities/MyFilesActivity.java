@@ -53,13 +53,6 @@ public class MyFilesActivity extends AppCompatActivity implements OnTaskComplete
         fetchMyFilesTask.setupTask();
     }
 
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        // Inflate the menu; this adds items to the action bar if it is present.
-//        getMenuInflater().inflate(R.menu.menu_my_files, menu);
-//        return true;
-//    }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {

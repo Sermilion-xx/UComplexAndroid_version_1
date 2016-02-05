@@ -408,7 +408,7 @@ public class Common {
     }
 
 
-    public static String makeDate(String time) {
+    public static String makeDate(String time, boolean ... justDate) {
         String r = "";
         String yyyyMMdd = time.split(" ")[0];
         String hhMMss = time.split(" ")[1];
@@ -459,7 +459,11 @@ public class Common {
 
                 r += tempYyMMdd[2]+" "+month+" "+tempYyMMdd[0]+" г.";
             }
-            r += " в " + hhMMss;
+            if(justDate!=null){
+                if(!justDate[0]){
+                    r += " в " + hhMMss;
+                }
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
