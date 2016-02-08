@@ -14,27 +14,22 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme"
         tools:node="replace">
-
-
         <activity
             android:name=".Activities.RoleSelectActivity"
             android:label="@string/title_activity_role_select"
             android:screenOrientation="portrait" />
-
         <activity
             android:name=".Activities.EventsActivity"
             android:label="@string/app_name"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait">
             <intent-filter>
-                <action android:name="org.ucomplex.newMessageBroadcast"/>
+                <action android:name="org.ucomplex.newMessageBroadcast" />
             </intent-filter>
-
         </activity>
         <activity
             android:name=".Activities.LoginActivity"
             android:label="@string/title_activity_login"
             android:screenOrientation="portrait"
-
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -76,14 +71,15 @@
         <activity
             android:name=".Activities.UsersActivity"
             android:label="@string/title_activity_users"
+            android:launchMode="singleTop"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme"
-            android:launchMode="singleTop">
-
+            android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
             <meta-data
                 android:name="android.app.default_searchable"
                 android:value=".Activities.UsersActivity" />
@@ -95,7 +91,6 @@
             <meta-data
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable" />
-
         </activity>
         <activity
             android:name=".Activities.PersonActivity"
@@ -104,6 +99,11 @@
             android:theme="@style/AppTheme" />
         <activity
             android:name=".Activities.CalendarActivity"
+            android:label="@string/title_activity_calendar"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".Activities.CalendarActivity2"
             android:label="@string/title_activity_calendar"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
@@ -134,7 +134,6 @@
             android:theme="@style/AppTheme" />
 
         <service android:name=".MyService" />
-
     </application>
 
 </manifest>

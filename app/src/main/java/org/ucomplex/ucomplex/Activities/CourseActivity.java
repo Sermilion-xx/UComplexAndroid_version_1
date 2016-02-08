@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 
 import android.support.v7.app.AppCompatActivity;
@@ -17,6 +19,7 @@ import org.javatuples.Quartet;
 import org.ucomplex.ucomplex.Activities.Tasks.FetchCalendarBeltTask;
 import org.ucomplex.ucomplex.Activities.Tasks.FetchMySubjectsTask;
 import org.ucomplex.ucomplex.Activities.Tasks.FetchTeacherFilesTask;
+import org.ucomplex.ucomplex.Adaptors.CourseMaterialsAdapter;
 import org.ucomplex.ucomplex.Interfaces.OnTaskCompleteListener;
 import org.ucomplex.ucomplex.Adaptors.ViewPagerAdapter;
 import org.ucomplex.ucomplex.Fragments.*;
@@ -28,12 +31,12 @@ import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
 
-
 public class CourseActivity extends AppCompatActivity implements OnTaskCompleteListener {
 
     Toolbar toolbar;
     TabLayout tabLayout;
 
+    boolean first = true;
     private int gcourse;
     private Course coursedata;
     ArrayList<Quartet<Integer, String, String, Integer>> feedItems;
@@ -78,10 +81,14 @@ public class CourseActivity extends AppCompatActivity implements OnTaskCompleteL
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                if(courseMaterialsFragment.getAdapter().getLevel()>0){
+                if (courseMaterialsFragment.getAdapter().getLevel() > 0) {
                     courseMaterialsFragment.getAdapter().levelDown();
                     courseMaterialsFragment.getmItems().clear();
                     ArrayList<File> newFiles = new ArrayList<>(courseMaterialsFragment.getAdapter().getStackFiles().get(courseMaterialsFragment.getAdapter().getLevel()));
+
+                    if(!courseMaterialsFragment.getAdapter().isMyFiles()){
+                        courseMaterialsFragment.getAdapter().getStackFiles().remove(courseMaterialsFragment.getAdapter().getStackFiles().size()-1);
+                    }
                     courseMaterialsFragment.getmItems().addAll(newFiles);
                     courseMaterialsFragment.getAdapter().notifyDataSetChanged();
                     return true;
@@ -98,20 +105,22 @@ public class CourseActivity extends AppCompatActivity implements OnTaskCompleteL
         courseInfoFragment.setmContext(this);
 
         Bundle cmBundel = new Bundle();
-        cmBundel.putSerializable("courseData",coursedata);
+        cmBundel.putSerializable("courseData", coursedata);
         courseInfoFragment.setArguments(cmBundel);
 
-        if(courseMaterialsFragment==null) {
+        if (courseMaterialsFragment == null) {
             courseMaterialsFragment = new CourseMaterialsFragment();
-            courseMaterialsFragment.setMyFiles(false);
-            courseMaterialsFragment.setmContext(this);
-            if(coursedata!=null) {
-                courseMaterialsFragment.getAdapter().addStack(coursedata.getFiles());
-            }
-            courseMaterialsFragment.getAdapter().setLevel(0);
         }
+        courseMaterialsFragment.setMyFiles(false);
+        courseMaterialsFragment.setmContext(this);
+        CourseMaterialsAdapter courseMaterialsAdapter = new CourseMaterialsAdapter(this, coursedata.getFiles(), false, courseMaterialsFragment);
+        courseMaterialsFragment.setFiles(coursedata.getFiles());
+        courseMaterialsAdapter.addStack(coursedata.getFiles());
+        courseMaterialsAdapter.setLevel(0);
+        courseMaterialsFragment.setAdapter(courseMaterialsAdapter);
 
-        if(calendarBeltFragment==null){
+
+        if (calendarBeltFragment == null) {
             calendarBeltFragment = new CalendarBeltFragment();
             calendarBeltFragment.setFeedItems(this.feedItems);
         }
@@ -129,9 +138,9 @@ public class CourseActivity extends AppCompatActivity implements OnTaskCompleteL
             Toast.makeText(this, "Загрузка отменена", Toast.LENGTH_LONG).show();
         } else {
             try {
-                if(task instanceof FetchTeacherFilesTask){
+                if (task instanceof FetchTeacherFilesTask) {
                     ArrayList<File> files = (ArrayList<File>) task.get();
-                    if(files.size()>0) {
+                    if (files.size() > 0) {
                         if(courseMaterialsFragment==null){
                             courseMaterialsFragment = new CourseMaterialsFragment();
                             courseMaterialsFragment.setMyFiles(false);
@@ -139,10 +148,10 @@ public class CourseActivity extends AppCompatActivity implements OnTaskCompleteL
                         }
                         courseMaterialsFragment.getAdapter().addStack(files);
                         courseMaterialsFragment.getmItems().clear();
-                        courseMaterialsFragment.getmItems().addAll(courseMaterialsFragment.getAdapter().getStackFiles().get(courseMaterialsFragment.getAdapter().getLevel()));
+                        courseMaterialsFragment.getmItems().addAll(files);
                         courseMaterialsFragment.getAdapter().notifyDataSetChanged();
                     }
-                }else if(task instanceof FetchMySubjectsTask){
+                } else if (task instanceof FetchMySubjectsTask) {
                     try {
                         this.coursedata = (Course) task.get();
                         toolbar.setTitle(coursedata.getName());
@@ -151,11 +160,11 @@ public class CourseActivity extends AppCompatActivity implements OnTaskCompleteL
                     } catch (InterruptedException | ExecutionException e) {
                         e.printStackTrace();
                     }
-                }else if(task instanceof FetchCalendarBeltTask){
+                } else if (task instanceof FetchCalendarBeltTask) {
                     try {
-                        if(this.coursedata!=null) {
+                        if (this.coursedata != null) {
                             this.feedItems = (ArrayList<Quartet<Integer, String, String, Integer>>) task.get();
-                            if(calendarBeltFragment==null){
+                            if (calendarBeltFragment == null) {
                                 calendarBeltFragment = new CalendarBeltFragment();
                             }
                             calendarBeltFragment.setFeedItems(feedItems);

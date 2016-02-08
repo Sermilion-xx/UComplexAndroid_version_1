@@ -59,8 +59,6 @@ public class CalendarActivity extends AppCompatActivity implements AdapterView.O
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
         user = Common.getUserDataFromPref(this);
         setContentView(R.layout.activity_calendar);
         Toolbar toolbar = (Toolbar) findViewById(R.id.calendar_toolbar);
@@ -69,7 +67,6 @@ public class CalendarActivity extends AppCompatActivity implements AdapterView.O
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mAsyncTaskManager = new AsyncTaskManager(this, this);
         mAsyncTaskManager.handleRetainedTask(getLastNonConfigurationInstance());
-
 
         spinner = (Spinner) findViewById(R.id.calendar_choice);
         spinner.setOnItemSelectedListener(this);

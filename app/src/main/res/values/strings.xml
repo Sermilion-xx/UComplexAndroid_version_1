@@ -94,6 +94,7 @@
     <string name="dekan">Декан</string>
     <string name="otdel_kadrov">Отдел кадров</string>
     <string name="info_str">Информация</string>
+    <string name="title_activity_calendar2">CalendarActivity2</string>
 
 
 </resources>

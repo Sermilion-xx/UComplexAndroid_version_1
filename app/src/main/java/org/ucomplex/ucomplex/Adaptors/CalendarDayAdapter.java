@@ -159,7 +159,7 @@ public class CalendarDayAdapter extends ArrayAdapter<Quintet<String,String,Strin
             String roomNum = info[1].replaceAll("\\s+","");
             viewHolder.subjectRoomTextView.setTypeface(robotoFont);
             viewHolder.subjectRoomTextView.setText(Character.toUpperCase(roomNum.charAt(0)) + roomNum.substring(1));
-            viewHolder.titleTextView.setTypeface(robotoFont);
+//            viewHolder.titleTextView.setTypeface(robotoFont);
         }else if(viewType==TYPE_SUBJECT_TITLE){
             viewHolder.titleTextView.setText("Расписание");
         }else if(viewType==TYPE_MARK_TITLE){

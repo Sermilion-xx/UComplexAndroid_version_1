@@ -43,8 +43,6 @@ public class CourseMaterialsFragment extends ListFragment {
     private Activity mContext;
     private boolean myFiles = false;
     private CourseMaterialsAdapter adapter;
-    private int selectedItemPos;
-
 
     public void setAdapter(CourseMaterialsAdapter adapter) {
         this.adapter = adapter;
@@ -86,7 +84,10 @@ public class CourseMaterialsFragment extends ListFragment {
         if (mItems == null) {
             mItems = new ArrayList<>();
         }
-        adapter = new CourseMaterialsAdapter(getActivity(), mItems, myFiles, this);
+        //form Materials menu
+        if(adapter==null){
+            adapter = new CourseMaterialsAdapter(getActivity(), mItems, myFiles, this);
+        }
         setListAdapter(adapter);
 
 

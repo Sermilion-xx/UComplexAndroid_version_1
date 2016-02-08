@@ -35,6 +35,7 @@ public class CourseMaterialsAdapter extends ArrayAdapter<File> {
     private boolean myFiles;
     public int level = 0;
     public ArrayList<ArrayList<File>> stackFiles = new ArrayList<>();
+    private LayoutInflater inflater;
 
     public CourseMaterialsAdapter(Context context, List<File> items, boolean myFiles, CourseMaterialsFragment fragment) {
         super(context, R.layout.list_item_course_material_folder, items);
@@ -42,6 +43,12 @@ public class CourseMaterialsAdapter extends ArrayAdapter<File> {
         this.fragment = fragment;
         this.myFiles = myFiles;
         mItems = items;
+        this.stackFiles = new ArrayList<>();
+    }
+
+
+    public boolean isMyFiles() {
+        return myFiles;
     }
 
     public void setLevel(int level) {
@@ -54,6 +61,7 @@ public class CourseMaterialsAdapter extends ArrayAdapter<File> {
     }
 
     public void addStack(ArrayList<File> files) {
+
         this.stackFiles.add(new ArrayList<>(files));
     }
 
@@ -83,37 +91,54 @@ public class CourseMaterialsAdapter extends ArrayAdapter<File> {
         }
     }
 
+    private View createHolder(ViewHolder viewHolder, View convertView, int viewType, Context context, ViewGroup parent, int position){
+        viewHolder = new ViewHolder(context, this);
+        inflater = LayoutInflater.from(getContext());
+        if(viewType==TYPE_FILE ){
+            convertView = inflater.inflate(R.layout.list_item_course_material_file, parent, false);
+            viewHolder.nameTextView = (TextView) convertView.findViewById(R.id.course_material_listview_item_name);
+            viewHolder.weightTextView = (TextView) convertView.findViewById(R.id.course_material_listview_item_weight);
+            viewHolder.timeTextView = (TextView) convertView.findViewById(R.id.course_material_listview_item_time);
+            viewHolder.imageView = (ImageView) convertView.findViewById(R.id.course_material_listview_item_image_file);
+            viewHolder.setButton((Button) convertView.findViewById(R.id.list_materials_item_file_menu_button_file), position);
+            viewHolder.holderId = TYPE_FILE;
+
+        }else if(viewType==TYPE_FOLDER){
+            convertView = inflater.inflate(R.layout.list_item_course_material_folder, parent, false);
+            viewHolder.nameTextView = (TextView) convertView.findViewById(R.id.list_course_material_item_name);
+            viewHolder.textView2 = (TextView) convertView.findViewById(R.id.list_course_material_item_filecount);
+            viewHolder.imageView = (ImageView) convertView.findViewById(R.id.list_course_material_item_imageview_folder);
+            viewHolder.setButton((Button) convertView.findViewById(R.id.list_materials_item_folder_menu_button_folder), position);
+            viewHolder.holderId = TYPE_FOLDER;
+        }
+        if (convertView != null) {
+            convertView.setTag(viewHolder);
+        }
+        return convertView;
+    }
+
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        ViewHolder viewHolder;
+        ViewHolder viewHolder = null;
         int viewType = getItemViewType(position);
         if (convertView == null) {
-            LayoutInflater inflater = LayoutInflater.from(getContext());
-            viewHolder = new ViewHolder(context, this);
-            if (viewType == TYPE_FILE) {
-                convertView = inflater.inflate(R.layout.list_item_course_material_file, parent, false);
-                viewHolder.nameTextView = (TextView) convertView.findViewById(R.id.course_material_listview_item_name);
-                viewHolder.weightTextView = (TextView) convertView.findViewById(R.id.course_material_listview_item_weight);
-                viewHolder.timeTextView = (TextView) convertView.findViewById(R.id.course_material_listview_item_time);
-                viewHolder.imageView = (ImageView) convertView.findViewById(R.id.course_material_listview_item_image);
-                viewHolder.setButton((Button) convertView.findViewById(R.id.list_materials_item_file_menu_button_file), position);
-            } else if (viewType == TYPE_FOLDER){
-                convertView = inflater.inflate(R.layout.list_item_course_material_folder, parent, false);
-                viewHolder.nameTextView = (TextView) convertView.findViewById(R.id.list_course_material_item_name);
-                viewHolder.textView2 = (TextView) convertView.findViewById(R.id.list_course_material_item_filecount);
-                viewHolder.setButton((Button) convertView.findViewById(R.id.list_materials_item_folder_menu_button_folder), position);
-            }
-            convertView.setTag(viewHolder);
+            convertView = createHolder(viewHolder, convertView, viewType, context, parent, position);
+            viewHolder = (ViewHolder) convertView.getTag();
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
+            if(viewHolder.holderId != viewType){
+                convertView = createHolder(viewHolder, convertView, viewType, context, parent, position);
+                viewHolder = (ViewHolder) convertView.getTag();
+            }
         }
+
         File file = getItem(position);
         viewHolder.nameTextView.setTypeface(robotoFont);
         viewHolder.nameTextView.setText(file.getName());
         if (viewType == TYPE_FOLDER) {
             viewHolder.textView2.setTypeface(robotoFont);
             viewHolder.textView2.setText(Common.makeDate(file.getTime(), true));
-        } else {
+        } else if (viewType == TYPE_FILE){
             viewHolder.weightTextView.setTypeface(robotoFont);
             viewHolder.weightTextView.setText(String.valueOf(Common.readableFileSize(file.getSize(), false)));
             viewHolder.timeTextView.setTypeface(robotoFont);
@@ -123,6 +148,7 @@ public class CourseMaterialsAdapter extends ArrayAdapter<File> {
     }
 
     public static class ViewHolder {
+        int holderId;
         ImageView imageView;
         Button menuButton;
         TextView nameTextView;

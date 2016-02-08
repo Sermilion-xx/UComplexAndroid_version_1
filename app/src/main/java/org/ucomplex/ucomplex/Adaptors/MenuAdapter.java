@@ -16,7 +16,6 @@ import android.widget.TextView;
 
 import com.amulyakhare.textdrawable.TextDrawable;
 
-import org.ucomplex.ucomplex.Activities.CalendarActivity;
 import org.ucomplex.ucomplex.Activities.EventsActivity;
 import org.ucomplex.ucomplex.Activities.LibraryActivity;
 import org.ucomplex.ucomplex.Activities.LoginActivity;
@@ -25,6 +24,7 @@ import org.ucomplex.ucomplex.Activities.MyFilesActivity;
 import org.ucomplex.ucomplex.Activities.ReferenceActivity;
 import org.ucomplex.ucomplex.Activities.SettingsActivity;
 import org.ucomplex.ucomplex.Activities.SubjectsActivity;
+import org.ucomplex.ucomplex.Activities.CalendarActivity2;
 import org.ucomplex.ucomplex.Activities.UsersActivity;
 import org.ucomplex.ucomplex.Common;
 import org.ucomplex.ucomplex.Model.Users.User;
@@ -125,12 +125,11 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
                 Common.newMesg = 0;
                 Intent intent = new Intent(contxt, MessagesListActivity.class);
                 contxt.startActivity(intent);
-
             } else if (getAdapterPosition() == 7) {
                 Intent intent = new Intent(contxt, LibraryActivity.class);
                 contxt.startActivity(intent);
             } else if (getAdapterPosition() == 8) {
-                Intent intent = new Intent(contxt, CalendarActivity.class);
+                Intent intent = new Intent(contxt, CalendarActivity2.class);
                 contxt.startActivity(intent);
             } else if (getAdapterPosition() == 9) {
 
