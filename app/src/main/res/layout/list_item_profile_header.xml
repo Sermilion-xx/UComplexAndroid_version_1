@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/colorPrimary"
+    android:paddingBottom="24dp"
+    >
+
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:layout_width="117dp"
+        android:layout_height="117dp"
+        android:id="@+id/list_profile_profile_picture"
+        android:src="@drawable/ic_ucomplex"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:layout_centerInParent="true"
+        android:contentDescription="@string/progile_picture" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Авторханова"
+        android:id="@+id/list_profile_firstname"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:layout_below="@+id/list_profile_profile_picture"
+        android:layout_centerHorizontal="true"
+        android:textSize="22sp"
+        android:layout_marginLeft="100dp"
+        android:layout_marginRight="100dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Мадина Исаевна"
+        android:textColor="@color/white"
+        android:id="@+id/list_profile_lastname"
+        android:layout_below="@+id/list_profile_firstname"
+        android:layout_centerHorizontal="true"
+        android:textSize="22sp" />
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:layout_width="7dp"
+        android:layout_height="7dp"
+        android:id="@+id/imageView2"
+        android:background="#b5eefd"
+        android:contentDescription="online"
+        android:layout_alignBottom="@+id/list_profile_lastname"
+        android:layout_toRightOf="@+id/list_profile_lastname"
+        android:layout_toEndOf="@+id/list_profile_lastname"
+        android:layout_marginBottom="9dp"
+        android:layout_marginLeft="6dp" />
+
+
+    <Button
+        android:id="@+id/list_profile_add_friend_button"
+        android:layout_width="170dp"
+        android:layout_height="36dp"
+        android:layout_gravity="center"
+        android:paddingRight="30dp"
+        android:paddingLeft="30dp"
+        android:drawableLeft="@drawable/ic_add_as_friend"
+        android:text="@string/add_as_friend_str_ru"
+        android:textColor="@color/white"
+        android:background="@drawable/corner_white"
+        android:layout_below="@+id/list_profile_role"
+        android:layout_marginTop="19dp"
+        android:textAllCaps="false"
+        android:layout_marginLeft="13dp"/>
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Студент"
+        android:id="@+id/list_profile_role"
+        android:textColor="#b5eefd"
+        android:layout_below="@+id/list_profile_lastname"
+        android:layout_centerHorizontal="true"
+        android:textSize="15sp" />
+
+    <Button
+        android:layout_width="170dp"
+        android:layout_height="36dp"
+        android:id="@+id/list_profile_message_button"
+        android:text="@string/message_str"
+        android:textColor="@color/colorPrimary"
+        android:textAllCaps="false"
+        android:background="@drawable/textview_border_round_corner"
+        android:layout_alignTop="@+id/list_profile_add_friend_button"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginRight="13dp"
+        android:layout_marginEnd="20dp"
+        />
+</RelativeLayout>

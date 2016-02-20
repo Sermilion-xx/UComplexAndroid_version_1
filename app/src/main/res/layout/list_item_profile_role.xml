@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:id="@+id/list_profile_role_icon"
+        android:src="@drawable/ic_role_1"
+        android:layout_marginLeft="14dp"
+        android:layout_centerVertical="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/list_profile_role_name"
+        android:text="Заведущий кафедрой"
+        android:layout_toRightOf="@+id/list_profile_role_icon"
+        android:layout_marginLeft="14dp"
+        android:textSize="17sp"
+        android:textColor="#000000"
+        android:layout_marginTop="17dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Конституционное право"
+        android:layout_below="@id/list_profile_role_name"
+        android:layout_toRightOf="@+id/list_profile_role_icon"
+        android:layout_marginLeft="14dp"
+        android:textSize="13sp"
+        android:textColor="@color/uc_gray_text_events"
+        android:layout_marginBottom="17dp" />
+
+</RelativeLayout>

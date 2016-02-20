@@ -95,6 +95,9 @@
     <string name="otdel_kadrov">Отдел кадров</string>
     <string name="info_str">Информация</string>
     <string name="title_activity_calendar2">CalendarActivity2</string>
+    <string name="progile_picture">Profile picture</string>
+    <string name="add_as_friend_str_ru">В друзья</string>
+    <string name="message_str">Сообщение</string>
 
 
 </resources>
