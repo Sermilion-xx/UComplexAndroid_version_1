@@ -10,6 +10,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import org.ucomplex.ucomplex.Activities.PersonActivity;
+import org.ucomplex.ucomplex.Activities.ProfileActivity;
 import org.ucomplex.ucomplex.Activities.Tasks.FetchUsersTask;
 import org.ucomplex.ucomplex.Adaptors.ImageAdapter;
 import org.ucomplex.ucomplex.Common;
@@ -58,7 +59,7 @@ public class UsersFragment extends ListFragment {
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         User user = mItems.get(position);
-        Intent intent = new Intent(getContext(), PersonActivity.class);
+        Intent intent = new Intent(getContext(), ProfileActivity.class);
         Bundle extras = new Bundle();
         if (user.getPerson() == 0) {
             extras.putString("person", String.valueOf(user.getId()));

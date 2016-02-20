@@ -1,6 +1,9 @@
 package org.ucomplex.ucomplex.Adaptors;
 
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.view.LayoutInflater;
@@ -12,13 +15,19 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.amulyakhare.textdrawable.TextDrawable;
+
 import org.javatuples.Triplet;
+import org.ucomplex.ucomplex.Activities.MessagesActivity;
 import org.ucomplex.ucomplex.Common;
 import org.ucomplex.ucomplex.Model.Users.User;
 import org.ucomplex.ucomplex.R;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.regex.Pattern;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * Created by Sermilion on 20/02/16.
@@ -28,23 +37,104 @@ public class PersonAdapter extends ArrayAdapter<Triplet> {
     private static final int TYPE_HEADER = 0;
     private static final int TYPE_INFO = 1;
 
+    private Bitmap         mBitmap;
     private User           mUser;
     private Context        mContext;
     private List<Triplet>  mItems;
     private LayoutInflater inflater;
     private Typeface       robotoFont = Typeface.createFromAsset(getContext().getAssets(), "fonts/Roboto-Regular.ttf");
 
-    public PersonAdapter(Context context, List<Triplet> profileItems) {
+    public PersonAdapter(Context context, List<Triplet> profileItems, Bitmap bitmap) {
         super(context, R.layout.list_item_profile_header, profileItems);
         mUser = (User) profileItems.get(0).getValue1();
         mContext = context;
+        mBitmap = bitmap;
         mItems = profileItems;
     }
 
-    private View createHolder(ViewHolder viewHolder, View convertView, int viewType, Context context, ViewGroup parent, int position) {
-        viewHolder = new ViewHolder(context, this);
+    private View createHolder(ViewHolder viewHolder, View convertView, int viewType, ViewGroup parent, int posision) {
+        viewHolder = new ViewHolder();
         inflater = LayoutInflater.from(getContext());
+        if(viewType==TYPE_HEADER){
+            convertView = inflater.inflate(R.layout.list_item_profile_header, parent, false);
+            viewHolder.mFriendButton = (Button) convertView.findViewById(R.id.list_profile_add_friend_button);
+            viewHolder.setFriendButton();
+//            viewHolder.mBlacklistButton = (Button) convertView.findViewById(R.id.course_info_button_block);
+//            viewHolder.setBlacklistButton();
+            viewHolder.mMessageButton = (Button) convertView.findViewById(R.id.list_profile_message_button);
+            viewHolder.setMessageButton();
+            viewHolder.mUserImageView = (CircleImageView) convertView.findViewById(R.id.list_profile_profile_picture);
+            viewHolder.mFirstNameView = (TextView) convertView.findViewById(R.id.list_profile_firstname);
+            viewHolder.mLastNameView = (TextView) convertView.findViewById(R.id.list_profile_lastname);
+            viewHolder.mEmailView = (TextView) convertView.findViewById(R.id.list_profile_role);
+            viewHolder.mOnline = (CircleImageView) convertView.findViewById(R.id.list_profile_online);
+            viewHolder.holderId = TYPE_HEADER;
+        }else if(viewType==TYPE_INFO){
+            convertView = inflater.inflate(R.layout.list_item_profile_role, parent, false);
+            viewHolder.mInfoKey = (TextView) convertView.findViewById(R.id.list_profile_role_key);
+            viewHolder.mInfoValue = (TextView) convertView.findViewById(R.id.list_profile_role_value);
+            viewHolder.mRole = (CircleImageView) convertView.findViewById(R.id.list_profile_role_icon);
+            viewHolder.holderId = TYPE_INFO;
+        }
+        if (convertView != null) {
+            convertView.setTag(viewHolder);
+        }
+        return convertView;
+    }
 
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+        ViewHolder viewHolder = null;
+        int viewType = getItemViewType(position);
+        if (convertView == null) {
+            convertView = createHolder(viewHolder, convertView, viewType, parent, position);
+            viewHolder = (ViewHolder) convertView.getTag();
+        } else {
+            viewHolder = (ViewHolder) convertView.getTag();
+            if(viewHolder.holderId != viewType){
+                convertView = createHolder(viewHolder, convertView, viewType, parent, position);
+                viewHolder = (ViewHolder) convertView.getTag();
+            }
+        }
+        Triplet<String, String, String> item = getItem(position);
+        if (viewType == TYPE_HEADER) {
+            viewHolder.mUserImageView.setImageBitmap(mBitmap);
+            viewHolder.mFirstNameView.setTypeface(robotoFont);
+            String[] fullName = mUser.getName().split(" ");
+            viewHolder.mFirstNameView.setText(fullName[0]+" "+fullName[1]);
+            viewHolder.mLastNameView.setTypeface(robotoFont);
+            viewHolder.mLastNameView.setText(fullName[2]);
+            viewHolder.mEmailView.setTypeface(robotoFont);
+            viewHolder.mEmailView.setText(mUser.getEmail());
+        } else if (viewType == TYPE_INFO){
+            Integer[] icons = new Integer[]{R.drawable.ic_role_1,
+                    R.drawable.ic_role_2,
+                    R.drawable.ic_role_3,
+                    R.drawable.ic_role_4,
+                    R.drawable.ic_role_5};
+            viewHolder.mRole.setImageResource(icons[position]-1);
+            viewHolder.mInfoKey.setTypeface(robotoFont);
+            if(isInt(item.getValue1())){
+                viewHolder.mInfoKey.setText(Common.getStringUserType(mContext, Integer.parseInt(item.getValue1())));
+            }else{
+                viewHolder.mInfoKey.setText(item.getValue1());
+            }
+
+            viewHolder.mInfoValue.setTypeface(robotoFont);
+            viewHolder.mInfoValue.setText(item.getValue0());
+        }
+        return convertView;
+    }
+
+    static boolean isInt(String s){
+        try{
+            int i = Integer.parseInt(s);
+            return true;
+        }
+
+        catch(NumberFormatException er) {
+            return false;
+        }
     }
 
     @Override
@@ -56,13 +146,26 @@ public class PersonAdapter extends ArrayAdapter<Triplet> {
         }
     }
 
+
+    @Override
+    public int getCount() {
+        return mItems.size();
+    }
+
+    @Override
+    public Triplet getItem(int position) {
+        return mItems.get(position);
+    }
+
     public class ViewHolder {
         int holderId;
         Button mMessageButton;
         Button mFriendButton;
         Button mBlacklistButton;
 
-        ImageView mUserImageView;
+        CircleImageView mUserImageView;
+        CircleImageView mOnline;
+        CircleImageView mRole;
         TextView  mFirstNameView;
         TextView  mLastNameView;
         TextView  mEmailView;
@@ -70,11 +173,30 @@ public class PersonAdapter extends ArrayAdapter<Triplet> {
         TextView mInfoKey;
         TextView mInfoValue;
 
+        public ViewHolder() {
+        }
 
+        public void setMessageButton() {
+            mMessageButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String companion;
+                    String name;
+                    Intent intent = new Intent(getContext(), MessagesActivity.class);
+                    if (mUser.getPerson() == 0) {
+                        companion = String.valueOf(mUser.getId());
+                    } else {
+                        companion = String.valueOf(mUser.getPerson());
+                    }
+                    name = String.valueOf(mUser.getName());
+                    intent.putExtra("companion", companion);
+                    intent.putExtra("name", name);
+                    getContext().startActivity(intent);
+                }
+            });
+        }
 
-
-        public void setFriendButton(Button button, final int position) {
-            this.mFriendButton = button;
+        public void setFriendButton() {
             if(mUser.is_friend()){
                 mFriendButton.setText("Удалить");
             }else{
@@ -104,8 +226,7 @@ public class PersonAdapter extends ArrayAdapter<Triplet> {
                     });
         }
 
-        public void setBlacklistButton(Button button, final int position){
-            mBlacklistButton = button;
+        public void setBlacklistButton(){
             if(mUser.isIs_black()){
                 mBlacklistButton.setText("Разблокировать");
             }else{

@@ -199,10 +199,15 @@ public class FetchMySubjectsTask extends AsyncTask<Void, String, Course> impleme
     @Override
     protected Course doInBackground(Void... params) {
         String urlString = "http://you.com.ru/student/ajax/my_subjects?json";
-        HashMap<String, String> postParams = new HashMap<String, String>();
+        HashMap<String, String> postParams = new HashMap<>();
         postParams.put("subjId",this.getGcourseString());
         jsonData = Common.httpPost(urlString, Common.getLoginDataFromPref(mContext), postParams);
-        return getCourseDataFromJson(jsonData);
+        if(jsonData!=null){
+            return getCourseDataFromJson(jsonData);
+        }else{
+            return new Course();
+        }
+
     }
 
     @Override

@@ -89,8 +89,6 @@ public class CourseMaterialsFragment extends ListFragment {
             adapter = new CourseMaterialsAdapter(getActivity(), mItems, myFiles, this);
         }
         setListAdapter(adapter);
-
-
     }
 
     @Override

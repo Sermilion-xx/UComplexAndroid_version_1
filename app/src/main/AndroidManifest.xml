@@ -133,6 +133,13 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
 
+        <activity
+            android:name=".Activities.ProfileActivity"
+            android:label="@string/title_activity_message"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
+
         <service android:name=".MyService" />
     </application>
 

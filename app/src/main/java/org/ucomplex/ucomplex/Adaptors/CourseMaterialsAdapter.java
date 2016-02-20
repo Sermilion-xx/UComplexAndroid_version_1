@@ -270,8 +270,5 @@ public class CourseMaterialsAdapter extends ArrayAdapter<File> {
                 }
             }.execute();
         }
-
     }
-
-
 }
