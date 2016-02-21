@@ -24,6 +24,7 @@ import java.util.concurrent.ExecutionException;
 public class SubjectsActivity extends AppCompatActivity implements OnTaskCompleteListener {
 
     private ArrayList<Triplet<String, String, Integer>> mItems;
+    ListView listView;
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -48,7 +49,7 @@ public class SubjectsActivity extends AppCompatActivity implements OnTaskComplet
         toolbar.setTitle("Дисциплины");
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
+        listView = (ListView) findViewById(R.id.subject_listview);
         FetchSubjectsTask fetchSubjectsTask = new FetchSubjectsTask(this, this);
         fetchSubjectsTask.setupTask();
 }
@@ -66,8 +67,7 @@ public class SubjectsActivity extends AppCompatActivity implements OnTaskComplet
                 e.printStackTrace();
             }
             if(mItems!= null && mItems.size()>0){
-                ListView listView = (ListView) findViewById(R.id.subject_listview);
-                listView.setDividerHeight(1);
+
                 SubjectsAdapter subjectsAdapter = new SubjectsAdapter(this,mItems);
                 listView.setAdapter(subjectsAdapter);
                 listView.setOnItemClickListener(new AdapterView.OnItemClickListener()

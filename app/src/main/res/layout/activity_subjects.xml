@@ -2,12 +2,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:fitsSystemWindows="true">
-
-    <android.support.design.widget.AppBarLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/AppTheme.AppBarOverlay">
+    android:background="@color/white"
+    android:fitsSystemWindows="true"
+    app:popupTheme="@style/AppTheme.PopupOverlay">
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar_subjects"
@@ -15,17 +12,19 @@
             android:background="?attr/colorPrimary"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            app:popupTheme="@style/AppTheme.PopupOverlay" />
-
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            android:theme="@style/ThemeOverlay.MyApp.ActionBar"
+            />
 
         <ListView
-            android:layout_width="wrap_content"
+            android:layout_marginTop="53dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/subject_listview"
-            android:fadingEdge="none">
-
+            android:divider="@color/uc_gray_text"
+            android:dividerHeight="1px">
         </ListView>
 
-    </android.support.design.widget.AppBarLayout>
+
 
 </android.support.design.widget.CoordinatorLayout>

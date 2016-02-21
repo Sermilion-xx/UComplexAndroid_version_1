@@ -1,6 +1,7 @@
 package org.ucomplex.ucomplex.Adaptors;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,8 @@ import java.util.List;
  * Created by Sermilion on 10/12/2015.
  */
 public class SubjectsAdapter extends ArrayAdapter<Triplet<String, String, Integer>> {
+
+    private Typeface robotoFont = Typeface.createFromAsset(getContext().getAssets(), "fonts/Roboto-Regular.ttf");
 
     public SubjectsAdapter(Context context, List<Triplet<String, String, Integer>> items) {
         super(context, R.layout.list_item_subject, items);
@@ -41,7 +44,9 @@ public class SubjectsAdapter extends ArrayAdapter<Triplet<String, String, Intege
 
         // update the item view
         Triplet<String, String, Integer> item = getItem(position);
+        viewHolder.mSubjectNameTextView.setTypeface(robotoFont);
         viewHolder.mSubjectNameTextView.setText(item.getValue0());
+        viewHolder.mAssesmentTypeTextView.setTypeface(robotoFont);
         viewHolder.mAssesmentTypeTextView.setText(item.getValue1());
 
         return convertView;
