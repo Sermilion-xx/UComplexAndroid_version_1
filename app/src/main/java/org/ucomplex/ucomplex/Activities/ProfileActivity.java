@@ -38,8 +38,6 @@ public class ProfileActivity extends AppCompatActivity implements OnTaskComplete
         toolbar.setTitle("Профиль");
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setElevation(0);
-
         final Bundle extra = getIntent().getExtras();
         if (extra != null) {
             personId = Integer.parseInt(extra.getString("person"));

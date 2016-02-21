@@ -3,7 +3,6 @@ package org.ucomplex.ucomplex.Adaptors;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.view.LayoutInflater;
@@ -11,11 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.amulyakhare.textdrawable.TextDrawable;
 
 import org.javatuples.Triplet;
 import org.ucomplex.ucomplex.Activities.MessagesActivity;
@@ -25,7 +21,6 @@ import org.ucomplex.ucomplex.R;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.regex.Pattern;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -101,9 +96,9 @@ public class PersonAdapter extends ArrayAdapter<Triplet> {
             viewHolder.mUserImageView.setImageBitmap(mBitmap);
             viewHolder.mFirstNameView.setTypeface(robotoFont);
             String[] fullName = mUser.getName().split(" ");
-            viewHolder.mFirstNameView.setText(fullName[0]+" "+fullName[1]);
+            viewHolder.mFirstNameView.setText(fullName[0]);
             viewHolder.mLastNameView.setTypeface(robotoFont);
-            viewHolder.mLastNameView.setText(fullName[2]);
+            viewHolder.mLastNameView.setText(fullName[1]+" "+fullName[2]);
             viewHolder.mEmailView.setTypeface(robotoFont);
             viewHolder.mEmailView.setText(mUser.getEmail());
         } else if (viewType == TYPE_INFO){
