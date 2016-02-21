@@ -23,9 +23,15 @@ import java.util.List;
 public class CourseCalendarBeltAdapter extends ArrayAdapter<Quartet<Integer, String, String, Integer>> {
 
     String[] colors = {"#51cde7", "#fecd71", "#9ece2b", "#d18ec0"};
+    List<Quartet<Integer, String, String, Integer>> feedItems;
 
     public CourseCalendarBeltAdapter(Context context, List<Quartet<Integer, String, String, Integer>> items) {
         super(context, R.layout.list_item_course_calendar_belt, items);
+        feedItems = items;
+    }
+
+    public List<Quartet<Integer, String, String, Integer>> getFeedItems() {
+        return feedItems;
     }
 
     @Override

@@ -46,7 +46,11 @@ public class CalendarBeltFragment extends ListFragment {
         if(courseCalendarBeltAdapter==null) {
             courseCalendarBeltAdapter = new CourseCalendarBeltAdapter(getActivity(), feedItems);
         }
-        setListAdapter(courseCalendarBeltAdapter);
+
+        if(feedItems!=null){
+            setListAdapter(courseCalendarBeltAdapter);
+        }
+
     }
 
     @Override
