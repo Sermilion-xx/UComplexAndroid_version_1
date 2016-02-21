@@ -3,6 +3,7 @@ package org.ucomplex.ucomplex.Adaptors;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.view.LayoutInflater;
@@ -27,19 +28,19 @@ import de.hdodenhof.circleimageview.CircleImageView;
 /**
  * Created by Sermilion on 20/02/16.
  */
-public class PersonAdapter extends ArrayAdapter<Triplet> {
+public class ProfileAdapter extends ArrayAdapter<Triplet> {
 
     private static final int TYPE_HEADER = 0;
     private static final int TYPE_INFO = 1;
 
-    private Bitmap         mBitmap;
-    private User           mUser;
-    private Context        mContext;
-    private List<Triplet>  mItems;
+    private Bitmap mBitmap;
+    private User mUser;
+    private Context mContext;
+    private List<Triplet> mItems;
     private LayoutInflater inflater;
-    private Typeface       robotoFont = Typeface.createFromAsset(getContext().getAssets(), "fonts/Roboto-Regular.ttf");
+    private Typeface robotoFont = Typeface.createFromAsset(getContext().getAssets(), "fonts/Roboto-Regular.ttf");
 
-    public PersonAdapter(Context context, List<Triplet> profileItems, Bitmap bitmap) {
+    public ProfileAdapter(Context context, List<Triplet> profileItems, Bitmap bitmap) {
         super(context, R.layout.list_item_profile_header, profileItems);
         mUser = (User) profileItems.get(0).getValue1();
         mContext = context;
@@ -50,7 +51,7 @@ public class PersonAdapter extends ArrayAdapter<Triplet> {
     private View createHolder(ViewHolder viewHolder, View convertView, int viewType, ViewGroup parent, int posision) {
         viewHolder = new ViewHolder();
         inflater = LayoutInflater.from(getContext());
-        if(viewType==TYPE_HEADER){
+        if (viewType == TYPE_HEADER) {
             convertView = inflater.inflate(R.layout.list_item_profile_header, parent, false);
             viewHolder.mFriendButton = (Button) convertView.findViewById(R.id.list_profile_add_friend_button);
             viewHolder.setFriendButton();
@@ -64,7 +65,7 @@ public class PersonAdapter extends ArrayAdapter<Triplet> {
             viewHolder.mEmailView = (TextView) convertView.findViewById(R.id.list_profile_role);
             viewHolder.mOnline = (CircleImageView) convertView.findViewById(R.id.list_profile_online);
             viewHolder.holderId = TYPE_HEADER;
-        }else if(viewType==TYPE_INFO){
+        } else if (viewType == TYPE_INFO) {
             convertView = inflater.inflate(R.layout.list_item_profile_role, parent, false);
             viewHolder.mInfoKey = (TextView) convertView.findViewById(R.id.list_profile_role_key);
             viewHolder.mInfoValue = (TextView) convertView.findViewById(R.id.list_profile_role_value);
@@ -86,7 +87,7 @@ public class PersonAdapter extends ArrayAdapter<Triplet> {
             viewHolder = (ViewHolder) convertView.getTag();
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
-            if(viewHolder.holderId != viewType){
+            if (viewHolder.holderId != viewType) {
                 convertView = createHolder(viewHolder, convertView, viewType, parent, position);
                 viewHolder = (ViewHolder) convertView.getTag();
             }
@@ -98,36 +99,36 @@ public class PersonAdapter extends ArrayAdapter<Triplet> {
             String[] fullName = mUser.getName().split(" ");
             viewHolder.mFirstNameView.setText(fullName[0]);
             viewHolder.mLastNameView.setTypeface(robotoFont);
-            viewHolder.mLastNameView.setText(fullName[1]+" "+fullName[2]);
+            viewHolder.mLastNameView.setText(fullName[1] + " " + fullName[2]);
             viewHolder.mEmailView.setTypeface(robotoFont);
             viewHolder.mEmailView.setText(mUser.getEmail());
-        } else if (viewType == TYPE_INFO){
+        } else if (viewType == TYPE_INFO) {
             Integer[] icons = new Integer[]{R.drawable.ic_role_1,
                     R.drawable.ic_role_2,
                     R.drawable.ic_role_3,
                     R.drawable.ic_role_4,
                     R.drawable.ic_role_5};
-            viewHolder.mRole.setImageResource(icons[position]-1);
+            viewHolder.mRole.setImageResource(icons[position] - 1);
             viewHolder.mInfoKey.setTypeface(robotoFont);
-            if(isInt(item.getValue1())){
+            if (isInt(item.getValue1())) {
                 viewHolder.mInfoKey.setText(Common.getStringUserType(mContext, Integer.parseInt(item.getValue1())));
-            }else{
+            } else {
                 viewHolder.mInfoKey.setText(item.getValue1());
             }
 
             viewHolder.mInfoValue.setTypeface(robotoFont);
             viewHolder.mInfoValue.setText(item.getValue0());
+
         }
+        convertView.setBackgroundColor(Color.WHITE);
         return convertView;
     }
 
-    static boolean isInt(String s){
-        try{
+    static boolean isInt(String s) {
+        try {
             int i = Integer.parseInt(s);
             return true;
-        }
-
-        catch(NumberFormatException er) {
+        } catch (NumberFormatException er) {
             return false;
         }
     }
@@ -161,9 +162,9 @@ public class PersonAdapter extends ArrayAdapter<Triplet> {
         CircleImageView mUserImageView;
         CircleImageView mOnline;
         CircleImageView mRole;
-        TextView  mFirstNameView;
-        TextView  mLastNameView;
-        TextView  mEmailView;
+        TextView mFirstNameView;
+        TextView mLastNameView;
+        TextView mEmailView;
 
         TextView mInfoKey;
         TextView mInfoValue;
@@ -192,9 +193,9 @@ public class PersonAdapter extends ArrayAdapter<Triplet> {
         }
 
         public void setFriendButton() {
-            if(mUser.is_friend()){
+            if (mUser.is_friend()) {
                 mFriendButton.setText("Удалить");
-            }else{
+            } else {
                 mFriendButton.setText("В друзья");
             }
             this.mFriendButton.setOnClickListener(
@@ -203,13 +204,13 @@ public class PersonAdapter extends ArrayAdapter<Triplet> {
                         public void onClick(View v) {
                             HashMap<String, String> params = new HashMap<>();
                             params.put("user", String.valueOf(mUser.getId()));
-                            if(mUser.isReq_sent()) {
+                            if (mUser.isReq_sent()) {
                                 HandleMenuPress handleMenuPress = new HandleMenuPress();
                                 handleMenuPress.execute("http://you.com.ru/user/friends/accept?mobile=1", params);
                                 mUser.setReq_sent(false);
                                 Toast.makeText(mContext, mUser.getName() + " теперь ваш друг :)", Toast.LENGTH_SHORT).show();
                                 mFriendButton.setText("Удалить");
-                            }else {
+                            } else {
                                 HandleMenuPress handleMenuPress = new HandleMenuPress();
                                 handleMenuPress.execute("http://you.com.ru/user/friends/delete?mobile=1", params);
                                 Toast.makeText(mContext, "Пользователь удален из друзей :(", Toast.LENGTH_SHORT).show();
@@ -220,38 +221,56 @@ public class PersonAdapter extends ArrayAdapter<Triplet> {
                         }
                     });
         }
-
-        public void setBlacklistButton(){
-            if(mUser.isIs_black()){
-                mBlacklistButton.setText("Разблокировать");
-            }else{
-                mBlacklistButton.setText("Зазблокировать");
-            }
-            mBlacklistButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    HashMap<String, String> params = new HashMap<>();
-                    if(!mUser.isIs_black()) {
-                        params.put("user", String.valueOf(mUser.getId()));
-                        HandleMenuPress handleMenuPress = new HandleMenuPress();
-                        handleMenuPress.execute("http://you.com.ru/user/blacklist/add", params);
-                        Toast.makeText(mContext, "Пользователь добавлен в черный список :(", Toast.LENGTH_SHORT).show();
-                        mUser.setIs_black(true);
-                        mBlacklistButton.setText("Разблокировать");
-                    }else{
-                        params.put("user", String.valueOf(mUser.getId()));
-                        HandleMenuPress handleMenuPress1 = new HandleMenuPress();
-                        handleMenuPress1.execute("http://you.com.ru/user/blacklist/delete", params);
-                        Toast.makeText(mContext, "Пользователь удален из черного списка :)", Toast.LENGTH_SHORT).show();
-                        mUser.setIs_black(false);
-                        mBlacklistButton.setText("Зазблокировать");
-                    }
-                    Common.userListChanged = 4;
-                }
-            });
-        }
-
     }
+
+    public void blockUser() {
+        HashMap<String, String> params = new HashMap<>();
+        if (!mUser.isIs_black()) {
+            params.put("user", String.valueOf(mUser.getId()));
+            HandleMenuPress handleMenuPress = new HandleMenuPress();
+            handleMenuPress.execute("http://you.com.ru/user/blacklist/add", params);
+            Toast.makeText(mContext, "Пользователь добавлен в черный список :(", Toast.LENGTH_SHORT).show();
+            mUser.setIs_black(true);
+        } else {
+            params.put("user", String.valueOf(mUser.getId()));
+            HandleMenuPress handleMenuPress1 = new HandleMenuPress();
+            handleMenuPress1.execute("http://you.com.ru/user/blacklist/delete", params);
+            Toast.makeText(mContext, "Пользователь удален из черного списка :)", Toast.LENGTH_SHORT).show();
+            mUser.setIs_black(false);
+        }
+        Common.userListChanged = 4;
+    }
+
+
+//    public void setBlacklistButton(){
+//        if(mUser.isIs_black()){
+//            mBlacklistButton.setText("Разблокировать");
+//        }else{
+//            mBlacklistButton.setText("Зазблокировать");
+//        }
+//        mBlacklistButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                HashMap<String, String> params = new HashMap<>();
+//                if(!mUser.isIs_black()) {
+//                    params.put("user", String.valueOf(mUser.getId()));
+//                    HandleMenuPress handleMenuPress = new HandleMenuPress();
+//                    handleMenuPress.execute("http://you.com.ru/user/blacklist/add", params);
+//                    Toast.makeText(mContext, "Пользователь добавлен в черный список :(", Toast.LENGTH_SHORT).show();
+//                    mUser.setIs_black(true);
+//                    mBlacklistButton.setText("Разблокировать");
+//                }else{
+//                    params.put("user", String.valueOf(mUser.getId()));
+//                    HandleMenuPress handleMenuPress1 = new HandleMenuPress();
+//                    handleMenuPress1.execute("http://you.com.ru/user/blacklist/delete", params);
+//                    Toast.makeText(mContext, "Пользователь удален из черного списка :)", Toast.LENGTH_SHORT).show();
+//                    mUser.setIs_black(false);
+//                    mBlacklistButton.setText("Зазблокировать");
+//                }
+//                Common.userListChanged = 4;
+//            }
+//        });
+//    }
 
     class HandleMenuPress extends AsyncTask<Object, Void, Void> {
         @Override

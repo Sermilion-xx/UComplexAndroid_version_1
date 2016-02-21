@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
@@ -29,6 +30,7 @@ public class ProfileActivity extends AppCompatActivity implements OnTaskComplete
 
     int personId;
     Bitmap bitmap;
+    ProfileFragment profileFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,10 +52,19 @@ public class ProfileActivity extends AppCompatActivity implements OnTaskComplete
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_profile, menu);
+        return true;
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
                 onBackPressed();
+                return true;
+            case R.id.action_block:
+                profileFragment.getmAdapter().blockUser();
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -80,7 +91,7 @@ public class ProfileActivity extends AppCompatActivity implements OnTaskComplete
                     items.add(aItem);
                 }
 
-                ProfileFragment profileFragment = new ProfileFragment();
+                profileFragment = new ProfileFragment();
                 profileFragment.setContext(this);
                 profileFragment.setBitmap(bitmap);
                 profileFragment.setPerson(personId);

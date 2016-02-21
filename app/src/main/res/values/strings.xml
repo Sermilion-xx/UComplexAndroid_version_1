@@ -98,6 +98,7 @@
     <string name="progile_picture">Profile picture</string>
     <string name="add_as_friend_str_ru">В друзья</string>
     <string name="message_str">Сообщение</string>
+    <string name="block_str_ru">Заблокировать</string>
 
 
 </resources>

@@ -2,12 +2,13 @@ package org.ucomplex.ucomplex.Fragments;
 
 import android.app.Activity;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.view.View;
 
 import org.javatuples.Triplet;
-import org.ucomplex.ucomplex.Adaptors.PersonAdapter;
+import org.ucomplex.ucomplex.Adaptors.ProfileAdapter;
 import org.ucomplex.ucomplex.Model.Users.User;
 
 import java.util.List;
@@ -17,7 +18,7 @@ import java.util.List;
  */
 public class ProfileFragment extends ListFragment {
 
-    PersonAdapter mAdapter;
+    ProfileAdapter mAdapter;
     Activity mContext;
     Bitmap mBitmap;
     int mPerson = -1;
@@ -26,6 +27,10 @@ public class ProfileFragment extends ListFragment {
 
     public ProfileFragment() {
 
+    }
+
+    public ProfileAdapter getmAdapter() {
+        return mAdapter;
     }
 
     public void setmItems(List<Triplet> mItems) {
@@ -51,8 +56,9 @@ public class ProfileFragment extends ListFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mAdapter = new PersonAdapter(mContext, mItems, mBitmap);
+        mAdapter = new ProfileAdapter(mContext, mItems, mBitmap);
         setListAdapter(mAdapter);
+
     }
 
     @Override
