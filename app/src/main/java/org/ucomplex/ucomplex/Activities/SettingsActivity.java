@@ -69,7 +69,7 @@ public class SettingsActivity extends AppCompatActivity implements OnTaskComplet
         toolbar.setTitle("Настройки");
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_menu);
         user = Common.getUserDataFromPref(this);
         FetchProfileTask fetchProfileTask = new FetchProfileTask(this,this);
         fetchProfileTask.execute();

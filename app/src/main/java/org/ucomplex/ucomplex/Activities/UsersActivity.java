@@ -69,7 +69,7 @@ public class UsersActivity extends AppCompatActivity {
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_menu);
         handleIntent(getIntent());
 
         tabs = (PagerSlidingTabStrip) findViewById(R.id.tabs);

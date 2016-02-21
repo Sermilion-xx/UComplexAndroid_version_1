@@ -36,6 +36,7 @@ public class CalendarActivity2 extends AppCompatActivity implements AdapterView.
         toolbar.setTitle("Календарь");
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_menu);
         viewPager = (ViewPager) findViewById(R.id.viewpager_calendar);
         adapter = new ViewPagerAdapter(getSupportFragmentManager());
         CalendarFragment calendarFragment = new CalendarFragment();

@@ -32,6 +32,7 @@ public class ReferenceActivity extends AppCompatActivity implements AdapterView.
         toolbar.setTitle("Справки");
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_menu);
         Spinner spinner = (Spinner) findViewById(R.id.reference_place_choice);
         spinner.setOnItemSelectedListener(this);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,

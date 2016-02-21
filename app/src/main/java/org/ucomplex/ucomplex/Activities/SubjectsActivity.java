@@ -49,6 +49,7 @@ public class SubjectsActivity extends AppCompatActivity implements OnTaskComplet
         toolbar.setTitle("Дисциплины");
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_menu);
         listView = (ListView) findViewById(R.id.subject_listview);
         FetchSubjectsTask fetchSubjectsTask = new FetchSubjectsTask(this, this);
         fetchSubjectsTask.setupTask();

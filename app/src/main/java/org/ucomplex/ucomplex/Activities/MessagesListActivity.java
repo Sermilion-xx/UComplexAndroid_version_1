@@ -70,6 +70,7 @@ public class MessagesListActivity extends AppCompatActivity implements OnTaskCom
         toolbar.setTitle("Сообщения");
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_menu);
         FetchDialogsTask fetchDialogsTask = new FetchDialogsTask(this, this);
         fetchDialogsTask.setupTask();
     }

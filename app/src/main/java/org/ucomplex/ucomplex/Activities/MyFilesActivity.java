@@ -49,6 +49,7 @@ public class MyFilesActivity extends AppCompatActivity implements OnTaskComplete
         toolbar.setTitle("Материалы");
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_menu);
         FetchMyFilesTask fetchMyFilesTask = new FetchMyFilesTask(this,this);
         fetchMyFilesTask.setupTask();
     }

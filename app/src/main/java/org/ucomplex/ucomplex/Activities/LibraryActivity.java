@@ -31,6 +31,7 @@ public class LibraryActivity extends AppCompatActivity implements OnTaskComplete
         toolbar.setTitle("Библиотека");
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_menu);
         FetchLibraryTask fetchLibraryTask = new FetchLibraryTask(this,this);
         fetchLibraryTask.setupTask(0);
     }
