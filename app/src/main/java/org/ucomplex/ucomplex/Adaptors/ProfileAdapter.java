@@ -120,6 +120,9 @@ public class ProfileAdapter extends ArrayAdapter<Triplet> {
             viewHolder.mInfoValue.setText(item.getValue0());
 
         }
+        if(viewType==TYPE_HEADER){
+            convertView.setBackgroundColor(mContext.getResources().getColor(R.color.colorPrimary));
+        }
         convertView.setBackgroundColor(Color.WHITE);
         return convertView;
     }

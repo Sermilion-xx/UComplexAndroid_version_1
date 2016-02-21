@@ -31,6 +31,8 @@ public class ProfileActivity extends AppCompatActivity implements OnTaskComplete
     int personId;
     Bitmap bitmap;
     ProfileFragment profileFragment;
+    Menu menu;
+    User mUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +56,7 @@ public class ProfileActivity extends AppCompatActivity implements OnTaskComplete
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_profile, menu);
+        this.menu = menu;
         return true;
     }
 
@@ -64,7 +67,13 @@ public class ProfileActivity extends AppCompatActivity implements OnTaskComplete
                 onBackPressed();
                 return true;
             case R.id.action_block:
+//                MenuItem menuItem = menu.findItem(R.id.action_block);
                 profileFragment.getmAdapter().blockUser();
+//                if(mUser.is_black()){
+//                    menuItem.setTitle("Разблокировать");
+//                }else{
+//                    menuItem.setTitle("Заблокировать");
+//                }
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -74,38 +83,36 @@ public class ProfileActivity extends AppCompatActivity implements OnTaskComplete
     @Override
     public void onTaskComplete(AsyncTask task, Object... o) {
         try {
-            User mUser = (User) task.get();
-            if (mUser != null) {
-                List<Triplet> items = new ArrayList<>();
-                Triplet<Bitmap, User, String> item = new Triplet<>(bitmap, mUser, "-1");
-                items.add(item);
-                for (User role : mUser.getRoles()) {
-                    Triplet<String, String, String> aItem = null;
-                    String positionName = role.getPositionName();
-                    if(role.getType()==4){
-                        aItem = new Triplet<>(positionName, String.valueOf(role.getType()), "-1");
-                    }else{
-                        Teacher teach = (Teacher) role;
-                        aItem = new Triplet<>(teach.getSectionName(), role.getPositionName(),  "-1");
-                    }
-                    items.add(aItem);
+            mUser = (User) task.get();
+            List<Triplet> items = new ArrayList<>();
+            Triplet<Bitmap, User, String> item = new Triplet<>(bitmap, mUser, "-1");
+            items.add(item);
+            for (User role : mUser.getRoles()) {
+                Triplet<String, String, String> aItem = null;
+                String positionName = role.getPositionName();
+                if(role.getType()==4){
+                    aItem = new Triplet<>(positionName, String.valueOf(role.getType()), "-1");
+                }else{
+                    Teacher teach = (Teacher) role;
+                    aItem = new Triplet<>(teach.getSectionName(), role.getPositionName(),  "-1");
                 }
-
-                profileFragment = new ProfileFragment();
-                profileFragment.setContext(this);
-                profileFragment.setBitmap(bitmap);
-                profileFragment.setPerson(personId);
-                profileFragment.setmUser(mUser);
-                profileFragment.setmItems(items);
-
-                FragmentManager fragmentManager = getSupportFragmentManager();
-                FragmentTransaction fragmentTransaction =
-                        fragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.content_person, profileFragment);
-                fragmentTransaction.commit();
-            } else {
-                Toast.makeText(this, "Ошибка при загрузке пользователя!", Toast.LENGTH_SHORT).show();
+                items.add(aItem);
             }
+
+            profileFragment = new ProfileFragment();
+            profileFragment.setContext(this);
+            profileFragment.setBitmap(bitmap);
+            profileFragment.setPerson(personId);
+            profileFragment.setmUser(mUser);
+            profileFragment.setmItems(items);
+
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            FragmentTransaction fragmentTransaction =
+                    fragmentManager.beginTransaction();
+            fragmentTransaction.replace(R.id.content_person, profileFragment);
+            fragmentTransaction.commit();
+
+
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
