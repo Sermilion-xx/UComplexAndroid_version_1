@@ -17,13 +17,11 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.apache.http.entity.mime.content.ByteArrayBody;
 import org.ucomplex.ucomplex.Activities.Tasks.FetchMessagesTask;
 import org.ucomplex.ucomplex.Activities.Tasks.UploadPhotoTask;
 import org.ucomplex.ucomplex.Adaptors.MessagesAdapter;
 import org.ucomplex.ucomplex.Common;
 import org.ucomplex.ucomplex.Interfaces.OnTaskCompleteListener;
-import org.ucomplex.ucomplex.Model.Dialog;
 import org.ucomplex.ucomplex.Model.Message;
 import org.ucomplex.ucomplex.Model.Users.User;
 import org.ucomplex.ucomplex.R;
@@ -63,21 +61,19 @@ public class MessagesActivity extends AppCompatActivity implements OnTaskComplet
         profileImageView = (CircleImageView) findViewById(R.id.list_messages_toolbar_profile);
         nameTextView = (TextView) findViewById(R.id.list_messages_toolbar_name);
         nameTextView.setTypeface(robotoFont);
-        Intent intent = getIntent();
         companion = getIntent().getStringExtra("companion");
         name = getIntent().getStringExtra("name");
+
+        User aUser = new User();
+        aUser.setId(Integer.valueOf(companion));
+        aUser.setName(name);
+        profileImageView.setImageDrawable(Common.getDrawable(aUser));
+
         String[] aName = name.split(" ");
-        nameTextView.setText(aName[0]+" "+aName[1]);
-        Dialog dialog = (Dialog) intent.getSerializableExtra("user");
-        if(dialog.getPhotoBitmap()!=null){
-            profileImageView.setImageBitmap(dialog.getPhotoBitmap());
-        }else{
-            User aUser = new User();
-            aUser.setId(Integer.valueOf(companion));
-            aUser.setName(dialog.getName());
-            profileImageView.setImageDrawable(Common.getDrawable(aUser));
-        }
+        nameTextView.setText(aName[0] + " " + aName[1]);
         messagesAdapter = new MessagesAdapter(this, messageArrayList, companion, name);
+
+
         listView = (ListView) findViewById(R.id.list_messages_listview);
         listView.setScrollingCacheEnabled(false);
         fetchNewMessagesTask = new FetchMessagesTask(this, this);
@@ -91,7 +87,7 @@ public class MessagesActivity extends AppCompatActivity implements OnTaskComplet
                 fetchNewMessagesTask = new FetchMessagesTask(MessagesActivity.this, MessagesActivity.this);
                 fetchNewMessagesTask.setType(1);
                 final String message = messageTextView.getText().toString();
-                if (file && filePath!=null) {
+                if (file && filePath != null) {
                     String[] splitFilename = filePath.split("/");
                     String filename = splitFilename[splitFilename.length - 1];
                     fetchNewMessagesTask.setupTask(filePath, companion, filename, message);
@@ -108,16 +104,16 @@ public class MessagesActivity extends AppCompatActivity implements OnTaskComplet
                 showFileChooser();
             }
         });
-                    new Timer().scheduleAtFixedRate(new TimerTask() {
-                        @Override
-                        public void run() {
-                            if(fetchNewMessagesTask==null) {
-                                fetchNewMessagesTask = new FetchMessagesTask(MessagesActivity.this, MessagesActivity.this);
-                                fetchNewMessagesTask.setType(2);
-                                fetchNewMessagesTask.setupTask(companion);
-                            }
-                        }
-                    }, 0, 3000);
+        new Timer().scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                if (fetchNewMessagesTask == null) {
+                    fetchNewMessagesTask = new FetchMessagesTask(MessagesActivity.this, MessagesActivity.this);
+                    fetchNewMessagesTask.setType(2);
+                    fetchNewMessagesTask.setupTask(companion);
+                }
+            }
+        }, 0, 3000);
     }
 
     private void scrollMyListViewToBottom() {
@@ -199,6 +195,10 @@ public class MessagesActivity extends AppCompatActivity implements OnTaskComplet
                             messagesAdapter = new MessagesAdapter(this, messageArrayList, companion, name);
                             listView.setAdapter(messagesAdapter);
                             listView.setSelection(messagesAdapter.getCount() - 1);
+                            messagesAdapter.getValues().getFirst();
+                            if (messagesAdapter.getBitmap() != null) {
+                                profileImageView.setImageBitmap(messagesAdapter.getBitmap());
+                            }
                         }
                     } else if (fmt.getType() == 1 || fmt.getType() == 2) {
                         LinkedList result = (LinkedList) task.get();

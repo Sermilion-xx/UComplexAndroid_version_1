@@ -37,8 +37,8 @@
 
         <Button
             android:layout_marginLeft="10dp"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
             android:background="@drawable/ic_plus"
             android:id="@+id/messages_file_button" />
 
@@ -55,7 +55,7 @@
 
         <Button
             android:layout_width="30dp"
-            android:layout_height="20dp"
+            android:layout_height="30dp"
             android:background="@drawable/ic_send"
             android:id="@+id/messages_send_button"
             android:layout_marginRight="15dp"

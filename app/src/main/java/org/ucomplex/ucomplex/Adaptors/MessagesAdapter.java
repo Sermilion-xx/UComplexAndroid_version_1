@@ -40,6 +40,10 @@ public class MessagesAdapter extends ArrayAdapter {
     private static final int TYPE_OUT = 0;
     private static final int TYPE_IN = 1;
 
+    public Bitmap getBitmap() {
+        return bitmap;
+    }
+
     public MessagesAdapter(Context context, LinkedList<Message> messages, String companion, String name) {
         super(context, -1, messages);
         this.values = messages;
@@ -63,6 +67,10 @@ public class MessagesAdapter extends ArrayAdapter {
         if(this.bitmap == null){
             this.drawable2 = createDrawable(companionName, Integer.valueOf(this.companion));
         }
+    }
+
+    public LinkedList getValues() {
+        return values;
     }
 
     @Override
