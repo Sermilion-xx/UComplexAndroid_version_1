@@ -190,6 +190,7 @@ public class ImageAdapter extends BaseAdapter {
                 .buildRound(String.valueOf(firstLetter), Common.getColor(number));
         return drawable;
     }
+
 }
 
 class ViewHolder {
