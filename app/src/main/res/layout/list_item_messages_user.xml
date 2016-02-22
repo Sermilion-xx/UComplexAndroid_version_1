@@ -1,45 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="5dp">
+    android:layout_height="wrap_content">
 
     <de.hdodenhof.circleimageview.CircleImageView
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+        android:layout_width="45dp"
+        android:layout_height="50dp"
         android:src="@mipmap/ic_no_image"
         android:id="@+id/list_messages_user_image"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="10dp" />
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:id="@+id/list_messages_my"
+        android:layout_alignBottom="@+id/list_messages_last_message"
+        android:layout_toRightOf="@+id/list_messages_user_image"
+        android:layout_toEndOf="@+id/list_messages_user_image"
+        android:layout_marginLeft="10dp" />
+
+    <TextView
+        android:id="@+id/list_messages_user_name"
+        android:textColor="@color/black"
+        android:text="Some NAme"
+        android:layout_width="195dp"
+        android:layout_height="wrap_content"
+        android:textSize="17sp"
+        android:layout_toRightOf="@+id/list_messages_user_image"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="18dp" />
+
+    <TextView
+        android:id="@+id/list_messages_time"
+        android:textColor="#a9a9a9"
+        android:text="Сегодня в 11:30"
+        android:lines="1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="12sp"
+        android:layout_alignTop="@+id/list_messages_user_name"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="5dp"
+        android:layout_marginRight="10dp" />
+
+    <TextView
+        android:id="@+id/list_messages_last_message"
+        android:textColor="#a9a9a9"
+        android:text="Last message"
+        android:lines="1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="14sp"
+        android:layout_below="@+id/list_messages_user_name"
+        android:layout_toRightOf="@+id/list_messages_my"
+        android:layout_marginBottom="17dp"
         android:layout_marginLeft="5dp"
-        android:layout_gravity="center_vertical"
-        />
+        android:layout_marginTop="2dp" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="70dp"
-        android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/list_messages_user_name"
-            android:textColor="#a9a9a9"
-            android:text="Some NAme"
-            android:paddingLeft="10dp"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:textSize="16sp"
-            android:layout_marginTop="10dp" />
-
-        <TextView
-            android:id="@+id/list_messages_last_message"
-            android:textColor="#a9a9a9"
-            android:text="Last message"
-            android:paddingLeft="10dp"
-            android:lines="1"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:textSize="12sp"
-            android:layout_marginTop="10dp" />
-
-    </LinearLayout>
-
-</LinearLayout>
+</RelativeLayout>

@@ -456,13 +456,12 @@ public class Common {
                 }if(tempMonth.equals("12")){
                     month = "декабря";
                 }
-
                 r += tempYyMMdd[2]+" "+month+" "+tempYyMMdd[0]+" г.";
             }
             if(justDate!=null){
-                if(!justDate[0]){
-                    r += " в " + hhMMss;
-                }
+//                if(!justDate[0]){
+                    r += " в " + hhMMss.substring(0,5);
+//                }
             }
         } catch (Exception e) {
             e.printStackTrace();

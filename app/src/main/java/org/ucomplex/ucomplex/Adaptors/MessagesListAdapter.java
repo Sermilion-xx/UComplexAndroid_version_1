@@ -3,6 +3,7 @@ package org.ucomplex.ucomplex.Adaptors;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
@@ -10,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.amulyakhare.textdrawable.TextDrawable;
@@ -21,9 +23,12 @@ import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListene
 
 import org.ucomplex.ucomplex.Common;
 import org.ucomplex.ucomplex.Model.Dialog;
+import org.ucomplex.ucomplex.Model.Users.User;
 import org.ucomplex.ucomplex.R;
 
 import java.util.ArrayList;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * Created by Sermilion on 30/12/2015.
@@ -34,10 +39,13 @@ public class MessagesListAdapter extends ArrayAdapter<Dialog> {
     ArrayList<Dialog> dialogs;
     private boolean finishedLoading = false;
     private DisplayImageOptions options;
+    private Typeface robotoFont = Typeface.createFromAsset(getContext().getAssets(), "fonts/Roboto-Regular.ttf");
+    private User user;
 
     public MessagesListAdapter(Context context, ArrayList<Dialog> dialogs) {
         super(context, -1, dialogs);
         this.dialogs = dialogs;
+        user = Common.getUserDataFromPref(context);
 
         inflater = LayoutInflater.from(context);
         options = new DisplayImageOptions.Builder()
@@ -66,7 +74,8 @@ public class MessagesListAdapter extends ArrayAdapter<Dialog> {
             viewHolder.nameTextView = (TextView) convertView.findViewById(R.id.list_messages_user_name);
             viewHolder.lastMessageTextView = (TextView) convertView.findViewById(R.id.list_messages_last_message);
             viewHolder.profileImageView = (ImageView) convertView.findViewById(R.id.list_messages_user_image);
-
+            viewHolder.timeTextView = (TextView) convertView.findViewById(R.id.list_messages_time);
+            viewHolder.myMessageIcon = (CircleImageView) convertView.findViewById(R.id.list_messages_my);
             if (convertView != null) {
                 convertView.setTag(viewHolder);
             }
@@ -122,8 +131,36 @@ public class MessagesListAdapter extends ArrayAdapter<Dialog> {
         } else {
             convertView.setBackgroundColor(Color.WHITE);
         }
-        viewHolder.nameTextView.setText(item.getName());
+        String[] name = item.getName().split(" ");
+        viewHolder.nameTextView.setTypeface(robotoFont);
+        viewHolder.nameTextView.setText(name[0] + " " + name[1]);
+        viewHolder.lastMessageTextView.setTypeface(robotoFont);
         viewHolder.lastMessageTextView.setText(item.getMessage());
+        viewHolder.timeTextView.setTypeface(robotoFont);
+        viewHolder.timeTextView.setText(Common.makeDate(item.getTime(), false));
+
+        if (item.getFrom() == user.getPerson()) {
+            if(user.getPhotoBitmap()==null){
+                final int colorsCount = 16;
+                final int number = (user.getPerson() <= colorsCount) ? user.getPerson() : user.getPerson() % colorsCount;
+                String name1 = user.getName();
+                char firstLetter = name1.split(" ")[1].charAt(0);
+                TextDrawable drawable = TextDrawable.builder().beginConfig()
+                        .width(60)
+                        .height(60)
+                        .endConfig()
+                        .buildRound(String.valueOf(firstLetter), Common.getColor(number));
+                viewHolder.myMessageIcon.setVisibility(View.VISIBLE);
+                viewHolder.myMessageIcon.setImageDrawable(drawable);
+            }else{
+                viewHolder.myMessageIcon.setImageBitmap(user.getPhotoBitmap());
+            }
+        }else{
+            viewHolder.myMessageIcon.setVisibility(View.GONE);
+            viewHolder.lastMessageTextView.setPadding(20,0,0,0);
+        }
+
+
         return convertView;
     }
 
@@ -146,6 +183,8 @@ public class MessagesListAdapter extends ArrayAdapter<Dialog> {
     public static class ViewHolder {
         TextView nameTextView;
         TextView lastMessageTextView;
+        CircleImageView myMessageIcon;
+        TextView timeTextView;
         ImageView profileImageView;
     }
 }
