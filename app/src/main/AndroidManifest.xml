@@ -123,12 +123,11 @@
             android:theme="@style/AppTheme" />
         <activity
             android:name=".Activities.MessagesListActivity"
-            android:label="@string/title_activity_message"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".Activities.MessagesActivity"
-            android:label="@string/title_activity_message"
+            android:label=""
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />

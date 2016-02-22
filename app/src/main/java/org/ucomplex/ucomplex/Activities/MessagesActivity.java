@@ -3,6 +3,7 @@ package org.ucomplex.ucomplex.Activities;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -22,7 +23,9 @@ import org.ucomplex.ucomplex.Activities.Tasks.UploadPhotoTask;
 import org.ucomplex.ucomplex.Adaptors.MessagesAdapter;
 import org.ucomplex.ucomplex.Common;
 import org.ucomplex.ucomplex.Interfaces.OnTaskCompleteListener;
+import org.ucomplex.ucomplex.Model.Dialog;
 import org.ucomplex.ucomplex.Model.Message;
+import org.ucomplex.ucomplex.Model.Users.User;
 import org.ucomplex.ucomplex.R;
 
 import java.util.Collections;
@@ -30,6 +33,8 @@ import java.util.LinkedList;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ExecutionException;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MessagesActivity extends AppCompatActivity implements OnTaskCompleteListener {
 
@@ -40,19 +45,38 @@ public class MessagesActivity extends AppCompatActivity implements OnTaskComplet
     String name;
     String filePath;
     boolean file = false;
-    ByteArrayBody contentBody;
     FetchMessagesTask fetchNewMessagesTask;
+
+    TextView nameTextView;
+    CircleImageView profileImageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_message);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle("Сообщения");
+//        toolbar.setTitle("Сообщения");
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        Typeface robotoFont = Typeface.createFromAsset(this.getAssets(), "fonts/Roboto-Regular.ttf");
+        profileImageView = (CircleImageView) findViewById(R.id.list_messages_toolbar_profile);
+        nameTextView = (TextView) findViewById(R.id.list_messages_toolbar_name);
+        nameTextView.setTypeface(robotoFont);
+        Intent intent = getIntent();
         companion = getIntent().getStringExtra("companion");
         name = getIntent().getStringExtra("name");
+        String[] aName = name.split(" ");
+        nameTextView.setText(aName[0]+" "+aName[1]);
+        Dialog dialog = (Dialog) intent.getSerializableExtra("user");
+        if(dialog.getPhotoBitmap()!=null){
+            profileImageView.setImageBitmap(dialog.getPhotoBitmap());
+        }else{
+            User aUser = new User();
+            aUser.setId(Integer.valueOf(companion));
+            aUser.setName(dialog.getName());
+            profileImageView.setImageDrawable(Common.getDrawable(aUser));
+        }
         messagesAdapter = new MessagesAdapter(this, messageArrayList, companion, name);
         listView = (ListView) findViewById(R.id.list_messages_listview);
         listView.setScrollingCacheEnabled(false);
@@ -67,7 +91,7 @@ public class MessagesActivity extends AppCompatActivity implements OnTaskComplet
                 fetchNewMessagesTask = new FetchMessagesTask(MessagesActivity.this, MessagesActivity.this);
                 fetchNewMessagesTask.setType(1);
                 final String message = messageTextView.getText().toString();
-                if (file) {
+                if (file && filePath!=null) {
                     String[] splitFilename = filePath.split("/");
                     String filename = splitFilename[splitFilename.length - 1];
                     fetchNewMessagesTask.setupTask(filePath, companion, filename, message);

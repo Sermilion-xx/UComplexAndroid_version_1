@@ -17,7 +17,35 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="@color/colorPrimary"
-            app:popupTheme="@style/AppTheme.PopupOverlay" />
+            app:popupTheme="@style/AppTheme.PopupOverlay">
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:layout_width="41dp"
+                    android:layout_height="41dp"
+                    android:src="@drawable/ic_ucomplex"
+                    android:id="@+id/list_messages_toolbar_profile" />
+
+                <TextView
+                    android:id="@+id/list_messages_toolbar_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white"
+                    android:text="John Connar"
+                    android:textSize="19sp"
+                    android:layout_centerVertical="true"
+                    android:layout_toRightOf="@+id/list_messages_toolbar_profile"
+                    android:layout_toEndOf="@+id/list_messages_toolbar_profile"
+                    android:layout_marginLeft="10dp" />
+
+            </RelativeLayout>
+
+
+
+            </android.support.v7.widget.Toolbar>
 
     </android.support.design.widget.AppBarLayout>
 

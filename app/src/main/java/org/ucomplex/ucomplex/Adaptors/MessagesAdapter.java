@@ -2,6 +2,7 @@ package org.ucomplex.ucomplex.Adaptors;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,8 @@ import org.ucomplex.ucomplex.Model.Users.User;
 import org.ucomplex.ucomplex.R;
 
 import java.util.LinkedList;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * Created by Sermilion on 31/12/2015.
@@ -32,6 +35,7 @@ public class MessagesAdapter extends ArrayAdapter {
     Bitmap myBitmap;
     String companion;
     String companionName;
+    private Typeface robotoFont = Typeface.createFromAsset(getContext().getAssets(), "fonts/Roboto-Regular.ttf");
 
     private static final int TYPE_OUT = 0;
     private static final int TYPE_IN = 1;
@@ -84,24 +88,22 @@ public class MessagesAdapter extends ArrayAdapter {
         if (viewType == TYPE_OUT) {
             convertView = inflater.inflate(R.layout.list_item_messages_right, null);
             viewHolder.messageTextView = (TextView) convertView.findViewById(R.id.list_messages_message_right_text);
-            viewHolder.profileImageView = (de.hdodenhof.circleimageview.CircleImageView) convertView.findViewById(R.id.list_messages_message_right_image);
             viewHolder.timeTextView = (TextView) convertView.findViewById(R.id.list_messages_message_right_time);
             viewHolder.holderId = TYPE_OUT;
-            if(this.myBitmap == null) {
-                viewHolder.profileImageView.setImageDrawable(drawable1);
-            }else{
-                viewHolder.profileImageView.setImageBitmap(this.myBitmap);
-            }
+//            if(this.myBitmap == null) {
+//                viewHolder.profileImageView.setImageDrawable(drawable1);
+//            }else{
+//                viewHolder.profileImageView.setImageBitmap(this.myBitmap);
+//            }
         } else if (viewType == TYPE_IN) {
             convertView = inflater.inflate(R.layout.list_item_messages_left, null);
             viewHolder.messageTextView = (TextView) convertView.findViewById(R.id.list_messages_message_left_text);
-            viewHolder.profileImageView = (de.hdodenhof.circleimageview.CircleImageView) convertView.findViewById(R.id.list_messages_message_left_image);
             viewHolder.timeTextView = (TextView) convertView.findViewById(R.id.list_messages_message_left_time);
-            if(this.bitmap == null){
-                viewHolder.profileImageView.setImageDrawable(drawable2);
-            }else{
-                viewHolder.profileImageView.setImageBitmap(this.bitmap);
-            }
+//            if(this.bitmap == null){
+//                viewHolder.profileImageView.setImageDrawable(drawable2);
+//            }else{
+//                viewHolder.profileImageView.setImageBitmap(this.bitmap);
+//            }
             viewHolder.holderId = TYPE_IN;
         }
         if (convertView != null) {
@@ -126,7 +128,9 @@ public class MessagesAdapter extends ArrayAdapter {
         }
 
         Message item = (Message) getItem(position);
+        viewHolder.messageTextView.setTypeface(robotoFont);
         viewHolder.messageTextView.setText(item.getMessage());
+        viewHolder.timeTextView.setTypeface(robotoFont);
         viewHolder.timeTextView.setText(item.getTime().split(" ")[1]);
         return convertView;
     }
@@ -153,6 +157,6 @@ public class MessagesAdapter extends ArrayAdapter {
         int holderId;
         TextView messageTextView;
         TextView timeTextView;
-        de.hdodenhof.circleimageview.CircleImageView profileImageView;
+
     }
 }

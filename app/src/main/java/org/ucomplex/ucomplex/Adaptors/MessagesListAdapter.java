@@ -42,6 +42,10 @@ public class MessagesListAdapter extends ArrayAdapter<Dialog> {
     private Typeface robotoFont = Typeface.createFromAsset(getContext().getAssets(), "fonts/Roboto-Regular.ttf");
     private User user;
 
+    public User getUser() {
+        return user;
+    }
+
     public MessagesListAdapter(Context context, ArrayList<Dialog> dialogs) {
         super(context, -1, dialogs);
         this.dialogs = dialogs;
@@ -116,6 +120,7 @@ public class MessagesListAdapter extends ArrayAdapter<Dialog> {
                         });
             } else {
                 Bitmap image = item.getPhotoBitmap();
+                user.setPhotoBitmap(image);
                 if (image != null)
                     viewHolder.profileImageView.setImageBitmap(getItem(position).getPhotoBitmap());
                 else {
@@ -125,6 +130,7 @@ public class MessagesListAdapter extends ArrayAdapter<Dialog> {
         } else {
             viewHolder.profileImageView.setImageDrawable(getDrawable(position));
         }
+
         int newMessageFrom = dialogs.get(position).getFrom();
         if (Common.fromMessages.contains(newMessageFrom)) {
             convertView.setBackgroundColor(Color.parseColor("#ecfbfe"));
