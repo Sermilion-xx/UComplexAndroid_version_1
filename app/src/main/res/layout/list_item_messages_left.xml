@@ -11,14 +11,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:maxWidth="270dp"
-        android:paddingLeft="10dp"
-
         android:id="@+id/list_messages_message_left_text"
         android:text="cool dsfsdfdsfdsfdsfdsfdsfdsfdsfds"
         android:layout_marginTop="7dp"
         android:textColor="@color/black"
         android:background="@drawable/bubblein"
-        android:textSize="16sp"
+        android:textSize="18sp"
         android:layout_alignParentTop="true"
         android:layout_marginLeft="10dp" />
 

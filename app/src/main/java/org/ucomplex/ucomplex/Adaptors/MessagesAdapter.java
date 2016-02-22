@@ -90,13 +90,18 @@ public class MessagesAdapter extends ArrayAdapter {
     }
 
 
-    private View createConverterView(ViewHolder viewHolder, View convertView, int viewType){
+    private View createConverterView(ViewHolder viewHolder, View convertView, int viewType, int position){
         viewHolder = new ViewHolder();
         LayoutInflater inflater = LayoutInflater.from(getContext());
         if (viewType == TYPE_OUT) {
             convertView = inflater.inflate(R.layout.list_item_messages_right, null);
             viewHolder.messageTextView = (TextView) convertView.findViewById(R.id.list_messages_message_right_text);
             viewHolder.timeTextView = (TextView) convertView.findViewById(R.id.list_messages_message_right_time);
+            if(position>0){
+                if(getItemViewType(position-1)==viewType){
+                    viewHolder.messageTextView.setBackground(getContext().getResources().getDrawable(R.drawable.bubble2_out));
+                }
+            }
             viewHolder.holderId = TYPE_OUT;
 //            if(this.myBitmap == null) {
 //                viewHolder.profileImageView.setImageDrawable(drawable1);
@@ -112,6 +117,11 @@ public class MessagesAdapter extends ArrayAdapter {
 //            }else{
 //                viewHolder.profileImageView.setImageBitmap(this.bitmap);
 //            }
+            if(position>0){
+                if(getItemViewType(position-1)==viewType){
+                    viewHolder.messageTextView.setBackground(getContext().getResources().getDrawable(R.drawable.bubble2_in));
+                }
+            }
             viewHolder.holderId = TYPE_IN;
         }
         if (convertView != null) {
@@ -125,12 +135,12 @@ public class MessagesAdapter extends ArrayAdapter {
         ViewHolder viewHolder;
         int viewType = getItemViewType(position);
         if (convertView == null) {
-            convertView = createConverterView(null, null, viewType);
+            convertView = createConverterView(null, null, viewType, position);
             viewHolder = (ViewHolder) convertView.getTag();
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
             if(viewHolder.holderId != viewType){
-                convertView = createConverterView(viewHolder, convertView, viewType);
+                convertView = createConverterView(viewHolder, convertView, viewType, position);
                 viewHolder = (ViewHolder) convertView.getTag();
             }
         }
@@ -138,6 +148,7 @@ public class MessagesAdapter extends ArrayAdapter {
         Message item = (Message) getItem(position);
         viewHolder.messageTextView.setTypeface(robotoFont);
         viewHolder.messageTextView.setText(item.getMessage());
+
         viewHolder.timeTextView.setTypeface(robotoFont);
         viewHolder.timeTextView.setText(item.getTime().split(" ")[1]);
         return convertView;
@@ -165,6 +176,7 @@ public class MessagesAdapter extends ArrayAdapter {
         int holderId;
         TextView messageTextView;
         TextView timeTextView;
+
 
     }
 }
