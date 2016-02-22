@@ -160,11 +160,11 @@ public class EventsActivity extends AppCompatActivity implements OnTaskCompleteL
 
         if (eventsArray == null) {
             mEventsTask = (FetchUserEventsTask) new FetchUserEventsTask(this, this).execute(user.getType());
+            dialog = ProgressDialog.show(this, "",
+                    "Загружаются события", true);
+            dialog.show();
+            timerDelayRemoveDialog(7000, dialog);
         }
-        dialog = ProgressDialog.show(this, "",
-                "Загружаются события", true);
-        dialog.show();
-        timerDelayRemoveDialog(7000, dialog);
 
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         final LinearLayoutManager layoutManager = new LinearLayoutManager(this);

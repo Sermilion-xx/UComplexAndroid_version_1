@@ -32,7 +32,7 @@ public class CourseMaterialsAdapter extends ArrayAdapter<File> {
     private Context context;
     private CourseMaterialsFragment fragment;
     private List<File> mItems;
-    private boolean myFiles;
+    protected boolean myFiles;
     public int level = 0;
     public ArrayList<ArrayList<File>> stackFiles = new ArrayList<>();
     private LayoutInflater inflater;
@@ -147,7 +147,7 @@ public class CourseMaterialsAdapter extends ArrayAdapter<File> {
         return convertView;
     }
 
-    public static class ViewHolder {
+    public class ViewHolder {
         int holderId;
         ImageView imageView;
         Button menuButton;
@@ -160,35 +160,40 @@ public class CourseMaterialsAdapter extends ArrayAdapter<File> {
         CourseMaterialsAdapter adapter;
         ArrayList<String> actionsArrayList = new ArrayList<>();
 
+
         public void setButton(Button button, final int position) {
             this.menuButton = button;
-            menuButton.setOnClickListener(
-                    new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            actionsArrayList.clear();
-                            if (adapter.myFiles) {
-                                actionsArrayList.add("Переименовать");
-                                actionsArrayList.add("Удалить");
+            if (myFiles) {
+                menuButton.setOnClickListener(
+                        new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                actionsArrayList.clear();
+                                if (adapter.myFiles) {
+                                    actionsArrayList.add("Переименовать");
+                                    actionsArrayList.add("Удалить");
 
-                                AlertDialog.Builder build = new AlertDialog.Builder(context);
-                                build.setItems(actionsArrayList.toArray(new String[actionsArrayList.size()]), new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        switch (which) {
-                                            case 0:
-                                                showInputDialog(position);
-                                                break;
-                                            case 1:
-                                                removeItem(position);
-                                                break;
+                                    AlertDialog.Builder build = new AlertDialog.Builder(context);
+                                    build.setItems(actionsArrayList.toArray(new String[actionsArrayList.size()]), new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            switch (which) {
+                                                case 0:
+                                                    showInputDialog(position);
+                                                    break;
+                                                case 1:
+                                                    removeItem(position);
+                                                    break;
+                                            }
                                         }
-                                    }
-                                }).create().show();
+                                    }).create().show();
+                                }
                             }
                         }
-                    }
-            );
+                );
+            }else{
+                menuButton.setVisibility(View.GONE);
+            }
         }
 
         public ViewHolder(final Context context, final CourseMaterialsAdapter adapter) {

@@ -81,18 +81,23 @@ public class CourseActivity extends AppCompatActivity implements OnTaskCompleteL
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                if (courseMaterialsFragment.getAdapter().getLevel() > 0) {
-                    courseMaterialsFragment.getAdapter().levelDown();
-                    courseMaterialsFragment.getmItems().clear();
-                    ArrayList<File> newFiles = new ArrayList<>(courseMaterialsFragment.getAdapter().getStackFiles().get(courseMaterialsFragment.getAdapter().getLevel()));
+                if(courseMaterialsFragment!=null){
+                    if (courseMaterialsFragment.getAdapter().getLevel() > 0) {
+                        courseMaterialsFragment.getAdapter().levelDown();
+                        courseMaterialsFragment.getmItems().clear();
+                        ArrayList<File> newFiles = new ArrayList<>(courseMaterialsFragment.getAdapter().getStackFiles().get(courseMaterialsFragment.getAdapter().getLevel()));
 
-                    if(!courseMaterialsFragment.getAdapter().isMyFiles()){
-                        courseMaterialsFragment.getAdapter().getStackFiles().remove(courseMaterialsFragment.getAdapter().getStackFiles().size()-1);
+                        if(!courseMaterialsFragment.getAdapter().isMyFiles()){
+                            courseMaterialsFragment.getAdapter().getStackFiles().remove(courseMaterialsFragment.getAdapter().getStackFiles().size()-1);
+                        }
+                        courseMaterialsFragment.getmItems().addAll(newFiles);
+                        courseMaterialsFragment.getAdapter().notifyDataSetChanged();
+                        return true;
+                    } else {
+                        onBackPressed();
+                        return true;
                     }
-                    courseMaterialsFragment.getmItems().addAll(newFiles);
-                    courseMaterialsFragment.getAdapter().notifyDataSetChanged();
-                    return true;
-                } else {
+                }else{
                     onBackPressed();
                     return true;
                 }
