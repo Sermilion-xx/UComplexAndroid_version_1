@@ -2,12 +2,10 @@ package org.ucomplex.ucomplex.Fragments;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,19 +15,16 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.ucomplex.ucomplex.Activities.MessagesActivity;
 import org.ucomplex.ucomplex.Activities.Tasks.FetchPersonTask;
-import org.ucomplex.ucomplex.Interfaces.OnTaskCompleteListener;
 import org.ucomplex.ucomplex.Common;
+import org.ucomplex.ucomplex.Interfaces.OnTaskCompleteListener;
 import org.ucomplex.ucomplex.Model.StudyStructure.Course;
 import org.ucomplex.ucomplex.Model.Users.Teacher;
 import org.ucomplex.ucomplex.Model.Users.User;
 import org.ucomplex.ucomplex.R;
 
 import java.text.DecimalFormat;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
@@ -88,7 +83,6 @@ public class CourseInfoFragment extends Fragment implements OnTaskCompleteListen
     }
 
 
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -104,7 +98,7 @@ public class CourseInfoFragment extends Fragment implements OnTaskCompleteListen
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView =inflater.inflate(R.layout.fragment_course_info, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_course_info, container, false);
         messageButton = (Button) rootView.findViewById(R.id.course_info_button_message);
         messageButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -112,9 +106,9 @@ public class CourseInfoFragment extends Fragment implements OnTaskCompleteListen
                 String companion;
                 String name;
                 Intent intent = new Intent(getContext(), MessagesActivity.class);
-                if(user.getPerson()==0){
+                if (user.getPerson() == 0) {
                     companion = String.valueOf(user.getId());
-                }else{
+                } else {
                     companion = String.valueOf(user.getPerson());
                 }
                 name = String.valueOf(user.getName());
@@ -127,7 +121,7 @@ public class CourseInfoFragment extends Fragment implements OnTaskCompleteListen
         friendButton = (Button) rootView.findViewById(R.id.course_info_button_to_friend);
         blacklistButton = (Button) rootView.findViewById(R.id.course_info_button_block);
         userImageView = (ImageView) rootView.findViewById(R.id.course_info_teacher_image);
-        if(this.bitmap!=null){
+        if (this.bitmap != null) {
             userImageView.setImageBitmap(this.bitmap);
         }
         userNameView = (TextView) rootView.findViewById(R.id.course_info_teacher_name);
@@ -173,17 +167,17 @@ public class CourseInfoFragment extends Fragment implements OnTaskCompleteListen
         views.add(friendButton);
         views.add(blacklistButton);
 
-        for(View view:views){
+        for (View view : views) {
             view.setVisibility(View.GONE);
         }
 
         Bundle bundle = this.getArguments();
-        if(bundle!=null || courseData!=null){
-            for(View view:views){
+        if (bundle != null || courseData != null) {
+            for (View view : views) {
                 view.setVisibility(View.VISIBLE);
             }
             if (bundle != null && bundle.containsKey("courseData")) {
-                if(this.bitmap == null) {
+                if (this.bitmap == null) {
                     new AsyncTask<Void, Void, Void>() {
                         @Override
                         protected void onPostExecute(Void aVoid) {
@@ -197,7 +191,7 @@ public class CourseInfoFragment extends Fragment implements OnTaskCompleteListen
                             return null;
                         }
                     }.execute();
-                }else {
+                } else {
                     userImageView.setImageBitmap(bitmap);
                 }
                 courseData = (Course) bundle.getSerializable("courseData");
@@ -217,7 +211,7 @@ public class CourseInfoFragment extends Fragment implements OnTaskCompleteListen
                 averageMarksView.setText(String.valueOf(courseData.getProgress().getMark()));
                 attendanceView.setText(String.valueOf(String.valueOf(absence) + "%"));
             }
-        }else{
+        } else {
             courseNameView.setVisibility(View.GONE);
             departmentNameView.setVisibility(View.GONE);
             averageMarksView.setVisibility(View.GONE);
@@ -226,31 +220,31 @@ public class CourseInfoFragment extends Fragment implements OnTaskCompleteListen
             rootView.findViewById(R.id.course_info_course_average_mark_label).setVisibility(View.GONE);
             rootView.findViewById(R.id.course_info_course_attendance_label).setVisibility(View.GONE);
         }
-                if (person == -1) {
-                    if(courseData!=null){
-                        person = courseData.getTeacher(0).getId();
-                    }
-                }
-                if (user == null) {
-                    if(mContext!=null){
-                        //fetch data about person
-                        FetchPersonTask fetchPersonTask = new FetchPersonTask(getActivity(), this);
-                        fetchPersonTask.setPerson(String.valueOf(person));
-                        fetchPersonTask.setmContext(mContext);
-                        fetchPersonTask.setupTask();
-                    }
-                }else{
-                    fillUserInfo();
-                }
+        if (person == -1) {
+            if (courseData != null) {
+                person = courseData.getTeacher(0).getId();
+            }
+        }
+        if (user == null) {
+            if (mContext != null) {
+                //fetch data about person
+                FetchPersonTask fetchPersonTask = new FetchPersonTask(getActivity(), this);
+                fetchPersonTask.setPerson(String.valueOf(person));
+                fetchPersonTask.setmContext(mContext);
+                fetchPersonTask.setupTask();
+            }
+        } else {
+            fillUserInfo();
+        }
         return rootView;
     }
 
-    private void fillUserInfo(){
+    private void fillUserInfo() {
         mailTextView.setText(user.getEmail());
 
-        if(user.is_friend()){
+        if (user.is_friend()) {
             friendButton.setText("Удалить");
-        }else{
+        } else {
             friendButton.setText("В друзья");
         }
         friendButton.setOnClickListener(new View.OnClickListener() {
@@ -258,13 +252,13 @@ public class CourseInfoFragment extends Fragment implements OnTaskCompleteListen
             public void onClick(View v) {
                 HashMap<String, String> params = new HashMap<>();
                 params.put("user", String.valueOf(user.getId()));
-                if(user.isReq_sent()) {
+                if (user.isReq_sent()) {
                     HandleMenuPress handleMenuPress = new HandleMenuPress();
                     handleMenuPress.execute("http://you.com.ru/user/friends/accept?mobile=1", params);
                     user.setReq_sent(false);
                     Toast.makeText(getActivity(), user.getName() + " теперь ваш друг :)", Toast.LENGTH_SHORT).show();
                     friendButton.setText("Удалить");
-                }else {
+                } else {
                     HandleMenuPress handleMenuPress = new HandleMenuPress();
                     handleMenuPress.execute("http://you.com.ru/user/friends/delete?mobile=1", params);
                     Toast.makeText(getActivity(), "Пользователь удален из друзей :(", Toast.LENGTH_SHORT).show();
@@ -275,23 +269,23 @@ public class CourseInfoFragment extends Fragment implements OnTaskCompleteListen
             }
         });
 
-        if(user.isIs_black()){
+        if (user.isIs_black()) {
             blacklistButton.setText("Разблокировать");
-        }else{
+        } else {
             blacklistButton.setText("Зазблокировать");
         }
         blacklistButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 HashMap<String, String> params = new HashMap<>();
-                if(!user.isIs_black()) {
+                if (!user.isIs_black()) {
                     params.put("user", String.valueOf(user.getId()));
                     HandleMenuPress handleMenuPress = new HandleMenuPress();
                     handleMenuPress.execute("http://you.com.ru/user/blacklist/add", params);
                     Toast.makeText(getActivity(), "Пользователь добавлен в черный список :(", Toast.LENGTH_SHORT).show();
                     user.setIs_black(true);
                     blacklistButton.setText("Разблокировать");
-                }else{
+                } else {
                     params.put("user", String.valueOf(user.getId()));
                     HandleMenuPress handleMenuPress1 = new HandleMenuPress();
                     handleMenuPress1.execute("http://you.com.ru/user/blacklist/delete", params);
@@ -303,12 +297,12 @@ public class CourseInfoFragment extends Fragment implements OnTaskCompleteListen
             }
         });
         userNameView.setText(user.getName());
-        if(this.bitmap==null){
+        if (this.bitmap == null) {
             userImageView.setImageDrawable(Common.getDrawable(user));
         }
 
         int roleCount = user.getRoles().size();
-        if(roleCount>0){
+        if (roleCount > 0) {
             TextView[] positionViews = new TextView[roleCount];
 
             positionViews[0] = userPositionTextView;
@@ -326,12 +320,12 @@ public class CourseInfoFragment extends Fragment implements OnTaskCompleteListen
                     Teacher teach = (Teacher) user.getRoles().get(i);
                     String position = String.valueOf(positionName.charAt(0)).toUpperCase() + positionName.substring(1, positionName.length())
                             + " - " + teach.getSectionName();
-                    if(positionViews[i]!=null){
+                    if (positionViews[i] != null) {
                         positionViews[i].setText(position);
                     }
                 }
             }
-        }else{
+        } else {
             userPositionTextView.setText("Администратор");
         }
 
@@ -343,12 +337,12 @@ public class CourseInfoFragment extends Fragment implements OnTaskCompleteListen
         try {
             user = (User) task.get();
 
-            if(user != null) {
-                for(View view:views){
+            if (user != null) {
+                for (View view : views) {
                     view.setVisibility(View.VISIBLE);
                 }
                 fillUserInfo();
-            }else{
+            } else {
                 Toast.makeText(getActivity(), "Ошибка при загрузке пользователя!", Toast.LENGTH_SHORT).show();
             }
         } catch (InterruptedException | ExecutionException e) {
@@ -356,7 +350,7 @@ public class CourseInfoFragment extends Fragment implements OnTaskCompleteListen
         }
     }
 
-    class HandleMenuPress extends AsyncTask <Object, Void, Void> {
+    class HandleMenuPress extends AsyncTask<Object, Void, Void> {
         @Override
         protected Void doInBackground(Object... params) {
             Common.httpPost((String) params[0], Common.getLoginDataFromPref(getContext()), (HashMap<String, String>) params[1]);

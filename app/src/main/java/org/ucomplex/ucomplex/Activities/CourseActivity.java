@@ -43,6 +43,7 @@ public class CourseActivity extends AppCompatActivity implements OnTaskCompleteL
 
     CourseMaterialsFragment courseMaterialsFragment;
     CourseInfoFragment courseInfoFragment;
+    CourseFragment courseFragment;
     CalendarBeltFragment calendarBeltFragment;
     ViewPagerAdapter adapter;
     ViewPager viewPager;
@@ -113,6 +114,10 @@ public class CourseActivity extends AppCompatActivity implements OnTaskCompleteL
         cmBundel.putSerializable("courseData", coursedata);
         courseInfoFragment.setArguments(cmBundel);
 
+        courseFragment = new CourseFragment();
+        courseFragment.setmContext(this);
+        courseFragment.setArguments(cmBundel);
+
         if (courseMaterialsFragment == null) {
             courseMaterialsFragment = new CourseMaterialsFragment();
         }
@@ -131,7 +136,7 @@ public class CourseActivity extends AppCompatActivity implements OnTaskCompleteL
         }
 
         adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(courseInfoFragment, "Дисциплина");
+        adapter.addFragment(courseFragment, "Дисциплина");
         adapter.addFragment(courseMaterialsFragment, "Материалы");
         adapter.addFragment(calendarBeltFragment, "Лента");
         viewPager.setAdapter(adapter);

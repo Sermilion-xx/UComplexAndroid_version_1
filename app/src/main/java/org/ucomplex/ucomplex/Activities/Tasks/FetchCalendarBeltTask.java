@@ -53,21 +53,23 @@ public class FetchCalendarBeltTask extends AsyncTask<Integer, Void, ArrayList<Qu
         JSONObject courseJson;
         feedItems = new ArrayList<>();
         try {
-            courseJson = new JSONObject(jsonData);
-            JSONObject teachers = courseJson.getJSONObject("teachers");
-            HashMap<String, String> teachersMap = (HashMap<String, String>) Common.parseJsonKV(teachers);
-            JSONArray marksArray = courseJson.getJSONArray("marks");
+            if(jsonData!=null) {
+                courseJson = new JSONObject(jsonData);
+                JSONObject teachers = courseJson.getJSONObject("teachers");
+                HashMap<String, String> teachersMap = (HashMap<String, String>) Common.parseJsonKV(teachers);
+                JSONArray marksArray = courseJson.getJSONArray("marks");
 
-            for(int i=0;i<marksArray.length();i++){
+                for (int i = 0; i < marksArray.length(); i++) {
 
-                JSONObject marksItemJson = marksArray.getJSONObject(i);
-                int mark = marksItemJson.getInt("mark");
-                Date date=new java.util.Date((long)marksItemJson.getInt("time")*1000);
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-                String time = sdf.format(date);
-                String teacherName = teachersMap.get(marksItemJson.getString("teacher"));
-                Quartet<Integer, String, String, Integer>markItem = new Quartet<>(mark, teacherName,time, marksItemJson.getInt("type"));
-                feedItems.add(markItem);
+                    JSONObject marksItemJson = marksArray.getJSONObject(i);
+                    int mark = marksItemJson.getInt("mark");
+                    Date date = new java.util.Date((long) marksItemJson.getInt("time") * 1000);
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                    String time = sdf.format(date);
+                    String teacherName = teachersMap.get(marksItemJson.getString("teacher"));
+                    Quartet<Integer, String, String, Integer> markItem = new Quartet<>(mark, teacherName, time, marksItemJson.getInt("type"));
+                    feedItems.add(markItem);
+                }
             }
             return feedItems;
         } catch (JSONException e) {
