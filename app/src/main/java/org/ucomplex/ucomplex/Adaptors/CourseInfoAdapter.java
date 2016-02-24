@@ -2,6 +2,7 @@ package org.ucomplex.ucomplex.Adaptors;
 
 import android.app.Activity;
 import android.graphics.Bitmap;
+import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
@@ -18,7 +19,7 @@ import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingProgressListener;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 
-import org.javatuples.Triplet;
+import org.javatuples.Quartet;
 import org.ucomplex.ucomplex.Common;
 import org.ucomplex.ucomplex.R;
 
@@ -38,13 +39,14 @@ public class CourseInfoAdapter extends BaseAdapter {
 
     private LayoutInflater mInflater;
     private DisplayImageOptions mOptions;
-    ArrayList<Triplet<String, String, String>> mItems;
+    ArrayList<Quartet<String, String, String, String>> mItems;
     protected ImageLoader mImageLoader;
     Activity mContext;
     private int HEADER_2_POSITION = 1;
+    private Typeface robotoFont;
 
 
-    public CourseInfoAdapter(ArrayList<Triplet<String, String, String>> items, Activity context) {
+    public CourseInfoAdapter(ArrayList<Quartet<String, String, String, String>> items, Activity context) {
         this.mInflater = LayoutInflater.from(context);
         mOptions = new DisplayImageOptions.Builder()
                 .showImageOnLoading(null)
@@ -56,29 +58,34 @@ public class CourseInfoAdapter extends BaseAdapter {
                 .bitmapConfig(Bitmap.Config.RGB_565)
                 .build();
         this.mItems = items;
-        for(Triplet triplet:mItems){
-            if(!triplet.getValue2().equals("-1")){
+        for (Quartet quartet : mItems) {
+            if (!quartet.getValue2().equals("-1")) {
                 HEADER_2_POSITION++;
             }
         }
         mImageLoader = ImageLoader.getInstance();
         mImageLoader.init(ImageLoaderConfiguration.createDefault(context));
         this.mContext = context;
+        robotoFont  = Typeface.createFromAsset(mContext.getAssets(), "fonts/Roboto-Regular.ttf");
     }
 
 
     @Override
     public int getItemViewType(int position) {
-        if(position==0){
-            return TYPE_HEADER;
-        }else if(position == HEADER_2_POSITION){
-            return TYPE_HEADER_2;
-        }else if(mItems.get(position).getValue2().equals("-1")){
-            return TYPE_COURSE_INFO;
-        }else if(!mItems.get(position).getValue2().equals("-1")){
-            return TYPE_TEACHER;
+        int viewType;
+        if(position == 0) {
+            viewType = TYPE_HEADER;
+        } else if (mItems.get(position).getValue3().equals("2")) {
+            viewType = TYPE_HEADER_2;
+        } else if (mItems.get(position).getValue3().equals("3")) {
+            System.out.println();
+            viewType = TYPE_COURSE_INFO;
+        }else{
+            viewType = TYPE_TEACHER;
+            System.out.println();
         }
-        return -1;
+        System.out.println();
+        return viewType;
     }
 
     @Override
@@ -90,7 +97,7 @@ public class CourseInfoAdapter extends BaseAdapter {
     }
 
     @Override
-    public Triplet<String, String, String> getItem(int position) {
+    public Quartet<String, String, String, String> getItem(int position) {
         return mItems.get(position);
     }
 
@@ -119,7 +126,6 @@ public class CourseInfoAdapter extends BaseAdapter {
             viewHolder.attendanceTextView = (TextView) convertView.findViewById(R.id.course_info_course_attendance);
             viewHolder.holderId = TYPE_COURSE_INFO;
         }
-
         if (convertView != null) {
             convertView.setTag(viewHolder);
         }
@@ -128,10 +134,10 @@ public class CourseInfoAdapter extends BaseAdapter {
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
-        ViewHolder viewHolder;
+        ViewHolder viewHolder = new ViewHolder();
         int viewType = getItemViewType(position);
         if (convertView == null) {
-            convertView = createConverterView(null, null, viewType);
+            convertView = createConverterView(viewHolder, convertView, viewType);
             viewHolder = (ViewHolder) convertView.getTag();
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
@@ -140,17 +146,21 @@ public class CourseInfoAdapter extends BaseAdapter {
                 viewHolder = (ViewHolder) convertView.getTag();
             }
         }
-        Triplet<String, String, String> item = getItem(position);
+        Quartet<String, String, String, String> item = getItem(position);
 
-        if(viewType == TYPE_TEACHER){
+        if (viewType == TYPE_TEACHER) {
             viewHolder.teacherImageView.setImageDrawable(getDrawable(position));
             if (!mItems.get(position).getValue0().equals("-1")) {
                 final ViewHolder finalViewHolder = viewHolder;
                 mImageLoader.displayImage("http://ucomplex.org/files/photos/" + mItems.get(position).getValue0() + ".jpg", viewHolder.teacherImageView, mOptions, new SimpleImageLoadingListener() {
                     @Override
-                    public void onLoadingStarted(String imageUri, View view) {}
+                    public void onLoadingStarted(String imageUri, View view) {
+                    }
+
                     @Override
-                    public void onLoadingFailed(String imageUri, View view, FailReason failReason) {}
+                    public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+                    }
+
                     @Override
                     public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
                         if (loadedImage != null) {
@@ -163,20 +173,24 @@ public class CourseInfoAdapter extends BaseAdapter {
                     }
                 }, new ImageLoadingProgressListener() {
                     @Override
-                    public void onProgressUpdate(String imageUri, View view, int current, int total) {}
+                    public void onProgressUpdate(String imageUri, View view, int current, int total) {
+                    }
                 });
             }
+            viewHolder.teacherNameTextView.setTypeface(robotoFont);
             viewHolder.teacherNameTextView.setText(item.getValue1());
-        }else if(viewType == TYPE_COURSE_INFO){
-            viewHolder.markTextView.setText(item.getValue1());
-            viewHolder.attendanceTextView.setText(item.getValue2());
+        } else if (viewType == TYPE_COURSE_INFO) {
+            viewHolder.markTextView.setTypeface(robotoFont);
+            viewHolder.markTextView.setText(mContext.getString(R.string.marks_str_ru,item.getValue1()));
+            viewHolder.attendanceTextView.setTypeface(robotoFont);
+            viewHolder.attendanceTextView.setText(mContext.getString(R.string.attendance_str_ru,item.getValue0()));
         }
         return convertView;
     }
 
     public Drawable getDrawable(int position) {
         final int colorsCount = 16;
-        final int number = (Integer.valueOf(getItem(position).getValue0()) <= colorsCount) ? Integer.valueOf(getItem(position).getValue0()) : Integer.valueOf(getItem(position).getValue0()) % colorsCount;
+        final int number = (Integer.valueOf(getItem(position).getValue3()) <= colorsCount) ? Integer.valueOf(getItem(position).getValue3()) : Integer.valueOf(getItem(position).getValue0()) % colorsCount;
         char firstLetter = getItem(position).getValue1().split("")[1].charAt(0);
 
         TextDrawable drawable = TextDrawable.builder().beginConfig()

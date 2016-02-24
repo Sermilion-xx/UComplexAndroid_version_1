@@ -16,10 +16,10 @@ import org.ucomplex.ucomplex.Activities.CourseActivity;
 import org.ucomplex.ucomplex.Common;
 import org.ucomplex.ucomplex.Interfaces.IProgressTracker;
 import org.ucomplex.ucomplex.Interfaces.OnTaskCompleteListener;
+import org.ucomplex.ucomplex.Model.StudyStructure.Course;
 import org.ucomplex.ucomplex.Model.StudyStructure.Department;
 import org.ucomplex.ucomplex.Model.StudyStructure.File;
 import org.ucomplex.ucomplex.Model.StudyStructure.Progress;
-import org.ucomplex.ucomplex.Model.StudyStructure.Course;
 import org.ucomplex.ucomplex.Model.Users.Student;
 import org.ucomplex.ucomplex.Model.Users.Teacher;
 
@@ -67,12 +67,12 @@ public class FetchMySubjectsTask extends AsyncTask<Void, String, Course> impleme
         this.gcourse = gcourse;
     }
 
-    public void setupTask(Void ... params) {
+    public void setupTask(Void... params) {
         this.setProgressTracker(this);
         this.execute(params);
     }
 
-    private Course getCourseDataFromJson(String jsonData){
+    private Course getCourseDataFromJson(String jsonData) {
         JSONObject courseJson = null;
         try {
             course = new Course();
@@ -85,13 +85,13 @@ public class FetchMySubjectsTask extends AsyncTask<Void, String, Course> impleme
             JSONObject courseArray = courseJson.getJSONObject("course");
 
             JSONObject teacherArray = courseJson.getJSONObject("teacher");
-            JSONObject departmentArray = new JSONObject();
+            JSONObject departmentArray;
             Department department = new Department();
-            if(courseJson.has("depart")){
-                try{
+            if (courseJson.has("depart")) {
+                try {
                     boolean a = courseJson.getBoolean("depart");
                     course.setDepartment(new Department());
-                }catch (JSONException e){
+                } catch (JSONException e) {
                     departmentArray = courseJson.getJSONObject("depart");
                     //used
                     department.setId(departmentArray.getInt("id"));
@@ -110,85 +110,69 @@ public class FetchMySubjectsTask extends AsyncTask<Void, String, Course> impleme
                 }
             }
             JSONObject progressArray = courseJson.getJSONObject("progress");
-            JSONArray  filesArray = courseJson.getJSONArray("files");
+            JSONArray filesArray = courseJson.getJSONArray("files");
 //used
-            Teacher mainTeacher  = new Teacher();
-            if (teacherArray.getString("id") != null) {
-                mainTeacher.setId(Integer.valueOf(teacherArray.getString("id")));
-                mainTeacher.setName(teacherArray.getString("name"));
-                mainTeacher.setPhoto(teacherArray.getInt("photo"));
-                mainTeacher.setCode(teacherArray.getString("code"));
-                mainTeacher.setDepartment(department);
-                mainTeacher.setType(3);
-
-                course.addTeacher(mainTeacher);
-            }
-
             ArrayList<File> files = new ArrayList<>();
-            for(int i=0;i<filesArray.length();i++) {
-            try{
-                JSONObject jsonFiles = filesArray.getJSONObject(i);
-                JSONObject teacher = jsonFiles.getJSONObject("teacher");
-
-                if (!teacher.isNull("id")) {
-                    int teacherId = teacher.getInt("id");
-
+            for (int i = 0; i < filesArray.length(); i++) {
+                try {
+                    JSONObject jsonFiles = filesArray.getJSONObject(i);
+                    JSONObject teacher = jsonFiles.getJSONObject("teacher");
                     JSONArray filesArrayObject = jsonFiles.getJSONArray("files");
-                    for (int j = 0; j < filesArrayObject.length(); j++) {
-                        JSONObject jsonFile = filesArrayObject.getJSONObject(j);
+                    Teacher teacher1 = new Teacher();
 
-                        File file = new File();
-                        file.setId(jsonFile.getString("id"));
-                        file.setName(jsonFile.getString("name"));
-                        file.setAddress(jsonFile.getString("address"));
-                        file.setData(jsonFile.getString("data"));
-
-                        if (teacherId == mainTeacher.getId()) {
-                            file.setOwner(mainTeacher);
-                        } else {
-                            Teacher teacher1 = new Teacher();
-                            teacher1.setId(teacherId);
+                    if (!teacher.isNull("id")) {
+                            teacher1 = new Teacher();
                             teacher1.setName(teacher.getString("name"));
                             teacher1.setCode(teacher.getString("code"));
                             teacher1.setPhoto(teacher.getInt("photo"));
+                            teacher1.setId(teacher.getInt("id"));
                             teacher1.setType(3);
+                            course.addTeacher(teacher1);
+
+                        for (int j = 0; j < filesArrayObject.length(); j++) {
+                            JSONObject jsonFile = filesArrayObject.getJSONObject(j);
+                            File file = new File();
+                            file.setId(jsonFile.getString("id"));
+                            file.setName(jsonFile.getString("name"));
+                            file.setAddress(jsonFile.getString("address"));
+                            file.setData(jsonFile.getString("data"));
+                            file.setSize(jsonFile.getInt("size"));
+                            file.setTime(jsonFile.getString("time"));
+                            file.setType(jsonFile.getString("type"));
                             file.setOwner(teacher1);
+                            files.add(file);
                         }
-                        file.setSize(jsonFile.getInt("size"));
-                        file.setTime(jsonFile.getString("time"));
-                        file.setType(jsonFile.getString("type"));
-                        files.add(file);
                     }
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
-            } catch (JSONException e) {
-                e.printStackTrace();
             }
 //used
-                    Progress progress = new Progress();
-                    progress.setType(progressArray.getInt("type"));
-                    progress.set_mark(progressArray.getInt("_mark"));
-                    progress.setMark(progressArray.getInt("mark"));
-                    progress.setAbsence(progressArray.getInt("absence"));
-                    progress.setCourse(null);
-                    progress.setHours(progressArray.getInt("hours"));
-                    progress.setIndivid(progressArray.getInt("individ"));
-                    progress.setMarkCount(progressArray.getInt("marksCount"));
-                    progress.setStudent(progressArray.getInt("student"));
-                    progress.setTable(progressArray.getInt("table"));
-                    progress.setTime(progressArray.getInt("time"));
+                Progress progress = new Progress();
+                progress.setType(progressArray.getInt("type"));
+                progress.set_mark(progressArray.getInt("_mark"));
+                progress.setMark(progressArray.getInt("mark"));
+                progress.setAbsence(progressArray.getInt("absence"));
+                progress.setCourse(null);
+                progress.setHours(progressArray.getInt("hours"));
+                progress.setIndivid(progressArray.getInt("individ"));
+                progress.setMarkCount(progressArray.getInt("marksCount"));
+                progress.setStudent(progressArray.getInt("student"));
+                progress.setTable(progressArray.getInt("table"));
+                progress.setTime(progressArray.getInt("time"));
 
-                    course.setName(courseArray.getString("name"));
-                    course.setId(courseArray.getInt("id"));
-                    course.setCourse(courseArray.getInt("course"));
-                    course.setGroup(courseArray.getInt("group"));
-                    course.setTable(courseArray.getInt("table"));
-                    course.setClient(courseArray.getInt("client"));
-                    course.setCourse_id(courseArray.getInt("course_id"));
-                    course.setDescription(courseArray.getString("description"));
+                course.setName(courseArray.getString("name"));
+                course.setId(courseArray.getInt("id"));
+                course.setCourse(courseArray.getInt("course"));
+                course.setGroup(courseArray.getInt("group"));
+                course.setTable(courseArray.getInt("table"));
+                course.setClient(courseArray.getInt("client"));
+                course.setCourse_id(courseArray.getInt("course_id"));
+                course.setDescription(courseArray.getString("description"));
 
-                    course.setProgress(progress);
-                    course.setFiles(files);
-            }
+                course.setProgress(progress);
+                course.setFiles(files);
+
             return course;
         } catch (JSONException e) {
             e.printStackTrace();
@@ -200,11 +184,11 @@ public class FetchMySubjectsTask extends AsyncTask<Void, String, Course> impleme
     protected Course doInBackground(Void... params) {
         String urlString = "http://you.com.ru/student/ajax/my_subjects?json";
         HashMap<String, String> postParams = new HashMap<>();
-        postParams.put("subjId",this.getGcourseString());
+        postParams.put("subjId", this.getGcourseString());
         jsonData = Common.httpPost(urlString, Common.getLoginDataFromPref(mContext), postParams);
-        if(jsonData!=null){
+        if (jsonData != null) {
             return getCourseDataFromJson(jsonData);
-        }else{
+        } else {
             return new Course();
         }
 
@@ -225,6 +209,7 @@ public class FetchMySubjectsTask extends AsyncTask<Void, String, Course> impleme
         mTaskCompleteListener.onTaskComplete(this);
         mProgressDialog.dismiss();
     }
+
     @Override
     protected void onProgressUpdate(String... values) {
         // Update progress message

@@ -6,20 +6,20 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/course_info_course_attendance"
-        android:textSize="15sp"
-        android:textColor="#45C0ED"
+        android:textSize="17sp"
+        android:textColor="@color/black"
         android:text="Посещаемость по предмету: 100%"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="17dp" />
+        android:layout_marginLeft="20dp" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/course_info_course_mark"
-        android:textSize="15sp"
-        android:textColor="#45C0ED"
+        android:textSize="17sp"
+        android:textColor="@color/black"
         android:text="Посещаемость по предмету: 100%"
         android:layout_marginLeft="20dp"
-        android:layout_below="@+id/course_info_course_attendance"/>
+        android:layout_below="@+id/course_info_course_attendance"
+        android:layout_marginTop="5dp" />
 
 </RelativeLayout>

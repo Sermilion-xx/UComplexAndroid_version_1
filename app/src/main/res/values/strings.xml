@@ -100,6 +100,9 @@
     <string name="message_str">Сообщение</string>
     <string name="block_str_ru">Блокировка</string>
     <string name="teachers_str_ru">Преподаватели</string>
+    <string name="marks_str_ru">"Средняя успеваемость: %1$s"</string>
+    <string name="attendance_str_ru">"Посещение по предмету: %1$s"</string>
+    <string name="statistics_str_ru">Статистика</string>
 
 
 </resources>

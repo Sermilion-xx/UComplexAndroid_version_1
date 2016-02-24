@@ -1,18 +1,17 @@
 package org.ucomplex.ucomplex.Fragments;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
+import android.widget.ListView;
 
-import org.javatuples.Triplet;
+import org.javatuples.Quartet;
+import org.ucomplex.ucomplex.Activities.ProfileActivity;
 import org.ucomplex.ucomplex.Adaptors.CourseInfoAdapter;
 import org.ucomplex.ucomplex.Model.StudyStructure.Course;
 import org.ucomplex.ucomplex.Model.Users.Teacher;
-import org.ucomplex.ucomplex.Model.Users.User;
-import org.ucomplex.ucomplex.R;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -25,7 +24,8 @@ public class CourseFragment extends ListFragment {
     private Course courseData;
     private Activity mContext;
     CourseInfoAdapter mAdapter;
-    ArrayList<Triplet<String, String, String>> mItems = new ArrayList<>();
+    //bitmap, name, code, id
+    ArrayList<Quartet<String, String, String, String>> mItems = new ArrayList<>();
 
     public void setmContext(Activity mContext) {
         this.mContext = mContext;
@@ -41,28 +41,46 @@ public class CourseFragment extends ListFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle bundle = this.getArguments();
-        courseData = (Course) bundle.getSerializable("courseData");
-        if(courseData!=null){
-            ArrayList<Teacher> teachers = courseData.getTeachers();
-            for(Teacher teacher:teachers){
-                String code = "";
-                if(teacher.getPhoto()==1){
-                    code = teacher.getCode();
+        if (courseData == null) {
+            courseData = (Course) bundle.getSerializable("courseData");
+            if (courseData != null) {
+                ArrayList<Teacher> teachers = courseData.getTeachers();
+                Quartet<String, String, String, String> separatorItem1 = new Quartet<>("-1", "-1", "-1", "2");
+                mItems.add(separatorItem1);
+                for (Teacher teacher : teachers) {
+                    String code = "";
+                    if (teacher.getPhoto() == 1) {
+                        code = teacher.getCode();
+                    }
+                    Quartet<String, String, String, String> item = new Quartet<>(code, teacher.getName(), String.valueOf(teacher.getId()), "1");
+                    mItems.add(item);
                 }
-                Triplet<String, String, String> item = new Triplet<>(code, teacher.getName(), String.valueOf(teacher.getPerson()));
+                Quartet<String, String, String, String> separatorItem = new Quartet<>("-1", "-1", "-1", "2");
+                mItems.add(separatorItem);
+                int a = courseData.getProgress().getAbsence();
+                int b = courseData.getProgress().getHours();
+                double absence = ((double) a / (double) b) * 100;
+                if (absence == 0.0) {
+                    absence = 100;
+                }
+                DecimalFormat df = new DecimalFormat("#.##");
+                absence = Double.valueOf(df.format(absence));
+                Quartet<String, String, String, String> item = new Quartet<>(String.valueOf(absence) + "%", String.valueOf(courseData.getProgress().getMark()), "-1", "3");
                 mItems.add(item);
+                mAdapter = new CourseInfoAdapter(mItems, mContext);
+                setListAdapter(mAdapter);
             }
-            int a = courseData.getProgress().getAbsence();
-            int b = courseData.getProgress().getHours();
-            double absence = ((double) a / (double) b) * 100;
-            DecimalFormat df = new DecimalFormat("#.##");
-            absence = Double.valueOf(df.format(absence));
-            Triplet<String, String, String> item = new Triplet<>(String.valueOf(absence) + "%", String.valueOf(courseData.getProgress().getMark()), "-1");
-            mItems.add(item);
-            mAdapter = new CourseInfoAdapter(mItems, mContext);
-            setListAdapter(mAdapter);
         }
 
+    }
+
+    @Override
+    public void onListItemClick(ListView l, View v, int position, long id) {
+        Intent intent = new Intent(getContext(), ProfileActivity.class);
+        Bundle extras = new Bundle();
+        extras.putString("person", String.valueOf(mItems.get(position).getValue0()));
+        intent.putExtras(extras);
+        startActivity(intent);
     }
 
 }
