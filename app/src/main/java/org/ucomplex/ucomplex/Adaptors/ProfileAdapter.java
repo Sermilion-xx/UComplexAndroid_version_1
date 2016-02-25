@@ -108,11 +108,14 @@ public class ProfileAdapter extends ArrayAdapter<Triplet> {
             String[] fullName = mUser.getName().split(" ");
             viewHolder.mFirstNameView.setText(fullName[0]);
             viewHolder.mLastNameView.setTypeface(robotoFont);
-            viewHolder.mLastNameView.setText(fullName[1] + " " + fullName[2]);
+            if(fullName.length>1){
+                viewHolder.mLastNameView.setText(fullName[1] + " " + fullName[2]);
+            }
             viewHolder.mEmailView.setTypeface(robotoFont);
             viewHolder.mEmailView.setText(mUser.getEmail());
         } else if (viewType == TYPE_INFO) {
-            Integer[] icons = new Integer[]{R.drawable.ic_role_1,
+            Integer[] icons = new Integer[]{
+                    R.drawable.ic_role_1,
                     R.drawable.ic_role_2,
                     R.drawable.ic_role_3,
                     R.drawable.ic_role_4,

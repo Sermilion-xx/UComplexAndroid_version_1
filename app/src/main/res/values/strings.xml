@@ -3,7 +3,7 @@
 
     <string name="app_name">OS List</string>
     <string name="hello_world">Hello world!</string>
-    <string name="title_activity_login">LoginActivity</string>
+    <string name="title_activity_login">uComplex</string>
     <string name="prompt_login">Логин</string>
     <string name="prompt_password">Пароль</string>
     <string name="action_sign_in">Войти</string>
