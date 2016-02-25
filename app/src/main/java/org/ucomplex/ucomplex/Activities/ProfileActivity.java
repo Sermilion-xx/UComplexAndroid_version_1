@@ -33,6 +33,8 @@ public class ProfileActivity extends AppCompatActivity implements OnTaskComplete
     ProfileFragment profileFragment;
     Menu menu;
     User mUser;
+    int hasPhoto;
+    String code;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,9 +45,13 @@ public class ProfileActivity extends AppCompatActivity implements OnTaskComplete
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         final Bundle extra = getIntent().getExtras();
+
         if (extra != null) {
             personId = Integer.parseInt(extra.getString("person"));
             bitmap = extra.getParcelable("bitmap");
+            hasPhoto = Integer.parseInt(extra.getString("hasPhoto"));
+            code = extra.getString("code");
+
             FetchPersonTask fetchPersonTask = new FetchPersonTask(this, this);
             fetchPersonTask.setPerson(String.valueOf(personId));
             fetchPersonTask.setmContext(this);
@@ -103,9 +109,11 @@ public class ProfileActivity extends AppCompatActivity implements OnTaskComplete
             profileFragment = new ProfileFragment();
             profileFragment.setContext(this);
             profileFragment.setBitmap(bitmap);
+            profileFragment.setHasPhoto(hasPhoto);
             profileFragment.setPerson(personId);
             profileFragment.setmUser(mUser);
             profileFragment.setmItems(items);
+            profileFragment.setCode(code);
 
             FragmentManager fragmentManager = getSupportFragmentManager();
             FragmentTransaction fragmentTransaction =

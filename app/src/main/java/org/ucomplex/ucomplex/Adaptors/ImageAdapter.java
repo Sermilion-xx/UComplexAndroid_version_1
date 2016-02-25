@@ -107,11 +107,9 @@ public class ImageAdapter extends BaseAdapter {
                 public void onLoadingStarted(String imageUri, View view) {
 
                 }
-
                 @Override
                 public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
                 }
-
                 @Override
                 public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
                     if(loadedImage!=null){

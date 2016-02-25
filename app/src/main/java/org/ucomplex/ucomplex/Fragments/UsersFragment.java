@@ -9,7 +9,6 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import org.ucomplex.ucomplex.Activities.PersonActivity;
 import org.ucomplex.ucomplex.Activities.ProfileActivity;
 import org.ucomplex.ucomplex.Activities.Tasks.FetchUsersTask;
 import org.ucomplex.ucomplex.Adaptors.ImageAdapter;
@@ -40,7 +39,6 @@ public class UsersFragment extends ListFragment {
     }
 
 
-
     public void setUsersType(int usersType) {
         this.usersType = usersType;
     }
@@ -69,6 +67,8 @@ public class UsersFragment extends ListFragment {
         if (user.getPhotoBitmap() != null) {
             intent.putExtra("bitmap", user.getPhotoBitmap());
         }
+        extras.putString("hasPhoto", String.valueOf(user.getPhoto()));
+        extras.putString("code", user.getCode());
         intent.putExtras(extras);
         startActivity(intent);
     }

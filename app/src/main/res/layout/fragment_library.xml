@@ -5,7 +5,6 @@
     tools:context="org.ucomplex.ucomplex.Fragments.LibraryFragment"
     android:id="@+id/fragment_library">
 
-    <!-- TODO: Update blank fragment layout -->
     <ListView
         android:id="@+id/listview_library"
         android:layout_marginTop="65dp"

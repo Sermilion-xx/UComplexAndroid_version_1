@@ -292,12 +292,13 @@ public class User implements Serializable {
         this.session = session;
     }
 
+
     protected class BitmapDataObject implements Serializable {
         private static final long serialVersionUID = 111696345129311948L;
         public byte[] imageByteArray;
     }
 
-    public void writeObject(ObjectOutputStream out) throws IOException {
+    private void writeObject(ObjectOutputStream out) throws IOException {
 
         if(this.photoBitmap!=null){
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
@@ -308,7 +309,7 @@ public class User implements Serializable {
         }
     }
 
-    public void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException{
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException{
         if(this.photoBitmap!=null) {
             BitmapDataObject bitmapDataObject = (BitmapDataObject) in.readObject();
             this.photoBitmap = BitmapFactory.decodeByteArray(bitmapDataObject.imageByteArray, 0, bitmapDataObject.imageByteArray.length);

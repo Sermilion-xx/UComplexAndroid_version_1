@@ -1,14 +1,16 @@
 package org.ucomplex.ucomplex.Fragments;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.graphics.Bitmap;
-import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.view.View;
 
 import org.javatuples.Triplet;
 import org.ucomplex.ucomplex.Adaptors.ProfileAdapter;
+import org.ucomplex.ucomplex.Common;
 import org.ucomplex.ucomplex.Model.Users.User;
 
 import java.util.List;
@@ -24,9 +26,20 @@ public class ProfileFragment extends ListFragment {
     int mPerson = -1;
     User mUser;
     List<Triplet> mItems;
+    int hasPhoto = 0;
+    String code;
+    ProgressDialog progress;
 
     public ProfileFragment() {
 
+    }
+
+    public void setHasPhoto(int hasPhoto) {
+        this.hasPhoto = hasPhoto;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
     }
 
     public ProfileAdapter getmAdapter() {
@@ -56,7 +69,31 @@ public class ProfileFragment extends ListFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mAdapter = new ProfileAdapter(mContext, mItems, mBitmap);
+        if(hasPhoto==1){
+            progress = new ProgressDialog(mContext);
+            progress.setMessage("Загрузка пользователя...");
+//            progress.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+//            progress.setIndeterminate(true);
+            progress.show();
+            new AsyncTask<String,Void,Bitmap>(){
+
+                @Override
+                protected Bitmap doInBackground(String... params) {
+                    return Common.getBitmapFromURL(params[0]);
+                }
+
+                @Override
+                protected void onPostExecute(Bitmap bitmap) {
+                    mBitmap = bitmap;
+                    progress.hide();
+                    mAdapter = new ProfileAdapter(mContext, mItems, mBitmap);
+                }
+            }.execute(code);
+
+        }else{
+            mAdapter = new ProfileAdapter(mContext, mItems, mBitmap);
+        }
+
         setListAdapter(mAdapter);
 
     }
