@@ -75,10 +75,6 @@ public class FetchUsersTask extends AsyncTask<Integer, Void, ArrayList<User>> {
         return null;
     }
 
-    @Override
-    protected void onPostExecute(ArrayList<User> users) {
-        super.onPostExecute(users);
-    }
 
     private ArrayList<User> getUserDataFromJson(String jsonData, int getTypeInt) {
 
