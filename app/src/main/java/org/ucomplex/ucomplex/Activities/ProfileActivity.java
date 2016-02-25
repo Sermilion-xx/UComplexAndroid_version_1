@@ -1,5 +1,6 @@
 package org.ucomplex.ucomplex.Activities;
 
+import android.app.ProgressDialog;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -35,6 +36,7 @@ public class ProfileActivity extends AppCompatActivity implements OnTaskComplete
     User mUser;
     int hasPhoto;
     String code;
+    ProgressDialog profileProgress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +49,10 @@ public class ProfileActivity extends AppCompatActivity implements OnTaskComplete
         final Bundle extra = getIntent().getExtras();
 
         if (extra != null) {
+            profileProgress = new ProgressDialog(this);
+            profileProgress.setMessage("Загрузка пользователя...");
+            profileProgress.show();
+
             personId = Integer.parseInt(extra.getString("person"));
             bitmap = extra.getParcelable("bitmap");
             hasPhoto = Integer.parseInt(extra.getString("hasPhoto"));
@@ -65,7 +71,6 @@ public class ProfileActivity extends AppCompatActivity implements OnTaskComplete
         this.menu = menu;
         return true;
     }
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -105,7 +110,6 @@ public class ProfileActivity extends AppCompatActivity implements OnTaskComplete
                 }
                 items.add(aItem);
             }
-
             profileFragment = new ProfileFragment();
             profileFragment.setContext(this);
             profileFragment.setBitmap(bitmap);
@@ -114,14 +118,13 @@ public class ProfileActivity extends AppCompatActivity implements OnTaskComplete
             profileFragment.setmUser(mUser);
             profileFragment.setmItems(items);
             profileFragment.setCode(code);
+            profileFragment.setProgress(profileProgress);
 
             FragmentManager fragmentManager = getSupportFragmentManager();
             FragmentTransaction fragmentTransaction =
                     fragmentManager.beginTransaction();
             fragmentTransaction.replace(R.id.content_person, profileFragment);
             fragmentTransaction.commit();
-
-
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }

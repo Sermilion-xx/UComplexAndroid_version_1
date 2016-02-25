@@ -1,10 +1,12 @@
 package org.ucomplex.ucomplex.Adaptors;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,6 +35,7 @@ public class ProfileAdapter extends ArrayAdapter<Triplet> {
     private static final int TYPE_HEADER = 0;
     private static final int TYPE_INFO = 1;
 
+    private ProgressDialog mDialog;
     private Bitmap mBitmap;
     private User mUser;
     private Context mContext;
@@ -40,12 +43,13 @@ public class ProfileAdapter extends ArrayAdapter<Triplet> {
     private LayoutInflater inflater;
     private Typeface robotoFont = Typeface.createFromAsset(getContext().getAssets(), "fonts/Roboto-Regular.ttf");
 
-    public ProfileAdapter(Context context, List<Triplet> profileItems, Bitmap bitmap) {
+    public ProfileAdapter(Context context, List<Triplet> profileItems, Bitmap bitmap, ProgressDialog dialog) {
         super(context, R.layout.list_item_profile_header, profileItems);
         mUser = (User) profileItems.get(0).getValue1();
         mContext = context;
         mBitmap = bitmap;
         mItems = profileItems;
+        mDialog = dialog;
     }
 
     private View createHolder(ViewHolder viewHolder, View convertView, int viewType, ViewGroup parent, int posision) {
@@ -94,7 +98,12 @@ public class ProfileAdapter extends ArrayAdapter<Triplet> {
         }
         Triplet<String, String, String> item = getItem(position);
         if (viewType == TYPE_HEADER) {
-            viewHolder.mUserImageView.setImageBitmap(mBitmap);
+            if(mBitmap==null){
+                Drawable drawable = Common.getDrawable((User) mItems.get(0).getValue1());
+                viewHolder.mUserImageView.setImageDrawable(drawable);
+            }else{
+                viewHolder.mUserImageView.setImageBitmap(mBitmap);
+            }
             viewHolder.mFirstNameView.setTypeface(robotoFont);
             String[] fullName = mUser.getName().split(" ");
             viewHolder.mFirstNameView.setText(fullName[0]);
@@ -115,7 +124,6 @@ public class ProfileAdapter extends ArrayAdapter<Triplet> {
             } else {
                 viewHolder.mInfoKey.setText(item.getValue1());
             }
-
             viewHolder.mInfoValue.setTypeface(robotoFont);
             viewHolder.mInfoValue.setText(item.getValue0());
 
@@ -124,6 +132,7 @@ public class ProfileAdapter extends ArrayAdapter<Triplet> {
             convertView.setBackgroundColor(mContext.getResources().getColor(R.color.colorPrimary));
         }
 //        convertView.setBackgroundColor(Color.WHITE);
+
         return convertView;
     }
 

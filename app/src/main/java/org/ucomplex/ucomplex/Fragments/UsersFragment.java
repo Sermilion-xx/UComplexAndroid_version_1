@@ -1,6 +1,7 @@
 package org.ucomplex.ucomplex.Fragments;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
@@ -27,6 +28,7 @@ public class UsersFragment extends ListFragment {
     ArrayList<User> loadedUsers;
     int lastPos;
     Activity activity;
+
 
 
     public void setActivity(Activity activity) {
@@ -56,6 +58,8 @@ public class UsersFragment extends ListFragment {
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
+
+
         User user = mItems.get(position);
         Intent intent = new Intent(getContext(), ProfileActivity.class);
         Bundle extras = new Bundle();

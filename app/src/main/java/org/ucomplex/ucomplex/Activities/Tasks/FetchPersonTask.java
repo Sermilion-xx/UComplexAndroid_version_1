@@ -28,16 +28,16 @@ public class FetchPersonTask extends AsyncTask<Void, String, User> implements IP
 
     private IProgressTracker mProgressTracker;
     private final OnTaskCompleteListener mTaskCompleteListener;
-    private final ProgressDialog mProgressDialog;
+//    private final ProgressDialog mProgressDialog;
 
     public FetchPersonTask(Activity context, OnTaskCompleteListener taskCompleteListener) {
         this.mContext = context;
 
         this.mTaskCompleteListener = taskCompleteListener;
-        mProgressDialog = new ProgressDialog(context);
-        mProgressDialog.setIndeterminate(true);
-        mProgressDialog.setCancelable(true);
-        mProgressDialog.setOnCancelListener(this);
+//        mProgressDialog = new ProgressDialog(context);
+//        mProgressDialog.setIndeterminate(true);
+//        mProgressDialog.setCancelable(true);
+//        mProgressDialog.setOnCancelListener(this);
     }
 
     public void setupTask(Void ... params) {
@@ -67,10 +67,6 @@ public class FetchPersonTask extends AsyncTask<Void, String, User> implements IP
         String jsonData = Common.httpPost(urlString, Common.getLoginDataFromPref(mContext));
         if (jsonData != null && jsonData.length() > 2) {
             user = getUserDataFromJson(jsonData);
-//            if (user != null && user.getCode() != null) {
-//                Bitmap photoBitmap = Common.getBitmapFromURL(user.getCode());
-//                user.setPhotoBitmap(photoBitmap);
-//            }
         }
         publishProgress("User got");
         return user;
@@ -181,17 +177,17 @@ public class FetchPersonTask extends AsyncTask<Void, String, User> implements IP
 
     @Override
     public void onProgress(String message) {
-        if (!mProgressDialog.isShowing()) {
-            mProgressDialog.show();
-        }
-        // Show current message in progress dialog
-        mProgressDialog.setMessage(message);
+//        if (!mProgressDialog.isShowing()) {
+//            mProgressDialog.show();
+//        }
+//        // Show current message in progress dialog
+//        mProgressDialog.setMessage(message);
     }
 
     @Override
     public void onComplete() {
         mTaskCompleteListener.onTaskComplete(this);
-        mProgressDialog.dismiss();
+//        mProgressDialog.dismiss();
     }
 
     @Override

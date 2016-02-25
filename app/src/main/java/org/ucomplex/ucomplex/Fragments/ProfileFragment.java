@@ -3,10 +3,14 @@ package org.ucomplex.ucomplex.Fragments;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ListFragment;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 
 import org.javatuples.Triplet;
 import org.ucomplex.ucomplex.Adaptors.ProfileAdapter;
@@ -32,6 +36,10 @@ public class ProfileFragment extends ListFragment {
 
     public ProfileFragment() {
 
+    }
+
+    public void setProgress(ProgressDialog progress) {
+        this.progress = progress;
     }
 
     public void setHasPhoto(int hasPhoto) {
@@ -67,42 +75,31 @@ public class ProfileFragment extends ListFragment {
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if(hasPhoto==1){
-            progress = new ProgressDialog(mContext);
-            progress.setMessage("Загрузка пользователя...");
-//            progress.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-//            progress.setIndeterminate(true);
-            progress.show();
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        if(hasPhoto==1 && mBitmap == null){
             new AsyncTask<String,Void,Bitmap>(){
-
                 @Override
                 protected Bitmap doInBackground(String... params) {
                     return Common.getBitmapFromURL(params[0]);
                 }
-
                 @Override
                 protected void onPostExecute(Bitmap bitmap) {
                     mBitmap = bitmap;
-                    progress.hide();
-                    mAdapter = new ProfileAdapter(mContext, mItems, mBitmap);
+                    mAdapter = new ProfileAdapter(mContext, mItems, mBitmap, progress);
+                    setListAdapter(mAdapter);
                 }
             }.execute(code);
-
         }else{
-            mAdapter = new ProfileAdapter(mContext, mItems, mBitmap);
+            mAdapter = new ProfileAdapter(mContext, mItems, mBitmap, progress);
+            setListAdapter(mAdapter);
         }
-
-        setListAdapter(mAdapter);
-
-    }
-
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
         getListView().setDivider(null);
     }
 
-
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        progress.dismiss();
+    }
 }
