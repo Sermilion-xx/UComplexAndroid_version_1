@@ -195,7 +195,6 @@ public class MessagesActivity extends AppCompatActivity implements OnTaskComplet
                             messagesAdapter = new MessagesAdapter(this, messageArrayList, companion, name);
                             listView.setAdapter(messagesAdapter);
                             listView.setSelection(messagesAdapter.getCount() - 1);
-                            messagesAdapter.getValues().getFirst();
                             if (messagesAdapter.getBitmap() != null) {
                                 profileImageView.setImageBitmap(messagesAdapter.getBitmap());
                             }
