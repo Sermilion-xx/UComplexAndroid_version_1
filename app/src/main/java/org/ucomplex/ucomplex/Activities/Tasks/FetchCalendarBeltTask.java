@@ -3,6 +3,7 @@ package org.ucomplex.ucomplex.Activities.Tasks;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
+import android.support.annotation.Nullable;
 
 import org.javatuples.Quartet;
 import org.json.JSONArray;
@@ -26,6 +27,7 @@ public class FetchCalendarBeltTask extends AsyncTask<Integer, Void, ArrayList<Qu
     Activity mContext;
     private final OnTaskCompleteListener mTaskCompleteListener;
     ArrayList<Quartet<Integer, String, String, Integer>> feedItems;
+    private boolean fromCalendar;
 
     public FetchCalendarBeltTask(Activity context, OnTaskCompleteListener taskCompleteListener) {
         this.mContext = context;
@@ -42,6 +44,8 @@ public class FetchCalendarBeltTask extends AsyncTask<Integer, Void, ArrayList<Qu
         HashMap<String, String> postParams = new HashMap<>();
         if(postParamsString.length>0){
             postParams.put("gcourse", String.valueOf(postParamsString[0]));
+        }else{
+            fromCalendar = true;
         }
         String jsonData = Common.httpPost(urlString, Common.getLoginDataFromPref(mContext), postParams);
         return getCalendarBeltDataFromJson(jsonData);
@@ -49,14 +53,15 @@ public class FetchCalendarBeltTask extends AsyncTask<Integer, Void, ArrayList<Qu
 
 
 
+    @Nullable
     private ArrayList<Quartet<Integer, String, String, Integer>> getCalendarBeltDataFromJson(String jsonData) {
         JSONObject courseJson;
         feedItems = new ArrayList<>();
         try {
             if(jsonData!=null) {
                 courseJson = new JSONObject(jsonData);
-                JSONObject teachers = courseJson.getJSONObject("teachers");
-                HashMap<String, String> teachersMap = (HashMap<String, String>) Common.parseJsonKV(teachers);
+                HashMap<String, String> teachersMap = (HashMap<String, String>) Common.parseJsonKV(courseJson.getJSONObject("teachers"));
+                HashMap<String, String> coursesMap = (HashMap<String, String>) Common.parseJsonKV(courseJson.getJSONObject("courses"));
                 JSONArray marksArray = courseJson.getJSONArray("marks");
 
                 for (int i = 0; i < marksArray.length(); i++) {
@@ -67,7 +72,14 @@ public class FetchCalendarBeltTask extends AsyncTask<Integer, Void, ArrayList<Qu
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
                     String time = sdf.format(date);
                     String teacherName = teachersMap.get(marksItemJson.getString("teacher"));
-                    Quartet<Integer, String, String, Integer> markItem = new Quartet<>(mark, teacherName, time, marksItemJson.getInt("type"));
+                    String courseName = coursesMap.get(marksItemJson.getString("course"));
+                    String name;
+                    if(fromCalendar){
+                        name = courseName;
+                    }else{
+                        name = teacherName;
+                    }
+                    Quartet<Integer, String, String, Integer> markItem = new Quartet<>(mark, name, time, marksItemJson.getInt("type"));
                     feedItems.add(markItem);
                 }
             }

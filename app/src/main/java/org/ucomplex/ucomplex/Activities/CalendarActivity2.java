@@ -13,12 +13,19 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListAdapter;
+import android.widget.Toast;
 
+import org.javatuples.Quartet;
+import org.ucomplex.ucomplex.Activities.Tasks.FetchCalendarBeltTask;
 import org.ucomplex.ucomplex.Adaptors.CalendarInfoAdapter;
 import org.ucomplex.ucomplex.Adaptors.ViewPagerAdapter;
+import org.ucomplex.ucomplex.Fragments.CalendarBeltFragment;
 import org.ucomplex.ucomplex.Fragments.CalendarFragment;
 import org.ucomplex.ucomplex.Interfaces.OnTaskCompleteListener;
 import org.ucomplex.ucomplex.R;
+
+import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 
 public class CalendarActivity2 extends AppCompatActivity implements AdapterView.OnItemSelectedListener, OnTaskCompleteListener {
 
@@ -27,6 +34,9 @@ public class CalendarActivity2 extends AppCompatActivity implements AdapterView.
     ViewPagerAdapter adapter;
     ViewPager viewPager;
     final Integer[] infoDrawables = {R.drawable.dot_1, R.drawable.dot_2, R.drawable.dot_3, R.drawable.dot_4, R.drawable.dot_5, R.drawable.dot_6, R.drawable.dot_7};
+    ArrayList<Quartet<Integer, String, String, Integer>> feedItems;
+    CalendarBeltFragment calendarBeltFragment;
+    FetchCalendarBeltTask fetchCalendarBeltTask;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -39,11 +49,22 @@ public class CalendarActivity2 extends AppCompatActivity implements AdapterView.
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_menu);
         viewPager = (ViewPager) findViewById(R.id.viewpager_calendar);
         adapter = new ViewPagerAdapter(getSupportFragmentManager());
+
+        if (calendarBeltFragment == null) {
+            calendarBeltFragment = new CalendarBeltFragment();
+            if (this.feedItems == null) {
+                fetchCalendarBeltTask = new FetchCalendarBeltTask(this, this);
+                fetchCalendarBeltTask.setupTask();
+            } else {
+                calendarBeltFragment.setFeedItems(this.feedItems);
+            }
+        }
+
         CalendarFragment calendarFragment = new CalendarFragment();
         calendarFragment.setContext(this);
         adapter.addFragment(calendarFragment, "Дисциплина");
-        adapter.addFragment(new Fragment(), "Материалы");
-        adapter.addFragment(new Fragment(), "Лента");
+        adapter.addFragment(calendarBeltFragment, "Лента");
+        adapter.addFragment(new Fragment(), "Статистика");
         viewPager.setAdapter(adapter);
         tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
@@ -62,12 +83,28 @@ public class CalendarActivity2 extends AppCompatActivity implements AdapterView.
 
     @Override
     public void onTaskComplete(AsyncTask task, Object... o) {
-
+        if (task.isCancelled()) {
+            Toast.makeText(this, "Загрузка отменена", Toast.LENGTH_LONG).show();
+        } else {
+            if (task instanceof FetchCalendarBeltTask) {
+                try {
+                    this.feedItems = (ArrayList<Quartet<Integer, String, String, Integer>>) task.get();
+                    if (calendarBeltFragment == null) {
+                        calendarBeltFragment = new CalendarBeltFragment();
+                    }
+                    calendarBeltFragment.getCourseCalendarBeltAdapter().changeItems(feedItems);
+//                    calendarBeltFragment.initAdapter(CalendarActivity2.this);
+//                    calendarBeltFragment.getCourseCalendarBeltAdapter().notifyDataSetChanged();
+                } catch (InterruptedException | ExecutionException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if(viewPager.getCurrentItem()==0){
+        if (viewPager.getCurrentItem() == 0) {
             getMenuInflater().inflate(R.menu.menu_calendar, menu);
             return true;
         }
@@ -81,7 +118,7 @@ public class CalendarActivity2 extends AppCompatActivity implements AdapterView.
                 onBackPressed();
                 return true;
             case R.id.menu_calendar_info:
-                final String [] items = new String[] {"Текущий день",
+                final String[] items = new String[]{"Текущий день",
                         "Занятие/Событие", "Аттестация", "Экзамен",
                         "Индивидуальное занятие", "Нерабочий день", "Расписание"};
 

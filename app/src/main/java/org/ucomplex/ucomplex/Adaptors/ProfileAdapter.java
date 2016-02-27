@@ -111,6 +111,7 @@ public class ProfileAdapter extends ArrayAdapter<Triplet> {
             if(fullName.length>1){
                 viewHolder.mLastNameView.setText(fullName[1] + " " + fullName[2]);
             }
+            
             viewHolder.mEmailView.setTypeface(robotoFont);
             viewHolder.mEmailView.setText(mUser.getEmail());
         } else if (viewType == TYPE_INFO) {

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:orientation="horizontal">
+
+    <ImageView
+        android:id="@+id/course_calendar_belt_listview_item_image"
+        android:layout_width="37dp"
+        android:layout_height="37dp"
+        android:layout_marginBottom="17dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="17dp"
+        android:src="@mipmap/ic_no_image" />
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@+id/course_calendar_belt_listview_item_image">
+
+        <TextView
+            android:id="@+id/course_calendar_belt_listview_item_subject_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="26dp"
+            android:layout_toRightOf="@+id/course_calendar_belt_listview_item_image"
+            android:lines="1"
+            android:text="Название предмета"
+            android:textColor="#000000"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/course_calendar_belt_listview_item_teacher_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/course_calendar_belt_listview_item_subject_name"
+            android:layout_marginLeft="26dp"
+            android:lines="1"
+            android:text="Имя Фамильвева Отчествовна"
+            />
+
+
+        <TextView
+            android:id="@+id/course_calendar_belt_listview_time_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/course_calendar_belt_listview_item_teacher_name"
+            android:layout_marginLeft="26dp"
+            android:lines="1"
+            android:textSize="10sp" />
+
+        <TextView
+            android:id="@+id/course_calendar_belt_listview_item_textview2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/course_calendar_belt_listview_item_teacher_name"
+            android:layout_marginLeft="5dp"
+            android:layout_toRightOf="@+id/course_calendar_belt_listview_time_icon"
+            android:lines="1"
+            android:text="Время" />
+
+    </RelativeLayout>
+
+
+</RelativeLayout>
+

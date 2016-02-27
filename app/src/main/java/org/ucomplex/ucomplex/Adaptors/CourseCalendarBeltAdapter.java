@@ -15,6 +15,7 @@ import com.amulyakhare.textdrawable.TextDrawable;
 import org.javatuples.Quartet;
 import org.ucomplex.ucomplex.R;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -30,8 +31,24 @@ public class CourseCalendarBeltAdapter extends ArrayAdapter<Quartet<Integer, Str
         feedItems = items;
     }
 
+    public void changeItems(ArrayList<Quartet<Integer, String, String, Integer>> feedItems){
+        this.feedItems.clear();
+        this.feedItems.addAll(feedItems);
+        notifyDataSetChanged();
+    }
+
+    @Override
+    public Quartet<Integer, String, String, Integer> getItem(int position) {
+        return this.feedItems.get(position);
+    }
+
     public List<Quartet<Integer, String, String, Integer>> getFeedItems() {
         return feedItems;
+    }
+
+    @Override
+    public int getCount() {
+        return this.feedItems.size();
     }
 
     @Override
@@ -45,8 +62,6 @@ public class CourseCalendarBeltAdapter extends ArrayAdapter<Quartet<Integer, Str
             viewHolder.dateTextView2 = (TextView) convertView.findViewById(R.id.course_calendar_belt_listview_item_textview2);
             viewHolder.markImageView = (ImageView) convertView.findViewById(R.id.course_calendar_belt_listview_item_image);
             viewHolder.timeIconttextView = (TextView) convertView.findViewById(R.id.course_calendar_belt_listview_time_icon);
-
-
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();

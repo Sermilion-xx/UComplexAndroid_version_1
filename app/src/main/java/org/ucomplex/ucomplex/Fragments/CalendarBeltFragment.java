@@ -22,6 +22,7 @@ public class CalendarBeltFragment extends ListFragment {
         this.feedItems = feedItems;
     }
 
+
     public CourseCalendarBeltAdapter getCourseCalendarBeltAdapter() {
         return courseCalendarBeltAdapter;
     }
