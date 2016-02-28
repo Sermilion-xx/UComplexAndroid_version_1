@@ -16,6 +16,7 @@ import android.widget.ListAdapter;
 import android.widget.Toast;
 
 import org.javatuples.Quartet;
+import org.ucomplex.ucomplex.Activities.Tasks.FetchAllStats;
 import org.ucomplex.ucomplex.Activities.Tasks.FetchCalendarBeltTask;
 import org.ucomplex.ucomplex.Adaptors.CalendarInfoAdapter;
 import org.ucomplex.ucomplex.Adaptors.ViewPagerAdapter;
@@ -60,6 +61,10 @@ public class CalendarActivity2 extends AppCompatActivity implements AdapterView.
             }
         }
 
+        FetchAllStats fetchAllStats = new FetchAllStats(this, this);
+        fetchAllStats.setupTask();
+
+
         CalendarFragment calendarFragment = new CalendarFragment();
         calendarFragment.setContext(this);
         adapter.addFragment(calendarFragment, "Дисциплина");
@@ -93,11 +98,17 @@ public class CalendarActivity2 extends AppCompatActivity implements AdapterView.
                         calendarBeltFragment = new CalendarBeltFragment();
                     }
                     calendarBeltFragment.getCourseCalendarBeltAdapter().changeItems(feedItems);
-//                    calendarBeltFragment.initAdapter(CalendarActivity2.this);
-//                    calendarBeltFragment.getCourseCalendarBeltAdapter().notifyDataSetChanged();
                 } catch (InterruptedException | ExecutionException e) {
                     e.printStackTrace();
                 }
+            }else if (task instanceof FetchAllStats) {
+                try {
+                    ArrayList<Quartet<String, String, String, String>> statisticItems = ((FetchAllStats) task).get();
+                    System.out.println();
+                } catch (InterruptedException | ExecutionException e) {
+                    e.printStackTrace();
+                }
+
             }
         }
     }
