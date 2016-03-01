@@ -98,11 +98,6 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
-            android:name=".Activities.CalendarActivity2"
-            android:label="@string/title_activity_calendar"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme" />
-        <activity
             android:name=".Activities.CalendarDayActivity"
             android:label="@string/title_activity_calendar_day"
             android:screenOrientation="portrait"
@@ -113,6 +108,11 @@
             android:theme="@style/AppTheme" />
         <activity
             android:name=".Activities.SettingsActivity"
+            android:label="@string/title_activity_settings"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".Activities.SettingsActivity2"
             android:label="@string/title_activity_settings"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />

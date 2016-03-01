@@ -1,11 +1,10 @@
 package org.ucomplex.ucomplex.Activities;
 
-import android.app.Activity;
-import android.content.Intent;
-import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -13,167 +12,73 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
-import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.prolificinteractive.materialcalendarview.CalendarDay;
-import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
-import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
-import com.prolificinteractive.materialcalendarview.OnMonthChangedListener;
-import com.prolificinteractive.materialcalendarview.format.MonthArrayTitleFormatter;
-
-import org.javatuples.Quintet;
-import org.ucomplex.ucomplex.Activities.Tasks.AsyncTaskManager;
-import org.ucomplex.ucomplex.Activities.Tasks.FetchCalendarTask;
+import org.javatuples.Quartet;
+import org.ucomplex.ucomplex.Activities.Tasks.FetchAllStats;
+import org.ucomplex.ucomplex.Activities.Tasks.FetchCalendarBeltTask;
 import org.ucomplex.ucomplex.Adaptors.CalendarInfoAdapter;
-import org.ucomplex.ucomplex.Common;
+import org.ucomplex.ucomplex.Adaptors.ViewPagerAdapter;
+import org.ucomplex.ucomplex.Fragments.CalendarBeltFragment;
+import org.ucomplex.ucomplex.Fragments.CalendarFragment;
 import org.ucomplex.ucomplex.Interfaces.OnTaskCompleteListener;
-import org.ucomplex.ucomplex.Model.Calendar.CalendarDayDecorator;
-import org.ucomplex.ucomplex.Model.Calendar.ChangedDay;
-import org.ucomplex.ucomplex.Model.Calendar.Lesson;
-import org.ucomplex.ucomplex.Model.Calendar.UCCalendar;
-import org.ucomplex.ucomplex.Model.Users.User;
 import org.ucomplex.ucomplex.R;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 public class CalendarActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, OnTaskCompleteListener {
 
-    UCCalendar calendar;
-    MaterialCalendarView materialCalendarView;
-    Activity context = this;
-    ArrayList<String> options = new ArrayList<>();
-    ArrayList<String> keys;
-    Spinner spinner;
-    User user;
-    private AsyncTaskManager mAsyncTaskManager;
-    final String[] monthsTitles = {"Январь", "Февряль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"};
-    final Integer[] infoDrawables = {R.drawable.dot_1,R.drawable.dot_2,R.drawable.dot_3,R.drawable.dot_4,R.drawable.dot_5,R.drawable.dot_6,R.drawable.dot_7};
-
+    Toolbar toolbar;
+    TabLayout tabLayout;
+    ViewPagerAdapter adapter;
+    ViewPager viewPager;
+    final Integer[] infoDrawables = {R.drawable.dot_1, R.drawable.dot_2, R.drawable.dot_3, R.drawable.dot_4, R.drawable.dot_5, R.drawable.dot_6, R.drawable.dot_7};
+    ArrayList<Quartet<Integer, String, String, Integer>> feedItems;
+    CalendarBeltFragment calendarBeltFragment;
+    FetchCalendarBeltTask fetchCalendarBeltTask;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        user = Common.getUserDataFromPref(this);
         setContentView(R.layout.activity_calendar);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.calendar_toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.calendar_toolbar2);
         toolbar.setTitle("Календарь");
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        mAsyncTaskManager = new AsyncTaskManager(this, this);
-        mAsyncTaskManager.handleRetainedTask(getLastNonConfigurationInstance());
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_menu);
+        viewPager = (ViewPager) findViewById(R.id.viewpager_calendar);
+        adapter = new ViewPagerAdapter(getSupportFragmentManager());
 
-        spinner = (Spinner) findViewById(R.id.calendar_choice);
-        spinner.setOnItemSelectedListener(this);
-        options.add("Показать все");
-        options.add("Все дисциплины");
-        options.add("События");
-        mAsyncTaskManager.setupTask(new FetchCalendarTask(context), String.valueOf(user.getType()));
-        materialCalendarView = (MaterialCalendarView) findViewById(R.id.calendarView);
-
-        MonthArrayTitleFormatter monthArrayTitleFormatter = new MonthArrayTitleFormatter(monthsTitles);
-        materialCalendarView.setTitleFormatter(monthArrayTitleFormatter);
-        materialCalendarView.setOnMonthChangedListener(new OnMonthChangedListener() {
-            @Override
-            public void onMonthChanged(MaterialCalendarView widget, CalendarDay date) {
-                spinner.setSelection(0);
-                int month = date.getMonth() + 1;
-                int year = date.getYear();
-
-                String monthStr = String.valueOf(month > 9 ? month : "0" + month);
-                String dateStr = 1 + "." + monthStr + "." + year;
-
-                Calendar cal = Calendar.getInstance();
-                int Year = cal.get(Calendar.YEAR);
-
-                if (year <= Year) {
-//                    if(!checkedMonths.contains(date)){
-                    mAsyncTaskManager.setupTask(new FetchCalendarTask(context), String.valueOf(user.getType()), monthStr, dateStr);
-//                        checkedMonths.add(date);
-//                    }
-                } else {
-                    Toast.makeText(context, "Нету данных для следующего года!", Toast.LENGTH_SHORT).show();
-                }
+        if (calendarBeltFragment == null) {
+            calendarBeltFragment = new CalendarBeltFragment();
+            if (this.feedItems == null) {
+                fetchCalendarBeltTask = new FetchCalendarBeltTask(this, this);
+                fetchCalendarBeltTask.setupTask();
+            } else {
+                calendarBeltFragment.setFeedItems(this.feedItems);
             }
-        });
+        }
+
+        FetchAllStats fetchAllStats = new FetchAllStats(this, this);
+        fetchAllStats.setupTask();
+
+
+        CalendarFragment calendarFragment = new CalendarFragment();
+        calendarFragment.setContext(this);
+        adapter.addFragment(calendarFragment, "Дисциплина");
+        adapter.addFragment(calendarBeltFragment, "Лента");
+        adapter.addFragment(new Fragment(), "Статистика");
+        viewPager.setAdapter(adapter);
+        tabLayout = (TabLayout) findViewById(R.id.tabs);
+        tabLayout.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+        tabLayout.setupWithViewPager(viewPager);
     }
-
-    private void refreshMonth() {
-        //выставленны по приоритету, так как каджый декоратор накладываеться на предыдущий
-        //сегодня
-        materialCalendarView.addDecorator(new CalendarDayDecorator(calendar, 6));
-        //Расписание
-        materialCalendarView.addDecorator(new CalendarDayDecorator(calendar, 5));
-        //занятие
-        materialCalendarView.addDecorator(new CalendarDayDecorator(calendar, 0));
-        //индивидуадбное занятие
-        materialCalendarView.addDecorator(new CalendarDayDecorator(calendar, 3));
-        //аттестация
-        materialCalendarView.addDecorator(new CalendarDayDecorator(calendar, 1));
-        //экзамен
-        materialCalendarView.addDecorator(new CalendarDayDecorator(calendar, 2));
-        //события
-        materialCalendarView.addDecorator(new CalendarDayDecorator(calendar, 4));
-
-    }
-
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        HashMap<String, String> courses = calendar.getCourses();
-        String courseValue;
-        String courseKey;
-        if (position == 0) {
-            refreshMonth();
-        } else if (position == 1) {
-            materialCalendarView.removeDecorators();
-            //Расписание
-            materialCalendarView.addDecorator(new CalendarDayDecorator(calendar, 5));
-            //занятие
-            materialCalendarView.addDecorator(new CalendarDayDecorator(calendar, 0));
-            //индивидуадбное занятие
-            materialCalendarView.addDecorator(new CalendarDayDecorator(calendar, 3));
-            //аттестация
-            materialCalendarView.addDecorator(new CalendarDayDecorator(calendar, 1));
-            //экзамен
-            materialCalendarView.addDecorator(new CalendarDayDecorator(calendar, 2));
 
-        } else if (position == 2) {
-            //событие
-            materialCalendarView.removeDecorators();
-            materialCalendarView.addDecorator(new CalendarDayDecorator(calendar, 4));
-        } else {
-            materialCalendarView.removeDecorators();
-            courseValue = options.get(position);
-            courseKey = (String) getKeyFromValue(courses, courseValue);
-            ArrayList<ChangedDay> filteredDays = new ArrayList<>();
-            for (ChangedDay day : calendar.getChangedDays()) {
-                for (Lesson lesson : day.getLessons()) {
-                    if (lesson.getCourse() == Integer.parseInt(courseKey)) {
-                        filteredDays.add(day);
-                    }
-                }
-            }
-            materialCalendarView.addDecorator(new CalendarDayDecorator(filteredDays, calendar.getYear(), calendar.getMonth(), 5));
-            materialCalendarView.addDecorator(new CalendarDayDecorator(filteredDays, calendar.getYear(), calendar.getMonth(), 0));
-            materialCalendarView.addDecorator(new CalendarDayDecorator(filteredDays, calendar.getYear(), calendar.getMonth(), 3));
-            materialCalendarView.addDecorator(new CalendarDayDecorator(filteredDays, calendar.getYear(), calendar.getMonth(), 1));
-            materialCalendarView.addDecorator(new CalendarDayDecorator(filteredDays, calendar.getYear(), calendar.getMonth(), 2));
-        }
-    }
-
-    public static Object getKeyFromValue(Map hm, Object value) {
-        for (Object o : hm.keySet()) {
-            if (hm.get(o).equals(value)) {
-                return o;
-            }
-        }
-        return null;
     }
 
     @Override
@@ -184,142 +89,37 @@ public class CalendarActivity extends AppCompatActivity implements AdapterView.O
     @Override
     public void onTaskComplete(AsyncTask task, Object... o) {
         if (task.isCancelled()) {
-            Toast.makeText(this, "Операция отменена", Toast.LENGTH_LONG)
-                    .show();
+            Toast.makeText(this, "Загрузка отменена", Toast.LENGTH_LONG).show();
         } else {
-            try {
-                calendar = (UCCalendar) task.get();
-                if (calendar == null) {
-                    Toast.makeText(this, "Нету данных", Toast.LENGTH_LONG)
-                            .show();
-                }
+            if (task instanceof FetchCalendarBeltTask) {
                 try {
-                    refreshMonth();
-                } catch (NullPointerException ignored) {
-
-                }
-                keys = new ArrayList<>();
-                for (String key : calendar.getCourses().keySet()) {
-                    keys.add(key);
-                }
-
-                options.clear();
-                for (int i = 0; i < calendar.getCourses().size(); i++) {
-                    options.add(calendar.getCourses().get(keys.get(i)));
-                }
-
-                ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-                        android.R.layout.simple_spinner_item, options.toArray(new String[options.size()]));
-
-                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                spinner.setAdapter(adapter);
-
-
-                materialCalendarView.setOnDateChangedListener(new OnDateSelectedListener() {
-                    @Override
-                    public void onDateSelected(@NonNull MaterialCalendarView widget, @NonNull CalendarDay date, boolean selected) {
-
-                        String day = date.getDay() < 10 ? "0" + String.valueOf(date.getDay()) : String.valueOf(date.getDay());
-
-                        ArrayList dayTimetableArray = new ArrayList();
-                        dayTimetableArray.add(new Quintet<>("-2", "-1", "-1", "-1", "-1"));
-                        for (ChangedDay changeDay : calendar.getChangedDays()) {
-                            if (changeDay.getDay() == Integer.parseInt(day)) {
-                                for (Lesson lesson : changeDay.getLessons()) {
-                                    int mark = lesson.getMark();
-                                    int type = lesson.getType();
-                                    int course = lesson.getCourse();
-                                    String color = "ffffff";
-                                    if (type == 0) {
-                                        color = "#51cde7";
-                                    } else if (type == 1) {
-                                        color = "#fecd71";
-                                    } else if (type == 2) {
-                                        color = "#9ece2b";
-                                    }
-                                    int colorInt = Color.parseColor(color);
-                                    String subjectName = calendar.getTimetable().getSubjects().get(String.valueOf(course));
-                                    //time, name, info, mark, color
-                                    Quintet<String, String, String, String, String> dayTimetable =
-                                            new Quintet<>("-1", subjectName, "-1", String.valueOf(mark), String.valueOf(colorInt));
-                                    dayTimetableArray.add(dayTimetable);
-                                }
-                            }
-                        }
-                        dayTimetableArray.add(new Quintet<>("-2", "-1", "-1", "-1", "-1"));
-                        for (HashMap entrie : calendar.getTimetable().getEntries()) {
-                            if (entrie.get("lessonDay").equals(day)) {
-                                String hour = calendar.getTimetable().getHours().get(entrie.get("hour"));
-                                String subjectName = calendar.getTimetable().getSubjects().get(entrie.get("course"));
-                                String teacher = "";
-                                if (user.getType() == 4) {
-                                    teacher = calendar.getTimetable().getTeachers().get(entrie.get("teacher"));
-                                } else if (user.getType() == 3) {
-                                    String key = (String) entrie.get("group");
-                                    teacher = calendar.getTimetable().getGroups().get(key);
-                                }
-                                String room = calendar.getTimetable().getRooms().get(entrie.get("room"));
-                                String type = (String) entrie.get("type");
-                                String info = teacher + ", " + " аудитория \"" + room + "\"";
-                                if (type.equals("0")) {
-                                    type = "лекционные";
-                                } else if (type.equals("1")) {
-                                    type = "практические";
-                                }
-                                //time, name, info, mark, color
-                                Quintet<String, String, String, String, String> dayTimetable =
-                                        new Quintet<>(hour, subjectName + "," + type, info, "-1", "-1");
-                                dayTimetableArray.add(dayTimetable);
-                            }
-                        }
-
-                        Intent intent = new Intent(context, CalendarDayActivity.class);
-                        Bundle bundle = new Bundle();
-                        bundle.putSerializable("calendarDay", dayTimetableArray);
-
-                        int dayMonth = date.getMonth();
-                        String dayMonthStr = "";
-
-                        if (dayMonth == 0) {
-                            dayMonthStr = "Января";
-                        } else if (dayMonth == 1) {
-                            dayMonthStr = "Февряля";
-                        } else if (dayMonth == 2) {
-                            dayMonthStr = "Марта";
-                        } else if (dayMonth == 3) {
-                            dayMonthStr = "Апреля";
-                        } else if (dayMonth == 4) {
-                            dayMonthStr = "Мая";
-                        } else if (dayMonth == 5) {
-                            dayMonthStr = "Июня";
-                        } else if (dayMonth == 6) {
-                            dayMonthStr = "Июля";
-                        } else if (dayMonth == 7) {
-                            dayMonthStr = "Августа";
-                        } else if (dayMonth == 8) {
-                            dayMonthStr = "Скнтября";
-                        } else if (dayMonth == 9) {
-                            dayMonthStr = "Октября";
-                        } else if (dayMonth == 10) {
-                            dayMonthStr = "Ноября";
-                        } else if (dayMonth == 11) {
-                            dayMonthStr = "Декабря";
-                        }
-                        bundle.putString("date", date.getDay() + " " + dayMonthStr + " " + date.getYear());
-                        intent.putExtras(bundle);
-                        startActivity(intent);
+                    this.feedItems = (ArrayList<Quartet<Integer, String, String, Integer>>) task.get();
+                    if (calendarBeltFragment == null) {
+                        calendarBeltFragment = new CalendarBeltFragment();
                     }
-                });
-            } catch (Exception e) {
-                e.printStackTrace();
+                    calendarBeltFragment.getCourseCalendarBeltAdapter().changeItems(feedItems);
+                } catch (InterruptedException | ExecutionException e) {
+                    e.printStackTrace();
+                }
+            }else if (task instanceof FetchAllStats) {
+                try {
+                    ArrayList<Quartet<String, String, String, String>> statisticItems = ((FetchAllStats) task).get();
+                    System.out.println();
+                } catch (InterruptedException | ExecutionException e) {
+                    e.printStackTrace();
+                }
+
             }
         }
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_calendar, menu);
-        return true;
+        if (viewPager.getCurrentItem() == 0) {
+            getMenuInflater().inflate(R.menu.menu_calendar, menu);
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -329,7 +129,7 @@ public class CalendarActivity extends AppCompatActivity implements AdapterView.O
                 onBackPressed();
                 return true;
             case R.id.menu_calendar_info:
-                final String [] items = new String[] {"Текущий день",
+                final String[] items = new String[]{"Текущий день",
                         "Занятие/Событие", "Аттестация", "Экзамен",
                         "Индивидуальное занятие", "Нерабочий день", "Расписание"};
 
@@ -341,4 +141,3 @@ public class CalendarActivity extends AppCompatActivity implements AdapterView.O
         return super.onOptionsItemSelected(item);
     }
 }
-

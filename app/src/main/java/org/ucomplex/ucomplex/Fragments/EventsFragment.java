@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -33,10 +32,7 @@ import org.ucomplex.ucomplex.Common;
 import org.ucomplex.ucomplex.Model.EventRowItem;
 import org.ucomplex.ucomplex.R;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Locale;
 
 /**
  * @author Sermilion
@@ -193,11 +189,11 @@ public class EventsFragment extends ListFragment {
                 viewHolder = new ViewHolder();
                 viewHolder.eventsImageView = (ImageView) view.findViewById(R.id.list_events_item_image);
                 viewHolder.eventTextView = (TextView) view.findViewById(R.id.list_events_item_text);
-                viewHolder.eventTextView.setTypeface(Common.getTypeFace(context,"Roboto-Regular.ttf"));
+                viewHolder.eventTextView.setTypeface(Common.getTypeFace(context, "Roboto-Regular.ttf"));
                 viewHolder.eventTime = (TextView) view.findViewById(R.id.list_events_item_date);
-                viewHolder.eventTime.setTypeface(Common.getTypeFace(context,"Roboto-Regular.ttf"));
+                viewHolder.eventTime.setTypeface(Common.getTypeFace(context, "Roboto-Regular.ttf"));
                 viewHolder.eventPersonName = (TextView) view.findViewById(R.id.list_events_item_name);
-                viewHolder.eventPersonName.setTypeface(Common.getTypeFace(context,"Roboto-Regular.ttf"));
+                viewHolder.eventPersonName.setTypeface(Common.getTypeFace(context, "Roboto-Regular.ttf"));
                 view.setTag(viewHolder);
             } else {
                 viewHolder = (ViewHolder) view.getTag();
@@ -236,9 +232,9 @@ public class EventsFragment extends ListFragment {
             }
             viewHolder.eventTextView.setText(eventItems.get(position).getEventText());
             viewHolder.eventTime.setText(eventItems.get(position).getTime());
-            if(eventItems.get(position).getParams().getName()==null){
+            if (eventItems.get(position).getParams().getName() == null) {
                 viewHolder.eventPersonName.setText("uComplex");
-            }else{
+            } else {
                 viewHolder.eventPersonName.setText(eventItems.get(position).getParams().getName());
             }
 

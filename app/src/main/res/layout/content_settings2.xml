@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    android:layout_height="wrap_content"
+    android:layout_width="wrap_content"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_marginTop="55dp">
+
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="org.ucomplex.ucomplex.Activities.SettingsActivity"
+    tools:showIn="@layout/activity_settings">
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="  СМЕНА ФОТО"
+        android:textSize="20sp"
+        android:background="@drawable/textview_border_straight"
+        android:id="@+id/settings_photo_change_title"
+        android:gravity="center_vertical"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:src="@mipmap/ic_no_image"
+        android:layout_below="@+id/settings_photo_change_title"
+        android:id="@+id/settings_photo"
+        android:clickable="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Изменить фото"
+        android:textColor="#ffffff"
+        android:background="#cbd2d9"
+        android:paddingRight="10dp"
+        android:paddingLeft="10dp"
+        android:id="@+id/settings_photo_change_button"
+        android:layout_below="@+id/settings_photo"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="  СМЕНА ПАРОЛЯ"
+        android:textSize="20sp"
+        android:background="@drawable/textview_border_straight"
+        android:id="@+id/settings_password_change_title"
+        android:gravity="center_vertical"
+        android:layout_below="@+id/settings_photo_change_button"
+        android:layout_marginTop="20dp" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:id="@+id/settings_password_current"
+        android:inputType="textPassword"
+        android:layout_below="@+id/settings_password_change_title"
+        android:hint="Текущий пароль"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+ />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:id="@+id/settings_password_new"
+        android:hint="Новый пароль"
+        android:inputType="textPassword"
+        android:layout_below="@+id/settings_password_current"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:id="@+id/settings_password_again"
+        android:hint="Введите пароль еще раз"
+        android:inputType="textPassword"
+        android:layout_below="@+id/settings_password_new"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Сменить пароль"
+        android:id="@+id/settings_password_reset_button"
+        android:textColor="#ffffff"
+        android:background="#cbd2d9"
+        android:paddingRight="10dp"
+        android:paddingLeft="10dp"
+        android:layout_below="@+id/settings_password_again"
+        android:layout_alignLeft="@+id/settings_password_again"
+        android:layout_alignStart="@+id/settings_password_again"
+        android:layout_marginTop="10dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="  НОМЕР ТЕЛЕФОНА"
+        android:textSize="20sp"
+        android:background="@drawable/textview_border_straight"
+        android:id="@+id/settings_number_change_title"
+        android:gravity="center_vertical"
+        android:layout_below="@+id/setting_email_button"
+        android:layout_marginTop="20dp" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:id="@+id/settings_phone_new"
+        android:hint="@string/settings_new_number"
+        android:layout_below="@+id/settings_number_change_title"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:id="@+id/settings_phone_password_current_phone"
+        android:inputType="textPassword"
+        android:layout_below="@+id/settings_phone_new"
+        android:hint="Текущий пароль"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Сменить номер"
+        android:id="@+id/settings_phone_reset_button"
+        android:textColor="#ffffff"
+        android:background="#cbd2d9"
+        android:paddingRight="10dp"
+        android:paddingLeft="10dp"
+        android:layout_below="@+id/settings_phone_password_current_phone"
+        android:layout_alignLeft="@+id/settings_phone_password_current_phone"
+        android:layout_alignStart="@+id/settings_phone_password_current_phone"
+        android:layout_marginTop="10dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="  КОНФИДЕНЦИАЛЬНОСТЬ"
+        android:textSize="20sp"
+        android:background="@drawable/textview_border_straight"
+        android:id="@+id/settings_privacy_title"
+        android:gravity="center_vertical"
+        android:layout_below="@+id/settings_phone_reset_button"
+        android:layout_marginTop="20dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Закрытый профиль:"
+        android:id="@+id/settings_privacy_closed_profile_title"
+        android:textSize="20sp"
+        android:layout_below="@+id/settings_privacy_title"
+        android:layout_alignLeft="@+id/settings_phone_reset_button"
+        android:layout_alignStart="@+id/settings_phone_reset_button"
+        android:layout_marginTop="10dp" />
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/settings_privacy_closed_profile"
+        android:layout_toRightOf="@+id/settings_privacy_closed_profile_title"
+        android:layout_below="@+id/settings_privacy_title"
+        android:layout_marginTop="7dp"
+        android:layout_marginLeft="10dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Не отображать в поиске"
+        android:id="@+id/settings_privacy_hide_profile_title"
+        android:textSize="20sp"
+        android:layout_below="@+id/settings_privacy_closed_profile_title"
+        android:layout_alignLeft="@+id/settings_phone_reset_button"
+        android:layout_alignStart="@+id/settings_phone_reset_button"
+        android:layout_marginTop="10dp" />
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/settings_privacy_hide_profile"
+        android:layout_toRightOf="@+id/settings_privacy_hide_profile_title"
+        android:layout_below="@+id/settings_privacy_closed_profile_title"
+        android:layout_marginTop="7dp"
+        android:layout_marginLeft="10dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="   E-MAIL"
+        android:textSize="20sp"
+        android:background="@drawable/textview_border_straight"
+        android:id="@+id/settings_email_title"
+        android:gravity="center_vertical"
+        android:layout_below="@+id/settings_password_reset_button"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="20dp" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:id="@+id/settings_email_new"
+        android:inputType="textEmailAddress"
+        android:hint="Новый адрес электонной почты"
+        android:layout_below="@+id/settings_email_title"
+        android:layout_alignLeft="@+id/settings_phone_new"
+
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="15dp" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:id="@+id/settings_email_password"
+        android:hint="Текущий пароль"
+        android:layout_below="@+id/settings_email_new"
+        android:layout_alignLeft="@+id/settings_phone_new"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="15dp"
+         />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Сохранить адрес"
+        android:id="@+id/setting_email_button"
+        android:textColor="#ffffff"
+        android:background="#cbd2d9"
+        android:paddingRight="10dp"
+        android:paddingLeft="10dp"
+        android:layout_below="@+id/settings_email_password"
+        android:layout_alignLeft="@+id/settings_phone_new" />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_below="@+id/settings_privacy_hide_profile_title"
+        android:id="@+id/textView"
+        android:layout_marginTop="50dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="+7 988 *** ** 04"
+        android:id="@+id/settings_phone_number"
+        android:layout_alignTop="@+id/settings_number_change_title"
+        android:layout_alignRight="@+id/settings_phone_new"
+        android:layout_marginTop="17dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="ucomplex@ucomplex.org"
+        android:id="@+id/settings_email_current"
+        android:layout_alignTop="@+id/settings_email_title"
+        android:layout_alignRight="@+id/settings_email_new"
+        android:layout_alignEnd="@+id/settings_email_new"
+        android:layout_marginTop="17dp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Сохранить"
+        android:id="@+id/settings_privacy_button"
+        android:textColor="#ffffff"
+        android:background="#cbd2d9"
+        android:paddingRight="10dp"
+        android:paddingLeft="10dp"
+        android:layout_below="@+id/settings_privacy_hide_profile"
+        android:layout_alignLeft="@+id/settings_privacy_hide_profile_title"
+        android:layout_alignStart="@+id/settings_privacy_hide_profile_title"
+        android:layout_marginTop="10dp" />
+
+</RelativeLayout>
+
+</ScrollView>

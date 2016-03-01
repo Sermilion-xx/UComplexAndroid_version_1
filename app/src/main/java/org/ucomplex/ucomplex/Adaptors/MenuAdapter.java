@@ -23,8 +23,9 @@ import org.ucomplex.ucomplex.Activities.MessagesListActivity;
 import org.ucomplex.ucomplex.Activities.MyFilesActivity;
 import org.ucomplex.ucomplex.Activities.ReferenceActivity;
 import org.ucomplex.ucomplex.Activities.SettingsActivity;
+import org.ucomplex.ucomplex.Activities.SettingsActivity2;
 import org.ucomplex.ucomplex.Activities.SubjectsActivity;
-import org.ucomplex.ucomplex.Activities.CalendarActivity2;
+import org.ucomplex.ucomplex.Activities.CalendarActivity;
 import org.ucomplex.ucomplex.Activities.UsersActivity;
 import org.ucomplex.ucomplex.Common;
 import org.ucomplex.ucomplex.Model.Users.User;
@@ -129,12 +130,12 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
                 Intent intent = new Intent(contxt, LibraryActivity.class);
                 contxt.startActivity(intent);
             } else if (getAdapterPosition() == 8) {
-                Intent intent = new Intent(contxt, CalendarActivity2.class);
+                Intent intent = new Intent(contxt, CalendarActivity.class);
                 contxt.startActivity(intent);
             } else if (getAdapterPosition() == 9) {
 
                 try {
-                    Intent intent = new Intent(contxt, SettingsActivity.class);
+                    Intent intent = new Intent(contxt, SettingsActivity2.class);
                     //Write file
                     String filename = "bitmap.png";
                     FileOutputStream stream = contxt.openFileOutput(filename, Context.MODE_PRIVATE);
