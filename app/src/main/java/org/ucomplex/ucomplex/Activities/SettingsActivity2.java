@@ -21,6 +21,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -61,6 +62,8 @@ public class SettingsActivity2 extends AppCompatActivity implements OnTaskComple
     ViewPagerAdapter adapter;
     ViewPager viewPager;
 
+    public static ImageButton doneButton;
+
     @Override
     public View onCreateView(View parent, String name, Context context, AttributeSet attrs) {
         return super.onCreateView(parent, name, context, attrs);
@@ -77,6 +80,7 @@ public class SettingsActivity2 extends AppCompatActivity implements OnTaskComple
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_menu);
 
+        doneButton = (ImageButton) findViewById(R.id.settings_done);
         String filename = getIntent().getStringExtra("image");
         settingsOneFragment = new SettingsOneFragment();
         settingsOneFragment.setContext(this);

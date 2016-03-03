@@ -71,7 +71,6 @@ public class SettingsOneFragment extends Fragment implements OnTaskCompleteListe
     Button privacyButton;
     CustomImageViewCircularShape changePhotoButton;
     Typeface robotoFont;
-    ImageButton doneButton;
 
     public ByteArrayBody getContentBody() {
         return contentBody;
@@ -123,7 +122,7 @@ public class SettingsOneFragment extends Fragment implements OnTaskCompleteListe
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_settings_one, container, false);
-        doneButton = (ImageButton) rootView.findViewById(R.id.settings_done);
+
         robotoFont = Typeface.createFromAsset(context.getAssets(), "fonts/Roboto-Regular.ttf");
         user = Common.getUserDataFromPref(context);
         FetchProfileTask fetchProfileTask = new FetchProfileTask(context, context);
@@ -187,7 +186,7 @@ public class SettingsOneFragment extends Fragment implements OnTaskCompleteListe
             }
         });
 
-        doneButton.setOnClickListener(new View.OnClickListener() {
+        SettingsActivity2.doneButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(PROFILE_IMAGE_CHANGED){
