@@ -44,14 +44,14 @@ public class EventsActivity extends AppCompatActivity implements OnTaskCompleteL
     User user;
     ProgressDialog dialog;
 
-    final String[] TITLES = {"События", "Дисциплины", "Материалы", "Справки", "Пользователи", "Сообщения", "Библиотека", "Календарь", "Настройки", "Выход"};
+    final String[] TITLES = {"События", "Дисциплины", "Материалы", "Пользователи", "Сообщения", "Календарь", "Настройки", "Выход"};
     final int[] ICONS = {R.drawable.ic_menu_events,
             R.drawable.ic_menu_events,
             R.drawable.ic_menu_subjects,
-            R.drawable.ic_menu_events,
+//            R.drawable.ic_menu_events,
             R.drawable.ic_menu_users,
             R.drawable.ic_menu_messages,
-            R.drawable.ic_library,
+//            R.drawable.ic_library,
             R.drawable.ic_menu_timetable,
             R.drawable.ic_menu_settings,
             R.drawable.ic_menu_events};

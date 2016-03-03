@@ -116,23 +116,27 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
             } else if (getAdapterPosition() == 3) {
                 Intent intent = new Intent(contxt, MyFilesActivity.class);
                 contxt.startActivity(intent);
-            } else if (getAdapterPosition() == 4) {
-                Intent intent = new Intent(contxt, ReferenceActivity.class);
-                contxt.startActivity(intent);
-            } else if (getAdapterPosition() == 5) {
+            }
+//            else if (getAdapterPosition() == 4) {
+//                Intent intent = new Intent(contxt, ReferenceActivity.class);
+//                contxt.startActivity(intent);
+//            }
+            else if (getAdapterPosition() == 4) {
                 Intent intent = new Intent(contxt, UsersActivity.class);
                 contxt.startActivity(intent);
-            } else if (getAdapterPosition() == 6) {
+            } else if (getAdapterPosition() == 5) {
                 Common.newMesg = 0;
                 Intent intent = new Intent(contxt, MessagesListActivity.class);
                 contxt.startActivity(intent);
-            } else if (getAdapterPosition() == 7) {
-                Intent intent = new Intent(contxt, LibraryActivity.class);
-                contxt.startActivity(intent);
-            } else if (getAdapterPosition() == 8) {
+            }
+//            else if (getAdapterPosition() == 7) {
+//                Intent intent = new Intent(contxt, LibraryActivity.class);
+//                contxt.startActivity(intent);
+//            }
+            else if (getAdapterPosition() == 6) {
                 Intent intent = new Intent(contxt, CalendarActivity.class);
                 contxt.startActivity(intent);
-            } else if (getAdapterPosition() == 9) {
+            } else if (getAdapterPosition() == 7) {
 
                 try {
                     Intent intent = new Intent(contxt, SettingsActivity2.class);
