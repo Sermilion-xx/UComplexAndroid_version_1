@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -48,9 +49,10 @@ import de.hdodenhof.circleimageview.CircleImageView;
 /**
  * Created by Sermilion on 29/02/16.
  */
-public class SettingsOneFragment extends Fragment {
+public class SettingsOneFragment extends Fragment implements OnTaskCompleteListener {
 
-    public static final int GET_FROM_GALLERY = 100;
+    public static boolean PROFILE_IMAGE_CHANGED;
+
     private Bitmap profileBitmap;
     ImageView photoImageView;
     SettingsActivity2 context;
@@ -68,6 +70,32 @@ public class SettingsOneFragment extends Fragment {
     CheckBox hideProfile;
     Button privacyButton;
     CustomImageViewCircularShape changePhotoButton;
+    Typeface robotoFont;
+    ImageButton doneButton;
+
+    public ByteArrayBody getContentBody() {
+        return contentBody;
+    }
+
+    public void setContentBody(ByteArrayBody contentBody) {
+        this.contentBody = contentBody;
+    }
+
+    public void setProfileBitmap(Bitmap profileBitmap) {
+        this.profileBitmap = profileBitmap;
+    }
+
+    public Bitmap getProfileBitmap() {
+        return profileBitmap;
+    }
+
+    public void setPhotoImageView(ImageView photoImageView) {
+        this.photoImageView = photoImageView;
+    }
+
+    public ImageView getPhotoImageView() {
+        return photoImageView;
+    }
 
     public void setFilename(String filename) {
         this.filename = filename;
@@ -95,11 +123,36 @@ public class SettingsOneFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_settings_one, container, false);
+        doneButton = (ImageButton) rootView.findViewById(R.id.settings_done);
+        robotoFont = Typeface.createFromAsset(context.getAssets(), "fonts/Roboto-Regular.ttf");
         user = Common.getUserDataFromPref(context);
         FetchProfileTask fetchProfileTask = new FetchProfileTask(context, context);
         fetchProfileTask.execute();
         photoImageView = (ImageView) rootView.findViewById(R.id.settings_photo);
         changePhotoButton = (CustomImageViewCircularShape) rootView.findViewById(R.id.setting_button_changeImage);
+        //        //Password settings
+        final TextView currentPasswordTextView = (TextView) rootView.findViewById(R.id.settings_password_current);
+        currentPasswordTextView.setTypeface(robotoFont);
+        final TextView newPasswordTextView = (TextView) rootView.findViewById(R.id.settings_password_new);
+        newPasswordTextView.setTypeface(robotoFont);
+        final TextView newPasswordAgainTextView = (TextView) rootView.findViewById(R.id.settings_password_again);
+        newPasswordAgainTextView.setTypeface(robotoFont);
+
+//        //Phone settings
+        final TextView newPhoneTextView = (TextView) rootView.findViewById(R.id.settings_phone_new);
+        newPhoneTextView.setTypeface(robotoFont);
+        final TextView oldPasswordPhoneTextView = (TextView) rootView.findViewById(R.id.settings_phone_password_current_phone);
+        oldPasswordPhoneTextView.setTypeface(robotoFont);
+
+        //        //Email setting
+        currentEmalTextView = (TextView) rootView.findViewById(R.id.settings_email_current);
+        currentEmalTextView.setTypeface(robotoFont);
+        currentEmalTextView.setText(user.getEmail());
+        final TextView passwordEmalTextView = (TextView) rootView.findViewById(R.id.settings_email_password);
+        passwordEmalTextView.setTypeface(robotoFont);
+        final TextView newEmalTextView = (TextView) rootView.findViewById(R.id.settings_email_new);
+        newEmalTextView.setTypeface(robotoFont);
+
 
         Bitmap bmp = null;
 
@@ -111,10 +164,10 @@ public class SettingsOneFragment extends Fragment {
             e.printStackTrace();
         }
 
-        if(bmp==null){
+        if (bmp == null) {
             final int colorsCount = 16;
             final int number = (user.getPerson() <= colorsCount) ? user.getPerson() : user.getPerson() % colorsCount;
-            char  firstLetter = user.getName().split(" ")[1].charAt(0);
+            char firstLetter = user.getName().split(" ")[1].charAt(0);
             TextDrawable drawable = TextDrawable.builder().beginConfig()
                     .width(1000)
                     .height(604)
@@ -124,18 +177,331 @@ public class SettingsOneFragment extends Fragment {
         } else {
             photoImageView.setImageBitmap(bmp);
         }
-        photoImageView.setOnClickListener(new View.OnClickListener() {
+        changePhotoButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
                 photoPickerIntent.setType("image/*");
-                startActivityForResult(photoPickerIntent, GET_FROM_GALLERY);
+                getActivity().startActivityForResult(photoPickerIntent, SettingsActivity2.GET_FROM_GALLERY);
                 chose = true;
             }
         });
+
+        doneButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(PROFILE_IMAGE_CHANGED){
+                    UploadPhotoTask uploadPhotoTask = new UploadPhotoTask(context, context);
+                    uploadPhotoTask.setupTask(contentBody);
+                    PROFILE_IMAGE_CHANGED = false;
+                }
+            }
+        });
+
+//        Button buttonChange = (Button) rootView.findViewById(R.id.settings_photo_change_button);
+//        buttonChange.setOnClickListener(new View.OnClickListener() {
+//            public void onClick(View v) {
+//                if(chose){
+//                    UploadPhotoTask uploadPhotoTask = new UploadPhotoTask(context, context);
+//                    uploadPhotoTask.setupTask(contentBody);
+//                    chose = false;
+//                }
+//            }
+//        });
         return rootView;
 
     }
+
+    private void changePrivacy(CheckBox closedPrifile, CheckBox hideProfile) {
+        if (closedPrifile.isChecked())
+            closedPrifileStr = "1";
+        else
+            closedPrifileStr = "0";
+        if (hideProfile.isChecked())
+            searchablePrifileStr = "1";
+        else
+            searchablePrifileStr = "0";
+
+        Pair<String, String> httpParams1 = new Pair<>("closed", closedPrifileStr);
+        Pair<String, String> httpParams2 = new Pair<>("searchable", searchablePrifileStr);
+        Pair<String, String> httpParams3 = new Pair<>("privacy", "");
+        SettingsTask settingsTask = new SettingsTask(context, context);
+        settingsTask.setContext(context);
+        settingsTask.execute(httpParams1, httpParams2, httpParams3);
+    }
+
+    private void changeEmail(TextView passwordEmalTextView, TextView newEmalTextView) {
+        final String newEmal = newEmalTextView.getText().toString();
+        final String currentPassword = passwordEmalTextView.getText().toString();
+
+        passwordEmalTextView.setError(null);
+        newEmalTextView.setError(null);
+
+        boolean cancel = false;
+        View focusView = null;
+
+
+        if ((TextUtils.isEmpty(newEmal) || !isEmailValid(newEmal))) {
+            newEmalTextView.setError("Введенный адрес не корректный");
+            focusView = newEmalTextView;
+            cancel = true;
+        }
+
+        if ((TextUtils.isEmpty(currentPassword) || !isPasswordValid(currentPassword))) {
+            passwordEmalTextView.setError("Слишком короткий пароль");
+            focusView = passwordEmalTextView;
+            cancel = true;
+        }
+
+        if (!currentPassword.equals(user.getPass())) {
+            passwordEmalTextView.setError("Неверный пароль");
+            focusView = passwordEmalTextView;
+            cancel = true;
+        }
+
+        if (!cancel) {
+            Pair<String, String> httpParams1 = new Pair<>("email", newEmal);
+            Pair<String, String> httpParams2 = new Pair<>("currpass", currentPassword);
+            Pair<String, String> httpParams3 = new Pair<>("email", newEmal);
+            SettingsTask settingsTask = new SettingsTask(context, context);
+            settingsTask.setContext(context);
+            settingsTask.execute(httpParams1, httpParams2, httpParams3);
+        } else {
+            focusView.requestFocus();
+        }
+
+    }
+
+    private boolean isEmailValid(String email) {
+        if (email.contains("@")) {
+            String[] splitEmail = email.split("@");
+            if (splitEmail.length == 2) {
+                if (splitEmail[1].contains(".")) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private String formatPhoneNumber(String phoneNumber) {
+        return phoneNumber.replace(" ", "").replaceAll("\\b(\\d{4})\\d+(\\d{2})", "$1*****$2");
+    }
+
+
+    private void changePhoneNumber(TextView newPhoneTextView, TextView oldPasswordPhoneTextView) {
+        final String newPhoneNumber = newPhoneTextView.getText().toString();
+        final String currentPassword = oldPasswordPhoneTextView.getText().toString();
+        newPhoneTextView.setError(null);
+        oldPasswordPhoneTextView.setError(null);
+        boolean cancel = false;
+        View focusView = null;
+
+        if ((TextUtils.isEmpty(newPhoneNumber) || !isPhoneNumberValid(newPhoneNumber))) {
+            newPhoneTextView.setError("Слишком короткий номер телефона");
+            focusView = newPhoneTextView;
+            cancel = true;
+        }
+
+        if (newPhoneNumber.length() > 0) {
+            if (newPhoneNumber.charAt(0) != '+') {
+                newPhoneTextView.setError("Неверный формат номера");
+                focusView = newPhoneTextView;
+                cancel = true;
+            }
+        }
+
+        if ((TextUtils.isEmpty(currentPassword) || !isPasswordValid(currentPassword))) {
+            oldPasswordPhoneTextView.setError("Слишком короткий пароль");
+            focusView = oldPasswordPhoneTextView;
+            cancel = true;
+        }
+
+        if (!currentPassword.equals(user.getPass())) {
+            oldPasswordPhoneTextView.setError("Неверный пароль");
+            focusView = oldPasswordPhoneTextView;
+            cancel = true;
+        }
+
+        if (!cancel) {
+            Pair<String, String> httpParams1 = new Pair<>("phone", newPhoneNumber);
+            Pair<String, String> httpParams2 = new Pair<>("currpass", currentPassword);
+            Pair<String, String> httpParams3 = new Pair<>("phone", newPhoneNumber);
+            SettingsTask settingsTask = new SettingsTask(context, context);
+            settingsTask.setContext(context);
+            settingsTask.execute(httpParams1, httpParams2, httpParams3);
+        } else {
+            focusView.requestFocus();
+        }
+
+    }
+
+    private void resetPassword(TextView currentPasswordTextView, TextView newPasswordTextView, TextView newPasswordAgainTextView,
+                               User user) {
+        final String oldPass = currentPasswordTextView.getText().toString();
+        final String newPass = newPasswordTextView.getText().toString();
+        final String newPassAgain = newPasswordAgainTextView.getText().toString();
+        currentPasswordTextView.setError(null);
+        newPasswordTextView.setError(null);
+        newPasswordAgainTextView.setError(null);
+        boolean cancel = false;
+        View focusView = null;
+
+        if (TextUtils.isEmpty(oldPass)) {
+            currentPasswordTextView.setError("Пароль не может быть пустым");
+            focusView = currentPasswordTextView;
+            cancel = true;
+        }
+        if (!isPasswordValid(oldPass)) {
+            currentPasswordTextView.setError("Слишком короткий пароль");
+            focusView = currentPasswordTextView;
+            cancel = true;
+        }
+
+        if ((TextUtils.isEmpty(newPass))) {
+            newPasswordTextView.setError("Слишком не может быть пустым");
+            focusView = newPasswordTextView;
+            cancel = true;
+        }
+
+        if (!isPasswordValid(newPass)) {
+            newPasswordTextView.setError("Слишком короткий пароль");
+            focusView = newPasswordTextView;
+            cancel = true;
+        }
+
+        if (TextUtils.isEmpty(newPassAgain)) {
+            newPasswordAgainTextView.setError("Пароль не может быть пустым");
+            focusView = newPasswordAgainTextView;
+            cancel = true;
+        }
+
+        if (!isPasswordValid(newPassAgain)) {
+            newPasswordAgainTextView.setError("Слишком короткий пароль");
+            focusView = newPasswordAgainTextView;
+            cancel = true;
+        }
+
+        if (!newPass.equals(newPassAgain)) {
+            newPasswordAgainTextView.setError("Введенные новые пароли не совпадают.");
+            focusView = newPasswordAgainTextView;
+            cancel = true;
+        }
+
+        if (!cancel) {
+            if (oldPass.equals(user.getPass())) {
+                if (newPass.equals(newPassAgain)) {
+                    Pair<String, String> httpParams1 = new Pair<>("pass", newPass);
+                    Pair<String, String> httpParams2 = new Pair<>("oldpass", oldPass);
+                    Pair<String, String> httpParams3 = new Pair<>("pass", newPass);
+                    SettingsTask settingsTask = new SettingsTask(context, context);
+                    settingsTask.setContext(context);
+                    settingsTask.execute(httpParams1, httpParams2, httpParams3);
+
+                } else {
+                    Toast.makeText(context, "Введенные новые пароли не совпадают.", Toast.LENGTH_LONG).show();
+                }
+            } else {
+                currentPasswordTextView.setError("Вы ввели не верный пароль, повторите попытку.");
+                focusView = currentPasswordTextView;
+                cancel = true;
+            }
+            currentPasswordTextView.clearComposingText();
+            newPasswordTextView.clearComposingText();
+            newPasswordAgainTextView.clearComposingText();
+        } else {
+            focusView.requestFocus();
+        }
+    }
+
+    private boolean isPasswordValid(String password) {
+        return password.length() > 3;
+    }
+
+    private boolean isPhoneNumberValid(String phoneNumber) {
+        return phoneNumber.length() > 6;
+    }
+
+
+    @Override
+    public void onTaskComplete(AsyncTask task, Object... o) {
+        if (task instanceof UploadPhotoTask) {
+            if (task.isCancelled()) {
+                // Report about cancel
+                Toast.makeText(context, "Загрузка была отменена", Toast.LENGTH_LONG)
+                        .show();
+            } else {
+                try {
+                    if ((Integer) task.get() == 200) {
+                        Toast.makeText(context, "Ваше фото отправленно на модерацию", Toast.LENGTH_LONG)
+                                .show();
+                        Common.encodePhotoPref(context, profileBitmap, "tempProfilePhoto");
+                    } else {
+                        Toast.makeText(context, "Произошла ошибка", Toast.LENGTH_LONG)
+                                .show();
+                    }
+
+                } catch (InterruptedException | ExecutionException e) {
+                    e.printStackTrace();
+                }
+            }
+        } else if (task instanceof SettingsTask) {
+            if (task.isCancelled()) {
+                Toast.makeText(context, "Операция отменена", Toast.LENGTH_LONG)
+                        .show();
+            } else {
+                try {
+                    user = Common.getUserDataFromPref(context);
+                    if (task.get() != null) {
+                        if (task.get().equals("success")) {
+                            if ((int) o[0] == 3) {
+                                String phone = formatPhoneNumber(user.getPhone());
+                                oldPhoneTextView.setText(phone);
+                            } else if ((int) o[0] == 2) {
+                                currentEmalTextView.setText(user.getEmail());
+                            } else if ((int) o[0] == 4) {
+                                SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(context).edit();
+                                editor.putString("closedProfile", closedPrifileStr);
+                                editor.putString("searchableProfile", searchablePrifileStr);
+                                editor.apply();
+                            }
+                            Toast.makeText(context, "Настройки сохранены", Toast.LENGTH_LONG)
+                                    .show();
+                        } else {
+                            Toast.makeText(context, "Произошла ошибка", Toast.LENGTH_LONG)
+                                    .show();
+                        }
+                    } else {
+                        Toast.makeText(context, "Произошла ошибка (проверьте интернет соединение)", Toast.LENGTH_LONG)
+                                .show();
+                    }
+
+
+                } catch (InterruptedException | ExecutionException e) {
+                    e.printStackTrace();
+                }
+            }
+        } else if (task instanceof FetchProfileTask) {
+            try {
+                Pair<String, String> privacy = ((FetchProfileTask) task).get();
+                if (privacy != null) {
+                    closedProfile.setChecked(false);
+                    hideProfile.setChecked(false);
+                    if (privacy.getValue0().equals("1")) {
+                        closedProfile.setChecked(true);
+                    }
+                    if (privacy.getValue1().equals("1"))
+                        hideProfile.setChecked(true);
+                } else {
+                    Toast.makeText(context, "Произошла ошибка (проверьте интернет соединение)", Toast.LENGTH_LONG)
+                            .show();
+                }
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
 
 //    @Override
 //     void onCreate(Bundle savedInstanceState) {
