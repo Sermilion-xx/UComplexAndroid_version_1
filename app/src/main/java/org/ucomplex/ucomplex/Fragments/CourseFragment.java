@@ -59,9 +59,12 @@ public class CourseFragment extends ListFragment {
                 mItems.add(separatorItem);
                 int a = courseData.getProgress().getAbsence();
                 int b = courseData.getProgress().getHours();
-                double absence = ((double) a / (double) b) * 100;
-                if (absence == 0.0) {
-                    absence = 100;
+                double absence = 100;
+                if(a!=0 && b!=0){
+                    absence = ((double) a / (double) b) * 100;
+                    if (absence == 0.0) {
+                        absence = 100;
+                    }
                 }
                 DecimalFormat df = new DecimalFormat("#.##");
                 absence = Double.valueOf(df.format(absence));
@@ -73,14 +76,13 @@ public class CourseFragment extends ListFragment {
         }
 
     }
-
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
-        Intent intent = new Intent(getContext(), ProfileActivity.class);
-        Bundle extras = new Bundle();
-        extras.putString("person", String.valueOf(mItems.get(position).getValue0()));
-        intent.putExtras(extras);
-        startActivity(intent);
+//        Intent intent = new Intent(getContext(), ProfileActivity.class);
+//        Bundle extras = new Bundle();
+//        extras.putString("person", String.valueOf(mItems.get(position).getValue2()));
+//        intent.putExtras(extras);
+//        startActivity(intent);
     }
 
 }

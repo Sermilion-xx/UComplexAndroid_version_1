@@ -81,6 +81,9 @@ public class FetchMySubjectsTask extends AsyncTask<Void, String, Course> impleme
             Gson gson = new Gson();
             Student student = gson.fromJson(loggedUserStr, Student.class);
 
+            if(jsonData==null){
+                jsonData = "";
+            }
             courseJson = new JSONObject(jsonData);
             JSONObject courseArray = courseJson.getJSONObject("course");
 
@@ -109,8 +112,14 @@ public class FetchMySubjectsTask extends AsyncTask<Void, String, Course> impleme
                     course.setDepartment(department);
                 }
             }
-            JSONObject progressArray = courseJson.getJSONObject("progress");
-            JSONArray filesArray = courseJson.getJSONArray("files");
+            JSONObject progressArray = new JSONObject();
+            JSONArray filesArray = new JSONArray();
+            if(!(courseJson.get("progress") instanceof Boolean)){
+                progressArray = courseJson.getJSONObject("progress");
+            }
+            if(!(courseJson.get("files") instanceof Boolean)){
+                filesArray = courseJson.getJSONArray("files");
+            }
 //used
             ArrayList<File> files = new ArrayList<>();
             for (int i = 0; i < filesArray.length(); i++) {
@@ -148,7 +157,8 @@ public class FetchMySubjectsTask extends AsyncTask<Void, String, Course> impleme
                 }
             }
 //used
-                Progress progress = new Progress();
+            Progress progress = new Progress();
+            if(progressArray.length()>0) {
                 progress.setType(progressArray.getInt("type"));
                 progress.set_mark(progressArray.getInt("_mark"));
                 progress.setMark(progressArray.getInt("mark"));
@@ -160,6 +170,7 @@ public class FetchMySubjectsTask extends AsyncTask<Void, String, Course> impleme
                 progress.setStudent(progressArray.getInt("student"));
                 progress.setTable(progressArray.getInt("table"));
                 progress.setTime(progressArray.getInt("time"));
+            }
 
                 course.setName(courseArray.getString("name"));
                 course.setId(courseArray.getInt("id"));
@@ -186,12 +197,7 @@ public class FetchMySubjectsTask extends AsyncTask<Void, String, Course> impleme
         HashMap<String, String> postParams = new HashMap<>();
         postParams.put("subjId", this.getGcourseString());
         jsonData = Common.httpPost(urlString, Common.getLoginDataFromPref(mContext), postParams);
-        if (jsonData != null) {
-            return getCourseDataFromJson(jsonData);
-        } else {
-            return new Course();
-        }
-
+        return getCourseDataFromJson(jsonData);
     }
 
     @Override

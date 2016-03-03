@@ -125,7 +125,6 @@ public class SettingsActivity2 extends AppCompatActivity implements OnTaskComple
         viewPager = (ViewPager) findViewById(R.id.viewpager);
         adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFragment(settingsOneFragment, "Общая информация");
-        adapter.addFragment(new Fragment(), "Личная информация");
         viewPager.setAdapter(adapter);
         tabLayout = (TabLayout) findViewById(R.id.settings_tabs);
         tabLayout.setBackgroundColor(getResources().getColor(R.color.colorPrimary));

@@ -58,8 +58,6 @@ public class UsersFragment extends ListFragment {
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
-
-
         User user = mItems.get(position);
         Intent intent = new Intent(getContext(), ProfileActivity.class);
         Bundle extras = new Bundle();
