@@ -107,14 +107,17 @@ public class SettingsActivity2 extends AppCompatActivity implements OnTaskComple
                             settingsOneFragment.newPasswordTextView,
                             settingsOneFragment.newPasswordAgainTextView, settingsOneFragment.user);
                 }else if(SettingsOneFragment.CURRENT_PASSWORD_CHANGE || SettingsOneFragment.NEW_PASSWORD_CHANGE || SettingsOneFragment.NEW_PASSWORD_AGAIN_CHANGE){
-                    Toast.makeText(SettingsActivity2.this, "Заполните все поля!", Toast.LENGTH_LONG)
-                            .show();
+                    Toast.makeText(SettingsActivity2.this, "Заполните все поля!", Toast.LENGTH_LONG).show();
                 }
                 if(SettingsOneFragment.NEW_EMAIL_CHANGE && SettingsOneFragment.NEW_EMAIL_PASSWORD_CHANGE){
                     settingsOneFragment.changeEmail(settingsOneFragment.passwordEmalTextView, settingsOneFragment.newEmalTextView);
                 }else if(SettingsOneFragment.NEW_EMAIL_CHANGE || SettingsOneFragment.NEW_EMAIL_PASSWORD_CHANGE){
-                    Toast.makeText(SettingsActivity2.this, "Заполните все поля!", Toast.LENGTH_LONG)
-                            .show();
+                    Toast.makeText(SettingsActivity2.this, "Заполните все поля!", Toast.LENGTH_LONG).show();
+                }
+                if(SettingsOneFragment.NEW_PHONE_CHANGED && SettingsOneFragment.NEW_PHONE_PASSWORD_CHANGE){
+                    settingsOneFragment.changePhoneNumber(settingsOneFragment.newPhoneTextView, settingsOneFragment.oldPasswordPhoneTextView);
+                }else if(SettingsOneFragment.NEW_PHONE_CHANGED || SettingsOneFragment.NEW_PHONE_PASSWORD_CHANGE){
+                    Toast.makeText(SettingsActivity2.this, "Заполните все поля!", Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -195,8 +198,11 @@ public class SettingsActivity2 extends AppCompatActivity implements OnTaskComple
                     if (task.get() != null) {
                         if (task.get().equals("success")) {
                             if ((int) o[0] == 3) {
+                                //phone
                                 String phone = settingsOneFragment.formatPhoneNumber(user.getPhone());
                                 settingsOneFragment.oldPhoneTextView.setText(phone);
+                                settingsOneFragment.oldPasswordPhoneTextView.setText("");
+                                settingsOneFragment.newPhoneTextView.setText("");
                             } else if ((int) o[0] == 2) {
                                 //email
                                 settingsOneFragment.currentEmalTextView.setText(user.getEmail());

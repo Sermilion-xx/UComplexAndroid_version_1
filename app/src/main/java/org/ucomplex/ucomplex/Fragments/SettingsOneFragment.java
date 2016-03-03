@@ -58,10 +58,11 @@ public class SettingsOneFragment extends Fragment implements OnTaskCompleteListe
     public static boolean NEW_PASSWORD_CHANGE;
     public static boolean NEW_PASSWORD_AGAIN_CHANGE;
 
-
     public static boolean NEW_EMAIL_CHANGE;
     public static boolean NEW_EMAIL_PASSWORD_CHANGE;
 
+    public static boolean NEW_PHONE_CHANGED;
+    public static boolean NEW_PHONE_PASSWORD_CHANGE;
 
     private Bitmap profileBitmap;
     ImageView photoImageView;
@@ -71,7 +72,6 @@ public class SettingsOneFragment extends Fragment implements OnTaskCompleteListe
     public User user;
     String filename;
 
-    public TextView oldPhoneTextView;
     public TextView currentEmalTextView;
     public TextView newEmalTextView;
     public TextView passwordEmalTextView;
@@ -90,7 +90,7 @@ public class SettingsOneFragment extends Fragment implements OnTaskCompleteListe
 
     public TextView newPhoneTextView;
     public TextView oldPasswordPhoneTextView;
-
+    public TextView oldPhoneTextView;
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -111,6 +111,10 @@ public class SettingsOneFragment extends Fragment implements OnTaskCompleteListe
                 NEW_EMAIL_CHANGE = true;
             }else if(passwordEmalTextView.getText().hashCode() == s.hashCode()){
                 NEW_EMAIL_PASSWORD_CHANGE = true;
+            }else if(newPhoneTextView.getText().hashCode() == s.hashCode()){
+                NEW_PHONE_CHANGED = true;
+            }else if(oldPasswordPhoneTextView.getText().hashCode() == s.hashCode()){
+                NEW_PHONE_PASSWORD_CHANGE = true;
             }
         }
         @Override
@@ -131,14 +135,30 @@ public class SettingsOneFragment extends Fragment implements OnTaskCompleteListe
         fetchProfileTask.execute();
         photoImageView = (ImageView) rootView.findViewById(R.id.settings_photo);
         changePhotoButton = (CustomImageViewCircularShape) rootView.findViewById(R.id.setting_button_changeImage);
-        newEmalTextView = (TextView) rootView.findViewById(R.id.settings_email_new);
+
         currentPasswordTextView = (TextView) rootView.findViewById(R.id.settings_password_current);
         newPasswordTextView = (TextView) rootView.findViewById(R.id.settings_password_new);
         newPasswordAgainTextView = (TextView) rootView.findViewById(R.id.settings_password_again);
+
         newPhoneTextView = (TextView) rootView.findViewById(R.id.settings_phone_new);
         oldPasswordPhoneTextView = (TextView) rootView.findViewById(R.id.settings_phone_password_current_phone);
+
+        newEmalTextView = (TextView) rootView.findViewById(R.id.settings_email_new);
         currentEmalTextView = (TextView) rootView.findViewById(R.id.settings_email_current);
         passwordEmalTextView = (TextView) rootView.findViewById(R.id.settings_email_password);
+
+        //Phone settings
+        newPhoneTextView = (TextView) rootView.findViewById(R.id.settings_phone_new);
+        oldPasswordPhoneTextView = (TextView) rootView.findViewById(R.id.settings_phone_password_current_phone);
+        oldPhoneTextView = (TextView) rootView.findViewById(R.id.settings_phone_number);
+//        String phone = formatPhoneNumber(user.getPhone());
+//        oldPhoneTextView.setText(phone);
+//        Button changePhoneButton = (Button) findViewById(R.id.settings_phone_reset_button);
+//        changePhoneButton.setOnClickListener(new View.OnClickListener() {
+//            public void onClick(View v) {
+//                changePhoneNumber(newPhoneTextView, oldPasswordPhoneTextView);
+//            }
+//        });
 
         //Password settings
         currentPasswordTextView.setTypeface(robotoFont);
@@ -150,7 +170,11 @@ public class SettingsOneFragment extends Fragment implements OnTaskCompleteListe
 
         //Phone settings
         newPhoneTextView.setTypeface(robotoFont);
+        newPhoneTextView.addTextChangedListener(textWatcher);
         oldPasswordPhoneTextView.setTypeface(robotoFont);
+        oldPasswordPhoneTextView.addTextChangedListener(textWatcher);
+        oldPhoneTextView.setTypeface(robotoFont);
+        oldPhoneTextView.addTextChangedListener(textWatcher);
 
         //Email setting
         currentEmalTextView.setTypeface(robotoFont);
@@ -196,9 +220,6 @@ public class SettingsOneFragment extends Fragment implements OnTaskCompleteListe
         });
         return rootView;
     }
-
-
-
 
     public void changePrivacy(CheckBox closedPrifile, CheckBox hideProfile) {
         if (closedPrifile.isChecked())
@@ -277,7 +298,7 @@ public class SettingsOneFragment extends Fragment implements OnTaskCompleteListe
     }
 
 
-    private void changePhoneNumber(TextView newPhoneTextView, TextView oldPasswordPhoneTextView) {
+    public void changePhoneNumber(TextView newPhoneTextView, TextView oldPasswordPhoneTextView) {
         final String newPhoneNumber = newPhoneTextView.getText().toString();
         final String currentPassword = oldPasswordPhoneTextView.getText().toString();
         newPhoneTextView.setError(null);
@@ -293,7 +314,7 @@ public class SettingsOneFragment extends Fragment implements OnTaskCompleteListe
 
         if (newPhoneNumber.length() > 0) {
             if (newPhoneNumber.charAt(0) != '+') {
-                newPhoneTextView.setError("Неверный формат номера");
+                newPhoneTextView.setError("Номер начинается с \"+\")");
                 focusView = newPhoneTextView;
                 cancel = true;
             }
