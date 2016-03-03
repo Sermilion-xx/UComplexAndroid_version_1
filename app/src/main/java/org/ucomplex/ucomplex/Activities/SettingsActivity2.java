@@ -3,11 +3,13 @@ package org.ucomplex.ucomplex.Activities;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -29,6 +31,8 @@ import android.widget.Toast;
 import org.apache.http.entity.mime.content.ByteArrayBody;
 import org.javatuples.Pair;
 import org.ucomplex.ucomplex.Activities.Tasks.FetchProfileTask;
+import org.ucomplex.ucomplex.Activities.Tasks.SettingsTask;
+import org.ucomplex.ucomplex.Activities.Tasks.UploadPhotoTask;
 import org.ucomplex.ucomplex.Adaptors.CourseMaterialsAdapter;
 import org.ucomplex.ucomplex.Adaptors.ViewPagerAdapter;
 import org.ucomplex.ucomplex.Common;
@@ -81,12 +85,33 @@ public class SettingsActivity2 extends AppCompatActivity implements OnTaskComple
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_menu);
 
         doneButton = (ImageButton) findViewById(R.id.settings_done);
+
         String filename = getIntent().getStringExtra("image");
         settingsOneFragment = new SettingsOneFragment();
         settingsOneFragment.setContext(this);
         settingsOneFragment.setFilename(filename);
         FetchProfileTask fetchProfileTask = new FetchProfileTask(this, this);
         fetchProfileTask.execute();
+
+
+        doneButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(SettingsOneFragment.PROFILE_IMAGE_CHANGED){
+                    UploadPhotoTask uploadPhotoTask = new UploadPhotoTask(SettingsActivity2.this, SettingsActivity2.this);
+                    uploadPhotoTask.setupTask(settingsOneFragment.getContentBody());
+                    SettingsOneFragment.PROFILE_IMAGE_CHANGED = false;
+                }
+                if(SettingsOneFragment.CURRENT_PASSWORD_CHANGE && SettingsOneFragment.NEW_PASSWORD_CHANGE && SettingsOneFragment.NEW_PASSWORD_AGAIN_CHANGE){
+                    settingsOneFragment.resetPassword(settingsOneFragment.currentPasswordTextView,
+                            settingsOneFragment.newPasswordTextView,
+                            settingsOneFragment.newPasswordAgainTextView, settingsOneFragment.user);
+                }else{
+                    Toast.makeText(SettingsActivity2.this, "Заполните все поля!", Toast.LENGTH_LONG)
+                            .show();
+                }
+            }
+        });
 
         viewPager = (ViewPager) findViewById(R.id.viewpager);
         adapter = new ViewPagerAdapter(getSupportFragmentManager());
@@ -149,6 +174,46 @@ public class SettingsActivity2 extends AppCompatActivity implements OnTaskComple
                 }
             } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();
+            }
+        }else if (task instanceof SettingsTask) {
+            if (task.isCancelled()) {
+                Toast.makeText(SettingsActivity2.this, "Операция отменена", Toast.LENGTH_LONG)
+                        .show();
+            } else {
+                try {
+                    User user = Common.getUserDataFromPref(SettingsActivity2.this);
+                    if(SettingsOneFragment.CURRENT_PASSWORD_CHANGE && SettingsOneFragment.NEW_PASSWORD_CHANGE && SettingsOneFragment.NEW_PASSWORD_AGAIN_CHANGE){
+                        user.setPass(settingsOneFragment.newPasswordTextView.getText().toString());
+                        Common.setUserDataToPref(SettingsActivity2.this, user);
+                    }
+                    if (task.get() != null) {
+                        if (task.get().equals("success")) {
+                            if ((int) o[0] == 3) {
+                                String phone = settingsOneFragment.formatPhoneNumber(user.getPhone());
+                                settingsOneFragment.oldPhoneTextView.setText(phone);
+                            } else if ((int) o[0] == 2) {
+                                settingsOneFragment.currentEmalTextView.setText(user.getEmail());
+                            } else if ((int) o[0] == 4) {
+                                SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(SettingsActivity2.this).edit();
+                                editor.putString("closedProfile", settingsOneFragment.closedPrifileStr);
+                                editor.putString("searchableProfile", settingsOneFragment.searchablePrifileStr);
+                                editor.apply();
+                            }
+                            Toast.makeText(SettingsActivity2.this, "Настройки сохранены", Toast.LENGTH_LONG)
+                                    .show();
+                        } else {
+                            Toast.makeText(SettingsActivity2.this, "Произошла ошибка", Toast.LENGTH_LONG)
+                                    .show();
+                        }
+                    } else {
+                        Toast.makeText(SettingsActivity2.this, "Произошла ошибка (проверьте интернет соединение)", Toast.LENGTH_LONG)
+                                .show();
+                    }
+
+
+                } catch (InterruptedException | ExecutionException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }

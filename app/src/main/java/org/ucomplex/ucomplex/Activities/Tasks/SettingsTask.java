@@ -91,6 +91,8 @@ public class SettingsTask extends AsyncTask<Pair<String, String>, Void, String> 
 
                 onComplete();
             }
+            type = -1;
+            onComplete();
         }else{
             type = -1;
             onComplete();

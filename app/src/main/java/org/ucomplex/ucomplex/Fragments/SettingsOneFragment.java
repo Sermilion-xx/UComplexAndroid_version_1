@@ -12,7 +12,9 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -52,65 +54,34 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class SettingsOneFragment extends Fragment implements OnTaskCompleteListener {
 
     public static boolean PROFILE_IMAGE_CHANGED;
+    public static boolean CURRENT_PASSWORD_CHANGE;
+    public static boolean NEW_PASSWORD_CHANGE;
+    public static boolean NEW_PASSWORD_AGAIN_CHANGE;
+
 
     private Bitmap profileBitmap;
     ImageView photoImageView;
     SettingsActivity2 context;
     ByteArrayBody contentBody;
     boolean chose = false;
-    User user;
+    public User user;
     String filename;
 
-    TextView oldPhoneTextView;
-    TextView currentEmalTextView;
-    String closedPrifileStr;
-    String searchablePrifileStr;
+    public TextView oldPhoneTextView;
+    public TextView currentEmalTextView;
+    public String closedPrifileStr;
+    public String searchablePrifileStr;
 
-    CheckBox closedProfile;
-    CheckBox hideProfile;
+    public CheckBox closedProfile;
+    public CheckBox hideProfile;
     Button privacyButton;
     CustomImageViewCircularShape changePhotoButton;
     Typeface robotoFont;
 
-    public ByteArrayBody getContentBody() {
-        return contentBody;
-    }
+    public TextView currentPasswordTextView;
+    public TextView newPasswordTextView;
+    public TextView newPasswordAgainTextView;
 
-    public void setContentBody(ByteArrayBody contentBody) {
-        this.contentBody = contentBody;
-    }
-
-    public void setProfileBitmap(Bitmap profileBitmap) {
-        this.profileBitmap = profileBitmap;
-    }
-
-    public Bitmap getProfileBitmap() {
-        return profileBitmap;
-    }
-
-    public void setPhotoImageView(ImageView photoImageView) {
-        this.photoImageView = photoImageView;
-    }
-
-    public ImageView getPhotoImageView() {
-        return photoImageView;
-    }
-
-    public void setFilename(String filename) {
-        this.filename = filename;
-    }
-
-    public void setContext(SettingsActivity2 context) {
-        this.context = context;
-    }
-
-    public CheckBox getClosedProfile() {
-        return closedProfile;
-    }
-
-    public CheckBox getHideProfile() {
-        return hideProfile;
-    }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -118,32 +89,55 @@ public class SettingsOneFragment extends Fragment implements OnTaskCompleteListe
         setRetainInstance(true);
     }
 
+    TextWatcher textWatcher = new TextWatcher() {
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            if(currentPasswordTextView.getText().hashCode() == s.hashCode()){
+                CURRENT_PASSWORD_CHANGE = true;
+            }else if(newPasswordTextView.getText().hashCode() == s.hashCode()){
+                NEW_PASSWORD_CHANGE = true;
+            }else if(newPasswordAgainTextView.getText().hashCode() == s.hashCode()){
+                NEW_PASSWORD_AGAIN_CHANGE = true;
+            }
+        }
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+        @Override
+        public void afterTextChanged(Editable s) {}
+    };
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_settings_one, container, false);
 
         robotoFont = Typeface.createFromAsset(context.getAssets(), "fonts/Roboto-Regular.ttf");
+        //Photo
         user = Common.getUserDataFromPref(context);
         FetchProfileTask fetchProfileTask = new FetchProfileTask(context, context);
         fetchProfileTask.execute();
         photoImageView = (ImageView) rootView.findViewById(R.id.settings_photo);
         changePhotoButton = (CustomImageViewCircularShape) rootView.findViewById(R.id.setting_button_changeImage);
-        //        //Password settings
-        final TextView currentPasswordTextView = (TextView) rootView.findViewById(R.id.settings_password_current);
-        currentPasswordTextView.setTypeface(robotoFont);
-        final TextView newPasswordTextView = (TextView) rootView.findViewById(R.id.settings_password_new);
-        newPasswordTextView.setTypeface(robotoFont);
-        final TextView newPasswordAgainTextView = (TextView) rootView.findViewById(R.id.settings_password_again);
-        newPasswordAgainTextView.setTypeface(robotoFont);
 
-//        //Phone settings
+        //Password settings
+        currentPasswordTextView = (TextView) rootView.findViewById(R.id.settings_password_current);
+        currentPasswordTextView.setTypeface(robotoFont);
+        currentPasswordTextView.addTextChangedListener(textWatcher);
+
+        newPasswordTextView = (TextView) rootView.findViewById(R.id.settings_password_new);
+        newPasswordTextView.setTypeface(robotoFont);
+        newPasswordTextView.addTextChangedListener(textWatcher);
+        newPasswordAgainTextView = (TextView) rootView.findViewById(R.id.settings_password_again);
+        newPasswordAgainTextView.setTypeface(robotoFont);
+        newPasswordAgainTextView.addTextChangedListener(textWatcher);
+
+        //Phone settings
         final TextView newPhoneTextView = (TextView) rootView.findViewById(R.id.settings_phone_new);
         newPhoneTextView.setTypeface(robotoFont);
         final TextView oldPasswordPhoneTextView = (TextView) rootView.findViewById(R.id.settings_phone_password_current_phone);
         oldPasswordPhoneTextView.setTypeface(robotoFont);
 
-        //        //Email setting
+        //Email setting
         currentEmalTextView = (TextView) rootView.findViewById(R.id.settings_email_current);
         currentEmalTextView.setTypeface(robotoFont);
         currentEmalTextView.setText(user.getEmail());
@@ -186,16 +180,6 @@ public class SettingsOneFragment extends Fragment implements OnTaskCompleteListe
             }
         });
 
-        SettingsActivity2.doneButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(PROFILE_IMAGE_CHANGED){
-                    UploadPhotoTask uploadPhotoTask = new UploadPhotoTask(context, context);
-                    uploadPhotoTask.setupTask(contentBody);
-                    PROFILE_IMAGE_CHANGED = false;
-                }
-            }
-        });
 
 //        Button buttonChange = (Button) rootView.findViewById(R.id.settings_photo_change_button);
 //        buttonChange.setOnClickListener(new View.OnClickListener() {
@@ -210,6 +194,9 @@ public class SettingsOneFragment extends Fragment implements OnTaskCompleteListe
         return rootView;
 
     }
+
+
+
 
     private void changePrivacy(CheckBox closedPrifile, CheckBox hideProfile) {
         if (closedPrifile.isChecked())
@@ -283,7 +270,7 @@ public class SettingsOneFragment extends Fragment implements OnTaskCompleteListe
         return false;
     }
 
-    private String formatPhoneNumber(String phoneNumber) {
+    public String formatPhoneNumber(String phoneNumber) {
         return phoneNumber.replace(" ", "").replaceAll("\\b(\\d{4})\\d+(\\d{2})", "$1*****$2");
     }
 
@@ -335,8 +322,8 @@ public class SettingsOneFragment extends Fragment implements OnTaskCompleteListe
 
     }
 
-    private void resetPassword(TextView currentPasswordTextView, TextView newPasswordTextView, TextView newPasswordAgainTextView,
-                               User user) {
+    public void resetPassword(TextView currentPasswordTextView, TextView newPasswordTextView, TextView newPasswordAgainTextView,
+                              User user) {
         final String oldPass = currentPasswordTextView.getText().toString();
         final String newPass = newPasswordTextView.getText().toString();
         final String newPassAgain = newPasswordAgainTextView.getText().toString();
@@ -422,6 +409,9 @@ public class SettingsOneFragment extends Fragment implements OnTaskCompleteListe
     }
 
 
+
+
+
     @Override
     public void onTaskComplete(AsyncTask task, Object... o) {
         if (task instanceof UploadPhotoTask) {
@@ -439,42 +429,6 @@ public class SettingsOneFragment extends Fragment implements OnTaskCompleteListe
                         Toast.makeText(context, "Произошла ошибка", Toast.LENGTH_LONG)
                                 .show();
                     }
-
-                } catch (InterruptedException | ExecutionException e) {
-                    e.printStackTrace();
-                }
-            }
-        } else if (task instanceof SettingsTask) {
-            if (task.isCancelled()) {
-                Toast.makeText(context, "Операция отменена", Toast.LENGTH_LONG)
-                        .show();
-            } else {
-                try {
-                    user = Common.getUserDataFromPref(context);
-                    if (task.get() != null) {
-                        if (task.get().equals("success")) {
-                            if ((int) o[0] == 3) {
-                                String phone = formatPhoneNumber(user.getPhone());
-                                oldPhoneTextView.setText(phone);
-                            } else if ((int) o[0] == 2) {
-                                currentEmalTextView.setText(user.getEmail());
-                            } else if ((int) o[0] == 4) {
-                                SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(context).edit();
-                                editor.putString("closedProfile", closedPrifileStr);
-                                editor.putString("searchableProfile", searchablePrifileStr);
-                                editor.apply();
-                            }
-                            Toast.makeText(context, "Настройки сохранены", Toast.LENGTH_LONG)
-                                    .show();
-                        } else {
-                            Toast.makeText(context, "Произошла ошибка", Toast.LENGTH_LONG)
-                                    .show();
-                        }
-                    } else {
-                        Toast.makeText(context, "Произошла ошибка (проверьте интернет соединение)", Toast.LENGTH_LONG)
-                                .show();
-                    }
-
 
                 } catch (InterruptedException | ExecutionException e) {
                     e.printStackTrace();
@@ -499,6 +453,47 @@ public class SettingsOneFragment extends Fragment implements OnTaskCompleteListe
                 e.printStackTrace();
             }
         }
+    }
+
+
+    public ByteArrayBody getContentBody() {
+        return contentBody;
+    }
+
+    public void setContentBody(ByteArrayBody contentBody) {
+        this.contentBody = contentBody;
+    }
+
+    public void setProfileBitmap(Bitmap profileBitmap) {
+        this.profileBitmap = profileBitmap;
+    }
+
+    public Bitmap getProfileBitmap() {
+        return profileBitmap;
+    }
+
+    public void setPhotoImageView(ImageView photoImageView) {
+        this.photoImageView = photoImageView;
+    }
+
+    public ImageView getPhotoImageView() {
+        return photoImageView;
+    }
+
+    public void setFilename(String filename) {
+        this.filename = filename;
+    }
+
+    public void setContext(SettingsActivity2 context) {
+        this.context = context;
+    }
+
+    public CheckBox getClosedProfile() {
+        return closedProfile;
+    }
+
+    public CheckBox getHideProfile() {
+        return hideProfile;
     }
 
 
