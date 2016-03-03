@@ -106,7 +106,13 @@ public class SettingsActivity2 extends AppCompatActivity implements OnTaskComple
                     settingsOneFragment.resetPassword(settingsOneFragment.currentPasswordTextView,
                             settingsOneFragment.newPasswordTextView,
                             settingsOneFragment.newPasswordAgainTextView, settingsOneFragment.user);
-                }else{
+                }else if(SettingsOneFragment.CURRENT_PASSWORD_CHANGE || SettingsOneFragment.NEW_PASSWORD_CHANGE || SettingsOneFragment.NEW_PASSWORD_AGAIN_CHANGE){
+                    Toast.makeText(SettingsActivity2.this, "Заполните все поля!", Toast.LENGTH_LONG)
+                            .show();
+                }
+                if(SettingsOneFragment.NEW_EMAIL_CHANGE && SettingsOneFragment.NEW_EMAIL_PASSWORD_CHANGE){
+                    settingsOneFragment.changeEmail(settingsOneFragment.passwordEmalTextView, settingsOneFragment.newEmalTextView);
+                }else if(SettingsOneFragment.NEW_EMAIL_CHANGE || SettingsOneFragment.NEW_EMAIL_PASSWORD_CHANGE){
                     Toast.makeText(SettingsActivity2.this, "Заполните все поля!", Toast.LENGTH_LONG)
                             .show();
                 }
@@ -192,25 +198,23 @@ public class SettingsActivity2 extends AppCompatActivity implements OnTaskComple
                                 String phone = settingsOneFragment.formatPhoneNumber(user.getPhone());
                                 settingsOneFragment.oldPhoneTextView.setText(phone);
                             } else if ((int) o[0] == 2) {
+                                //email
                                 settingsOneFragment.currentEmalTextView.setText(user.getEmail());
+                                settingsOneFragment.passwordEmalTextView.setText("");
+                                settingsOneFragment.newEmalTextView.setText("");
                             } else if ((int) o[0] == 4) {
                                 SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(SettingsActivity2.this).edit();
                                 editor.putString("closedProfile", settingsOneFragment.closedPrifileStr);
                                 editor.putString("searchableProfile", settingsOneFragment.searchablePrifileStr);
                                 editor.apply();
                             }
-                            Toast.makeText(SettingsActivity2.this, "Настройки сохранены", Toast.LENGTH_LONG)
-                                    .show();
+                            Toast.makeText(SettingsActivity2.this, "Настройки сохранены", Toast.LENGTH_LONG).show();
                         } else {
-                            Toast.makeText(SettingsActivity2.this, "Произошла ошибка", Toast.LENGTH_LONG)
-                                    .show();
+                            Toast.makeText(SettingsActivity2.this, "Произошла ошибка", Toast.LENGTH_LONG).show();
                         }
                     } else {
-                        Toast.makeText(SettingsActivity2.this, "Произошла ошибка (проверьте интернет соединение)", Toast.LENGTH_LONG)
-                                .show();
+                        Toast.makeText(SettingsActivity2.this, "Произошла ошибка (проверьте интернет соединение)", Toast.LENGTH_LONG).show();
                     }
-
-
                 } catch (InterruptedException | ExecutionException e) {
                     e.printStackTrace();
                 }
