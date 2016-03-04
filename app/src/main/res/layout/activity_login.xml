@@ -9,7 +9,7 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".Activities.LoginActivity"
-    android:background="#ffffff">
+    android:background="@drawable/auth">
 
     <!-- Login progress -->
     <ProgressBar
@@ -23,38 +23,41 @@
 
     <ScrollView
         android:id="@+id/login_form"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#fbfbfb">
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+>
 
         <LinearLayout
             android:id="@+id/email_login_form"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:gravity="center_vertical|center_horizontal"
-            android:background="#ffffff">
+            android:gravity="center_vertical|center_horizontal">
 
             <ImageView
-                android:layout_width="288dp"
-                android:layout_height="238dp"
-                android:contentDescription="@string/devices"
-                android:src="@drawable/devices"
+                android:layout_height="70dp"
+                android:layout_width="70dp"
+                android:src="@drawable/u"
+                android:layout_marginTop="100dp"
                 />
+
+
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/uc_description"
-                android:textColor="#3c4145"
-                android:textSize="20sp"
+                android:textColor="#ffffff"
+                android:textSize="26sp"
                 android:maxWidth="@dimen/uc_description_dimension"
-                android:textAlignment="center"
-                android:gravity="center" />
+                android:gravity="center"
+                android:textStyle="bold" />
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:foreground="#00ffffff">
+                android:foreground="#00ffffff"
+                android:textColorHint="#ffffff"
+                android:layout_marginTop="50dp">
 
                 <AutoCompleteTextView
                     android:id="@+id/email"
@@ -64,14 +67,18 @@
                     android:inputType="textEmailAddress"
                     android:maxLines="1"
                     android:singleLine="true"
-                    android:textColor="#000000" />
+                    android:textColor="#ffffff"
+                    android:textColorHint="#ffffff"
+                    android:popupBackground="#ffffff"
+                    android:backgroundTint="#ffffff" />
 
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:foreground="#00ffffff">
+                android:foreground="#00ffffff"
+                android:textColorHint="#ffffff">
 
                 <EditText
                     android:id="@+id/password"
@@ -84,24 +91,26 @@
                     android:inputType="textPassword"
                     android:maxLines="1"
                     android:singleLine="true"
-                    android:textColor="#000000"
-                    />
+                    android:textColor="#ffffff"
+                    android:textColorHint="#ffffff"
+                    android:backgroundTint="#ffffff" />
 
             </android.support.design.widget.TextInputLayout>
 
             <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
                 <Button
                     android:id="@+id/login_sign_in_button"
                     style="?android:textAppearanceSmall"
-                    android:layout_width="150dp"
-                    android:layout_height="wrap_content"
+                    android:layout_width="300dp"
+                    android:layout_height="40dp"
                     android:layout_marginTop="16dp"
                     android:text="@string/action_sign_in"
                     android:textStyle="bold"
-                    android:background="@color/uc_button_blue"
+                    android:background="@drawable/round_button_white"
                     android:layout_gravity="left" />
 
                 <Button
@@ -109,13 +118,13 @@
                     style="?android:textAppearanceSmall"
                     android:textAllCaps="false"
                     android:layout_width="150dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="30dp"
                     android:layout_marginTop="16dp"
                     android:text="@string/action_forgot_pass"
                     android:textStyle="bold"
                     android:background="?android:attr/selectableItemBackground"
-                    android:textColor="#8dd3e8"
-                    android:layout_gravity="left"
+                    android:textColor="#ffffff"
+                    android:layout_gravity="center_horizontal"
                     />
 
             </LinearLayout>

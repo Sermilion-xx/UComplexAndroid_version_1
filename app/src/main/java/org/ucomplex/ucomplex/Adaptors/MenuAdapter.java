@@ -160,7 +160,7 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
                     e.printStackTrace();
                 }
 
-            } else if (getAdapterPosition() == 10) {
+            } else if (getAdapterPosition() == 8) {
                 this.logout();
             }
         }

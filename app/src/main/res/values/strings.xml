@@ -17,7 +17,7 @@
     </string>
     <string name="devices">devices_desc</string>
     <string name="action_forgot_pass">Забыли пароль?</string>
-    <string name="uc_description">uComplex\n Единая информационная образовательная система</string>
+    <string name="uc_description">Добро пожаловать\n в uComplex</string>
     <string name="title_activity_events">EventsActivity</string>
 
     <string name="drawer_open">Open navigation drawer</string>
