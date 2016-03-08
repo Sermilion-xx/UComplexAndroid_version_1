@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.amulyakhare.textdrawable.TextDrawable;
 
 import org.javatuples.Quartet;
+import org.ucomplex.ucomplex.Common;
 import org.ucomplex.ucomplex.R;
 
 import java.util.ArrayList;
@@ -69,14 +70,14 @@ public class CourseCalendarBeltAdapter extends ArrayAdapter<Quartet<Integer, Str
 
         Quartet<Integer, String, String, Integer> feedItem = getItem(position);
         viewHolder.teacherNametextView.setText(feedItem.getValue1());
-        viewHolder.dateTextView2.setText(feedItem.getValue2());
+        viewHolder.dateTextView2.setText(Common.makeDate(feedItem.getValue2()));
         String hex = this.colors[feedItem.getValue3()]; // green
         long thisCol = Long.decode(hex) + 4278190080L;
         int classColor = (int) thisCol;
         TextDrawable drawable;
         if (feedItem.getValue0() == 0) {
             Typeface custom_font = Typeface.createFromAsset(getContext().getAssets(), "fonts/fontawesome-webfont.ttf");
-            drawable = TextDrawable.builder().beginConfig().useFont(custom_font).textColor(Color.parseColor("#0ac1f0")).endConfig()
+            drawable = TextDrawable.builder().beginConfig().useFont(custom_font).textColor(classColor).endConfig()
                     .buildRound(String.valueOf(getLetter(feedItem.getValue0())), Color.WHITE);
 
         } else {

@@ -79,9 +79,9 @@ public class Common {
     public static ArrayList<Integer> fromMessages = new ArrayList<>();
     public static ArrayList<CalendarDay> decoratedDays = new ArrayList<>();
 
-    public static Typeface getTypeFace(Context context, String typeFace){
+    public static Typeface getTypeFace(Context context, String typeFace) {
         Typeface tf = Typeface.createFromAsset(context.getAssets(),
-                "fonts/"+typeFace);
+                "fonts/" + typeFace);
         return tf;
     }
 
@@ -93,14 +93,14 @@ public class Common {
 
 
     public static int getColor(int index) {
-        String [] hexColors = {"#f6a6c1","#92d6eb","#4dd9e2","#68d9f0","#c69ad9","#ff83b6","#fda79d","#f8c092",
-                "#928fbf","#aa7aad","#e27193","#fb736d","#36add8","#ff6c76","#4dbcbb","#4da8b6",""};
+        String[] hexColors = {"#f6a6c1", "#92d6eb", "#4dd9e2", "#68d9f0", "#c69ad9", "#ff83b6", "#fda79d", "#f8c092",
+                "#928fbf", "#aa7aad", "#e27193", "#fb736d", "#36add8", "#ff6c76", "#4dbcbb", "#4da8b6", ""};
         return Color.parseColor(hexColors[index]);
     }
 
 
-    public static void fetchMyNews(final Context context){
-        new AsyncTask<Void,Void, String>(){
+    public static void fetchMyNews(final Context context) {
+        new AsyncTask<Void, Void, String>() {
 
             @Override
             protected String doInBackground(Void... params) {
@@ -112,18 +112,18 @@ public class Common {
             protected void onPostExecute(String jsonData) {
                 super.onPostExecute(jsonData);
                 Log.e("MGS", "checked!!!!");
-                if(jsonData!=null){
+                if (jsonData != null) {
                     try {
                         JSONObject jsonObject = new JSONObject(jsonData);
                         JSONObject messagesJson = jsonObject.getJSONObject("messages");
-                        if(messagesJson!=null){
+                        if (messagesJson != null) {
                             ArrayList<String> fromMessagesStr = Common.getKeys(messagesJson);
                             fromMessagesStr.remove("sum");
                             fromMessages.clear();
-                            for(String from: fromMessagesStr){
+                            for (String from : fromMessagesStr) {
                                 fromMessages.add(Integer.valueOf(from));
                             }
-                            if(newMesg!=messagesJson.getInt("sum")){
+                            if (newMesg != messagesJson.getInt("sum")) {
                                 Common.newMesg = messagesJson.getInt("sum");
                                 Intent broadcast = new Intent();
                                 broadcast.setAction("org.ucomplex.newMessageListBroadcast");
@@ -145,8 +145,8 @@ public class Common {
     }
 
 
-    public static String sendFile(String path, String companion, String msg, String auth){
-        try{
+    public static String sendFile(String path, String companion, String msg, String auth) {
+        try {
             File file = new File(path);
             HttpPost httpPost = new HttpPost("http://you.com.ru/user/messages/add?mobile=1");
             final byte[] authBytes = auth.getBytes("UTF-8");
@@ -193,8 +193,8 @@ public class Common {
         return null;
     }
 
-    public static String uploadFile(String path, String auth, String ... folder){
-        try{
+    public static String uploadFile(String path, String auth, String... folder) {
+        try {
             java.io.File file = new java.io.File(path);
             HttpPost httpPost = new HttpPost("http://you.com.ru/student/my_files/add_files?mobile=1");
             final byte[] authBytes = auth.getBytes("UTF-8");
@@ -208,7 +208,7 @@ public class Common {
             builder.setCharset(chars);
             FileBody fb = new FileBody(file);
             builder.addPart("file", fb);
-            if(folder.length>0){
+            if (folder.length > 0) {
                 builder.addTextBody("folder", folder[0],
                         ContentType.TEXT_PLAIN);
             }
@@ -239,7 +239,7 @@ public class Common {
     }
 
 
-    public static ArrayList getFileDataFromJson(String jsonData, Activity contex){
+    public static ArrayList getFileDataFromJson(String jsonData, Activity contex) {
         ArrayList<org.ucomplex.ucomplex.Model.StudyStructure.File> files = new ArrayList<>();
         JSONObject fileJson;
 
@@ -247,22 +247,22 @@ public class Common {
             fileJson = new JSONObject(jsonData);
             JSONArray filesArray = fileJson.getJSONArray("files");
 
-            for(int i=0;i<filesArray.length();i++){
+            for (int i = 0; i < filesArray.length(); i++) {
                 org.ucomplex.ucomplex.Model.StudyStructure.File file = new org.ucomplex.ucomplex.Model.StudyStructure.File();
                 JSONObject jsonFile = filesArray.getJSONObject(i);
-                if(!jsonFile.isNull("size")){
+                if (!jsonFile.isNull("size")) {
                     file.setSize(jsonFile.getInt("size"));
                 }
-                if(jsonFile.has("time")){
+                if (jsonFile.has("time")) {
                     file.setTime(jsonFile.getString("time"));
-                }else{
+                } else {
                     String timeStamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", new Locale("ru")).format(Calendar.getInstance().getTime());
                     file.setTime(timeStamp);
                 }
                 file.setAddress(jsonFile.getString("address"));
                 file.setName(jsonFile.getString("name"));
                 file.setType(jsonFile.getString("type"));
-                if(jsonFile.has("check_time")){
+                if (jsonFile.has("check_time")) {
                     file.setCheckTime(jsonFile.getString("check_time"));
                 }
                 SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(contex);
@@ -284,7 +284,7 @@ public class Common {
     public static String httpPost(String urlString, String auth, HashMap<String, String>... postDataParams) {
         String dataUrlParameters = "";
         try {
-            if(postDataParams.length>0){
+            if (postDataParams.length > 0) {
                 dataUrlParameters = getPostDataString(postDataParams[0]);
             }
         } catch (UnsupportedEncodingException e) {
@@ -339,7 +339,7 @@ public class Common {
     public static String getPostDataString(HashMap<String, String> params) throws UnsupportedEncodingException {
         StringBuilder result = new StringBuilder();
         boolean first = true;
-        for(Map.Entry<String, String> entry : params.entrySet()){
+        for (Map.Entry<String, String> entry : params.entrySet()) {
             if (first)
                 first = false;
             else
@@ -368,7 +368,7 @@ public class Common {
         }
     }
 
-    public static Drawable getDrawable(User user){
+    public static Drawable getDrawable(User user) {
         final int colorsCount = 16;
         final int number = (user.getId() <= colorsCount) ? user.getId() : user.getId() % colorsCount;
         char firstLetter = user.getName().split("")[1].charAt(0);
@@ -414,10 +414,13 @@ public class Common {
     }
 
 
-    public static String makeDate(String time, boolean ... justDate) {
+    public static String makeDate(String time, boolean... justDate) {
         String r = "";
         String yyyyMMdd = time.split(" ")[0];
-        String hhMMss = time.split(" ")[1];
+        String hhMMss = null;
+        if (time.length() == 2) {
+            hhMMss = time.split(" ")[1];
+        }
         try {
             Locale locale = new Locale("ru", "RU");
             Date date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", locale).parse(time);
@@ -437,51 +440,68 @@ public class Common {
                 String[] tempYyMMdd = yyyyMMdd.split("-");
                 String tempMonth = tempYyMMdd[1];
                 String month = "";
-                if(tempMonth.equals("01")){
+                if (tempMonth.equals("01")) {
                     month = "января";
-                }if(tempMonth.equals("02")){
+                }
+                if (tempMonth.equals("02")) {
                     month = "февряля";
-                }if(tempMonth.equals("03")){
+                }
+                if (tempMonth.equals("03")) {
                     month = "марта";
-                }if(tempMonth.equals("04")){
+                }
+                if (tempMonth.equals("04")) {
                     month = "апреля";
-                }if(tempMonth.equals("05")){
+                }
+                if (tempMonth.equals("05")) {
                     month = "мая";
-                }if(tempMonth.equals("06")){
+                }
+                if (tempMonth.equals("06")) {
                     month = "июня";
-                }if(tempMonth.equals("07")){
+                }
+                if (tempMonth.equals("07")) {
                     month = "июля";
-                }if(tempMonth.equals("08")){
+                }
+                if (tempMonth.equals("08")) {
                     month = "августа";
-                }if(tempMonth.equals("09")){
+                }
+                if (tempMonth.equals("09")) {
                     month = "сентября";
-                }if(tempMonth.equals("10")){
+                }
+                if (tempMonth.equals("10")) {
                     month = "октября";
-                }if(tempMonth.equals("11")){
+                }
+                if (tempMonth.equals("11")) {
                     month = "ноября";
-                }if(tempMonth.equals("12")){
+                }
+                if (tempMonth.equals("12")) {
                     month = "декабря";
                 }
-                r += tempYyMMdd[2]+" "+month+" "+tempYyMMdd[0]+" г.";
+                r += tempYyMMdd[2] + " " + month + " " + tempYyMMdd[0] + " г.";
             }
-            if(justDate!=null){
-//                if(!justDate[0]){
-                    r += " в " + hhMMss.substring(0,5);
-//                }
+            if (justDate != null) {
+                if (hhMMss != null) {
+                    r += " в " + hhMMss.substring(0, 5);
+                } else {
+
+                }
             }
+
         } catch (Exception e) {
             e.printStackTrace();
+        }
+        if(r.equals("")){
+            r = yyyyMMdd;
         }
         return r;
     }
 
     public static Map<String, String> parseJsonKV(JSONObject jObject) throws JSONException {
-        Map<String,String> map = new HashMap<>();
+        Map<String, String> map = new HashMap<>();
         Iterator iter = jObject.keys();
-        while(iter.hasNext()){
-            String key = (String)iter.next();
+        while (iter.hasNext()) {
+            String key = (String) iter.next();
             String value = jObject.getString(key);
-            map.put(key,value);
+            map.put(key, value);
         }
         return map;
     }
@@ -491,15 +511,15 @@ public class Common {
         int unit = si ? 1000 : 1024;
         if (bytes < unit) return bytes + " B";
         int exp = (int) (Math.log(bytes) / Math.log(unit));
-        String pre = (si ? "kMGTPE" : "KMGTPE").charAt(exp-1) + (si ? "" : "i");
+        String pre = (si ? "kMGTPE" : "KMGTPE").charAt(exp - 1) + (si ? "" : "i");
         return String.format("%.1f %sB", bytes / Math.pow(unit, exp), pre);
     }
 
     public static ArrayList<String> getKeys(JSONObject object) throws JSONException {
         ArrayList<String> keys = new ArrayList<>();
         Iterator iter = object.keys();
-        while(iter.hasNext()){
-            String key = (String)iter.next();
+        while (iter.hasNext()) {
+            String key = (String) iter.next();
             keys.add(key);
         }
         return keys;
@@ -515,22 +535,22 @@ public class Common {
     public static String X_UVERSION;
     public static String messageCompanionName = "-";
 
-    public static String getLoginDataFromPref(Context mContext){
+    public static String getLoginDataFromPref(Context mContext) {
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(mContext);
         Gson gson = new Gson();
         String json = pref.getString("loggedUser", "");
         User obj = gson.fromJson(json, User.class);
-        return obj.getLogin()+":"+obj.getPass()+":"+obj.getId();
+        return obj.getLogin() + ":" + obj.getPass() + ":" + obj.getId();
     }
 
-    public static User getUserDataFromPref(Context mContext){
+    public static User getUserDataFromPref(Context mContext) {
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(mContext);
         Gson gson = new Gson();
         String json = pref.getString("loggedUser", "");
         return gson.fromJson(json, User.class);
     }
 
-    public static void setUserDataToPref(Context mContext, User user){
+    public static void setUserDataToPref(Context mContext, User user) {
         SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(mContext).edit();
         Gson gson = new Gson();
         String json = gson.toJson(user);
@@ -538,10 +558,10 @@ public class Common {
         editor.apply();
     }
 
-    public static Bitmap decodePhotoPref(Context context, String typeStr){
+    public static Bitmap decodePhotoPref(Context context, String typeStr) {
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
         String encoded = pref.getString(typeStr, "");
-        if(encoded.length()>0){
+        if (encoded.length() > 0) {
             int flags = Base64.NO_WRAP | Base64.URL_SAFE;
             byte[] imageAsBytes = Base64.decode(encoded.getBytes(), flags);
             return BitmapFactory.decodeByteArray(imageAsBytes, 0, imageAsBytes.length);
@@ -549,7 +569,7 @@ public class Common {
         return null;
     }
 
-    public static void encodePhotoPref(Context context, Bitmap photoBitmap, String typeStr){
+    public static void encodePhotoPref(Context context, Bitmap photoBitmap, String typeStr) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         photoBitmap.compress(Bitmap.CompressFormat.PNG, 100, baos); //bm is the bitmap object
         byte[] b = baos.toByteArray();
@@ -560,27 +580,27 @@ public class Common {
         editor.apply();
     }
 
-    public static void deleteFromPref(Context context,String typeStr){
+    public static void deleteFromPref(Context context, String typeStr) {
         SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(context).edit();
         editor.remove(typeStr);
         editor.apply();
     }
 
-    public static boolean hasKeyPref(Context context,String typeStr){
+    public static boolean hasKeyPref(Context context, String typeStr) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        String value = preferences.getString("typeStr",null);
+        String value = preferences.getString("typeStr", null);
         return value != null;
     }
 
     public static String getPath(Context context, Uri uri) throws URISyntaxException {
         if ("content".equalsIgnoreCase(uri.getScheme())) {
-            String[] projection = { "_data" };
+            String[] projection = {"_data"};
             Cursor cursor = null;
 
             try {
                 cursor = context.getContentResolver().query(uri, projection, null, null, null);
                 int column_index;
-                if(cursor!=null) {
+                if (cursor != null) {
                     column_index = cursor.getColumnIndexOrThrow("_data");
                     if (cursor.moveToFirst()) {
                         cursor.close();
@@ -589,45 +609,46 @@ public class Common {
                 }
             } catch (Exception ignored) {
             }
-        }
-        else if ("file".equalsIgnoreCase(uri.getScheme())) {
+        } else if ("file".equalsIgnoreCase(uri.getScheme())) {
             return uri.getPath();
         }
 
         return null;
     }
 
-    public static String getStringUserType(Context context, int type){
+    public static String getStringUserType(Context context, int type) {
         String typeStr = null;
         if (type == 0) {
             typeStr = context.getResources().getString(R.string.sotrudnik);
-        }if (type == 1) {
+        }
+        if (type == 1) {
             typeStr = context.getResources().getString(R.string.administrator);
-        }if (type == 2) {
+        }
+        if (type == 2) {
             typeStr = context.getResources().getString(R.string.sub_administrator);
-        }else if (type == 3) {
+        } else if (type == 3) {
             typeStr = context.getResources().getString(R.string.prepodvatel);
-        }else if (type == 4) {
+        } else if (type == 4) {
             typeStr = context.getResources().getString(R.string.student);
-        }else if (type == 5) {
+        } else if (type == 5) {
             typeStr = context.getResources().getString(R.string.metodist_po_raspisaniyu);
-        }else if (type == 6) {
+        } else if (type == 6) {
             typeStr = context.getResources().getString(R.string.metodist_ko);
-        }else if (type == 7) {
+        } else if (type == 7) {
             typeStr = context.getResources().getString(R.string.bibliotekar);
-        }else if (type == 8) {
+        } else if (type == 8) {
             typeStr = context.getResources().getString(R.string.tehsekretar);
-        }else if (type == 9) {
+        } else if (type == 9) {
             typeStr = context.getResources().getString(R.string.abiturient);
-        }else if (type == 10) {
+        } else if (type == 10) {
             typeStr = context.getResources().getString(R.string.uchebny_otdel);
-        }else if (type == 11) {
+        } else if (type == 11) {
             typeStr = context.getResources().getString(R.string.rukovoditel);
-        }else if (type == 12) {
+        } else if (type == 12) {
             typeStr = context.getResources().getString(R.string.monitoring);
-        }else if (type == 13) {
+        } else if (type == 13) {
             typeStr = context.getResources().getString(R.string.dekan);
-        }else if (type == 14) {
+        } else if (type == 14) {
             typeStr = context.getResources().getString(R.string.otdel_kadrov);
         }
         return typeStr;
