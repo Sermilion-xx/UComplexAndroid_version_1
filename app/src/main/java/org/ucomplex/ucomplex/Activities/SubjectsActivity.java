@@ -14,6 +14,7 @@ import android.widget.Toast;
 import org.javatuples.Triplet;
 
 import org.ucomplex.ucomplex.Activities.Tasks.FetchSubjectsTask;
+import org.ucomplex.ucomplex.Common;
 import org.ucomplex.ucomplex.Interfaces.OnTaskCompleteListener;
 import org.ucomplex.ucomplex.Adaptors.SubjectsAdapter;
 import org.ucomplex.ucomplex.R;
@@ -76,12 +77,15 @@ public class SubjectsActivity extends AppCompatActivity implements OnTaskComplet
                     @Override
                     public void onItemClick(AdapterView<?> a, View v,int position, long id)
                     {
-                        Intent intent = new Intent(getBaseContext(), CourseActivity.class);
-                        Bundle extras = new Bundle();
-                        extras.putInt("gcourse", mItems.get(position).getValue2());
-                        intent.putExtras(extras);
-                        startActivity(intent);
-
+                        if(Common.isNetworkConnected(SubjectsActivity.this)){
+                            Intent intent = new Intent(getBaseContext(), CourseActivity.class);
+                            Bundle extras = new Bundle();
+                            extras.putInt("gcourse", mItems.get(position).getValue2());
+                            intent.putExtras(extras);
+                            startActivity(intent);
+                        }else {
+                            Toast.makeText(SubjectsActivity.this, "Проверте интернет соединение.", Toast.LENGTH_LONG).show();
+                        }
                     }
                 });
             }else{

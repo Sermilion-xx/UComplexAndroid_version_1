@@ -192,8 +192,6 @@ public class EventsActivity extends AppCompatActivity implements OnTaskCompleteL
         };
         Drawer.setDrawerListener(mDrawerToggle);
         mDrawerToggle.syncState();
-
-
     }
 
     public void timerDelayRemoveDialog(long time, final Dialog d){
