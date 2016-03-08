@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.ucomplex.ucomplex.Common;
 import org.ucomplex.ucomplex.Fragments.CourseMaterialsFragment;
@@ -182,7 +183,13 @@ public class CourseMaterialsAdapter extends ArrayAdapter<File> {
                                                     showInputDialog(position);
                                                     break;
                                                 case 1:
-                                                    removeItem(position);
+                                                    if(Common.isNetworkConnected(context)){
+                                                        removeItem(position);
+                                                    }else {
+                                                        Toast.makeText(context, "Проверте интернет соединение.", Toast.LENGTH_LONG)
+                                                                .show();
+                                                    }
+
                                                     break;
                                             }
                                         }
@@ -214,8 +221,17 @@ public class CourseMaterialsAdapter extends ArrayAdapter<File> {
             alertDialogBuilder.setCancelable(false)
                     .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
-                            String newName = editText.getText().toString();
-                            renameItem(position, newName);
+                            if(Common.isNetworkConnected(context)){
+                                String newName = editText.getText().toString();
+                                if(!newName.equals("")){
+                                    renameItem(position, newName);
+                                }else{
+                                    Toast.makeText(context, "Название не может быть пустым.", Toast.LENGTH_LONG).show();
+                                }
+
+                            }else {
+                                Toast.makeText(context, "Проверте интернет соединение.", Toast.LENGTH_LONG).show();
+                            }
                         }
                     }).setNegativeButton("Cancel",
                     new DialogInterface.OnClickListener() {

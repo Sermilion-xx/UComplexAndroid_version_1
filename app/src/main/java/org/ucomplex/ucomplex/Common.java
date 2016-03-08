@@ -15,6 +15,7 @@ import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -82,6 +83,12 @@ public class Common {
         Typeface tf = Typeface.createFromAsset(context.getAssets(),
                 "fonts/"+typeFace);
         return tf;
+    }
+
+    public static boolean isNetworkConnected(Context context) {
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        return cm.getActiveNetworkInfo() != null;
     }
 
 
@@ -305,8 +312,7 @@ public class Common {
             connection.setUseCaches(false);
             connection.setDoInput(true);
             connection.setDoOutput(true);
-            DataOutputStream wr = new DataOutputStream(
-                    connection.getOutputStream());
+            DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
             wr.writeBytes(dataUrlParameters);
             wr.flush();
             wr.close();

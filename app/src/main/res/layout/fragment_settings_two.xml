@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="55dp">
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        tools:context="org.ucomplex.ucomplex.Activities.SettingsActivity"
+        tools:showIn="@layout/activity_settings">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:id="@+id/settings_degree1_key"
+            android:layout_height="wrap_content"
+            android:textSize="13sp"
+            android:text="Ученое звание"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="40dp"
+            android:layout_marginRight="15dp" />
+
+        <Spinner
+            android:id="@+id/settings_degree1_value"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/settings_degree1_key"
+            android:textSize="19sp"
+            android:text="Ученое звание"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="40dp"
+            android:layout_marginRight="15dp" />
+
+        <Spinner
+            android:layout_width="wrap_content"
+            android:id="@+id/settings_degree2_key"
+            android:layout_height="wrap_content"
+            android:textSize="13sp"
+            android:text="Ученая степень"
+            android:layout_below="@+id/settings_degree1_value"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="40dp"
+            android:layout_marginRight="15dp" />
+
+        <Spinner
+            android:layout_width="wrap_content"
+            android:id="@+id/settings_degree2_2_key"
+            android:layout_height="wrap_content"
+            android:textSize="13sp"
+            android:text="Ученая степень"
+            android:layout_below="@+id/settings_degree2_key"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginRight="15dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:id="@+id/settings_subjects_key"
+            android:layout_height="wrap_content"
+            android:textSize="13sp"
+            android:text="Преподаваемые дисциплины"
+            android:layout_below="@+id/settings_degree2_2_key"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="40dp"
+            android:layout_marginRight="15dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:id="@+id/settings_subjects_value"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:text="Математика"
+            android:layout_below="@+id/settings_subjects_key"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="40dp"
+            android:layout_marginRight="15dp" />
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:id="@+id/settings_upqualification_key"
+            android:layout_height="wrap_content"
+            android:textSize="13sp"
+            android:text="Повышение квалификации и переподготовка (с указанием номер свидетельства)"
+            android:layout_below="@+id/settings_subjects_value"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="40dp"
+            android:layout_marginRight="15dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:id="@+id/settings_upqualification_value"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:text="Математика"
+            android:layout_below="@+id/settings_upqualification_key"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="40dp"
+            android:layout_marginRight="15dp" />
+
+
+
+        </RelativeLayout>
+
+</ScrollView>

@@ -85,27 +85,33 @@ public class MyFilesActivity extends AppCompatActivity implements OnTaskComplete
     }
 
     protected void createFolder(final String folderName){
-        new AsyncTask<Void, Void, ArrayList>(){
-
-            @Override
-            protected ArrayList doInBackground(Void... params) {
-                String url = "http://you.com.ru/student/my_files/create_folder?mobile=1";
-                HashMap<String, String> httpParams = new HashMap<>();
-                httpParams.put("name", folderName);
-                if(Common.folderCode!=null){
-                    httpParams.put("folder", Common.folderCode);
+        if (folderName != null && !folderName.equals("")){
+            new AsyncTask<Void, Void, ArrayList>() {
+                @Override
+                protected ArrayList doInBackground(Void... params) {
+                    String url = "http://you.com.ru/student/my_files/create_folder?mobile=1";
+                    HashMap<String, String> httpParams = new HashMap<>();
+                    httpParams.put("name", folderName);
+                    if (Common.folderCode != null) {
+                        httpParams.put("folder", Common.folderCode);
+                    }
+                    String jsonData = Common.httpPost(url, Common.getLoginDataFromPref(MyFilesActivity.this), httpParams);
+                    ArrayList<File> newFolder = Common.getFileDataFromJson(jsonData, MyFilesActivity.this);
+                    return newFolder;
                 }
-                String jsonData = Common.httpPost(url, Common.getLoginDataFromPref(MyFilesActivity.this),httpParams);
-                ArrayList<File> newFolder = Common.getFileDataFromJson(jsonData, MyFilesActivity.this);
-                return newFolder;
-            }
-            @Override
-            protected void onPostExecute(ArrayList newFolder) {
-                super.onPostExecute(newFolder);
-                courseMaterialsFragment.addFile((File) newFolder.get(0));
-                courseMaterialsFragment.getAdapter().notifyDataSetChanged();
-            }
-        }.execute();
+
+                @Override
+                protected void onPostExecute(ArrayList newFolder) {
+                    super.onPostExecute(newFolder);
+                    courseMaterialsFragment.addFile((File) newFolder.get(0));
+                    courseMaterialsFragment.getAdapter().notifyDataSetChanged();
+                }
+            }.execute();
+        }else{
+            Toast.makeText(this, "Введите название для новой папки.", Toast.LENGTH_LONG)
+                    .show();
+        }
+
     }
 
     @Override
@@ -127,8 +133,12 @@ public class MyFilesActivity extends AppCompatActivity implements OnTaskComplete
         alertDialogBuilder.setCancelable(false)
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        String folderName = editText.getText().toString();
-                        createFolder(folderName);
+                        if(Common.isNetworkConnected(MyFilesActivity.this)){
+                            String folderName = editText.getText().toString();
+                            createFolder(folderName);
+                        }else {
+                            Toast.makeText(MyFilesActivity.this, "Проверте интернет соединение.", Toast.LENGTH_LONG).show();
+                        }
                     }
                 })
                 .setNegativeButton("Cancel",
@@ -170,8 +180,6 @@ public class MyFilesActivity extends AppCompatActivity implements OnTaskComplete
         }.execute();
     }
 
-
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -185,7 +193,11 @@ public class MyFilesActivity extends AppCompatActivity implements OnTaskComplete
             this.grantUriPermission("org.ucomplex.ucomplex.Activities", originalUri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
         }
         if (originalUri != null) {
-            uplodFile(getPath(originalUri));
+            if(Common.isNetworkConnected(this)){
+                uplodFile(getPath(originalUri));
+            }else {
+                Toast.makeText(this, "Проверте интернет соединение.", Toast.LENGTH_LONG).show();
+            }
         }
         this.revokeUriPermission(originalUri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
     }
