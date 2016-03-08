@@ -163,7 +163,7 @@ public class EventsActivity extends AppCompatActivity implements OnTaskCompleteL
             dialog = ProgressDialog.show(this, "",
                     "Загружаются события", true);
             dialog.show();
-            timerDelayRemoveDialog(7000, dialog);
+//            timerDelayRemoveDialog(7000, dialog);
         }
 
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
