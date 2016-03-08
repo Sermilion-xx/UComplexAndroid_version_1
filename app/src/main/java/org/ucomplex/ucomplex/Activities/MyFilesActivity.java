@@ -137,7 +137,7 @@ public class MyFilesActivity extends AppCompatActivity implements OnTaskComplete
                             String folderName = editText.getText().toString();
                             createFolder(folderName);
                         }else {
-                            Toast.makeText(MyFilesActivity.this, "Проверте интернет соединение.", Toast.LENGTH_LONG).show();
+                            Toast.makeText(MyFilesActivity.this, "Проверьте интернет соединение.", Toast.LENGTH_LONG).show();
                         }
                     }
                 })

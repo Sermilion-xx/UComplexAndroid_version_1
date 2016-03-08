@@ -93,35 +93,37 @@ public class SettingsActivity2 extends AppCompatActivity implements OnTaskComple
         FetchProfileTask fetchProfileTask = new FetchProfileTask(this, this);
         fetchProfileTask.execute();
 
-
         doneButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(SettingsOneFragment.PROFILE_IMAGE_CHANGED){
-                    UploadPhotoTask uploadPhotoTask = new UploadPhotoTask(SettingsActivity2.this, SettingsActivity2.this);
-                    uploadPhotoTask.setupTask(settingsOneFragment.getContentBody());
-                    SettingsOneFragment.PROFILE_IMAGE_CHANGED = false;
-                }
-                if(SettingsOneFragment.CURRENT_PASSWORD_CHANGE && SettingsOneFragment.NEW_PASSWORD_CHANGE && SettingsOneFragment.NEW_PASSWORD_AGAIN_CHANGE){
-                    settingsOneFragment.resetPassword(settingsOneFragment.currentPasswordTextView,
-                            settingsOneFragment.newPasswordTextView,
-                            settingsOneFragment.newPasswordAgainTextView, settingsOneFragment.user);
-                }else if(SettingsOneFragment.CURRENT_PASSWORD_CHANGE || SettingsOneFragment.NEW_PASSWORD_CHANGE || SettingsOneFragment.NEW_PASSWORD_AGAIN_CHANGE){
-                    Toast.makeText(SettingsActivity2.this, "Заполните все поля!", Toast.LENGTH_LONG).show();
-                }
-                if(SettingsOneFragment.NEW_EMAIL_CHANGE && SettingsOneFragment.NEW_EMAIL_PASSWORD_CHANGE){
-                    settingsOneFragment.changeEmail(settingsOneFragment.passwordEmalTextView, settingsOneFragment.newEmalTextView);
-                }else if(SettingsOneFragment.NEW_EMAIL_CHANGE || SettingsOneFragment.NEW_EMAIL_PASSWORD_CHANGE){
-                    Toast.makeText(SettingsActivity2.this, "Заполните все поля!", Toast.LENGTH_LONG).show();
-                }
-                if(SettingsOneFragment.NEW_PHONE_CHANGED && SettingsOneFragment.NEW_PHONE_PASSWORD_CHANGE){
-                    settingsOneFragment.changePhoneNumber(settingsOneFragment.newPhoneTextView, settingsOneFragment.oldPasswordPhoneTextView);
-                }else if(SettingsOneFragment.NEW_PHONE_CHANGED || SettingsOneFragment.NEW_PHONE_PASSWORD_CHANGE){
-                    Toast.makeText(SettingsActivity2.this, "Заполните все поля!", Toast.LENGTH_LONG).show();
+                if(Common.isNetworkConnected(SettingsActivity2.this)){
+                    if(SettingsOneFragment.PROFILE_IMAGE_CHANGED){
+                        UploadPhotoTask uploadPhotoTask = new UploadPhotoTask(SettingsActivity2.this, SettingsActivity2.this);
+                        uploadPhotoTask.setupTask(settingsOneFragment.getContentBody());
+                        SettingsOneFragment.PROFILE_IMAGE_CHANGED = false;
+                    }
+                    if(SettingsOneFragment.CURRENT_PASSWORD_CHANGE && SettingsOneFragment.NEW_PASSWORD_CHANGE && SettingsOneFragment.NEW_PASSWORD_AGAIN_CHANGE){
+                        settingsOneFragment.resetPassword(settingsOneFragment.currentPasswordTextView,
+                                settingsOneFragment.newPasswordTextView,
+                                settingsOneFragment.newPasswordAgainTextView, settingsOneFragment.user);
+                    }else if(SettingsOneFragment.CURRENT_PASSWORD_CHANGE || SettingsOneFragment.NEW_PASSWORD_CHANGE || SettingsOneFragment.NEW_PASSWORD_AGAIN_CHANGE){
+                        Toast.makeText(SettingsActivity2.this, "Заполните все поля!", Toast.LENGTH_LONG).show();
+                    }
+                    if(SettingsOneFragment.NEW_EMAIL_CHANGE && SettingsOneFragment.NEW_EMAIL_PASSWORD_CHANGE){
+                        settingsOneFragment.changeEmail(settingsOneFragment.passwordEmalTextView, settingsOneFragment.newEmalTextView);
+                    }else if(SettingsOneFragment.NEW_EMAIL_CHANGE || SettingsOneFragment.NEW_EMAIL_PASSWORD_CHANGE){
+                        Toast.makeText(SettingsActivity2.this, "Заполните все поля!", Toast.LENGTH_LONG).show();
+                    }
+                    if(SettingsOneFragment.NEW_PHONE_CHANGED && SettingsOneFragment.NEW_PHONE_PASSWORD_CHANGE){
+                        settingsOneFragment.changePhoneNumber(settingsOneFragment.newPhoneTextView, settingsOneFragment.oldPasswordPhoneTextView);
+                    }else if(SettingsOneFragment.NEW_PHONE_CHANGED || SettingsOneFragment.NEW_PHONE_PASSWORD_CHANGE){
+                        Toast.makeText(SettingsActivity2.this, "Заполните все поля!", Toast.LENGTH_LONG).show();
+                    }
+                }else {
+                    Toast.makeText(SettingsActivity2.this, "Проверьте интернет соединение.", Toast.LENGTH_LONG).show();
                 }
             }
         });
-
         viewPager = (ViewPager) findViewById(R.id.viewpager);
         adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFragment(settingsOneFragment, "Общая информация");

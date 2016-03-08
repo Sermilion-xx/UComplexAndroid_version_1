@@ -31,6 +31,7 @@ import com.amulyakhare.textdrawable.TextDrawable;
 
 import org.apache.http.entity.mime.content.ByteArrayBody;
 import org.javatuples.Pair;
+import org.ucomplex.ucomplex.Activities.SettingsActivity;
 import org.ucomplex.ucomplex.Activities.SettingsActivity2;
 import org.ucomplex.ucomplex.Activities.Tasks.FetchProfileTask;
 import org.ucomplex.ucomplex.Activities.Tasks.SettingsTask;
@@ -184,6 +185,41 @@ public class SettingsOneFragment extends Fragment implements OnTaskCompleteListe
         passwordEmalTextView.addTextChangedListener(textWatcher);
         newEmalTextView.setTypeface(robotoFont);
         newEmalTextView.addTextChangedListener(textWatcher);
+
+        closedProfile = (CheckBox) context.findViewById(R.id.settings_privacy_closed_profile);
+        closedProfile.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                                                     @Override
+                                                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                                                         privacyButton.setFocusable(true);
+                                                     }
+                                                 }
+        );
+
+        hideProfile = (CheckBox) context.findViewById(R.id.settings_privacy_hide_profile);
+        hideProfile.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                                                   @Override
+                                                   public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                                                       privacyButton.setFocusable(true);
+                                                   }
+                                               }
+        );
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
+
+        closedPrifileStr = pref.getString("closedProfile", "0");
+        searchablePrifileStr = pref.getString("searchableProfile", "0");
+        if(closedPrifileStr.equals("1"))
+            closedProfile.setChecked(true);
+        if(searchablePrifileStr.equals("1"))
+            hideProfile.setChecked(true);
+        privacyButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                if(Common.isNetworkConnected(context)){
+                    changePrivacy(closedProfile, hideProfile);
+                }else {
+                    Toast.makeText(context, "Проверьте интернет соединение.", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
 
 
         Bitmap bmp = null;
