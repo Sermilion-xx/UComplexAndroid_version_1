@@ -95,26 +95,32 @@ public class EventsFragment extends ListFragment {
 
             @Override
             public void onClick(View arg0) {
-                dialog = ProgressDialog.show(getActivity(), "",
-                        "Идет подгрузка", true);
-                dialog.show();
-                new FetchUserEventsTask(getActivity()) {
-                    @Override
-                    protected void onPostExecute(ArrayList<EventRowItem> items) {
-                        super.onPostExecute(items);
-                        if (items != null) {
-                            eventItems.addAll(items);
-                            imageAdapter.notifyDataSetChanged();
+                if(Common.isNetworkConnected(context)){
+                    dialog = ProgressDialog.show(getActivity(), "",
+                            "Идет подгрузка", true);
+                    dialog.show();
+                    new FetchUserEventsTask(getActivity()) {
+                        @Override
+                        protected void onPostExecute(ArrayList<EventRowItem> items) {
+                            super.onPostExecute(items);
+                            if (items != null) {
+                                eventItems.addAll(items);
+                                imageAdapter.notifyDataSetChanged();
 
-                        } else {
-                            btnLoadExtra.setVisibility(View.GONE);
+                            } else {
+                                btnLoadExtra.setVisibility(View.GONE);
+                            }
+                            dialog.dismiss();
+                            if(items!=null){
+                                if (items.size() < 10) {
+                                    btnLoadExtra.setVisibility(View.GONE);
+                                }
+                            }
                         }
-                        dialog.dismiss();
-                        if (items.size() < 10) {
-                            btnLoadExtra.setVisibility(View.GONE);
-                        }
-                    }
-                }.execute(userType, eventItems.size());
+                    }.execute(userType, eventItems.size());
+                }else {
+                    Toast.makeText(context, "Проверте интернет соединение.", Toast.LENGTH_LONG).show();
+                }
             }
         });
 
