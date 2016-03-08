@@ -195,6 +195,9 @@ public class SettingsActivity2 extends AppCompatActivity implements OnTaskComple
                     if(SettingsOneFragment.CURRENT_PASSWORD_CHANGE && SettingsOneFragment.NEW_PASSWORD_CHANGE && SettingsOneFragment.NEW_PASSWORD_AGAIN_CHANGE){
                         user.setPass(settingsOneFragment.newPasswordTextView.getText().toString());
                         Common.setUserDataToPref(SettingsActivity2.this, user);
+                        SettingsOneFragment.CURRENT_PASSWORD_CHANGE = false;
+                        SettingsOneFragment.NEW_PASSWORD_CHANGE = false;
+                        SettingsOneFragment.NEW_PASSWORD_AGAIN_CHANGE = false;
                     }
                     if (task.get() != null) {
                         if (task.get().equals("success")) {
@@ -204,12 +207,17 @@ public class SettingsActivity2 extends AppCompatActivity implements OnTaskComple
                                 settingsOneFragment.oldPhoneTextView.setText(phone);
                                 settingsOneFragment.oldPasswordPhoneTextView.setText("");
                                 settingsOneFragment.newPhoneTextView.setText("");
+                                SettingsOneFragment.NEW_PHONE_PASSWORD_CHANGE = false;
+                                SettingsOneFragment.NEW_PHONE_CHANGED = false;
                             } else if ((int) o[0] == 2) {
                                 //email
                                 settingsOneFragment.currentEmalTextView.setText(user.getEmail());
                                 settingsOneFragment.passwordEmalTextView.setText("");
                                 settingsOneFragment.newEmalTextView.setText("");
+                                SettingsOneFragment.NEW_EMAIL_PASSWORD_CHANGE = false;
+                                SettingsOneFragment.NEW_EMAIL_CHANGE = false;
                             } else if ((int) o[0] == 4) {
+                                SettingsOneFragment.PRIVACY_CHANGED = false;
                                 SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(SettingsActivity2.this).edit();
                                 editor.putString("closedProfile", settingsOneFragment.closedPrifileStr);
                                 editor.putString("searchableProfile", settingsOneFragment.searchablePrifileStr);

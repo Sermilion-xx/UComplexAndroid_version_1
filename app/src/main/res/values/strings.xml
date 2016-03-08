@@ -102,6 +102,7 @@
     <string name="marks_str_ru">"Средняя успеваемость: %1$s"</string>
     <string name="attendance_str_ru">"Посещение по предмету: %1$s"</string>
     <string name="statistics_str_ru">Статистика</string>
+    <string name="do_not_show_in_search_str_ru">Не отображать в поиске</string>
 
 
 </resources>

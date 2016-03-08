@@ -24,6 +24,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -65,6 +66,9 @@ public class SettingsOneFragment extends Fragment implements OnTaskCompleteListe
     public static boolean NEW_PHONE_CHANGED;
     public static boolean NEW_PHONE_PASSWORD_CHANGE;
 
+    public static boolean PRIVACY_CHANGED;
+
+
     private Bitmap profileBitmap;
     ImageView photoImageView;
     SettingsActivity2 context;
@@ -79,8 +83,8 @@ public class SettingsOneFragment extends Fragment implements OnTaskCompleteListe
     public String closedPrifileStr;
     public String searchablePrifileStr;
 
-    public CheckBox closedProfile;
-    public CheckBox hideProfile;
+    public Switch closedProfile;
+    public Switch hideProfile;
     Button privacyButton;
     CustomImageViewCircularShape changePhotoButton;
     Typeface robotoFont;
@@ -176,6 +180,7 @@ public class SettingsOneFragment extends Fragment implements OnTaskCompleteListe
         oldPasswordPhoneTextView.addTextChangedListener(textWatcher);
         oldPhoneTextView.setTypeface(robotoFont);
         oldPhoneTextView.addTextChangedListener(textWatcher);
+        oldPhoneTextView.setText(user.getPhone());
 
         //Email setting
         currentEmalTextView.setTypeface(robotoFont);
@@ -186,32 +191,20 @@ public class SettingsOneFragment extends Fragment implements OnTaskCompleteListe
         newEmalTextView.setTypeface(robotoFont);
         newEmalTextView.addTextChangedListener(textWatcher);
 
-        closedProfile = (CheckBox) context.findViewById(R.id.settings_privacy_closed_profile);
-        closedProfile.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                                                     @Override
-                                                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                                                         privacyButton.setFocusable(true);
-                                                     }
-                                                 }
-        );
-
-        hideProfile = (CheckBox) context.findViewById(R.id.settings_privacy_hide_profile);
-        hideProfile.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                                                   @Override
-                                                   public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                                                       privacyButton.setFocusable(true);
-                                                   }
-                                               }
-        );
-        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
-
-        closedPrifileStr = pref.getString("closedProfile", "0");
-        searchablePrifileStr = pref.getString("searchableProfile", "0");
-        if(closedPrifileStr.equals("1"))
-            closedProfile.setChecked(true);
-        if(searchablePrifileStr.equals("1"))
-            hideProfile.setChecked(true);
-        privacyButton.setOnClickListener(new View.OnClickListener() {
+        closedProfile = (Switch) rootView.findViewById(R.id.settings_privacy_closed_profile);
+        hideProfile = (Switch) rootView.findViewById(R.id.settings_privacy_hide_profile);
+        closedProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(Common.isNetworkConnected(context)){
+                    changePrivacy(closedProfile, hideProfile);
+                }else {
+                    Toast.makeText(context, "Проверьте интернет соединение.", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+        hideProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
             public void onClick(View v) {
                 if(Common.isNetworkConnected(context)){
                     changePrivacy(closedProfile, hideProfile);
@@ -221,6 +214,15 @@ public class SettingsOneFragment extends Fragment implements OnTaskCompleteListe
             }
         });
 
+
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
+
+        closedPrifileStr = pref.getString("closedProfile", "0");
+        searchablePrifileStr = pref.getString("searchableProfile", "0");
+        if(closedPrifileStr.equals("1"))
+            closedProfile.setChecked(true);
+        if(searchablePrifileStr.equals("1"))
+            hideProfile.setChecked(true);
 
         Bitmap bmp = null;
 
@@ -257,7 +259,7 @@ public class SettingsOneFragment extends Fragment implements OnTaskCompleteListe
         return rootView;
     }
 
-    public void changePrivacy(CheckBox closedPrifile, CheckBox hideProfile) {
+    public void changePrivacy(Switch closedPrifile, Switch hideProfile) {
         if (closedPrifile.isChecked())
             closedPrifileStr = "1";
         else
@@ -538,11 +540,11 @@ public class SettingsOneFragment extends Fragment implements OnTaskCompleteListe
         this.context = context;
     }
 
-    public CheckBox getClosedProfile() {
+    public Switch getClosedProfile() {
         return closedProfile;
     }
 
-    public CheckBox getHideProfile() {
+    public Switch getHideProfile() {
         return hideProfile;
     }
 

@@ -54,6 +54,7 @@
             android:id="@+id/settings_password_current"
             android:layout_below="@+id/settings_password_change_title"
             android:hint="Текущий пароль"
+            android:textCursorDrawable="@drawable/cursor_black"
             android:background="@null"
             android:layout_marginRight="17dp"
             android:layout_marginLeft="17dp"
@@ -64,6 +65,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/settings_password_new"
+            android:textCursorDrawable="@drawable/cursor_black"
             android:hint="Новый пароль"
             android:inputType="textPassword"
             android:background="@null"
@@ -79,6 +81,7 @@
             android:id="@+id/settings_password_again"
             android:hint="Введите пароль еще раз"
             android:inputType="textPassword"
+            android:textCursorDrawable="@drawable/cursor_black"
             android:background="@null"
             android:layout_below="@+id/settings_password_new"
             android:layout_marginTop="61dp"
@@ -102,7 +105,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="+7 988 *** ** 04"
+            android:text="+7 000 *** ** 00"
             android:id="@+id/settings_phone_number"
             android:layout_below="@+id/settings_number_change_title"
             android:layout_marginLeft="17dp"
@@ -116,6 +119,7 @@
             android:layout_height="wrap_content"
             android:background="@null"
             android:id="@+id/settings_phone_new"
+            android:textCursorDrawable="@drawable/cursor_black"
             android:inputType="phone"
             android:hint="@string/settings_new_number"
             android:layout_below="@+id/settings_phone_number"
@@ -131,6 +135,7 @@
             android:layout_below="@+id/settings_phone_new"
             android:hint="Текущий пароль"
             android:inputType="textPassword"
+            android:textCursorDrawable="@drawable/cursor_black"
             android:background="@null"
             android:layout_marginTop="61dp"
             android:layout_marginLeft="17dp"
@@ -141,6 +146,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Адресс электронной почты"
+
             android:textSize="19dp"
             android:textColor="@color/colorPrimary"
             android:id="@+id/settings_email_title"
@@ -169,6 +175,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/settings_email_new"
             android:inputType="textEmailAddress"
+            android:textCursorDrawable="@drawable/cursor_black"
             android:hint="Новый адрес электонной почты"
             android:layout_below="@+id/settings_email_current"
             android:layout_alignLeft="@+id/settings_phone_new"
@@ -182,6 +189,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/settings_email_password"
             android:hint="Текущий пароль"
+            android:textCursorDrawable="@drawable/cursor_black"
             android:inputType="textPassword"
             android:background="@null"
             android:layout_below="@+id/settings_email_new"
@@ -218,30 +226,30 @@
             android:layout_marginLeft="17dp"
             android:layout_marginRight="17dp" />
 
-        <CheckBox
+        <Switch
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/settings_privacy_closed_profile"
             android:layout_toRightOf="@+id/settings_privacy_closed_profile_title"
             android:layout_below="@+id/settings_privacy_title"
             android:layout_marginTop="7dp"
-            android:layout_marginLeft="10dp" />
+            android:layout_marginLeft="10dp"
+            />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Не отображать в поиске"
+            android:text="@string/do_not_show_in_search_str_ru"
             android:id="@+id/settings_privacy_hide_profile_title"
-            android:textSize="13dp"
+            android:textSize="13sp"
             android:layout_below="@+id/settings_privacy_closed_profile_title"
-            android:layout_alignLeft="@+id/settings_phone_reset_button"
-            android:layout_alignStart="@+id/settings_phone_reset_button"
             android:layout_marginTop="10dp"
             android:layout_marginLeft="17dp"
             android:layout_marginRight="17dp"
-            android:layout_marginBottom="20dp" />
+            android:layout_marginBottom="20dp"
+            />
 
-        <CheckBox
+        <Switch
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/settings_privacy_hide_profile"
@@ -249,8 +257,6 @@
             android:layout_below="@+id/settings_privacy_closed_profile_title"
             android:layout_marginTop="7dp"
             android:layout_marginLeft="10dp" />
-
-
 
         </RelativeLayout>
 
