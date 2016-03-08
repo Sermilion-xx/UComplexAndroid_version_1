@@ -35,7 +35,6 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Мадина Исаевна"
         android:textColor="@color/white"
         android:id="@+id/list_profile_lastname"
         android:layout_below="@+id/list_profile_firstname"
@@ -74,7 +73,6 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Студент"
         android:id="@+id/list_profile_role"
         android:textColor="#b5eefd"
         android:layout_below="@+id/list_profile_lastname"

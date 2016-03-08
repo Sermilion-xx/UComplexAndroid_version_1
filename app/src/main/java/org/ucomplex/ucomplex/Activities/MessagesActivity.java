@@ -70,10 +70,12 @@ public class MessagesActivity extends AppCompatActivity implements OnTaskComplet
         profileImageView.setImageDrawable(Common.getDrawable(aUser));
 
         String[] aName = name.split(" ");
-        nameTextView.setText(aName[0] + " " + aName[1]);
+        if(aName.length==2){
+            nameTextView.setText(aName[0] + " " + aName[1]);
+        }else{
+            nameTextView.setText(aName[0]);
+        }
         messagesAdapter = new MessagesAdapter(this, messageArrayList, companion, name);
-
-
         listView = (ListView) findViewById(R.id.list_messages_listview);
         listView.setScrollingCacheEnabled(false);
         fetchNewMessagesTask = new FetchMessagesTask(this, this);
@@ -190,8 +192,8 @@ public class MessagesActivity extends AppCompatActivity implements OnTaskComplet
                     FetchMessagesTask fmt = (FetchMessagesTask) task;
                     if (fmt.getType() == 0) {
                         messageArrayList = (LinkedList) task.get();
-                        Collections.reverse(messageArrayList);
                         if (messageArrayList != null) {
+                            Collections.reverse(messageArrayList);
                             messagesAdapter = new MessagesAdapter(this, messageArrayList, companion, name);
                             listView.setAdapter(messagesAdapter);
                             listView.setSelection(messagesAdapter.getCount() - 1);

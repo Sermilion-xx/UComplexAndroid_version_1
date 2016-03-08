@@ -58,21 +58,25 @@ public class UsersFragment extends ListFragment {
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
-        User user = mItems.get(position);
-        Intent intent = new Intent(getContext(), ProfileActivity.class);
-        Bundle extras = new Bundle();
-        if (user.getPerson() == 0) {
-            extras.putString("person", String.valueOf(user.getId()));
-        } else {
-            extras.putString("person", String.valueOf(user.getPerson()));
+        if(Common.isNetworkConnected(activity)){
+            User user = mItems.get(position);
+            Intent intent = new Intent(getContext(), ProfileActivity.class);
+            Bundle extras = new Bundle();
+            if (user.getPerson() == 0) {
+                extras.putString("person", String.valueOf(user.getId()));
+            } else {
+                extras.putString("person", String.valueOf(user.getPerson()));
+            }
+            if (user.getPhotoBitmap() != null) {
+                intent.putExtra("bitmap", user.getPhotoBitmap());
+            }
+            extras.putString("hasPhoto", String.valueOf(user.getPhoto()));
+            extras.putString("code", user.getCode());
+            intent.putExtras(extras);
+            startActivity(intent);
+        }else {
+            Toast.makeText(activity, "Проверте интернет соединение.", Toast.LENGTH_LONG).show();
         }
-        if (user.getPhotoBitmap() != null) {
-            intent.putExtra("bitmap", user.getPhotoBitmap());
-        }
-        extras.putString("hasPhoto", String.valueOf(user.getPhoto()));
-        extras.putString("code", user.getCode());
-        intent.putExtras(extras);
-        startActivity(intent);
     }
 
     @Override

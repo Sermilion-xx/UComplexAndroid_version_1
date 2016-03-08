@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -111,7 +112,7 @@ public class ProfileAdapter extends ArrayAdapter<Triplet> {
             if(fullName.length>1){
                 viewHolder.mLastNameView.setText(fullName[1] + " " + fullName[2]);
             }
-            
+
             viewHolder.mEmailView.setTypeface(robotoFont);
             viewHolder.mEmailView.setText(mUser.getEmail());
         } else if (viewType == TYPE_INFO) {
@@ -218,21 +219,31 @@ public class ProfileAdapter extends ArrayAdapter<Triplet> {
                     new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            HashMap<String, String> params = new HashMap<>();
-                            params.put("user", String.valueOf(mUser.getId()));
-                            if (mUser.isReq_sent()) {
-                                HandleMenuPress handleMenuPress = new HandleMenuPress();
-                                handleMenuPress.execute("http://you.com.ru/user/friends/accept?mobile=1", params);
-                                mUser.setReq_sent(false);
-                                Toast.makeText(mContext, mUser.getName() + " теперь ваш друг :)", Toast.LENGTH_SHORT).show();
-                                mFriendButton.setText("Удалить");
-                            } else {
-                                HandleMenuPress handleMenuPress = new HandleMenuPress();
-                                handleMenuPress.execute("http://you.com.ru/user/friends/delete?mobile=1", params);
-                                Toast.makeText(mContext, "Пользователь удален из друзей :(", Toast.LENGTH_SHORT).show();
-                                mUser.setReq_sent(false);
-                                mFriendButton.setText("В друзья");
-                                Common.userListChanged = 1;
+                            if(Common.isNetworkConnected(mContext)){
+                                HashMap<String, String> params = new HashMap<>();
+                                params.put("user", String.valueOf(mUser.getId()));
+                                if (!mUser.isReq_sent() && !mUser.is_friend()) {
+                                    HandleMenuPress handleMenuPress = new HandleMenuPress();
+                                    handleMenuPress.execute("http://you.com.ru/user/friends/accept?mobile=1", params);
+                                    mUser.setReq_sent(false);
+                                    Toast.makeText(mContext, mUser.getName() + " получил вашу заявку на дружбу :)", Toast.LENGTH_SHORT).show();
+                                    mFriendButton.setText("В друзья");
+                                    mFriendButton.setTextColor(ContextCompat.getColor(mContext,R.color.uc_gray_text));
+                                    mFriendButton.setEnabled(false);
+                                } else if(mUser.isReq_sent() && !mUser.is_friend()){
+                                    mFriendButton.setTextColor(ContextCompat.getColor(mContext,R.color.uc_gray_text));
+                                    mFriendButton.setEnabled(false);
+                                    Toast.makeText(mContext, "Заявка уже отправленна.", Toast.LENGTH_SHORT).show();
+                                } else if(mUser.is_friend()){
+                                    HandleMenuPress handleMenuPress = new HandleMenuPress();
+                                    handleMenuPress.execute("http://you.com.ru/user/friends/delete?mobile=1", params);
+                                    Toast.makeText(mContext, "Пользователь удален из друзей :(", Toast.LENGTH_SHORT).show();
+                                    mUser.setIs_friend(false);
+                                    mFriendButton.setText("В друзья");
+                                    Common.userListChanged = 1;
+                                }
+                            }else {
+                                Toast.makeText(mContext, "Проверте интернет соединение.", Toast.LENGTH_LONG).show();
                             }
                         }
                     });
@@ -240,21 +251,25 @@ public class ProfileAdapter extends ArrayAdapter<Triplet> {
     }
 
     public void blockUser() {
-        HashMap<String, String> params = new HashMap<>();
-        if (!mUser.isIs_black()) {
-            params.put("user", String.valueOf(mUser.getId()));
-            HandleMenuPress handleMenuPress = new HandleMenuPress();
-            handleMenuPress.execute("http://you.com.ru/user/blacklist/add", params);
-            Toast.makeText(mContext, "Пользователь добавлен в черный список :(", Toast.LENGTH_SHORT).show();
-            mUser.setIs_black(true);
-        } else {
-            params.put("user", String.valueOf(mUser.getId()));
-            HandleMenuPress handleMenuPress1 = new HandleMenuPress();
-            handleMenuPress1.execute("http://you.com.ru/user/blacklist/delete", params);
-            Toast.makeText(mContext, "Пользователь удален из черного списка :)", Toast.LENGTH_SHORT).show();
-            mUser.setIs_black(false);
+        if(Common.isNetworkConnected(mContext)){
+            HashMap<String, String> params = new HashMap<>();
+            if (!mUser.isIs_black()) {
+                params.put("user", String.valueOf(mUser.getId()));
+                HandleMenuPress handleMenuPress = new HandleMenuPress();
+                handleMenuPress.execute("http://you.com.ru/user/blacklist/add", params);
+                Toast.makeText(mContext, "Пользователь добавлен в черный список :(", Toast.LENGTH_SHORT).show();
+                mUser.setIs_black(true);
+            } else {
+                params.put("user", String.valueOf(mUser.getId()));
+                HandleMenuPress handleMenuPress1 = new HandleMenuPress();
+                handleMenuPress1.execute("http://you.com.ru/user/blacklist/delete", params);
+                Toast.makeText(mContext, "Пользователь удален из черного списка :)", Toast.LENGTH_SHORT).show();
+                mUser.setIs_black(false);
+            }
+            Common.userListChanged = 4;
+        }else {
+            Toast.makeText(mContext, "Проверте интернет соединение.", Toast.LENGTH_LONG).show();
         }
-        Common.userListChanged = 4;
     }
 
 
