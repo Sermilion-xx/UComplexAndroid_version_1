@@ -37,7 +37,7 @@ public class FetchMySubjectsTask extends AsyncTask<Void, String, Course> impleme
     private IProgressTracker mProgressTracker;
     private final OnTaskCompleteListener mTaskCompleteListener;
     private String mProgressMessage;
-    private final ProgressDialog mProgressDialog;
+//    private final ProgressDialog mProgressDialog;
     CourseActivity caller;
     Course course;
 
@@ -45,10 +45,10 @@ public class FetchMySubjectsTask extends AsyncTask<Void, String, Course> impleme
         this.mContext = context;
         this.caller = (CourseActivity) mContext;
         this.mTaskCompleteListener = taskCompleteListener;
-        mProgressDialog = new ProgressDialog(context);
-        mProgressDialog.setIndeterminate(true);
-        mProgressDialog.setCancelable(true);
-        mProgressDialog.setOnCancelListener(this);
+//        mProgressDialog = new ProgressDialog(context);
+//        mProgressDialog.setIndeterminate(true);
+//        mProgressDialog.setCancelable(true);
+//        mProgressDialog.setOnCancelListener(this);
     }
 
     public Activity getmContext() {
@@ -213,7 +213,7 @@ public class FetchMySubjectsTask extends AsyncTask<Void, String, Course> impleme
     @Override
     public void onComplete() {
         mTaskCompleteListener.onTaskComplete(this);
-        mProgressDialog.dismiss();
+//        mProgressDialog.dismiss();
     }
 
     @Override
@@ -227,10 +227,10 @@ public class FetchMySubjectsTask extends AsyncTask<Void, String, Course> impleme
 
     @Override
     public void onProgress(String message) {
-        if (!mProgressDialog.isShowing()) {
-            mProgressDialog.show();
-        }
-        mProgressDialog.setMessage(message);
+//        if (!mProgressDialog.isShowing()) {
+//            mProgressDialog.show();
+//        }
+//        mProgressDialog.setMessage(message);
     }
 
     @Override

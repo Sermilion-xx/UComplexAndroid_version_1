@@ -7,6 +7,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 
 import android.support.v7.app.AppCompatActivity;
@@ -31,7 +32,7 @@ import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
 
-public class CourseActivity extends AppCompatActivity implements OnTaskCompleteListener {
+public class CourseActivity extends AppCompatActivity implements OnTaskCompleteListener, CourseMaterialsFragment.OnHeadlineSelectedListener {
 
     Toolbar toolbar;
     TabLayout tabLayout;
@@ -51,6 +52,17 @@ public class CourseActivity extends AppCompatActivity implements OnTaskCompleteL
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_course);
+        viewPager = (ViewPager) findViewById(R.id.viewpager);
+        adapter = new ViewPagerAdapter(getSupportFragmentManager());
+        adapter.addFragment(new Fragment(), "Дисциплина");
+        adapter.addFragment(new Fragment(), "Материалы");
+        adapter.addFragment(new Fragment(), "Лента");
+        viewPager.setAdapter(adapter);
+        tabLayout = (TabLayout) findViewById(R.id.tabs);
+        tabLayout.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimary));
+        tabLayout.setupWithViewPager(viewPager);
+
         Bundle extras = getIntent().getExtras();
         this.gcourse = extras.getInt("gcourse", -1);
         FetchMySubjectsTask fetchMySubjectsTask = new FetchMySubjectsTask(this, this);
@@ -58,24 +70,23 @@ public class CourseActivity extends AppCompatActivity implements OnTaskCompleteL
         fetchMySubjectsTask.setGcourse(this.gcourse);
         fetchMySubjectsTask.setupTask();
 
-        setContentView(R.layout.activity_course);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle("");
+        toolbar.setTitle(extras.getString("courseName"));
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        viewPager = (ViewPager) findViewById(R.id.viewpager);
-        adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(new CourseInfoFragment(), "Дисциплина");
-        adapter.addFragment(new Fragment(), "Материалы");
-        adapter.addFragment(new Fragment(), "Лента");
-        viewPager.setAdapter(adapter);
-
         FetchCalendarBeltTask fetchCalendarBeltTask = new FetchCalendarBeltTask(this, this);
         fetchCalendarBeltTask.setupTask(this.gcourse);
+    }
 
-        tabLayout = (TabLayout) findViewById(R.id.tabs);
-        tabLayout.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+    @Override
+    public void onBackPressed(){
+        if(courseMaterialsFragment.getAdapter().getLevel()==0){
+            toolbar.setTitle("Материалы");
+        }else{
+            toolbar.setTitle(courseMaterialsFragment.getFiles().get(courseMaterialsFragment.getAdapter().getLevel()+1).getName());
+        }
+        super.onBackPressed();
     }
 
     @Override
@@ -164,9 +175,10 @@ public class CourseActivity extends AppCompatActivity implements OnTaskCompleteL
                 } else if (task instanceof FetchMySubjectsTask) {
                     try {
                         this.coursedata = (Course) task.get();
-                        toolbar.setTitle(coursedata.getName());
-                        setupViewPager(viewPager);
-                        tabLayout.setupWithViewPager(viewPager);
+                        if(this.coursedata!=null){
+                            setupViewPager(viewPager);
+                            tabLayout.setupWithViewPager(viewPager);
+                        }
                     } catch (InterruptedException | ExecutionException e) {
                         e.printStackTrace();
                     }
@@ -177,9 +189,12 @@ public class CourseActivity extends AppCompatActivity implements OnTaskCompleteL
                             if (calendarBeltFragment == null) {
                                 calendarBeltFragment = new CalendarBeltFragment();
                             }
-                            calendarBeltFragment.setFeedItems(feedItems);
-                            calendarBeltFragment.initAdapter(CourseActivity.this);
-                            calendarBeltFragment.getCourseCalendarBeltAdapter().notifyDataSetChanged();
+                            if(this.feedItems!=null && this.feedItems.size()>0){
+                                calendarBeltFragment.setFeedItems(feedItems);
+                                calendarBeltFragment.initAdapter(CourseActivity.this);
+                                calendarBeltFragment.getCourseCalendarBeltAdapter().notifyDataSetChanged();
+                            }
+
                         }
                     } catch (InterruptedException | ExecutionException e) {
                         e.printStackTrace();
@@ -189,5 +204,10 @@ public class CourseActivity extends AppCompatActivity implements OnTaskCompleteL
                 e.printStackTrace();
             }
         }
+    }
+
+    @Override
+    public void onFolderSelect(String title) {
+        toolbar.setTitle(title);
     }
 }

@@ -20,6 +20,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import org.ucomplex.ucomplex.Activities.Tasks.FetchMyFilesTask;
@@ -33,25 +34,38 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
 
-public class MyFilesActivity extends AppCompatActivity implements OnTaskCompleteListener {
+public class MyFilesActivity extends AppCompatActivity implements OnTaskCompleteListener, CourseMaterialsFragment.OnHeadlineSelectedListener {
 
     private ArrayList<File> mItems;
     boolean first = true;
     CourseMaterialsFragment courseMaterialsFragment;
-    ProgressDialog dialog;
+    LinearLayout linlaHeaderProgress;
+    Toolbar toolbar;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_files);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("Материалы");
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_menu);
+        linlaHeaderProgress = (LinearLayout) findViewById(R.id.linlaHeaderProgress);
         FetchMyFilesTask fetchMyFilesTask = new FetchMyFilesTask(this,this);
+        linlaHeaderProgress.setVisibility(View.VISIBLE);
         fetchMyFilesTask.setupTask();
+    }
+
+    @Override
+    public void onBackPressed(){
+        if(courseMaterialsFragment.getAdapter().getLevel()==0){
+            toolbar.setTitle("Материалы");
+        }else{
+            toolbar.setTitle(courseMaterialsFragment.getFiles().get(courseMaterialsFragment.getAdapter().getLevel()+1).getName());
+        }
+        super.onBackPressed();
     }
 
     @Override
@@ -59,6 +73,11 @@ public class MyFilesActivity extends AppCompatActivity implements OnTaskComplete
         switch (item.getItemId()) {
             case android.R.id.home:
                 onBackPressed();
+                if(courseMaterialsFragment.getAdapter().getLevel()==0){
+                    toolbar.setTitle("Материалы");
+                }else{
+                    toolbar.setTitle(courseMaterialsFragment.getFiles().get(courseMaterialsFragment.getAdapter().getLevel()+1).getName());
+                }
                 return true;
             case R.id.my_files_add_file:
                 if (Build.VERSION.SDK_INT <19){
@@ -87,6 +106,13 @@ public class MyFilesActivity extends AppCompatActivity implements OnTaskComplete
     protected void createFolder(final String folderName){
         if (folderName != null && !folderName.equals("")){
             new AsyncTask<Void, Void, ArrayList>() {
+
+                @Override
+                protected void onPreExecute() {
+                    super.onPreExecute();
+                    linlaHeaderProgress.setVisibility(View.VISIBLE);
+                }
+
                 @Override
                 protected ArrayList doInBackground(Void... params) {
                     String url = "http://you.com.ru/student/my_files/create_folder?mobile=1";
@@ -103,8 +129,14 @@ public class MyFilesActivity extends AppCompatActivity implements OnTaskComplete
                 @Override
                 protected void onPostExecute(ArrayList newFolder) {
                     super.onPostExecute(newFolder);
-                    courseMaterialsFragment.addFile((File) newFolder.get(0));
-                    courseMaterialsFragment.getAdapter().notifyDataSetChanged();
+                    if(newFolder!=null){
+                        courseMaterialsFragment.addFile((File) newFolder.get(0));
+                        courseMaterialsFragment.getAdapter().notifyDataSetChanged();
+                    }else{
+                        Toast.makeText(MyFilesActivity.this, "Ошибка при создании папки.", Toast.LENGTH_SHORT)
+                                .show();
+                    }
+                    linlaHeaderProgress.setVisibility(View.GONE);
                 }
             }.execute();
         }else{
@@ -152,9 +184,7 @@ public class MyFilesActivity extends AppCompatActivity implements OnTaskComplete
     }
 
     private void uplodFile(final String filePath){
-        dialog = ProgressDialog.show(MyFilesActivity.this, "",
-                "Файл загружается...", true);
-        dialog.show();
+        linlaHeaderProgress.setVisibility(View.VISIBLE);
         new AsyncTask<Void, Void, ArrayList>(){
 
             @Override
@@ -171,7 +201,7 @@ public class MyFilesActivity extends AppCompatActivity implements OnTaskComplete
             @Override
             protected void onPostExecute(ArrayList newFile) {
                 super.onPostExecute(newFile);
-                dialog.dismiss();
+                linlaHeaderProgress.setVisibility(View.GONE);
                 if(courseMaterialsFragment!=null) {
                     courseMaterialsFragment.addFile((File) newFile.get(0));
                     courseMaterialsFragment.getAdapter().notifyDataSetChanged();
@@ -217,6 +247,7 @@ public class MyFilesActivity extends AppCompatActivity implements OnTaskComplete
                     .show();
         } else {
             try {
+                linlaHeaderProgress.setVisibility(View.GONE);
                     mItems = (ArrayList) task.get();
                     courseMaterialsFragment = new CourseMaterialsFragment();
                     courseMaterialsFragment.setFiles(mItems);
@@ -236,5 +267,10 @@ public class MyFilesActivity extends AppCompatActivity implements OnTaskComplete
                 e.printStackTrace();
             }
         }
+    }
+
+    @Override
+    public void onFolderSelect(String title) {
+        toolbar.setTitle(title);
     }
 }

@@ -1,6 +1,7 @@
 package org.ucomplex.ucomplex.Activities.Tasks;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
@@ -9,6 +10,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.ucomplex.ucomplex.Common;
+import org.ucomplex.ucomplex.Interfaces.IProgressTracker;
 import org.ucomplex.ucomplex.Interfaces.OnTaskCompleteListener;
 import org.ucomplex.ucomplex.Model.EventParams;
 import org.ucomplex.ucomplex.Model.EventRowItem;
@@ -20,7 +22,7 @@ import java.util.concurrent.ExecutionException;
 /**
  * Created by Sermilion on 05/12/2015.
  */
-public class FetchUserEventsTask extends AsyncTask<Integer, Void, ArrayList<EventRowItem>> {
+public class FetchUserEventsTask extends AsyncTask<Integer, Void, ArrayList<EventRowItem>> implements IProgressTracker, DialogInterface.OnCancelListener{
 
     Activity mContext;
     String jsonData  = null;
@@ -218,5 +220,18 @@ public class FetchUserEventsTask extends AsyncTask<Integer, Void, ArrayList<Even
     }
 
 
+    @Override
+    public void onCancel(DialogInterface dialog) {
 
+    }
+
+    @Override
+    public void onProgress(String message) {
+
+    }
+
+    @Override
+    public void onComplete() {
+
+    }
 }

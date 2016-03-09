@@ -21,6 +21,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.LinearLayout;
 
 import org.ucomplex.ucomplex.Activities.Tasks.FetchUserEventsTask;
 import org.ucomplex.ucomplex.Activities.Tasks.LoginTask;
@@ -42,7 +43,6 @@ public class EventsActivity extends AppCompatActivity implements OnTaskCompleteL
     ArrayList eventsArray = null;
     FetchUserEventsTask mEventsTask = null;
     User user;
-    ProgressDialog dialog;
 
     final String[] TITLES = {"События", "Дисциплины", "Материалы", "Пользователи", "Сообщения", "Календарь", "Настройки", "Выход"};
     final int[] ICONS = {R.drawable.ic_menu_events,
@@ -61,6 +61,7 @@ public class EventsActivity extends AppCompatActivity implements OnTaskCompleteL
     LinearLayoutManager mLayoutManager;            // Declaring Layout Manager as a linear layout manager
     DrawerLayout Drawer;                                  // Declaring DrawerLayout
     ActionBarDrawerToggle mDrawerToggle;                  // Declaring Action Bar Drawer Toggle
+    LinearLayout linlaHeaderProgress;
 
     public EventsActivity() {
 
@@ -73,9 +74,7 @@ public class EventsActivity extends AppCompatActivity implements OnTaskCompleteL
     }
 
     private void refresh() {
-        dialog = ProgressDialog.show(this, "",
-                "Обновляется", true);
-        dialog.show();
+        linlaHeaderProgress.setVisibility(View.VISIBLE);
         Common.fetchMyNews(EventsActivity.this);
         if (Common.newMesg > 0) {
             mAdapter.setMsgCount(Common.newMesg);
@@ -100,7 +99,7 @@ public class EventsActivity extends AppCompatActivity implements OnTaskCompleteL
                 getFragmentManager().beginTransaction()
                         .replace(R.id.container, fragment)
                         .commit();
-                dialog.dismiss();
+
             }
 
         }.execute(user.getType());
@@ -147,6 +146,7 @@ public class EventsActivity extends AppCompatActivity implements OnTaskCompleteL
             eventsArray = (ArrayList) savedInstanceState.getSerializable("eventsArray");
         }
         setContentView(R.layout.activity_events);
+        linlaHeaderProgress = (LinearLayout) findViewById(R.id.linlaHeaderProgress);
         Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar);
         toolbar.setTitle("События");
         setSupportActionBar(toolbar);
@@ -160,10 +160,7 @@ public class EventsActivity extends AppCompatActivity implements OnTaskCompleteL
 
         if (eventsArray == null) {
             mEventsTask = (FetchUserEventsTask) new FetchUserEventsTask(this, this).execute(user.getType());
-            dialog = ProgressDialog.show(this, "",
-                    "Загружаются события", true);
-            dialog.show();
-//            timerDelayRemoveDialog(7000, dialog);
+            linlaHeaderProgress.setVisibility(View.VISIBLE);
         }
 
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
@@ -194,20 +191,13 @@ public class EventsActivity extends AppCompatActivity implements OnTaskCompleteL
         mDrawerToggle.syncState();
     }
 
-    public void timerDelayRemoveDialog(long time, final Dialog d){
-        new Handler().postDelayed(new Runnable() {
-            public void run() {
-                d.dismiss();
-            }
-        }, time);
-    }
 
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        getMenuInflater().inflate(R.menu.menu_main, menu);
+//        return true;
+//    }
 
     @Override
     public void onBackPressed() {
@@ -242,7 +232,7 @@ public class EventsActivity extends AppCompatActivity implements OnTaskCompleteL
         getFragmentManager().beginTransaction()
                 .replace(R.id.container, fragment)
                 .commit();
-        dialog.dismiss();
+        linlaHeaderProgress.setVisibility(View.GONE);
     }
 
 
@@ -256,6 +246,7 @@ public class EventsActivity extends AppCompatActivity implements OnTaskCompleteL
                 user.setPhotoBitmap(bitmap);
             }
             mAdapter.notifyDataSetChanged();
+            linlaHeaderProgress.setVisibility(View.VISIBLE);
 
         }
     }

@@ -8,6 +8,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -24,8 +25,10 @@ import java.util.concurrent.ExecutionException;
 
 public class SubjectsActivity extends AppCompatActivity implements OnTaskCompleteListener {
 
+    //course name, assesment type, course id
     private ArrayList<Triplet<String, String, Integer>> mItems;
     ListView listView;
+    LinearLayout linlaHeaderProgress;
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -51,8 +54,11 @@ public class SubjectsActivity extends AppCompatActivity implements OnTaskComplet
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_menu);
+        linlaHeaderProgress = (LinearLayout) findViewById(R.id.linlaHeaderProgress);
         listView = (ListView) findViewById(R.id.subject_listview);
+
         FetchSubjectsTask fetchSubjectsTask = new FetchSubjectsTask(this, this);
+        linlaHeaderProgress.setVisibility(View.VISIBLE);
         fetchSubjectsTask.setupTask();
 }
 
@@ -63,6 +69,7 @@ public class SubjectsActivity extends AppCompatActivity implements OnTaskComplet
             Toast.makeText(this, "Загрузка отменена", Toast.LENGTH_LONG)
                     .show();
         } else {
+            linlaHeaderProgress.setVisibility(View.GONE);
             try {
                 mItems = (ArrayList<Triplet<String, String, Integer>>) task.get();
             } catch (InterruptedException | ExecutionException e) {
@@ -81,6 +88,7 @@ public class SubjectsActivity extends AppCompatActivity implements OnTaskComplet
                             Intent intent = new Intent(getBaseContext(), CourseActivity.class);
                             Bundle extras = new Bundle();
                             extras.putInt("gcourse", mItems.get(position).getValue2());
+                            extras.putString("courseName", mItems.get(position).getValue0());
                             intent.putExtras(extras);
                             startActivity(intent);
                         }else {

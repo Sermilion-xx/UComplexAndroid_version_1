@@ -1,8 +1,11 @@
 package org.ucomplex.ucomplex.Fragments;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ListFragment;
 import android.view.View;
 import android.widget.ListView;
@@ -38,9 +41,14 @@ public class CourseFragment extends ListFragment {
     }
 
     @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Bundle bundle = this.getArguments();
+        final Bundle bundle = this.getArguments();
         if (courseData == null) {
             courseData = (Course) bundle.getSerializable("courseData");
             if (courseData != null) {
@@ -60,7 +68,7 @@ public class CourseFragment extends ListFragment {
                 int a = courseData.getProgress().getAbsence();
                 int b = courseData.getProgress().getHours();
                 double absence = 100;
-                if(a!=0 && b!=0){
+                if (a != 0 && b != 0) {
                     absence = ((double) a / (double) b) * 100;
                     if (absence == 0.0) {
                         absence = 100;
@@ -72,6 +80,7 @@ public class CourseFragment extends ListFragment {
                 mItems.add(item);
                 mAdapter = new CourseInfoAdapter(mItems, mContext);
                 setListAdapter(mAdapter);
+
             }
         }
 

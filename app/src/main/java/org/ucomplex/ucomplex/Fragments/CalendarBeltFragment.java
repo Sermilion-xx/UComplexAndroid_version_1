@@ -1,6 +1,7 @@
 package org.ucomplex.ucomplex.Fragments;
 
 import android.app.Activity;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.view.View;
@@ -28,7 +29,14 @@ public class CalendarBeltFragment extends ListFragment {
     }
 
     public void initAdapter(Activity activity){
-        courseCalendarBeltAdapter = new CourseCalendarBeltAdapter(activity, feedItems);
+        if(feedItems!=null){
+            if(feedItems.size()>0){
+                courseCalendarBeltAdapter = new CourseCalendarBeltAdapter(activity, feedItems);
+            }
+        }else{
+            setListShown(true);
+        }
+
     }
 
     public CalendarBeltFragment() {
@@ -39,13 +47,18 @@ public class CalendarBeltFragment extends ListFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         getListView().setDivider(null);
+        getListView().setBackgroundColor(Color.WHITE);
+        setListShown(true);
+
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if(courseCalendarBeltAdapter==null) {
-            courseCalendarBeltAdapter = new CourseCalendarBeltAdapter(getActivity(), feedItems);
+            if(feedItems!=null){
+                    courseCalendarBeltAdapter = new CourseCalendarBeltAdapter(getActivity(), feedItems);
+            }
         }
 
         if(feedItems!=null){

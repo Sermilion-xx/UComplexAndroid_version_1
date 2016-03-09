@@ -3,6 +3,7 @@ package org.ucomplex.ucomplex.Adaptors;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,10 +27,12 @@ public class CourseCalendarBeltAdapter extends ArrayAdapter<Quartet<Integer, Str
 
     String[] colors = {"#51cde7", "#fecd71", "#9ece2b", "#d18ec0"};
     List<Quartet<Integer, String, String, Integer>> feedItems;
+    Context mContext;
 
     public CourseCalendarBeltAdapter(Context context, List<Quartet<Integer, String, String, Integer>> items) {
         super(context, R.layout.list_item_course_calendar_belt, items);
         feedItems = items;
+        mContext = context;
     }
 
     public void changeItems(ArrayList<Quartet<Integer, String, String, Integer>> feedItems){

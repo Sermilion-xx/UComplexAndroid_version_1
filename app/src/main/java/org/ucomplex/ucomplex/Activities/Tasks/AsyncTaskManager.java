@@ -14,17 +14,11 @@ import org.ucomplex.ucomplex.Interfaces.OnTaskCompleteListener;
 public final class AsyncTaskManager implements IProgressTracker, OnCancelListener {
 
     private final OnTaskCompleteListener mTaskCompleteListener;
-    private final ProgressDialog mProgressDialog;
     private FetchCalendarTask mAsyncTask;
 
     public AsyncTaskManager(Context context, OnTaskCompleteListener taskCompleteListener) {
         // Save reference to complete listener (activity)
         mTaskCompleteListener = taskCompleteListener;
-        // Setup progress dialog
-        mProgressDialog = new ProgressDialog(context);
-        mProgressDialog.setIndeterminate(true);
-        mProgressDialog.setCancelable(true);
-        mProgressDialog.setOnCancelListener(this);
     }
 
     public void setupTask(FetchCalendarTask asyncTask, String ... params) {
@@ -39,11 +33,6 @@ public final class AsyncTaskManager implements IProgressTracker, OnCancelListene
     @Override
     public void onProgress(String message) {
         // Show dialog if it wasn't shown yet or was removed on configuration (rotation) change
-        if (!mProgressDialog.isShowing()) {
-            mProgressDialog.show();
-        }
-        // Show current message in progress dialog
-        mProgressDialog.setMessage(message);
     }
 
     @Override
@@ -64,7 +53,6 @@ public final class AsyncTaskManager implements IProgressTracker, OnCancelListene
 
         // Notify activity about completion
         mTaskCompleteListener.onTaskComplete(mAsyncTask);
-        mProgressDialog.dismiss();
         // Reset task
         mAsyncTask = null;
     }

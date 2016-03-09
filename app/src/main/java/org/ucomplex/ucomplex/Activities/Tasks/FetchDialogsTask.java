@@ -28,16 +28,11 @@ public class FetchDialogsTask extends AsyncTask<Integer, String, ArrayList> impl
 
     private IProgressTracker mProgressTracker;
     private final OnTaskCompleteListener mTaskCompleteListener;
-    private final ProgressDialog mProgressDialog;
 
     public FetchDialogsTask(Activity context, OnTaskCompleteListener taskCompleteListener) {
         this.mContext = context;
         this.caller = (MessagesListActivity) mContext;
         this.mTaskCompleteListener = taskCompleteListener;
-        mProgressDialog = new ProgressDialog(context);
-        mProgressDialog.setIndeterminate(true);
-        mProgressDialog.setCancelable(true);
-        mProgressDialog.setOnCancelListener(this);
     }
 
 
@@ -106,16 +101,12 @@ public class FetchDialogsTask extends AsyncTask<Integer, String, ArrayList> impl
 
     @Override
     public void onProgress(String message) {
-        if (!mProgressDialog.isShowing()) {
-            mProgressDialog.show();
-        }
-        mProgressDialog.setMessage(message);
+
     }
 
     @Override
     public void onComplete() {
         mTaskCompleteListener.onTaskComplete(this);
-        mProgressDialog.dismiss();
     }
 
     @Override

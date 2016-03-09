@@ -3,24 +3,19 @@ package org.ucomplex.ucomplex.Fragments;
 import android.app.Activity;
 import android.app.DownloadManager;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.design.widget.Snackbar;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ListFragment;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
 import android.view.ContextMenu;
-import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -33,12 +28,13 @@ import org.ucomplex.ucomplex.Model.StudyStructure.File;
 import org.ucomplex.ucomplex.R;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.concurrent.ExecutionException;
 
-public class CourseMaterialsFragment extends ListFragment {
+public class CourseMaterialsFragment extends ListFragment{
 
 
     private ArrayList<File> mItems;
+    OnHeadlineSelectedListener mCallback;
 
     private Activity mContext;
     private boolean myFiles = false;
@@ -85,10 +81,24 @@ public class CourseMaterialsFragment extends ListFragment {
             mItems = new ArrayList<>();
         }
         //form Materials menu
-        if(adapter==null){
+        if (adapter == null) {
             adapter = new CourseMaterialsAdapter(getActivity(), mItems, myFiles, this);
         }
         setListAdapter(adapter);
+
+
+    }
+
+
+
+    public interface OnHeadlineSelectedListener {
+        public void onFolderSelect(String title);
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        setListShown(true);
+        super.onActivityCreated(savedInstanceState);
     }
 
     @Override
@@ -96,13 +106,22 @@ public class CourseMaterialsFragment extends ListFragment {
         // retrieve theListView item
         File item = mItems.get(position);
         if (item.getType().equals("f")) {
+            mCallback.onFolderSelect(item.getName());
             adapter.levelUp();
             Common.folderCode = item.getAddress();
             if (adapter.level > adapter.stackFiles.size() - 1) {
                 if (!myFiles) {
-                    FetchTeacherFilesTask fetchTeacherFilesTask = new FetchTeacherFilesTask(mContext, (OnTaskCompleteListener) mContext);
-                    fetchTeacherFilesTask.setOwner(item.getOwner());
-                    fetchTeacherFilesTask.setupTask(item.getAddress());
+                    new FetchTeacherFilesTask(mContext, (OnTaskCompleteListener) mContext){
+                        @Override
+                        protected void onPostExecute(ArrayList fileArrayList) {
+                            mItems.clear();
+                            ArrayList<File> newFiles = new ArrayList<>(fileArrayList);
+                            mItems.addAll(newFiles);
+                            adapter.stackFiles.add(newFiles);
+                            adapter.notifyDataSetChanged();
+                        }
+                    }.execute(item.getAddress(), item.getOwner());
+
                 } else {
                     FetchMyFilesTask fetchMyFilesTask = new FetchMyFilesTask(mContext, (OnTaskCompleteListener) mContext);
                     fetchMyFilesTask.setupTask(item.getAddress());
@@ -151,6 +170,21 @@ public class CourseMaterialsFragment extends ListFragment {
         super.onViewCreated(view, savedInstanceState);
         getListView().setDivider(new ColorDrawable(ContextCompat.getColor(mContext, R.color.activity_background)));
         getListView().setDividerHeight(3);
+
+    }
+
+    @Override
+    public void onAttach(Context activity) {
+        super.onAttach(activity);
+
+        // This makes sure that the container activity has implemented
+        // the callback interface. If not, it throws an exception
+        try {
+            mCallback = (OnHeadlineSelectedListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString()
+                    + " must implement OnHeadlineSelectedListener");
+        }
     }
 
     public void setmContext(Activity mContext) {

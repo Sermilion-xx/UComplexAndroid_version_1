@@ -24,19 +24,13 @@ public class FetchMyFilesTask extends AsyncTask<String, String, ArrayList<File>>
 
     private IProgressTracker mProgressTracker;
     private final OnTaskCompleteListener mTaskCompleteListener;
-    private final ProgressDialog mProgressDialog;
 
     ArrayList<File> files;
 
     public FetchMyFilesTask(Activity context, OnTaskCompleteListener taskCompleteListener) {
         this.mContext = context;
         this.caller = (MyFilesActivity) mContext;
-
         this.mTaskCompleteListener = taskCompleteListener;
-        mProgressDialog = new ProgressDialog(context);
-        mProgressDialog.setIndeterminate(true);
-        mProgressDialog.setCancelable(true);
-        mProgressDialog.setOnCancelListener(this);
     }
 
     public void setupTask(String ... params) {
@@ -98,10 +92,7 @@ public class FetchMyFilesTask extends AsyncTask<String, String, ArrayList<File>>
 
     @Override
     public void onProgress(String message) {
-        if (!mProgressDialog.isShowing()) {
-            mProgressDialog.show();
-        }
-        mProgressDialog.setMessage(message);
+
     }
 
     @Override
@@ -113,6 +104,5 @@ public class FetchMyFilesTask extends AsyncTask<String, String, ArrayList<File>>
     @Override
     public void onComplete() {
         mTaskCompleteListener.onTaskComplete(this);
-        mProgressDialog.dismiss();
     }
 }

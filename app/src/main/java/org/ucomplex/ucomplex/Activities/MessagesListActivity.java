@@ -13,12 +13,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import org.ucomplex.ucomplex.Activities.Tasks.FetchDialogsTask;
 import org.ucomplex.ucomplex.Adaptors.MessagesListAdapter;
 import org.ucomplex.ucomplex.Common;
+import org.ucomplex.ucomplex.Fragments.CourseMaterialsFragment;
 import org.ucomplex.ucomplex.Interfaces.OnTaskCompleteListener;
 import org.ucomplex.ucomplex.Model.Dialog;
 import org.ucomplex.ucomplex.R;
@@ -32,6 +34,7 @@ public class MessagesListActivity extends AppCompatActivity implements OnTaskCom
     ArrayList<Dialog> dialogs = new ArrayList<>();
     MessagesListAdapter messagesListAdapter;
     private int selectedItemPos;
+    LinearLayout linlaHeaderProgress;
 
     @Override
     protected void onResume() {
@@ -57,6 +60,7 @@ public class MessagesListActivity extends AppCompatActivity implements OnTaskCom
             int messageCount = bundle.getInt("newMessage");
             if (messageCount > 0) {
                 FetchDialogsTask fetchDialogsTask = new FetchDialogsTask(MessagesListActivity.this, MessagesListActivity.this);
+                linlaHeaderProgress.setVisibility(View.VISIBLE);
                 fetchDialogsTask.setupTask();
             }
         }
@@ -71,7 +75,9 @@ public class MessagesListActivity extends AppCompatActivity implements OnTaskCom
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_menu);
+        linlaHeaderProgress = (LinearLayout) findViewById(R.id.linlaHeaderProgress);
         FetchDialogsTask fetchDialogsTask = new FetchDialogsTask(this, this);
+        linlaHeaderProgress.setVisibility(View.VISIBLE);
         fetchDialogsTask.setupTask();
     }
 
@@ -143,6 +149,7 @@ public class MessagesListActivity extends AppCompatActivity implements OnTaskCom
                     .show();
         } else {
             try {
+                linlaHeaderProgress.setVisibility(View.GONE);
                 dialogs = (ArrayList<Dialog>) task.get();
                 if (dialogs != null && dialogs.size() > 0) {
                     messagesListAdapter = new MessagesListAdapter(this, dialogs);

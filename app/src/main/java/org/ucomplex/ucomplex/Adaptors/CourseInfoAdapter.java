@@ -69,6 +69,9 @@ public class CourseInfoAdapter extends BaseAdapter {
         robotoFont  = Typeface.createFromAsset(mContext.getAssets(), "fonts/Roboto-Regular.ttf");
     }
 
+    public ArrayList<Quartet<String, String, String, String>> getmItems() {
+        return mItems;
+    }
 
     @Override
     public int getItemViewType(int position) {
@@ -201,7 +204,7 @@ public class CourseInfoAdapter extends BaseAdapter {
         return drawable;
     }
 
-    private class ViewHolder {
+    public class ViewHolder {
         int holderId;
 
         CircleImageView teacherImageView;
@@ -210,5 +213,10 @@ public class CourseInfoAdapter extends BaseAdapter {
         TextView markTextView;
         TextView attendanceTextView;
 
+        public CircleImageView getTeacherImageView() {
+            return teacherImageView;
+        }
     }
+
+
 }

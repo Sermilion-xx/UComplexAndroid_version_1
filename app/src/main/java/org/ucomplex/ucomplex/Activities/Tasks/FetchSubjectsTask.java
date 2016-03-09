@@ -30,7 +30,7 @@ public class FetchSubjectsTask extends AsyncTask<Void, String, ArrayList<Triplet
     private String mProgressMessage;
     private IProgressTracker mProgressTracker;
     private final OnTaskCompleteListener mTaskCompleteListener;
-    private final ProgressDialog mProgressDialog;
+//    private final ProgressDialog mProgressDialog;
     ArrayList<Triplet<String, String, Integer>> subjectsListArray;
 
 
@@ -38,10 +38,10 @@ public class FetchSubjectsTask extends AsyncTask<Void, String, ArrayList<Triplet
         this.mContext = context;
         this.caller = (SubjectsActivity) mContext;
         this.mTaskCompleteListener = taskCompleteListener;
-        mProgressDialog = new ProgressDialog(context);
-        mProgressDialog.setIndeterminate(true);
-        mProgressDialog.setCancelable(true);
-        mProgressDialog.setOnCancelListener(this);
+//        mProgressDialog = new ProgressDialog(context);
+//        mProgressDialog.setIndeterminate(true);
+//        mProgressDialog.setCancelable(true);
+//        mProgressDialog.setOnCancelListener(this);
     }
 
     public void setupTask(Void ... params) {
@@ -136,11 +136,11 @@ public class FetchSubjectsTask extends AsyncTask<Void, String, ArrayList<Triplet
     @Override
     public void onProgress(String message) {
         // Show dialog if it wasn't shown yet or was removed on configuration (rotation) change
-        if (!mProgressDialog.isShowing()) {
-            mProgressDialog.show();
-        }
-        // Show current message in progress dialog
-        mProgressDialog.setMessage(message);
+//        if (!mProgressDialog.isShowing()) {
+//            mProgressDialog.show();
+//        }
+//        // Show current message in progress dialog
+//        mProgressDialog.setMessage(message);
     }
 
     @Override
@@ -156,7 +156,7 @@ public class FetchSubjectsTask extends AsyncTask<Void, String, ArrayList<Triplet
         // Close progress dialog
         // Notify activity about completion
         mTaskCompleteListener.onTaskComplete(this);
-        mProgressDialog.dismiss();
+//        mProgressDialog.dismiss();
         // Reset task
     }
 }

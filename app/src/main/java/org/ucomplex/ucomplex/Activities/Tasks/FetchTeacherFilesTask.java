@@ -21,15 +21,13 @@ import java.util.HashMap;
 /**
  * Created by Sermilion on 02/01/2016.
  */
-public class FetchTeacherFilesTask extends AsyncTask<String, String, ArrayList> implements  DialogInterface.OnCancelListener {
+public class FetchTeacherFilesTask extends AsyncTask<Object, String, ArrayList> implements  DialogInterface.OnCancelListener, IProgressTracker {
 
     Activity mContext;
     CourseActivity caller;
     ArrayList<File> fileArrayList;
     User owner;
 
-    private String mProgressMessage;
-    private IProgressTracker mProgressTracker;
     private final OnTaskCompleteListener mTaskCompleteListener;
     private final ProgressDialog mProgressDialog;
 
@@ -54,10 +52,13 @@ public class FetchTeacherFilesTask extends AsyncTask<String, String, ArrayList> 
     }
 
     @Override
-    protected ArrayList doInBackground(String... params) {
+    protected ArrayList doInBackground(Object... params) {
         String urlString = "https://chgu.org/student/ajax/teacher_files?mobile=1";
         HashMap<String, String> httpParams = new HashMap<>();
-        httpParams.put("folder", params[0]);
+        httpParams.put("folder", (String) params[0]);
+        if(params.length>1){
+            this.owner = (User) params[1];
+        }
         String jsonData = Common.httpPost(urlString, Common.getLoginDataFromPref(mContext),httpParams);
         fileArrayList = getFileDataFromJson(jsonData);
         return fileArrayList;
@@ -99,5 +100,15 @@ public class FetchTeacherFilesTask extends AsyncTask<String, String, ArrayList> 
     public void onCancel(DialogInterface dialog) {
         this.cancel(true);
         mTaskCompleteListener.onTaskComplete(this);
+    }
+
+    @Override
+    public void onProgress(String message) {
+
+    }
+
+    @Override
+    public void onComplete() {
+
     }
 }
