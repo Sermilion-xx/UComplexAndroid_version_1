@@ -242,40 +242,42 @@ public class Common {
     public static ArrayList getFileDataFromJson(String jsonData, Activity contex) {
         ArrayList<org.ucomplex.ucomplex.Model.StudyStructure.File> files = new ArrayList<>();
         JSONObject fileJson;
+        if (jsonData != null) {
+            try {
+                fileJson = new JSONObject(jsonData);
+                JSONArray filesArray = fileJson.getJSONArray("files");
 
-        try {
-            fileJson = new JSONObject(jsonData);
-            JSONArray filesArray = fileJson.getJSONArray("files");
-
-            for (int i = 0; i < filesArray.length(); i++) {
-                org.ucomplex.ucomplex.Model.StudyStructure.File file = new org.ucomplex.ucomplex.Model.StudyStructure.File();
-                JSONObject jsonFile = filesArray.getJSONObject(i);
-                if (!jsonFile.isNull("size")) {
-                    file.setSize(jsonFile.getInt("size"));
+                for (int i = 0; i < filesArray.length(); i++) {
+                    org.ucomplex.ucomplex.Model.StudyStructure.File file = new org.ucomplex.ucomplex.Model.StudyStructure.File();
+                    JSONObject jsonFile = filesArray.getJSONObject(i);
+                    if (!jsonFile.isNull("size")) {
+                        file.setSize(jsonFile.getInt("size"));
+                    }
+                    if (jsonFile.has("time")) {
+                        file.setTime(jsonFile.getString("time"));
+                    } else {
+                        String timeStamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", new Locale("ru")).format(Calendar.getInstance().getTime());
+                        file.setTime(timeStamp);
+                    }
+                    file.setAddress(jsonFile.getString("address"));
+                    file.setName(jsonFile.getString("name"));
+                    file.setType(jsonFile.getString("type"));
+                    if (jsonFile.has("check_time")) {
+                        file.setCheckTime(jsonFile.getString("check_time"));
+                    }
+                    SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(contex);
+                    Gson gson = new Gson();
+                    String json = pref.getString("loggedUser", "");
+                    User obj = gson.fromJson(json, User.class);
+                    file.setOwner(obj);
+                    files.add(file);
                 }
-                if (jsonFile.has("time")) {
-                    file.setTime(jsonFile.getString("time"));
-                } else {
-                    String timeStamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", new Locale("ru")).format(Calendar.getInstance().getTime());
-                    file.setTime(timeStamp);
-                }
-                file.setAddress(jsonFile.getString("address"));
-                file.setName(jsonFile.getString("name"));
-                file.setType(jsonFile.getString("type"));
-                if (jsonFile.has("check_time")) {
-                    file.setCheckTime(jsonFile.getString("check_time"));
-                }
-                SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(contex);
-                Gson gson = new Gson();
-                String json = pref.getString("loggedUser", "");
-                User obj = gson.fromJson(json, User.class);
-                file.setOwner(obj);
-                files.add(file);
+                return files;
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
-            return files;
-        } catch (JSONException e) {
-            e.printStackTrace();
         }
+
         return null;
     }
 
@@ -489,7 +491,7 @@ public class Common {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        if(r.equals("")){
+        if (r.equals("")) {
             r = yyyyMMdd;
         }
         return r;

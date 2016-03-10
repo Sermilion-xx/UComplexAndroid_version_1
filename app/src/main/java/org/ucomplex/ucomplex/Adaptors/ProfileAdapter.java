@@ -36,7 +36,6 @@ public class ProfileAdapter extends ArrayAdapter<Triplet> {
     private static final int TYPE_HEADER = 0;
     private static final int TYPE_INFO = 1;
 
-    private ProgressDialog mDialog;
     private Bitmap mBitmap;
     private User mUser;
     private Context mContext;
@@ -44,13 +43,12 @@ public class ProfileAdapter extends ArrayAdapter<Triplet> {
     private LayoutInflater inflater;
     private Typeface robotoFont = Typeface.createFromAsset(getContext().getAssets(), "fonts/Roboto-Regular.ttf");
 
-    public ProfileAdapter(Context context, List<Triplet> profileItems, Bitmap bitmap, ProgressDialog dialog) {
+    public ProfileAdapter(Context context, List<Triplet> profileItems, Bitmap bitmap) {
         super(context, R.layout.list_item_profile_header, profileItems);
         mUser = (User) profileItems.get(0).getValue1();
         mContext = context;
         mBitmap = bitmap;
         mItems = profileItems;
-        mDialog = dialog;
     }
 
     private View createHolder(ViewHolder viewHolder, View convertView, int viewType, ViewGroup parent, int posision) {
@@ -67,7 +65,7 @@ public class ProfileAdapter extends ArrayAdapter<Triplet> {
             viewHolder.mUserImageView = (CircleImageView) convertView.findViewById(R.id.list_profile_profile_picture);
             viewHolder.mFirstNameView = (TextView) convertView.findViewById(R.id.list_profile_firstname);
             viewHolder.mLastNameView = (TextView) convertView.findViewById(R.id.list_profile_lastname);
-            viewHolder.mEmailView = (TextView) convertView.findViewById(R.id.list_profile_role);
+//            viewHolder.mEmailView = (TextView) convertView.findViewById(R.id.list_profile_role);
             viewHolder.mOnline = (CircleImageView) convertView.findViewById(R.id.list_profile_online);
             viewHolder.holderId = TYPE_HEADER;
         } else if (viewType == TYPE_INFO) {
@@ -113,8 +111,8 @@ public class ProfileAdapter extends ArrayAdapter<Triplet> {
                 viewHolder.mLastNameView.setText(fullName[1] + " " + fullName[2]);
             }
 
-            viewHolder.mEmailView.setTypeface(robotoFont);
-            viewHolder.mEmailView.setText(mUser.getEmail());
+//            viewHolder.mEmailView.setTypeface(robotoFont);
+//            viewHolder.mEmailView.setText(mUser.getEmail());
         } else if (viewType == TYPE_INFO) {
             Integer[] icons = new Integer[]{
                     R.drawable.ic_role_1,
@@ -181,7 +179,7 @@ public class ProfileAdapter extends ArrayAdapter<Triplet> {
         CircleImageView mRole;
         TextView mFirstNameView;
         TextView mLastNameView;
-        TextView mEmailView;
+//        TextView mEmailView;
 
         TextView mInfoKey;
         TextView mInfoValue;

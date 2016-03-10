@@ -1,5 +1,7 @@
 package org.ucomplex.ucomplex.Activities;
 
+import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
@@ -88,6 +90,8 @@ public class CourseActivity extends AppCompatActivity implements OnTaskCompleteL
         }
         super.onBackPressed();
     }
+
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

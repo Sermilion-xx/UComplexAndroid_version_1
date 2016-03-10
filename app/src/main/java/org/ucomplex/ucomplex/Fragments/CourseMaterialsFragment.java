@@ -1,8 +1,11 @@
 package org.ucomplex.ucomplex.Fragments;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.app.DownloadManager;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -12,6 +15,7 @@ import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ListFragment;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -27,6 +31,12 @@ import org.ucomplex.ucomplex.Interfaces.OnTaskCompleteListener;
 import org.ucomplex.ucomplex.Model.StudyStructure.File;
 import org.ucomplex.ucomplex.R;
 
+import java.io.BufferedInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
@@ -39,6 +49,11 @@ public class CourseMaterialsFragment extends ListFragment{
     private Activity mContext;
     private boolean myFiles = false;
     private CourseMaterialsAdapter adapter;
+
+    public static final int DIALOG_DOWNLOAD_PROGRESS = 0;
+    private ProgressDialog mProgressDialog;
+
+
 
     public void setAdapter(CourseMaterialsAdapter adapter) {
         this.adapter = adapter;
@@ -134,20 +149,28 @@ public class CourseMaterialsFragment extends ListFragment{
             }
         } else {
             Common.folderCode = null;
-            if (Common.isDownloadManagerAvailable()) {
-                final String UC_BASE_URL = "https://chgu.org/files/users/" + String.valueOf(item.getOwner().getId()) + "/" + item.getAddress() + "." + item.getType();
-                DownloadManager.Request request = new DownloadManager.Request(Uri.parse(UC_BASE_URL));
-                request.setDescription("Загрузка");
-                request.setTitle(item.getName());
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-                    request.allowScanningByMediaScanner();
-                    request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
-                }
-                request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, item.getName());
-                DownloadManager manager = (DownloadManager) getContext().getSystemService(Context.DOWNLOAD_SERVICE);
-                manager.enqueue(request);
-                Toast.makeText(getActivity(), "Идет загрузка...", Toast.LENGTH_SHORT).show();
-            }
+            startDownload(item);
+//            if (Common.isDownloadManagerAvailable()) {
+//                final String UC_BASE_URL = "https://chgu.org/files/users/" + String.valueOf(item.getOwner().getId()) + "/" + item.getAddress() + "." + item.getType();
+//                DownloadManager.Request request = new DownloadManager.Request(Uri.parse(UC_BASE_URL));
+//                request.setDescription("Загрузка");
+//                request.setTitle(item.getName());
+//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+//                    request.allowScanningByMediaScanner();
+//                    request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+//                }
+//                request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, item.getName());
+//                DownloadManager manager = (DownloadManager) getContext().getSystemService(Context.DOWNLOAD_SERVICE);
+//                try {
+//                    manager.enqueue(request);
+//                    Toast.makeText(getActivity(), "Идет загрузка...", Toast.LENGTH_SHORT).show();
+//                }catch (SecurityException e){
+////                    Log.e("Download ", e.printStackTrace());
+//                    e.printStackTrace();
+//                    Toast.makeText(getActivity(), "Ошибка доступа", Toast.LENGTH_SHORT).show();
+//                }
+//
+//            }
         }
     }
 
@@ -189,6 +212,71 @@ public class CourseMaterialsFragment extends ListFragment{
 
     public void setmContext(Activity mContext) {
         this.mContext = mContext;
+    }
+
+    private void startDownload(File item) {
+        String url = "http://storage.ucomplex.org/files/users/683/821dd76f2f47f08a.docx";
+        new DownloadFileAsync().execute(item);
+    }
+
+
+    class DownloadFileAsync extends AsyncTask<File, String, String> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            mProgressDialog = new ProgressDialog(getContext());
+            mProgressDialog.setMessage("Downloading file..");
+            mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+            mProgressDialog.setCancelable(false);
+            mProgressDialog.show();
+        }
+
+        @Override
+        protected String doInBackground(File ... item) {
+//            int count;
+            final String UC_BASE_URL = "http://storage.ucomplex.org/files/users/" + String.valueOf(item[0].getOwner().getId()) + "/" + item[0].getAddress() + "." + item[0].getType();
+            mContext.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(UC_BASE_URL)));
+//            try {
+//                final String UC_BASE_URL = "https://chgu.org/files/users/" + String.valueOf(item[0].getOwner().getId()) + "/" + item[0].getAddress() + "." + item[0].getType();
+//                URL url = new URL(UC_BASE_URL);
+//                URLConnection conexion = url.openConnection();
+//                conexion.connect();
+//
+//                int lenghtOfFile = conexion.getContentLength();
+//                Log.d("ANDRO_ASYNC", "Lenght of file: " + lenghtOfFile);
+//
+//                InputStream input = new BufferedInputStream(url.openStream());
+//                OutputStream output = new FileOutputStream("/sdcard/"+item[0].getName());
+//
+//                byte data[] = new byte[1024];
+//
+//                long total = 0;
+//
+//                while ((count = input.read(data)) != -1) {
+//                    total += count;
+//                    publishProgress(""+(int)((total*100)/lenghtOfFile));
+//                    output.write(data, 0, count);
+//                }
+//
+//                output.flush();
+//                output.close();
+//                input.close();
+//            } catch (Exception e) {}
+//            return null;
+//
+//        }
+            return null;
+        }
+        protected void onProgressUpdate(String... progress) {
+            Log.d("ANDRO_ASYNC",progress[0]);
+            mProgressDialog.setProgress(Integer.parseInt(progress[0]));
+        }
+
+        @Override
+        protected void onPostExecute(String unused) {
+            mProgressDialog.dismiss();
+        }
     }
 }
 

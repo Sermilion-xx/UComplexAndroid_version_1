@@ -32,15 +32,11 @@ public class ProfileFragment extends ListFragment {
     List<Triplet> mItems;
     int hasPhoto = 0;
     String code;
-    ProgressDialog progress;
 
     public ProfileFragment() {
 
     }
 
-    public void setProgress(ProgressDialog progress) {
-        this.progress = progress;
-    }
 
     public void setHasPhoto(int hasPhoto) {
         this.hasPhoto = hasPhoto;
@@ -86,12 +82,12 @@ public class ProfileFragment extends ListFragment {
                 @Override
                 protected void onPostExecute(Bitmap bitmap) {
                     mBitmap = bitmap;
-                    mAdapter = new ProfileAdapter(mContext, mItems, mBitmap, progress);
+                    mAdapter = new ProfileAdapter(mContext, mItems, mBitmap);
                     setListAdapter(mAdapter);
                 }
             }.execute(code);
         }else{
-            mAdapter = new ProfileAdapter(mContext, mItems, mBitmap, progress);
+            mAdapter = new ProfileAdapter(mContext, mItems, mBitmap);
             setListAdapter(mAdapter);
         }
         getListView().setDivider(null);
@@ -100,6 +96,5 @@ public class ProfileFragment extends ListFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        progress.dismiss();
     }
 }

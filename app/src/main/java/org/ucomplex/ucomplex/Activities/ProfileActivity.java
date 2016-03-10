@@ -10,6 +10,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import org.javatuples.Triplet;
@@ -36,12 +38,14 @@ public class ProfileActivity extends AppCompatActivity implements OnTaskComplete
     User mUser;
     int hasPhoto;
     String code;
-    ProgressDialog profileProgress;
+    LinearLayout linlaHeaderProgress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_person);
+        linlaHeaderProgress = (LinearLayout) findViewById(R.id.linlaHeaderProgress);
+        linlaHeaderProgress.setVisibility(View.VISIBLE);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("Профиль");
         setSupportActionBar(toolbar);
@@ -49,10 +53,6 @@ public class ProfileActivity extends AppCompatActivity implements OnTaskComplete
         final Bundle extra = getIntent().getExtras();
 
         if (extra != null) {
-            profileProgress = new ProgressDialog(this);
-            profileProgress.setMessage("Загрузка пользователя...");
-            profileProgress.show();
-
             personId = Integer.parseInt(extra.getString("person"));
             bitmap = extra.getParcelable("bitmap");
             hasPhoto = Integer.parseInt(extra.getString("hasPhoto"));
@@ -62,6 +62,8 @@ public class ProfileActivity extends AppCompatActivity implements OnTaskComplete
             fetchPersonTask.setPerson(String.valueOf(personId));
             fetchPersonTask.setmContext(this);
             fetchPersonTask.setupTask();
+        }else{
+            linlaHeaderProgress.setVisibility(View.GONE);
         }
     }
 
@@ -118,13 +120,13 @@ public class ProfileActivity extends AppCompatActivity implements OnTaskComplete
             profileFragment.setmUser(mUser);
             profileFragment.setmItems(items);
             profileFragment.setCode(code);
-            profileFragment.setProgress(profileProgress);
 
             FragmentManager fragmentManager = getSupportFragmentManager();
             FragmentTransaction fragmentTransaction =
                     fragmentManager.beginTransaction();
             fragmentTransaction.replace(R.id.content_person, profileFragment);
             fragmentTransaction.commit();
+            linlaHeaderProgress.setVisibility(View.GONE);
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
