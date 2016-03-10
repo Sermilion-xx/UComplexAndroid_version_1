@@ -1,17 +1,13 @@
 package org.ucomplex.ucomplex.Fragments;
 
 import android.app.Activity;
-import android.app.Dialog;
-import android.app.DownloadManager;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ListFragment;
 import android.support.v4.content.ContextCompat;
@@ -21,7 +17,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import org.ucomplex.ucomplex.Activities.Tasks.FetchMyFilesTask;
 import org.ucomplex.ucomplex.Activities.Tasks.FetchTeacherFilesTask;
@@ -31,16 +26,9 @@ import org.ucomplex.ucomplex.Interfaces.OnTaskCompleteListener;
 import org.ucomplex.ucomplex.Model.StudyStructure.File;
 import org.ucomplex.ucomplex.R;
 
-import java.io.BufferedInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
-import java.util.concurrent.ExecutionException;
 
-public class CourseMaterialsFragment extends ListFragment{
+public class CourseMaterialsFragment extends ListFragment {
 
 
     private ArrayList<File> mItems;
@@ -52,7 +40,6 @@ public class CourseMaterialsFragment extends ListFragment{
 
     public static final int DIALOG_DOWNLOAD_PROGRESS = 0;
     private ProgressDialog mProgressDialog;
-
 
 
     public void setAdapter(CourseMaterialsAdapter adapter) {
@@ -105,7 +92,6 @@ public class CourseMaterialsFragment extends ListFragment{
     }
 
 
-
     public interface OnHeadlineSelectedListener {
         public void onFolderSelect(String title);
     }
@@ -126,7 +112,7 @@ public class CourseMaterialsFragment extends ListFragment{
             Common.folderCode = item.getAddress();
             if (adapter.level > adapter.stackFiles.size() - 1) {
                 if (!myFiles) {
-                    new FetchTeacherFilesTask(mContext, (OnTaskCompleteListener) mContext){
+                    new FetchTeacherFilesTask(mContext, (OnTaskCompleteListener) mContext) {
                         @Override
                         protected void onPostExecute(ArrayList fileArrayList) {
                             mItems.clear();
@@ -233,43 +219,15 @@ public class CourseMaterialsFragment extends ListFragment{
         }
 
         @Override
-        protected String doInBackground(File ... item) {
-//            int count;
+        protected String doInBackground(File... item) {
+
             final String UC_BASE_URL = "http://storage.ucomplex.org/files/users/" + String.valueOf(item[0].getOwner().getId()) + "/" + item[0].getAddress() + "." + item[0].getType();
             mContext.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(UC_BASE_URL)));
-//            try {
-//                final String UC_BASE_URL = "https://chgu.org/files/users/" + String.valueOf(item[0].getOwner().getId()) + "/" + item[0].getAddress() + "." + item[0].getType();
-//                URL url = new URL(UC_BASE_URL);
-//                URLConnection conexion = url.openConnection();
-//                conexion.connect();
-//
-//                int lenghtOfFile = conexion.getContentLength();
-//                Log.d("ANDRO_ASYNC", "Lenght of file: " + lenghtOfFile);
-//
-//                InputStream input = new BufferedInputStream(url.openStream());
-//                OutputStream output = new FileOutputStream("/sdcard/"+item[0].getName());
-//
-//                byte data[] = new byte[1024];
-//
-//                long total = 0;
-//
-//                while ((count = input.read(data)) != -1) {
-//                    total += count;
-//                    publishProgress(""+(int)((total*100)/lenghtOfFile));
-//                    output.write(data, 0, count);
-//                }
-//
-//                output.flush();
-//                output.close();
-//                input.close();
-//            } catch (Exception e) {}
-//            return null;
-//
-//        }
             return null;
         }
+
         protected void onProgressUpdate(String... progress) {
-            Log.d("ANDRO_ASYNC",progress[0]);
+            Log.d("ANDRO_ASYNC", progress[0]);
             mProgressDialog.setProgress(Integer.parseInt(progress[0]));
         }
 
