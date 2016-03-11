@@ -191,14 +191,6 @@ public class EventsActivity extends AppCompatActivity implements OnTaskCompleteL
         mDrawerToggle.syncState();
     }
 
-
-
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        getMenuInflater().inflate(R.menu.menu_main, menu);
-//        return true;
-//    }
-
     @Override
     public void onBackPressed() {
         if (this.Drawer.isDrawerOpen(GravityCompat.START)) {

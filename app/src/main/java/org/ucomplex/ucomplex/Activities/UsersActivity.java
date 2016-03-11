@@ -39,12 +39,19 @@ import java.util.HashMap;
 public class UsersActivity extends AppCompatActivity {
 
     ViewPager pager;
-    private PagerSlidingTabStrip tabs;
     private ViewPagerAdapter adapter;
+    AlertDialog.Builder builderSingle;
+    boolean searchShowing;
 
     @Override
-    protected void onPostResume() {
-        super.onPostResume();
+    protected void onResume() {
+        super.onResume();
+        if(searchShowing){
+            if(builderSingle!=null){
+                builderSingle.show();
+            }
+        }
+
     }
 
     @Override
@@ -72,7 +79,7 @@ public class UsersActivity extends AppCompatActivity {
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_menu);
         handleIntent(getIntent());
 
-        tabs = (PagerSlidingTabStrip) findViewById(R.id.tabs);
+        PagerSlidingTabStrip tabs = (PagerSlidingTabStrip) findViewById(R.id.tabs);
         pager = (ViewPager) findViewById(R.id.users_viewpager);
         adapter = new ViewPagerAdapter(getSupportFragmentManager());
         setupViewPager(pager);
@@ -220,7 +227,7 @@ public class UsersActivity extends AppCompatActivity {
             super.onPostExecute(users);
 
             progressDialog.dismiss();
-            AlertDialog.Builder builderSingle = new AlertDialog.Builder(UsersActivity.this);
+            builderSingle = new AlertDialog.Builder(UsersActivity.this);
             builderSingle.setTitle("Найденные пользователи");
 
             final ImageAdapter imageAdapter = new ImageAdapter(users, UsersActivity.this,0);
@@ -230,6 +237,7 @@ public class UsersActivity extends AppCompatActivity {
                     new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
+                            searchShowing = false;
                             dialog.dismiss();
                         }
                     });
@@ -239,19 +247,29 @@ public class UsersActivity extends AppCompatActivity {
                     new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            User user = imageAdapter.getItem(which);
-                            Intent intent = new Intent(UsersActivity.this, PersonActivity.class);
-                            Bundle extras = new Bundle();
-                            if (user.getPerson() == 0) {
-                                extras.putString("person", String.valueOf(user.getId()));
-                            } else {
-                                extras.putString("person", String.valueOf(user.getPerson()));
-                            }
-                            intent.putExtras(extras);
-                            startActivity(intent);
+                            if(Common.isNetworkConnected(UsersActivity.this)){
+                                User user = imageAdapter.getItem(which);
+                                Intent intent = new Intent(UsersActivity.this, ProfileActivity.class);
+                                Bundle extras = new Bundle();
+                                if (user.getPerson() == 0) {
+                                    extras.putString("person", String.valueOf(user.getId()));
+                                } else {
+                                    extras.putString("person", String.valueOf(user.getPerson()));
+                                }
+                                if (user.getPhotoBitmap() != null) {
+                                    intent.putExtra("bitmap", user.getPhotoBitmap());
+                                }
+                                extras.putString("hasPhoto", String.valueOf(user.getPhoto()));
+                                extras.putString("code", user.getCode());
+                                intent.putExtras(extras);
+                                startActivity(intent);
+                            }else {
+                                Toast.makeText(UsersActivity.this, "Проверте интернет соединение.", Toast.LENGTH_LONG).show();
+                        }
                         }
                     });
             builderSingle.show();
+            searchShowing = true;
         }
     }
 
