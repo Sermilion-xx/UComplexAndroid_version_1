@@ -83,6 +83,7 @@ public class EventsFragment extends ListFragment {
                     intent.putExtra("gcourse", eventItems.get(position).getParams().getGcourse());
                     intent.putExtra("type", eventItems.get(position).getType());
                     intent.putExtra("bitmap", eventItems.get(position).getEventImageBitmap());
+                    intent.putExtra("courseName", eventItems.get(position).getParams().getCourseName());
                     startActivity(intent);
                 }
             }

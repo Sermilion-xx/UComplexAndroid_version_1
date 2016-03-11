@@ -70,8 +70,10 @@ public class CourseActivity extends AppCompatActivity implements OnTaskCompleteL
             @Override
             public void onPageSelected(int position) {
                 if(position==1){
-                    if (courseMaterialsFragment.getAdapter().getLevel() > 0) {
-                        toolbar.setTitle(titles.get(courseMaterialsFragment.getAdapter().getLevel()));
+                    if(courseMaterialsFragment!=null){
+                        if (courseMaterialsFragment.getAdapter().getLevel() > 0) {
+                            toolbar.setTitle(titles.get(courseMaterialsFragment.getAdapter().getLevel()));
+                        }
                     }
                 } else {
                     toolbar.setTitle(courseName);
@@ -85,7 +87,7 @@ public class CourseActivity extends AppCompatActivity implements OnTaskCompleteL
         });
         adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFragment(new Fragment(), "Дисциплина");
-        adapter.addFragment(new Fragment(), titles.get(0));
+        adapter.addFragment(new Fragment(), "Материалы");
         adapter.addFragment(new Fragment(), "Лента");
         viewPager.setAdapter(adapter);
         tabLayout = (TabLayout) findViewById(R.id.tabs);
