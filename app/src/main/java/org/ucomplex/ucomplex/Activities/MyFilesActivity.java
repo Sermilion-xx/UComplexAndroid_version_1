@@ -74,11 +74,11 @@ public class MyFilesActivity extends AppCompatActivity implements OnTaskComplete
         switch (item.getItemId()) {
             case android.R.id.home:
                 onBackPressed();
-                if(courseMaterialsFragment.getAdapter().getLevel()==0){
-                    toolbar.setTitle("Материалы");
-                }else{
-                    toolbar.setTitle(courseMaterialsFragment.getFiles().get(courseMaterialsFragment.getAdapter().getLevel()+1).getName());
-                }
+//                if(courseMaterialsFragment.getAdapter().getLevel()==0){
+//                    toolbar.setTitle("Материалы");
+//                }else{
+//                    toolbar.setTitle(courseMaterialsFragment.getFiles().get(courseMaterialsFragment.getAdapter().getLevel()+1).getName());
+//                }
                 return true;
             case R.id.my_files_add_file:
                 if (Build.VERSION.SDK_INT <19){

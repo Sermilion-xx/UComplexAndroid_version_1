@@ -79,8 +79,7 @@ public class SubjectsActivity extends AppCompatActivity implements OnTaskComplet
 
                 SubjectsAdapter subjectsAdapter = new SubjectsAdapter(this,mItems);
                 listView.setAdapter(subjectsAdapter);
-                listView.setOnItemClickListener(new AdapterView.OnItemClickListener()
-                {
+                listView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
                     @Override
                     public void onItemClick(AdapterView<?> a, View v,int position, long id)
                     {

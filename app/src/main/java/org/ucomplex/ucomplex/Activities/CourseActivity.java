@@ -9,6 +9,8 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.View;
 import android.widget.Toast;
 
 import org.javatuples.Quartet;
@@ -36,6 +38,7 @@ public class CourseActivity extends AppCompatActivity implements OnTaskCompleteL
     TabLayout tabLayout;
 
     private int gcourse;
+    String courseName;
     private Course coursedata;
     ArrayList<Quartet<Integer, String, String, Integer>> feedItems;
     ArrayList<String> titles = new ArrayList<>();
@@ -47,13 +50,39 @@ public class CourseActivity extends AppCompatActivity implements OnTaskCompleteL
     CalendarBeltFragment calendarBeltFragment;
     ViewPagerAdapter adapter;
     ViewPager viewPager;
+    boolean loaded;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        titles.add("Материалы");
+        Bundle extras = getIntent().getExtras();
+        this.gcourse = extras.getInt("gcourse", -1);
+        this.courseName = extras.getString("courseName");
+        titles.add(this.courseName);
         setContentView(R.layout.activity_course);
         viewPager = (ViewPager) findViewById(R.id.viewpager);
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                if(position==1){
+                    if (courseMaterialsFragment.getAdapter().getLevel() > 0) {
+                        toolbar.setTitle(titles.get(courseMaterialsFragment.getAdapter().getLevel()));
+                    }
+                } else {
+                    toolbar.setTitle(courseName);
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
         adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFragment(new Fragment(), "Дисциплина");
         adapter.addFragment(new Fragment(), titles.get(0));
@@ -63,8 +92,7 @@ public class CourseActivity extends AppCompatActivity implements OnTaskCompleteL
         tabLayout.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimary));
         tabLayout.setupWithViewPager(viewPager);
 
-        Bundle extras = getIntent().getExtras();
-        this.gcourse = extras.getInt("gcourse", -1);
+
         FetchMySubjectsTask fetchMySubjectsTask = new FetchMySubjectsTask(this, this);
         fetchMySubjectsTask.setmContext(this);
         fetchMySubjectsTask.setGcourse(this.gcourse);
@@ -79,15 +107,16 @@ public class CourseActivity extends AppCompatActivity implements OnTaskCompleteL
         fetchCalendarBeltTask.setupTask(this.gcourse);
     }
 
+
     @Override
     public void onBackPressed() {
-        if(courseMaterialsFragment==null){
+        if (courseMaterialsFragment == null) {
             super.onBackPressed();
-        }else if (courseMaterialsFragment.getAdapter().getLevel() == 0) {
-            toolbar.setTitle("Материалы");
+        } else if (courseMaterialsFragment.getAdapter().getLevel() == 0) {
+            toolbar.setTitle(this.courseName);
             super.onBackPressed();
         } else {
-            toolbar.setTitle(titles.get(courseMaterialsFragment.getAdapter().getLevel()-1));
+            toolbar.setTitle(titles.get(courseMaterialsFragment.getAdapter().getLevel() - 1));
             if (!courseMaterialsFragment.getAdapter().isMyFiles()) {
                 if (courseMaterialsFragment.getAdapter().getLevel() > 0) {
                     courseMaterialsFragment.getAdapter().levelDown();
@@ -104,6 +133,7 @@ public class CourseActivity extends AppCompatActivity implements OnTaskCompleteL
         }
     }
 
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -111,6 +141,9 @@ public class CourseActivity extends AppCompatActivity implements OnTaskCompleteL
                 if (courseMaterialsFragment != null) {
                     if (courseMaterialsFragment.getAdapter().getLevel() > 0) {
                         courseMaterialsFragment.getAdapter().levelDown();
+                        if (courseMaterialsFragment.getAdapter().getLevel() == 0) {
+                            toolbar.setTitle(this.courseName);
+                        }
                         courseMaterialsFragment.getmItems().clear();
                         ArrayList<File> newFiles = new ArrayList<>(courseMaterialsFragment.getAdapter().getStackFiles().get(courseMaterialsFragment.getAdapter().getLevel()));
 
@@ -155,7 +188,6 @@ public class CourseActivity extends AppCompatActivity implements OnTaskCompleteL
         courseMaterialsAdapter.setLevel(0);
         courseMaterialsFragment.setAdapter(courseMaterialsAdapter);
 
-
         if (calendarBeltFragment == null) {
             calendarBeltFragment = new CalendarBeltFragment();
             calendarBeltFragment.setFeedItems(this.feedItems);
@@ -193,6 +225,7 @@ public class CourseActivity extends AppCompatActivity implements OnTaskCompleteL
                         if (this.coursedata != null) {
                             setupViewPager(viewPager);
                             tabLayout.setupWithViewPager(viewPager);
+                            loaded = true;
                         }
                     } catch (InterruptedException | ExecutionException e) {
                         e.printStackTrace();

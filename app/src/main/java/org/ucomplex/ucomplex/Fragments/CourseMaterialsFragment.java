@@ -169,9 +169,6 @@ public class CourseMaterialsFragment extends ListFragment {
     @Override
     public void onAttach(Context activity) {
         super.onAttach(activity);
-
-        // This makes sure that the container activity has implemented
-        // the callback interface. If not, it throws an exception
         try {
             mCallback = (OnHeadlineSelectedListener) activity;
         } catch (ClassCastException e) {
