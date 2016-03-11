@@ -81,7 +81,9 @@ public class CourseActivity extends AppCompatActivity implements OnTaskCompleteL
 
     @Override
     public void onBackPressed() {
-        if (courseMaterialsFragment.getAdapter().getLevel() == 0) {
+        if(courseMaterialsFragment==null){
+            super.onBackPressed();
+        }else if (courseMaterialsFragment.getAdapter().getLevel() == 0) {
             toolbar.setTitle("Материалы");
             super.onBackPressed();
         } else {
