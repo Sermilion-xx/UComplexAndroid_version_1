@@ -1,31 +1,27 @@
 package org.ucomplex.ucomplex.Activities;
 
-import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
-
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
-
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.Toast;
-
 
 import org.javatuples.Quartet;
 import org.ucomplex.ucomplex.Activities.Tasks.FetchCalendarBeltTask;
 import org.ucomplex.ucomplex.Activities.Tasks.FetchMySubjectsTask;
 import org.ucomplex.ucomplex.Activities.Tasks.FetchTeacherFilesTask;
 import org.ucomplex.ucomplex.Adaptors.CourseMaterialsAdapter;
-import org.ucomplex.ucomplex.Interfaces.OnTaskCompleteListener;
 import org.ucomplex.ucomplex.Adaptors.ViewPagerAdapter;
-import org.ucomplex.ucomplex.Fragments.*;
+import org.ucomplex.ucomplex.Fragments.CalendarBeltFragment;
+import org.ucomplex.ucomplex.Fragments.CourseFragment;
+import org.ucomplex.ucomplex.Fragments.CourseInfoFragment;
+import org.ucomplex.ucomplex.Fragments.CourseMaterialsFragment;
+import org.ucomplex.ucomplex.Interfaces.OnTaskCompleteListener;
 import org.ucomplex.ucomplex.Model.StudyStructure.Course;
 import org.ucomplex.ucomplex.Model.StudyStructure.File;
 import org.ucomplex.ucomplex.R;
@@ -39,10 +35,11 @@ public class CourseActivity extends AppCompatActivity implements OnTaskCompleteL
     Toolbar toolbar;
     TabLayout tabLayout;
 
-    boolean first = true;
     private int gcourse;
     private Course coursedata;
     ArrayList<Quartet<Integer, String, String, Integer>> feedItems;
+    ArrayList<String> titles = new ArrayList<>();
+
 
     CourseMaterialsFragment courseMaterialsFragment;
     CourseInfoFragment courseInfoFragment;
@@ -54,11 +51,12 @@ public class CourseActivity extends AppCompatActivity implements OnTaskCompleteL
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        titles.add("Материалы");
         setContentView(R.layout.activity_course);
         viewPager = (ViewPager) findViewById(R.id.viewpager);
         adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFragment(new Fragment(), "Дисциплина");
-        adapter.addFragment(new Fragment(), "Материалы");
+        adapter.addFragment(new Fragment(), titles.get(0));
         adapter.addFragment(new Fragment(), "Лента");
         viewPager.setAdapter(adapter);
         tabLayout = (TabLayout) findViewById(R.id.tabs);
@@ -82,29 +80,40 @@ public class CourseActivity extends AppCompatActivity implements OnTaskCompleteL
     }
 
     @Override
-    public void onBackPressed(){
-        if(courseMaterialsFragment.getAdapter().getLevel()==0){
+    public void onBackPressed() {
+        if (courseMaterialsFragment.getAdapter().getLevel() == 0) {
             toolbar.setTitle("Материалы");
-        }else{
-            toolbar.setTitle(courseMaterialsFragment.getFiles().get(courseMaterialsFragment.getAdapter().getLevel()+1).getName());
+            super.onBackPressed();
+        } else {
+            toolbar.setTitle(titles.get(courseMaterialsFragment.getAdapter().getLevel()-1));
+            if (!courseMaterialsFragment.getAdapter().isMyFiles()) {
+                if (courseMaterialsFragment.getAdapter().getLevel() > 0) {
+                    courseMaterialsFragment.getAdapter().levelDown();
+                    courseMaterialsFragment.getmItems().clear();
+                    ArrayList<File> newFiles = new ArrayList<>(courseMaterialsFragment.getAdapter().getStackFiles().get(courseMaterialsFragment.getAdapter().getLevel()));
+
+                    if (!courseMaterialsFragment.getAdapter().isMyFiles()) {
+                        courseMaterialsFragment.getAdapter().getStackFiles().remove(courseMaterialsFragment.getAdapter().getStackFiles().size() - 1);
+                    }
+                    courseMaterialsFragment.getmItems().addAll(newFiles);
+                    courseMaterialsFragment.getAdapter().notifyDataSetChanged();
+                }
+            }
         }
-        super.onBackPressed();
     }
-
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                if(courseMaterialsFragment!=null){
+                if (courseMaterialsFragment != null) {
                     if (courseMaterialsFragment.getAdapter().getLevel() > 0) {
                         courseMaterialsFragment.getAdapter().levelDown();
                         courseMaterialsFragment.getmItems().clear();
                         ArrayList<File> newFiles = new ArrayList<>(courseMaterialsFragment.getAdapter().getStackFiles().get(courseMaterialsFragment.getAdapter().getLevel()));
 
-                        if(!courseMaterialsFragment.getAdapter().isMyFiles()){
-                            courseMaterialsFragment.getAdapter().getStackFiles().remove(courseMaterialsFragment.getAdapter().getStackFiles().size()-1);
+                        if (!courseMaterialsFragment.getAdapter().isMyFiles()) {
+                            courseMaterialsFragment.getAdapter().getStackFiles().remove(courseMaterialsFragment.getAdapter().getStackFiles().size() - 1);
                         }
                         courseMaterialsFragment.getmItems().addAll(newFiles);
                         courseMaterialsFragment.getAdapter().notifyDataSetChanged();
@@ -113,7 +122,7 @@ public class CourseActivity extends AppCompatActivity implements OnTaskCompleteL
                         onBackPressed();
                         return true;
                     }
-                }else{
+                } else {
                     onBackPressed();
                     return true;
                 }
@@ -166,7 +175,7 @@ public class CourseActivity extends AppCompatActivity implements OnTaskCompleteL
                 if (task instanceof FetchTeacherFilesTask) {
                     ArrayList<File> files = (ArrayList<File>) task.get();
                     if (files.size() > 0) {
-                        if(courseMaterialsFragment==null){
+                        if (courseMaterialsFragment == null) {
                             courseMaterialsFragment = new CourseMaterialsFragment();
                             courseMaterialsFragment.setMyFiles(false);
                             courseMaterialsFragment.setmContext(this);
@@ -179,7 +188,7 @@ public class CourseActivity extends AppCompatActivity implements OnTaskCompleteL
                 } else if (task instanceof FetchMySubjectsTask) {
                     try {
                         this.coursedata = (Course) task.get();
-                        if(this.coursedata!=null){
+                        if (this.coursedata != null) {
                             setupViewPager(viewPager);
                             tabLayout.setupWithViewPager(viewPager);
                         }
@@ -193,7 +202,7 @@ public class CourseActivity extends AppCompatActivity implements OnTaskCompleteL
                             if (calendarBeltFragment == null) {
                                 calendarBeltFragment = new CalendarBeltFragment();
                             }
-                            if(this.feedItems!=null && this.feedItems.size()>0){
+                            if (this.feedItems != null && this.feedItems.size() > 0) {
                                 calendarBeltFragment.setFeedItems(feedItems);
                                 calendarBeltFragment.initAdapter(CourseActivity.this);
                                 calendarBeltFragment.getCourseCalendarBeltAdapter().notifyDataSetChanged();
@@ -213,5 +222,6 @@ public class CourseActivity extends AppCompatActivity implements OnTaskCompleteL
     @Override
     public void onFolderSelect(String title) {
         toolbar.setTitle(title);
+        this.titles.add(title);
     }
 }

@@ -40,7 +40,16 @@ public class CourseMaterialsFragment extends ListFragment {
 
     public static final int DIALOG_DOWNLOAD_PROGRESS = 0;
     private ProgressDialog mProgressDialog;
+    String myFilesToolBarTitle;
 
+
+    public void setMyFilesToolBarTitle(String myFilesToolBarTitle) {
+        this.myFilesToolBarTitle = myFilesToolBarTitle;
+    }
+
+    public String getMyFilesToolBarTitle() {
+        return myFilesToolBarTitle;
+    }
 
     public void setAdapter(CourseMaterialsAdapter adapter) {
         this.adapter = adapter;
@@ -54,7 +63,6 @@ public class CourseMaterialsFragment extends ListFragment {
     public CourseMaterialsAdapter getAdapter() {
         return adapter;
     }
-
 
     public void setMyFiles(boolean myFiles) {
         this.myFiles = myFiles;
@@ -87,13 +95,11 @@ public class CourseMaterialsFragment extends ListFragment {
             adapter = new CourseMaterialsAdapter(getActivity(), mItems, myFiles, this);
         }
         setListAdapter(adapter);
-
-
     }
 
 
     public interface OnHeadlineSelectedListener {
-        public void onFolderSelect(String title);
+        void onFolderSelect(String title);
     }
 
     @Override
@@ -122,7 +128,6 @@ public class CourseMaterialsFragment extends ListFragment {
                             adapter.notifyDataSetChanged();
                         }
                     }.execute(item.getAddress(), item.getOwner());
-
                 } else {
                     FetchMyFilesTask fetchMyFilesTask = new FetchMyFilesTask(mContext, (OnTaskCompleteListener) mContext);
                     fetchMyFilesTask.setupTask(item.getAddress());
@@ -136,27 +141,6 @@ public class CourseMaterialsFragment extends ListFragment {
         } else {
             Common.folderCode = null;
             startDownload(item);
-//            if (Common.isDownloadManagerAvailable()) {
-//                final String UC_BASE_URL = "https://chgu.org/files/users/" + String.valueOf(item.getOwner().getId()) + "/" + item.getAddress() + "." + item.getType();
-//                DownloadManager.Request request = new DownloadManager.Request(Uri.parse(UC_BASE_URL));
-//                request.setDescription("Загрузка");
-//                request.setTitle(item.getName());
-//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-//                    request.allowScanningByMediaScanner();
-//                    request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
-//                }
-//                request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, item.getName());
-//                DownloadManager manager = (DownloadManager) getContext().getSystemService(Context.DOWNLOAD_SERVICE);
-//                try {
-//                    manager.enqueue(request);
-//                    Toast.makeText(getActivity(), "Идет загрузка...", Toast.LENGTH_SHORT).show();
-//                }catch (SecurityException e){
-////                    Log.e("Download ", e.printStackTrace());
-//                    e.printStackTrace();
-//                    Toast.makeText(getActivity(), "Ошибка доступа", Toast.LENGTH_SHORT).show();
-//                }
-//
-//            }
         }
     }
 

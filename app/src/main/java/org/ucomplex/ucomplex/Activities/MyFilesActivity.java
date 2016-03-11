@@ -41,6 +41,7 @@ public class MyFilesActivity extends AppCompatActivity implements OnTaskComplete
     CourseMaterialsFragment courseMaterialsFragment;
     LinearLayout linlaHeaderProgress;
     Toolbar toolbar;
+    ArrayList<String> titles = new ArrayList<>();
 
 
     @Override
@@ -48,7 +49,8 @@ public class MyFilesActivity extends AppCompatActivity implements OnTaskComplete
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_files);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle("Материалы");
+        titles.add("Материалы");
+        toolbar.setTitle(titles.get(0));
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_menu);
@@ -60,10 +62,9 @@ public class MyFilesActivity extends AppCompatActivity implements OnTaskComplete
 
     @Override
     public void onBackPressed(){
-        if(courseMaterialsFragment.getAdapter().getLevel()==0){
-            toolbar.setTitle("Материалы");
-        }else{
-            toolbar.setTitle(courseMaterialsFragment.getFiles().get(courseMaterialsFragment.getAdapter().getLevel()+1).getName());
+        if(titles.size()>1){
+            toolbar.setTitle(titles.get(titles.size()-2));
+            titles.remove(titles.size()-1);
         }
         super.onBackPressed();
     }
@@ -253,6 +254,7 @@ public class MyFilesActivity extends AppCompatActivity implements OnTaskComplete
                     courseMaterialsFragment.setFiles(mItems);
                     courseMaterialsFragment.setMyFiles(true);
                     courseMaterialsFragment.setmContext(MyFilesActivity.this);
+                    courseMaterialsFragment.setMyFilesToolBarTitle(titles.get(titles.size()-1));
 
                     FragmentManager fragmentManager = getSupportFragmentManager();
                     FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -272,5 +274,6 @@ public class MyFilesActivity extends AppCompatActivity implements OnTaskComplete
     @Override
     public void onFolderSelect(String title) {
         toolbar.setTitle(title);
+        titles.add(title);
     }
 }
