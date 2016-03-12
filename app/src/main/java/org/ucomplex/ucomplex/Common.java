@@ -70,6 +70,7 @@ import java.util.Map;
  */
 public class Common {
 
+    public static int ROLE;
     public static final int FILE_SELECT_CODE = 0;
     public static String folderCode;
     public static int userListChanged = -1;

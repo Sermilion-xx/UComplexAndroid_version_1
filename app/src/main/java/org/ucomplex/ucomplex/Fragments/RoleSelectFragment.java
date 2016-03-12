@@ -64,7 +64,6 @@ public class RoleSelectFragment extends Fragment {
                 itemView.setOnClickListener(this);
                 mRoleImage = (CircleImageView) itemView.findViewById(R.id.role_select_image);
                 mRoleTextView = (TextView) itemView.findViewById(R.id.role_select_role);
-
         }
 
         public void bindRole(User user, int position) {
@@ -94,9 +93,11 @@ public class RoleSelectFragment extends Fragment {
             Common.setUserDataToPref(getContext(), user);
             user = null;
             if(mUser.getType()==3 || mUser.getType()==4){
+                Common.ROLE = mUser.getType();
                 Intent intent = new Intent(getContext(), EventsActivity.class);
                 startActivity(intent);
             }else if(mUser.getType()==0){
+                Common.ROLE = mUser.getType();
                 Intent intent = new Intent(getContext(), UsersActivity.class);
                 startActivity(intent);
             }

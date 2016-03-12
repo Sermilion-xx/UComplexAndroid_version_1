@@ -98,64 +98,57 @@ public class FetchUserEventsTask extends AsyncTask<Integer, Void, ArrayList<Even
     private ArrayList<EventRowItem> getEventsDataFromJson(String forecastJsonStr)
             throws JSONException {
         ArrayList<EventRowItem> displayEventsArray = new ArrayList<>();
-        final String JSON_EVENTS_ID = "id";
-        final String JSON_EVENTS = "events";
-        final String JSON_EVENTS_PARAMS = "params";
-        final String JSON_EVENTS_PARAMS_ID = "id";
-        final String JSON_EVENTS_PARAMS_NAME = "name";
-        final String JSON_EVENTS_PARAMS_PHOTO = "photo";
-        final String JSON_EVENTS_PARAMS_CODE = "code";
-        final String JSON_EVENTS_PARAMS_GCOURSE = "gcourse";
-        final String JSON_EVENTS_PARAMS_COURSENAME = "courseName";
-        final String JSON_EVENTS_PARAMS_HOURTYPE = "hourType";
-        final String JSON_EVENTS_PARAM_TYPE = "type";
-        final String JSON_EVENTS_TYPE = "type";
-        final String JSON_EVENTS_TIME = "time";
-        final String JSON_EVENTS_SEEN = "seen";
-
 
         JSONObject eventJson = new JSONObject(forecastJsonStr);
-        JSONArray eventsArray = eventJson.getJSONArray(JSON_EVENTS);
+        JSONArray eventsArray = eventJson.getJSONArray("events");
 
         for(int i = 0; i < eventsArray.length(); i++) {
             EventRowItem item = new EventRowItem();
             EventParams params = item.getParams();
             JSONObject event = eventsArray.getJSONObject(i);
-            int type = Integer.parseInt(event.getString(JSON_EVENTS_TYPE));
-            JSONObject paramsJson = new JSONObject(event.getString(JSON_EVENTS_PARAMS));
+            int type = Integer.parseInt(event.getString("type"));
+            JSONObject paramsJson = new JSONObject(event.getString("params"));
             String displayEvent = makeEvent(type, paramsJson);
-            String time = Common.makeDate(event.getString(JSON_EVENTS_TIME));
+            String time = Common.makeDate(event.getString("time"));
 
             if(type!=6){
-                int param_id = paramsJson.getInt(JSON_EVENTS_PARAMS_ID);
-                int param_photo = paramsJson.getInt(JSON_EVENTS_PARAMS_PHOTO);
-                String param_code = paramsJson.getString(JSON_EVENTS_PARAMS_CODE);
-                int param_gcourse = paramsJson.getInt(JSON_EVENTS_PARAMS_GCOURSE);
-                String param_courseName = paramsJson.getString(JSON_EVENTS_PARAMS_COURSENAME);
-                int param_hourType = paramsJson.getInt(JSON_EVENTS_PARAMS_HOURTYPE);
-                String param_name = paramsJson.getString(JSON_EVENTS_PARAMS_NAME);
-
-                params.setId(param_id);
-                params.setName(param_name);
-                params.setPhoto(param_photo);
-                params.setGcourse(param_gcourse);
-                params.setCourseName(param_courseName);
-                params.setHourType(param_hourType);
-                params.setCode(param_code);
+                if(paramsJson.has("type")){
+                    params.setType(paramsJson.getInt("type"));
+                }
+                if(paramsJson.has("id")) {
+                    params.setId(paramsJson.getInt("id"));
+                }
+                if(paramsJson.has("name")) {
+                    params.setName(paramsJson.getString("name"));
+                }
+                if(paramsJson.has("photo")) {
+                    params.setPhoto(paramsJson.getInt("photo"));
+                }
+                if(paramsJson.has("gcourse")) {
+                    params.setGcourse(paramsJson.getInt("gcourse"));
+                }
+                if(paramsJson.has("courseName")) {
+                    params.setCourseName(paramsJson.getString("courseName"));
+                }
+                if(paramsJson.has("hourType")) {
+                    params.setHourType(paramsJson.getInt("hourType"));
+                }
+                if(paramsJson.has("code")) {
+                    params.setCode(paramsJson.getString("code"));
+                }
             }else{
                 try{
-                    int param_type = paramsJson.getInt(JSON_EVENTS_PARAM_TYPE);
+                    int param_type = paramsJson.getInt("type");
                     params.setType(param_type);
                 }catch (JSONException ignored){}
             }
             item.setParams(params);
             item.setEventText(displayEvent);
             item.setTime(time);
-            item.setSeen(Integer.parseInt(event.getString(JSON_EVENTS_SEEN)));
+            item.setSeen(Integer.parseInt(event.getString("seen")));
             item.setType(type);
             displayEventsArray.add(item);
         }
-
         return displayEventsArray;
     }
 

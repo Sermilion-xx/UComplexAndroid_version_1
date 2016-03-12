@@ -88,6 +88,7 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
                 Name = (TextView) itemView.findViewById(R.id.name);
                 Name.setTypeface(custom_font);
                 profile = (de.hdodenhof.circleimageview.CircleImageView) itemView.findViewById(R.id.circleView);
+                profileBitmap = Common.decodePhotoPref(context, "profilePhoto");
                 if (profileBitmap != null) {
                     this.profile.setImageBitmap(profileBitmap);
                 }
