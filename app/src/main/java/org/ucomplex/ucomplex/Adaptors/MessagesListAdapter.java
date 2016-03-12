@@ -41,6 +41,7 @@ public class MessagesListAdapter extends ArrayAdapter<Dialog> {
     private DisplayImageOptions options;
     private Typeface robotoFont = Typeface.createFromAsset(getContext().getAssets(), "fonts/Roboto-Regular.ttf");
     private User user;
+    private Bitmap profileImage;
 
     public User getUser() {
         return user;
@@ -50,7 +51,7 @@ public class MessagesListAdapter extends ArrayAdapter<Dialog> {
         super(context, -1, dialogs);
         this.dialogs = dialogs;
         user = Common.getUserDataFromPref(context);
-
+        profileImage = Common.decodePhotoPref(context,"profilePhoto");
         inflater = LayoutInflater.from(context);
         options = new DisplayImageOptions.Builder()
                 .showImageOnLoading(null)
@@ -139,7 +140,11 @@ public class MessagesListAdapter extends ArrayAdapter<Dialog> {
         }
         String[] name = item.getName().split(" ");
         viewHolder.nameTextView.setTypeface(robotoFont);
-        viewHolder.nameTextView.setText(name[0] + " " + name[1]);
+        if(name.length==1){
+            viewHolder.nameTextView.setText(name[0]);
+        }else{
+            viewHolder.nameTextView.setText(name[0] + " " + name[1]);
+        }
         viewHolder.lastMessageTextView.setTypeface(robotoFont);
         viewHolder.lastMessageTextView.setText(item.getMessage());
         viewHolder.timeTextView.setTypeface(robotoFont);
@@ -151,13 +156,17 @@ public class MessagesListAdapter extends ArrayAdapter<Dialog> {
                 final int number = (user.getPerson() <= colorsCount) ? user.getPerson() : user.getPerson() % colorsCount;
                 String name1 = user.getName();
                 char firstLetter = name1.split(" ")[1].charAt(0);
-                TextDrawable drawable = TextDrawable.builder().beginConfig()
-                        .width(60)
-                        .height(60)
-                        .endConfig()
-                        .buildRound(String.valueOf(firstLetter), Common.getColor(number));
-                viewHolder.myMessageIcon.setVisibility(View.VISIBLE);
-                viewHolder.myMessageIcon.setImageDrawable(drawable);
+                if(profileImage!=null){
+                    viewHolder.myMessageIcon.setImageBitmap(profileImage);
+                }else{
+                    TextDrawable drawable = TextDrawable.builder().beginConfig()
+                            .width(60)
+                            .height(60)
+                            .endConfig()
+                            .buildRound(String.valueOf(firstLetter), Common.getColor(number));
+                    viewHolder.myMessageIcon.setVisibility(View.VISIBLE);
+                    viewHolder.myMessageIcon.setImageDrawable(drawable);
+                }
             }else{
                 viewHolder.myMessageIcon.setImageBitmap(user.getPhotoBitmap());
             }
