@@ -42,6 +42,8 @@ public class ProfileAdapter extends ArrayAdapter<Triplet> {
     private List<Triplet> mItems;
     private LayoutInflater inflater;
     private Typeface robotoFont = Typeface.createFromAsset(getContext().getAssets(), "fonts/Roboto-Regular.ttf");
+    Drawable ic_remove_friend;
+    Drawable ic_add_friend;
 
     public ProfileAdapter(Context context, List<Triplet> profileItems, Bitmap bitmap) {
         super(context, R.layout.list_item_profile_header, profileItems);
@@ -49,6 +51,8 @@ public class ProfileAdapter extends ArrayAdapter<Triplet> {
         mContext = context;
         mBitmap = bitmap;
         mItems = profileItems;
+        ic_add_friend = ContextCompat.getDrawable(mContext, R.drawable.ic_add_as_friend);
+        ic_remove_friend = ContextCompat.getDrawable(mContext, R.drawable.ic_remove_friend);
     }
 
     private View createHolder(ViewHolder viewHolder, View convertView, int viewType, ViewGroup parent, int posision) {
@@ -169,6 +173,7 @@ public class ProfileAdapter extends ArrayAdapter<Triplet> {
     }
 
     public class ViewHolder {
+
         int holderId;
         Button mMessageButton;
         Button mFriendButton;
@@ -210,8 +215,10 @@ public class ProfileAdapter extends ArrayAdapter<Triplet> {
         public void setFriendButton() {
             if (mUser.is_friend()) {
                 mFriendButton.setText("Удалить");
+                mFriendButton.setCompoundDrawablesWithIntrinsicBounds( ic_remove_friend, null, null, null);
             } else {
                 mFriendButton.setText("В друзья");
+                mFriendButton.setCompoundDrawablesWithIntrinsicBounds( ic_add_friend, null, null, null);
             }
             this.mFriendButton.setOnClickListener(
                     new View.OnClickListener() {
