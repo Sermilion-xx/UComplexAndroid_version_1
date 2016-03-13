@@ -5,27 +5,20 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import org.apache.http.entity.mime.content.ByteArrayBody;
@@ -33,13 +26,8 @@ import org.javatuples.Pair;
 import org.ucomplex.ucomplex.Activities.Tasks.FetchProfileTask;
 import org.ucomplex.ucomplex.Activities.Tasks.SettingsTask;
 import org.ucomplex.ucomplex.Activities.Tasks.UploadPhotoTask;
-import org.ucomplex.ucomplex.Adaptors.CourseMaterialsAdapter;
 import org.ucomplex.ucomplex.Adaptors.ViewPagerAdapter;
 import org.ucomplex.ucomplex.Common;
-import org.ucomplex.ucomplex.Fragments.CalendarBeltFragment;
-import org.ucomplex.ucomplex.Fragments.CourseFragment;
-import org.ucomplex.ucomplex.Fragments.CourseInfoFragment;
-import org.ucomplex.ucomplex.Fragments.CourseMaterialsFragment;
 import org.ucomplex.ucomplex.Fragments.SettingsOneFragment;
 import org.ucomplex.ucomplex.Fragments.SettingsTwoFragment;
 import org.ucomplex.ucomplex.Interfaces.OnTaskCompleteListener;
@@ -47,7 +35,6 @@ import org.ucomplex.ucomplex.Model.Users.User;
 import org.ucomplex.ucomplex.R;
 
 import java.io.ByteArrayOutputStream;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
@@ -90,36 +77,39 @@ public class SettingsActivity2 extends AppCompatActivity implements OnTaskComple
         settingsOneFragment = new SettingsOneFragment();
         settingsOneFragment.setContext(this);
         settingsOneFragment.setFilename(filename);
+
+        settingsTwoFragment = new SettingsTwoFragment();
+
         FetchProfileTask fetchProfileTask = new FetchProfileTask(this, this);
         fetchProfileTask.execute();
 
         doneButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(Common.isNetworkConnected(SettingsActivity2.this)){
-                    if(SettingsOneFragment.PROFILE_IMAGE_CHANGED){
+                if (Common.isNetworkConnected(SettingsActivity2.this)) {
+                    if (SettingsOneFragment.PROFILE_IMAGE_CHANGED) {
                         UploadPhotoTask uploadPhotoTask = new UploadPhotoTask(SettingsActivity2.this, SettingsActivity2.this);
                         uploadPhotoTask.setupTask(settingsOneFragment.getContentBody());
                         SettingsOneFragment.PROFILE_IMAGE_CHANGED = false;
                     }
-                    if(SettingsOneFragment.CURRENT_PASSWORD_CHANGE && SettingsOneFragment.NEW_PASSWORD_CHANGE && SettingsOneFragment.NEW_PASSWORD_AGAIN_CHANGE){
+                    if (SettingsOneFragment.CURRENT_PASSWORD_CHANGE && SettingsOneFragment.NEW_PASSWORD_CHANGE && SettingsOneFragment.NEW_PASSWORD_AGAIN_CHANGE) {
                         settingsOneFragment.resetPassword(settingsOneFragment.currentPasswordTextView,
                                 settingsOneFragment.newPasswordTextView,
                                 settingsOneFragment.newPasswordAgainTextView, settingsOneFragment.user);
-                    }else if(SettingsOneFragment.CURRENT_PASSWORD_CHANGE || SettingsOneFragment.NEW_PASSWORD_CHANGE || SettingsOneFragment.NEW_PASSWORD_AGAIN_CHANGE){
+                    } else if (SettingsOneFragment.CURRENT_PASSWORD_CHANGE || SettingsOneFragment.NEW_PASSWORD_CHANGE || SettingsOneFragment.NEW_PASSWORD_AGAIN_CHANGE) {
                         Toast.makeText(SettingsActivity2.this, "Заполните все поля!", Toast.LENGTH_LONG).show();
                     }
-                    if(SettingsOneFragment.NEW_EMAIL_CHANGE && SettingsOneFragment.NEW_EMAIL_PASSWORD_CHANGE){
+                    if (SettingsOneFragment.NEW_EMAIL_CHANGE && SettingsOneFragment.NEW_EMAIL_PASSWORD_CHANGE) {
                         settingsOneFragment.changeEmail(settingsOneFragment.passwordEmalTextView, settingsOneFragment.newEmalTextView);
-                    }else if(SettingsOneFragment.NEW_EMAIL_CHANGE || SettingsOneFragment.NEW_EMAIL_PASSWORD_CHANGE){
+                    } else if (SettingsOneFragment.NEW_EMAIL_CHANGE || SettingsOneFragment.NEW_EMAIL_PASSWORD_CHANGE) {
                         Toast.makeText(SettingsActivity2.this, "Заполните все поля!", Toast.LENGTH_LONG).show();
                     }
-                    if(SettingsOneFragment.NEW_PHONE_CHANGED && SettingsOneFragment.NEW_PHONE_PASSWORD_CHANGE){
+                    if (SettingsOneFragment.NEW_PHONE_CHANGED && SettingsOneFragment.NEW_PHONE_PASSWORD_CHANGE) {
                         settingsOneFragment.changePhoneNumber(settingsOneFragment.newPhoneTextView, settingsOneFragment.oldPasswordPhoneTextView);
-                    }else if(SettingsOneFragment.NEW_PHONE_CHANGED || SettingsOneFragment.NEW_PHONE_PASSWORD_CHANGE){
+                    } else if (SettingsOneFragment.NEW_PHONE_CHANGED || SettingsOneFragment.NEW_PHONE_PASSWORD_CHANGE) {
                         Toast.makeText(SettingsActivity2.this, "Заполните все поля!", Toast.LENGTH_LONG).show();
                     }
-                }else {
+                } else {
                     Toast.makeText(SettingsActivity2.this, "Проверьте интернет соединение.", Toast.LENGTH_LONG).show();
                 }
             }
@@ -127,9 +117,13 @@ public class SettingsActivity2 extends AppCompatActivity implements OnTaskComple
         viewPager = (ViewPager) findViewById(R.id.viewpager);
         adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFragment(settingsOneFragment, "Общая информация");
+        if (Common.ROLE == 3) {
+            adapter.addFragment(settingsTwoFragment, "Личные данные");
+        }
         viewPager.setAdapter(adapter);
         tabLayout = (TabLayout) findViewById(R.id.settings_tabs);
         tabLayout.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+        tabLayout.setSelectedTabIndicatorColor(Color.WHITE);
         tabLayout.setupWithViewPager(viewPager);
     }
 
@@ -137,7 +131,7 @@ public class SettingsActivity2 extends AppCompatActivity implements OnTaskComple
     protected void onActivityResult(int requestCode, int resultCode, final Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         //Detects request codes
-        if(requestCode==GET_FROM_GALLERY && resultCode == Activity.RESULT_OK) {
+        if (requestCode == GET_FROM_GALLERY && resultCode == Activity.RESULT_OK) {
             Uri uri = data.getData();
             try {
                 settingsOneFragment.setProfileBitmap(MediaStore.Images.Media.getBitmap(getContentResolver(), uri));
@@ -185,14 +179,14 @@ public class SettingsActivity2 extends AppCompatActivity implements OnTaskComple
             } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();
             }
-        }else if (task instanceof SettingsTask) {
+        } else if (task instanceof SettingsTask) {
             if (task.isCancelled()) {
                 Toast.makeText(SettingsActivity2.this, "Операция отменена", Toast.LENGTH_LONG)
                         .show();
             } else {
                 try {
                     User user = Common.getUserDataFromPref(SettingsActivity2.this);
-                    if(SettingsOneFragment.CURRENT_PASSWORD_CHANGE && SettingsOneFragment.NEW_PASSWORD_CHANGE && SettingsOneFragment.NEW_PASSWORD_AGAIN_CHANGE){
+                    if (SettingsOneFragment.CURRENT_PASSWORD_CHANGE && SettingsOneFragment.NEW_PASSWORD_CHANGE && SettingsOneFragment.NEW_PASSWORD_AGAIN_CHANGE) {
                         user.setPass(settingsOneFragment.newPasswordTextView.getText().toString());
                         Common.setUserDataToPref(SettingsActivity2.this, user);
                         SettingsOneFragment.CURRENT_PASSWORD_CHANGE = false;

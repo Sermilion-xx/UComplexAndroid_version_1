@@ -77,9 +77,8 @@ public class CourseActivity extends AppCompatActivity implements OnTaskCompleteL
 
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
 
-            }
             @Override
             public void onPageSelected(int position) {
                 if(position==1){
@@ -93,12 +92,8 @@ public class CourseActivity extends AppCompatActivity implements OnTaskCompleteL
                 }
             }
 
-
-
             @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
+            public void onPageScrollStateChanged(int state) {}
         });
 
         tabLayout = (TabLayout) findViewById(R.id.tabs);

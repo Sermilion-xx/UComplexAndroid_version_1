@@ -135,6 +135,7 @@ public class SettingsOneFragment extends Fragment implements OnTaskCompleteListe
 
         robotoFont = Typeface.createFromAsset(context.getAssets(), "fonts/Roboto-Regular.ttf");
         //Photo
+        profileBitmap = Common.decodePhotoPref(context, "profilePhoto");
         user = Common.getUserDataFromPref(context);
         FetchProfileTask fetchProfileTask = new FetchProfileTask(context, context);
         fetchProfileTask.execute();
@@ -224,17 +225,17 @@ public class SettingsOneFragment extends Fragment implements OnTaskCompleteListe
         if(searchablePrifileStr.equals("1"))
             hideProfile.setChecked(true);
 
-        Bitmap bmp = null;
+//        Bitmap bmp = null;
+//
+//        try {
+//            FileInputStream is = context.openFileInput(filename);
+//            bmp = BitmapFactory.decodeStream(is);
+//            is.close();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
 
-        try {
-            FileInputStream is = context.openFileInput(filename);
-            bmp = BitmapFactory.decodeStream(is);
-            is.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        if (bmp == null) {
+        if (profileBitmap == null) {
             final int colorsCount = 16;
             final int number = (user.getPerson() <= colorsCount) ? user.getPerson() : user.getPerson() % colorsCount;
             char firstLetter = user.getName().split(" ")[1].charAt(0);
@@ -245,7 +246,7 @@ public class SettingsOneFragment extends Fragment implements OnTaskCompleteListe
                     .buildRect(String.valueOf(firstLetter), Common.getColor(number));
             photoImageView.setImageDrawable(drawable);
         } else {
-            photoImageView.setImageBitmap(bmp);
+            photoImageView.setImageBitmap(profileBitmap);
         }
         changePhotoButton.setOnClickListener(new View.OnClickListener() {
             @Override
