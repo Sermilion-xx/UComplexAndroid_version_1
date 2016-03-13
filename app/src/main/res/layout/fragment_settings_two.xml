@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_marginTop="55dp">
+    android:layout_height="wrap_content">
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -18,7 +17,7 @@
             android:id="@+id/settings_degree1_key"
             android:layout_height="wrap_content"
             android:textSize="13sp"
-            android:text="Ученое звание"
+            android:text="@string/edu_stepen_str_ru"
             android:layout_marginLeft="15dp"
             android:layout_marginTop="40dp"
             android:layout_marginRight="15dp" />
@@ -31,53 +30,101 @@
             android:textSize="19sp"
             android:text="Ученое звание"
             android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
             android:layout_marginTop="40dp"
-            android:layout_marginRight="15dp" />
+             />
 
-        <Spinner
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@+id/settings_degree1_value"
+            android:background="@drawable/line_divider_gray"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"/>
+
+        <TextView
             android:layout_width="wrap_content"
             android:id="@+id/settings_degree2_key"
             android:layout_height="wrap_content"
             android:textSize="13sp"
-            android:text="Ученая степень"
             android:layout_below="@+id/settings_degree1_value"
+            android:text="@string/study_degree2_str_ru"
             android:layout_marginLeft="15dp"
             android:layout_marginTop="40dp"
             android:layout_marginRight="15dp" />
 
         <Spinner
             android:layout_width="wrap_content"
-            android:id="@+id/settings_degree2_2_key"
+            android:id="@+id/settings_degree2_value"
             android:layout_height="wrap_content"
             android:textSize="13sp"
             android:text="Ученая степень"
             android:layout_below="@+id/settings_degree2_key"
             android:layout_marginLeft="15dp"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="40dp"
             android:layout_marginRight="15dp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@+id/settings_degree2_value"
+            android:background="@drawable/line_divider_gray"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"/>
+
+        <Spinner
+            android:layout_width="wrap_content"
+            android:id="@+id/settings_degree2_value2"
+            android:layout_height="wrap_content"
+            android:textSize="13sp"
+            android:text="@string/study_degree_str_ru"
+            android:layout_below="@+id/settings_degree2_value"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="15dp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@+id/settings_degree2_value2"
+            android:background="@drawable/line_divider_gray"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"/>
+
+
 
         <TextView
             android:layout_width="wrap_content"
             android:id="@+id/settings_subjects_key"
             android:layout_height="wrap_content"
             android:textSize="13sp"
-            android:text="Преподаваемые дисциплины"
-            android:layout_below="@+id/settings_degree2_2_key"
+            android:text="@string/teaching_subjects_str_ru"
+            android:layout_below="@+id/settings_degree2_value2"
             android:layout_marginLeft="15dp"
-            android:layout_marginTop="40dp"
+            android:layout_marginTop="30dp"
             android:layout_marginRight="15dp" />
 
-        <TextView
-            android:layout_width="wrap_content"
+        <EditText
+            android:layout_width="match_parent"
             android:id="@+id/settings_subjects_value"
             android:layout_height="wrap_content"
             android:textColor="@color/black"
             android:textSize="16sp"
-            android:text="Математика"
+            android:hint="Математика"
+            android:background="@null"
             android:layout_below="@+id/settings_subjects_key"
             android:layout_marginLeft="15dp"
-            android:layout_marginTop="40dp"
+            android:layout_marginTop="5dp"
             android:layout_marginRight="15dp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@+id/settings_subjects_value"
+            android:background="@drawable/line_divider_gray"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginTop="3dp" />
 
 
         <TextView
@@ -85,24 +132,70 @@
             android:id="@+id/settings_upqualification_key"
             android:layout_height="wrap_content"
             android:textSize="13sp"
-            android:text="Повышение квалификации и переподготовка (с указанием номер свидетельства)"
+            android:text="@string/upqualification_str_ru"
             android:layout_below="@+id/settings_subjects_value"
             android:layout_marginLeft="15dp"
             android:layout_marginTop="40dp"
             android:layout_marginRight="15dp" />
 
+        <EditText
+            android:layout_width="match_parent"
+            android:id="@+id/settings_upqualification_value"
+            android:layout_height="wrap_content"
+            android:textColor="@color/uc_gray_text_events"
+            android:textSize="16sp"
+            android:textColorHint="@color/uc_gray_text_events"
+            android:text="@string/math_str_rus"
+            android:background="@null"
+            android:layout_below="@+id/settings_upqualification_key"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="15dp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@+id/settings_upqualification_value"
+            android:background="@drawable/line_divider_gray"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginTop="3dp" />
+
         <TextView
             android:layout_width="wrap_content"
-            android:id="@+id/settings_upqualification_value"
+            android:id="@+id/settings_bio_key"
+            android:layout_height="wrap_content"
+            android:textSize="13sp"
+            android:text="@string/short_bio_str_ru"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginRight="15dp"
+            android:layout_below="@+id/settings_upqualification_value"/>
+
+
+        <EditText
+            android:layout_width="match_parent"
+            android:id="@+id/settings_bio_value"
             android:layout_height="wrap_content"
             android:textColor="@color/black"
             android:textSize="16sp"
-            android:text="Математика"
-            android:layout_below="@+id/settings_upqualification_key"
+            android:hint="Математика"
+            android:background="@null"
+            android:layout_below="@+id/settings_bio_key"
             android:layout_marginLeft="15dp"
-            android:layout_marginTop="40dp"
-            android:layout_marginRight="15dp" />
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="15dp"
+            />
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@+id/settings_bio_value"
+            android:background="@drawable/line_divider_gray"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginTop="3dp"
+            android:layout_marginBottom="50dp" />
 
 
         </RelativeLayout>

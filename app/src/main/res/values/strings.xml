@@ -103,6 +103,13 @@
     <string name="attendance_str_ru">"Посещение по предмету: %1$s"</string>
     <string name="statistics_str_ru">Статистика</string>
     <string name="do_not_show_in_search_str_ru">Не отображать в поиске</string>
+    <string name="short_bio_str_ru">Краткая биография</string>
+    <string name="math_str_rus">Математика</string>
+    <string name="upqualification_str_ru">Повышение квалификации и переподготовка (с указанием номер свидетельства)</string>
+    <string name="teaching_subjects_str_ru">Преподаваемые дисциплины</string>
+    <string name="study_degree_str_ru">Ученая степень</string>
+    <string name="edu_stepen_str_ru">Ученое звание</string>
+    <string name="study_degree2_str_ru">Ученая степень</string>
 
 
 </resources>
