@@ -257,7 +257,8 @@ public class CalendarFragment extends Fragment implements OnTaskCompleteListener
                             String day = date.getDay() < 10 ? "0" + String.valueOf(date.getDay()) : String.valueOf(date.getDay());
 
                             ArrayList dayTimetableArray = new ArrayList();
-                            dayTimetableArray.add(new Quintet<>("-2", "-1", "-1", "-1", "-1"));
+                            //dummy element for title
+//                            dayTimetableArray.add(new Quintet<>("-2", "-1", "-1", "-1", "-1"));
                             for (ChangedDay changeDay : calendar.getChangedDays()) {
                                 if (changeDay.getDay() == Integer.parseInt(day)) {
                                     for (Lesson lesson : changeDay.getLessons()) {
@@ -281,7 +282,8 @@ public class CalendarFragment extends Fragment implements OnTaskCompleteListener
                                     }
                                 }
                             }
-                            dayTimetableArray.add(new Quintet<>("-2", "-1", "-1", "-1", "-1"));
+                            //dummy element for title
+//                            dayTimetableArray.add(new Quintet<>("-2", "-1", "-1", "-1", "-1"));
                             for (HashMap entrie : calendar.getTimetable().getEntries()) {
                                 if (entrie.get("lessonDay").equals(day)) {
                                     String hour = calendar.getTimetable().getHours().get(entrie.get("hour"));

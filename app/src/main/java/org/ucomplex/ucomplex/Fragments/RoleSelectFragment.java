@@ -92,12 +92,11 @@ public class RoleSelectFragment extends Fragment {
             user.setId(mUser.getId());
             Common.setUserDataToPref(getContext(), user);
             user = null;
+            Common.setRoleToPref(getContext(),mUser.getType());
             if(mUser.getType()==3 || mUser.getType()==4){
-                Common.ROLE = mUser.getType();
                 Intent intent = new Intent(getContext(), EventsActivity.class);
                 startActivity(intent);
             }else if(mUser.getType()==0){
-                Common.ROLE = mUser.getType();
                 Intent intent = new Intent(getContext(), UsersActivity.class);
                 startActivity(intent);
             }

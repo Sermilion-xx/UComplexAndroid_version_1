@@ -70,7 +70,7 @@ import java.util.Map;
  */
 public class Common {
 
-    public static int ROLE;
+    public static int ROLE = -1;
     public static final int FILE_SELECT_CODE = 0;
     public static String folderCode;
     public static int userListChanged = -1;
@@ -539,6 +539,18 @@ public class Common {
     public static HttpURLConnection connection;
     public static String X_UVERSION;
     public static String messageCompanionName = "-";
+
+    public static void setRoleToPref(Context mContext, int role) {
+        SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(mContext).edit();
+        editor.putInt("userRole", role);
+        editor.apply();
+    }
+
+    public static int getRoleFromPref(Context mContext) {
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(mContext);
+        int role = pref.getInt("userRole", -1);
+        return role;
+    }
 
     public static String getLoginDataFromPref(Context mContext) {
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(mContext);

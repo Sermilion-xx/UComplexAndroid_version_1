@@ -42,44 +42,45 @@ public class CalendarDayAdapter extends ArrayAdapter<Quintet<String,String,Strin
         this.context = context;
         this.values = values;
         user = Common.getUserDataFromPref(context);
-        if(user.getType() == 3){
-            for (int i = 0; i<values.size(); i++) {
-                if (values.get(i).getValue0().equals("-1") || values.get(i).getValue0().equals("-2")) {
-                    values.remove(values.get(i));
-                }
-            }
-            separatorPosition = 0;
-        }else if(user.getType() == 4){
-            for (Quintet<String, String, String, String, String> item : values) {
-                if (item.getValue0().equals("-1")) {
-                    separatorPosition++;
-                }
-            }
-        }
+//        if(user.getType() == 3){
+//            for (int i = 0; i<values.size(); i++) {
+//                if (values.get(i).getValue0().equals("-1") || values.get(i).getValue0().equals("-2")) {
+//                    values.remove(values.get(i));
+//                }
+//            }
+//            separatorPosition = 0;
+//        }else if(user.getType() == 4){
+//            for (Quintet<String, String, String, String, String> item : values) {
+//                if (item.getValue0().equals("-1")) {
+//                    separatorPosition++;
+//                }
+//            }
+//        }
     }
 
     @Override
     public int getItemViewType(int position) {
-        if(user.getType() == 3){
-            if(position==0){
-                return TYPE_SUBJECT_TITLE;
-            }else{
-                return TYPE_SUBJECT;
-            }
-        }else if(user.getType() == 4){
-            if(position==0){
-                return TYPE_MARK_TITLE;
-            }else if(position>0 && position<separatorPosition){
-                return TYPE_MARK;
-            }else if(position==separatorPosition){
-                return TYPE_SUBJECT_TITLE;
-            }else if(position>separatorPosition){
-                return TYPE_SUBJECT;
-            }else{
-                return -1;
-            }
-        }
-        return -1;
+        return TYPE_SUBJECT;
+//        if(user.getType() == 3){
+//            if(position==0){
+//                return TYPE_SUBJECT_TITLE;
+//            }else{
+//                return TYPE_SUBJECT;
+//            }
+//        }else if(user.getType() == 4){
+//            if(position==0){
+//                return TYPE_MARK_TITLE;
+//            }else if(position>0 && position<separatorPosition){
+//                return TYPE_MARK;
+//            }else if(position==separatorPosition){
+//                return TYPE_SUBJECT_TITLE;
+//            }else if(position>separatorPosition){
+//                return TYPE_SUBJECT;
+//            }else{
+//                return -1;
+//            }
+//        }
+//        return -1;
     }
 
     @Override
@@ -96,12 +97,14 @@ public class CalendarDayAdapter extends ArrayAdapter<Quintet<String,String,Strin
             viewHolder.markTextView = (ImageView) convertView.findViewById(R.id.list_calendar_day_mark_mark);
             viewHolder.holderId=TYPE_MARK;
 
-        }else if(viewType==TYPE_MARK_TITLE){
-            convertView = inflater.inflate(R.layout.list_item_calendar_day_title, null);
-            viewHolder.titleTextView = (TextView) convertView.findViewById(R.id.list_calendar_day_title);
-            viewHolder.holderId=TYPE_MARK_TITLE;
-
-        }else if(viewType==TYPE_SUBJECT){
+        }
+//            else if(viewType==TYPE_MARK_TITLE){
+//            convertView = inflater.inflate(R.layout.list_item_calendar_day_title, null);
+//            viewHolder.titleTextView = (TextView) convertView.findViewById(R.id.list_calendar_day_title);
+//            viewHolder.holderId=TYPE_MARK_TITLE;
+//
+//        }
+            else if(viewType==TYPE_SUBJECT){
             convertView = inflater.inflate(R.layout.list_item_calendar_day_timetable, null);
             viewHolder.subjectTextView = (TextView) convertView.findViewById(R.id.list_calendar_day_subject);
             viewHolder.subjectTypeTextView = (TextView) convertView.findViewById(R.id.list_calendar_day_subject_type);
@@ -110,11 +113,12 @@ public class CalendarDayAdapter extends ArrayAdapter<Quintet<String,String,Strin
             viewHolder.subjectRoomTextView = (TextView) convertView.findViewById(R.id.list_calendar_day_subject_room);
             viewHolder.holderId=TYPE_SUBJECT;
 
-        }else if(viewType==TYPE_SUBJECT_TITLE){
-            convertView = inflater.inflate(R.layout.list_item_calendar_day_title, null);
-            viewHolder.titleTextView = (TextView) convertView.findViewById(R.id.list_calendar_day_title);
-            viewHolder.holderId = TYPE_SUBJECT_TITLE;
         }
+//            else if(viewType==TYPE_SUBJECT_TITLE){
+//            convertView = inflater.inflate(R.layout.list_item_calendar_day_title, null);
+//            viewHolder.titleTextView = (TextView) convertView.findViewById(R.id.list_calendar_day_title);
+//            viewHolder.holderId = TYPE_SUBJECT_TITLE;
+//        }
         if (convertView != null) {
             convertView.setTag(viewHolder);
         }
@@ -160,11 +164,12 @@ public class CalendarDayAdapter extends ArrayAdapter<Quintet<String,String,Strin
             viewHolder.subjectRoomTextView.setTypeface(robotoFont);
             viewHolder.subjectRoomTextView.setText(Character.toUpperCase(roomNum.charAt(0)) + roomNum.substring(1));
 //            viewHolder.titleTextView.setTypeface(robotoFont);
-        }else if(viewType==TYPE_SUBJECT_TITLE){
-            viewHolder.titleTextView.setText("Расписание");
-        }else if(viewType==TYPE_MARK_TITLE){
-            viewHolder.titleTextView.setText("Успеваемость");
         }
+//        else if(viewType==TYPE_SUBJECT_TITLE){
+//            viewHolder.titleTextView.setText("Расписание");
+//        }else if(viewType==TYPE_MARK_TITLE){
+//            viewHolder.titleTextView.setText("Успеваемость");
+//        }
         return convertView;
     }
 

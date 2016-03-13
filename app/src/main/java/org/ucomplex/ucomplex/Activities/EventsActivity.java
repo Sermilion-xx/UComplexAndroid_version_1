@@ -138,6 +138,7 @@ public class EventsActivity extends AppCompatActivity implements OnTaskCompleteL
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         Common.fetchMyNews(EventsActivity.this);
         Intent i = new Intent(EventsActivity.this, MyService.class);
         EventsActivity.this.startService(i);
@@ -152,6 +153,9 @@ public class EventsActivity extends AppCompatActivity implements OnTaskCompleteL
         setSupportActionBar(toolbar);
         user = Common.getUserDataFromPref(this);
 
+        if(Common.ROLE == -1){
+            Common.ROLE = Common.getRoleFromPref(this);
+        }
         Bitmap bmp;
         if (Common.hasKeyPref(this, "profilePhoto")) {
             bmp = Common.decodePhotoPref(this, "profilePhoto");

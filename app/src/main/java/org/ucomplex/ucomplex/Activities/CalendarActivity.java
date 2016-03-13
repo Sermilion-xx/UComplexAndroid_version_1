@@ -4,6 +4,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -20,6 +22,7 @@ import org.ucomplex.ucomplex.Activities.Tasks.FetchAllStats;
 import org.ucomplex.ucomplex.Activities.Tasks.FetchCalendarBeltTask;
 import org.ucomplex.ucomplex.Adaptors.CalendarInfoAdapter;
 import org.ucomplex.ucomplex.Adaptors.ViewPagerAdapter;
+import org.ucomplex.ucomplex.Common;
 import org.ucomplex.ucomplex.Fragments.CalendarBeltFragment;
 import org.ucomplex.ucomplex.Fragments.CalendarFragment;
 import org.ucomplex.ucomplex.Interfaces.OnTaskCompleteListener;
@@ -42,38 +45,53 @@ public class CalendarActivity extends AppCompatActivity implements AdapterView.O
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_calendar);
+        int content_view;
+        if(Common.ROLE == 4){
+            content_view = R.layout.activity_calendar;
+        }else{
+            content_view = R.layout.activity_calendar_teacher;
+        }
+        setContentView(content_view);
         Toolbar toolbar = (Toolbar) findViewById(R.id.calendar_toolbar2);
         toolbar.setTitle("Календарь");
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_menu);
-        viewPager = (ViewPager) findViewById(R.id.viewpager_calendar);
-        adapter = new ViewPagerAdapter(getSupportFragmentManager());
-
-        if (calendarBeltFragment == null) {
-            calendarBeltFragment = new CalendarBeltFragment();
-            if (this.feedItems == null) {
-                fetchCalendarBeltTask = new FetchCalendarBeltTask(this, this);
-                fetchCalendarBeltTask.setupTask();
-            } else {
-                calendarBeltFragment.setFeedItems(this.feedItems);
-            }
-        }
-
-        FetchAllStats fetchAllStats = new FetchAllStats(this, this);
-        fetchAllStats.setupTask();
-
 
         CalendarFragment calendarFragment = new CalendarFragment();
         calendarFragment.setContext(this);
-        adapter.addFragment(calendarFragment, "Дисциплина");
-        adapter.addFragment(calendarBeltFragment, "Лента");
-        adapter.addFragment(new Fragment(), "Статистика");
-        viewPager.setAdapter(adapter);
+        viewPager = (ViewPager) findViewById(R.id.viewpager_calendar);
         tabLayout = (TabLayout) findViewById(R.id.tabs);
-        tabLayout.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-        tabLayout.setupWithViewPager(viewPager);
+        FetchAllStats fetchAllStats = new FetchAllStats(this, this);
+        fetchAllStats.setupTask();
+        //role related
+        if (Common.ROLE == 4) {
+            adapter = new ViewPagerAdapter(getSupportFragmentManager());
+            if (calendarBeltFragment == null) {
+                calendarBeltFragment = new CalendarBeltFragment();
+                if (this.feedItems == null) {
+                    fetchCalendarBeltTask = new FetchCalendarBeltTask(this, this);
+                    fetchCalendarBeltTask.setupTask();
+                } else {
+                    calendarBeltFragment.setFeedItems(this.feedItems);
+                }
+            }
+            adapter.addFragment(calendarFragment, "Дисциплина");
+            adapter.addFragment(calendarBeltFragment, "Лента");
+            adapter.addFragment(new Fragment(), "Статистика");
+            viewPager.setAdapter(adapter);
+
+            tabLayout.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+            tabLayout.setupWithViewPager(viewPager);
+
+        } else if (Common.ROLE == 3) {
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            FragmentTransaction fragmentTransaction =
+                    fragmentManager.beginTransaction();
+            fragmentTransaction.replace(R.id.content_calendar, calendarFragment);
+            fragmentTransaction.commit();
+        }
+
     }
 
     @Override
@@ -101,7 +119,7 @@ public class CalendarActivity extends AppCompatActivity implements AdapterView.O
                 } catch (InterruptedException | ExecutionException e) {
                     e.printStackTrace();
                 }
-            }else if (task instanceof FetchAllStats) {
+            } else if (task instanceof FetchAllStats) {
                 try {
                     ArrayList<Quartet<String, String, String, String>> statisticItems = ((FetchAllStats) task).get();
                     System.out.println();
@@ -115,11 +133,8 @@ public class CalendarActivity extends AppCompatActivity implements AdapterView.O
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if (viewPager.getCurrentItem() == 0) {
-            getMenuInflater().inflate(R.menu.menu_calendar, menu);
-            return true;
-        }
-        return false;
+        getMenuInflater().inflate(R.menu.menu_calendar, menu);
+        return true;
     }
 
     @Override

@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     android:background="@color/activity_background"
-    tools:context="org.ucomplex.ucomplex.Activities.CalendarDayActivity">
+    tools:context=".Activities.CalendarActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -14,20 +14,14 @@
         android:theme="@style/AppTheme.AppBarOverlay">
 
         <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
+            android:id="@+id/calendar_toolbar2"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="@color/colorPrimary"
-            app:popupTheme="@style/AppTheme.PopupOverlay" />
+            app:popupTheme="@style/AppTheme.NoActionBar" />
 
     </android.support.design.widget.AppBarLayout>
-
-    <ListView
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_marginTop="66dp"
-        android:id="@+id/calendar_day_listview"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+    <include layout="@layout/content_calendar"/>
 
 
 </android.support.design.widget.CoordinatorLayout>
