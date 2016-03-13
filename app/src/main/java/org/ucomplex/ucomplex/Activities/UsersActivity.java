@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -102,6 +103,11 @@ public class UsersActivity extends AppCompatActivity {
     public void setupViewPager(ViewPager viewPager) {
 
         UsersFragment onlineUsersFragment = new UsersFragment();
+        if(Common.ROLE==4){
+            onlineUsersFragment.setUsersType(0);
+        }else{
+            onlineUsersFragment.setUsersType(10);
+        }
         onlineUsersFragment.setUsersType(0);
         onlineUsersFragment.setActivity(UsersActivity.this);
         adapter.addFragment(onlineUsersFragment, "Онлайн");
@@ -111,15 +117,29 @@ public class UsersActivity extends AppCompatActivity {
         friendsUsersFragment.setActivity(UsersActivity.this);
         adapter.addFragment(friendsUsersFragment, "Друзья");
 
-        UsersFragment groupsUsersFragment = new UsersFragment();
-        groupsUsersFragment.setUsersType(2);
-        groupsUsersFragment.setActivity(UsersActivity.this);
-        adapter.addFragment(groupsUsersFragment, "Группа");
+        if(Common.ROLE==4){
+            UsersFragment groupsUsersFragment = new UsersFragment();
+            groupsUsersFragment.setUsersType(2);
+            groupsUsersFragment.setActivity(UsersActivity.this);
+            adapter.addFragment(groupsUsersFragment, "Группа");
 
-        UsersFragment teachersUsersFragment = new UsersFragment();
-        teachersUsersFragment.setUsersType(3);
-        teachersUsersFragment.setActivity(UsersActivity.this);
-        adapter.addFragment(teachersUsersFragment, "Преподаватели");
+            UsersFragment teachersUsersFragment = new UsersFragment();
+            teachersUsersFragment.setUsersType(3);
+            teachersUsersFragment.setActivity(UsersActivity.this);
+            adapter.addFragment(teachersUsersFragment, "Преподаватели");
+
+        }else if(Common.ROLE == 3){
+            UsersFragment groupsUsersFragment = new UsersFragment();
+            groupsUsersFragment.setUsersType(12);
+            groupsUsersFragment.setActivity(UsersActivity.this);
+            adapter.addFragment(groupsUsersFragment, "Группы");
+
+            UsersFragment kafedraUsersFragment = new UsersFragment();
+            kafedraUsersFragment.setUsersType(5);
+            kafedraUsersFragment.setActivity(UsersActivity.this);
+            adapter.addFragment(kafedraUsersFragment, "Кафедра");
+        }
+
         UsersFragment blacklistUsersFragment = new UsersFragment();
         blacklistUsersFragment.setUsersType(4);
         blacklistUsersFragment.setActivity(UsersActivity.this);

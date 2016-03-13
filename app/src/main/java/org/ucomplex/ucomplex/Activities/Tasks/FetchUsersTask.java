@@ -41,10 +41,16 @@ public class FetchUsersTask extends AsyncTask<Integer, Void, ArrayList<User>> {
     protected ArrayList<User> doInBackground(Integer... params) {
         String urlString = null;
         String urlString0 = "http://you.com.ru/student/online?mobile=1";
-        String urlString1 = "http://you.com.ru/user/friends?mobile=1";
         String urlString2 = "http://you.com.ru/student/ajax/my_group?mobile=1";
         String urlString3 = "http://you.com.ru/student/ajax/my_teachers?mobile=1";
+
         String urlString4 = "http://you.com.ru/user/blacklist?mobile=1";
+        String urlString1 = "http://you.com.ru/user/friends?mobile=1";
+
+        String urlString10 = "http://you.com.ru/teacher/online?mobile=1";
+        String urlString5 = "http://you.com.ru/teacher/ajax/my_department?mobile=1";
+        String urlString12 = "http://you.com.ru/teacher/ajax/my_groups?mobile=1";
+
         HashMap<String, String> postData = new HashMap<>();
         if(params[0]==0){
             urlString = urlString0;
@@ -61,7 +67,12 @@ public class FetchUsersTask extends AsyncTask<Integer, Void, ArrayList<User>> {
             urlString = urlString3;
         }else if(params[0]==4){
             urlString = urlString4;
-
+        }else if(params[0]==5){
+            urlString = urlString5;
+        }else if(params[0]==10){
+            urlString = urlString10;
+        }else if(params[0]==12){
+            urlString = urlString12;
         }
 
         String jsonData = Common.httpPost(urlString, Common.getLoginDataFromPref(mContext),postData);
