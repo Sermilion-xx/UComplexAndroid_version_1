@@ -307,6 +307,8 @@ public class Common {
             URL url = new URL(urlString);
             connection = (HttpURLConnection) url.openConnection();
             connection.setConnectTimeout(5000);
+            connection.setReadTimeout(5000);
+            connection.setConnectTimeout(5000);
             connection.setRequestMethod("POST");
             connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
             connection.setRequestProperty("Content-Length", "" + Integer.toString(dataUrlParameters.getBytes().length));

@@ -57,25 +57,4 @@ public final class AsyncTaskManager implements IProgressTracker, OnCancelListene
         mAsyncTask = null;
     }
 
-    public Object retainTask() {
-        // Detach task from tracker (this) before retain
-        if (mAsyncTask != null) {
-            mAsyncTask.setProgressTracker(null);
-        }
-        // Retain task
-        return mAsyncTask;
-    }
-
-    public void handleRetainedTask(Object instance) {
-        // Restore retained task and attach it to tracker (this)
-        if (instance instanceof FetchCalendarTask) {
-            mAsyncTask = (FetchCalendarTask) instance;
-            mAsyncTask.setProgressTracker(this);
-        }
-    }
-
-    public boolean isWorking() {
-        // Track current status
-        return mAsyncTask != null;
-    }
 }
