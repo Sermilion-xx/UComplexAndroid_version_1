@@ -1,5 +1,7 @@
 package org.ucomplex.ucomplex.Activities;
 
+import android.content.Context;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
@@ -8,6 +10,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.AttributeSet;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -49,8 +52,13 @@ public class CourseActivity extends AppCompatActivity implements OnTaskCompleteL
     CourseFragment courseFragment;
     CalendarBeltFragment calendarBeltFragment;
     ViewPagerAdapter adapter;
-    ViewPager viewPager;
+    ViewPager mViewPager;
     boolean loaded;
+
+    @Override
+    public View onCreateView(String name, Context context, AttributeSet attrs) {
+        return super.onCreateView(name, context, attrs);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,13 +68,18 @@ public class CourseActivity extends AppCompatActivity implements OnTaskCompleteL
         this.courseName = extras.getString("courseName");
         titles.add(this.courseName);
         setContentView(R.layout.activity_course);
-        viewPager = (ViewPager) findViewById(R.id.viewpager);
-        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+        mViewPager = (ViewPager) findViewById(R.id.viewpager);
+        adapter = new ViewPagerAdapter(getSupportFragmentManager());
+//        adapter.addFragment(new Fragment(), "Дисциплина");
+//        adapter.addFragment(new Fragment(), "Материалы");
+//        adapter.addFragment(new Fragment(), "Лента");
+//        mViewPager.setAdapter(adapter);
+
+        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
             }
-
             @Override
             public void onPageSelected(int position) {
                 if(position==1){
@@ -80,19 +93,17 @@ public class CourseActivity extends AppCompatActivity implements OnTaskCompleteL
                 }
             }
 
+
+
             @Override
             public void onPageScrollStateChanged(int state) {
 
             }
         });
-        adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(new Fragment(), "Дисциплина");
-        adapter.addFragment(new Fragment(), "Материалы");
-        adapter.addFragment(new Fragment(), "Лента");
-        viewPager.setAdapter(adapter);
+
         tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimary));
-        tabLayout.setupWithViewPager(viewPager);
+//        tabLayout.setupWithViewPager(mViewPager);
 
 
         FetchMySubjectsTask fetchMySubjectsTask = new FetchMySubjectsTask(this, this);
@@ -225,9 +236,11 @@ public class CourseActivity extends AppCompatActivity implements OnTaskCompleteL
                     try {
                         this.coursedata = (Course) task.get();
                         if (this.coursedata != null) {
-                            setupViewPager(viewPager);
-                            tabLayout.setupWithViewPager(viewPager);
+                            setupViewPager(mViewPager);
+                            tabLayout.setupWithViewPager(mViewPager);
+                            tabLayout.setSelectedTabIndicatorColor(Color.WHITE);
                             loaded = true;
+
                         }
                     } catch (InterruptedException | ExecutionException e) {
                         e.printStackTrace();
