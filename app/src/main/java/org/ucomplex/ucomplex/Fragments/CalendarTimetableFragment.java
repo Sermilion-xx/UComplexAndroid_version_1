@@ -33,6 +33,7 @@ public class CalendarTimetableFragment extends ListFragment {
         CalendarDayAdapter calendarDayAdapter = new CalendarDayAdapter(getContext(),calendarDay);
         getListView().setAdapter(calendarDayAdapter);
         getListView().setDividerHeight(0);
+
     }
 
     @Override

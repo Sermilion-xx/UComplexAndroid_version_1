@@ -94,8 +94,6 @@ public class CourseActivity extends AppCompatActivity implements OnTaskCompleteL
 
         tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimary));
-//        tabLayout.setupWithViewPager(mViewPager);
-
 
         FetchMySubjectsTask fetchMySubjectsTask = new FetchMySubjectsTask(this, this);
         fetchMySubjectsTask.setmContext(this);

@@ -97,11 +97,8 @@ public class EventsActivity extends AppCompatActivity implements OnTaskCompleteL
                 data.putSerializable("eventItems", eventsArray);
                 fragment.setArguments(data);
                 getFragmentManager().beginTransaction()
-                        .replace(R.id.container, fragment)
-                        .commit();
-
+                        .replace(R.id.container, fragment).commit();
             }
-
         }.execute(user.getType());
     }
 
@@ -111,7 +108,6 @@ public class EventsActivity extends AppCompatActivity implements OnTaskCompleteL
             Bundle bundle = intent.getExtras();
             int messageCount = bundle.getInt("newMessage");
             if (messageCount > 0 && messageCount != mAdapter.getMsgCount()) {
-                Log.e("MGS", "Received broadcast: " + messageCount);
                 mAdapter.setMsgCount(messageCount);
                 mAdapter.notifyItemChanged(6);
             } else if (messageCount == 0 && mAdapter.getMsgCount() > 0) {

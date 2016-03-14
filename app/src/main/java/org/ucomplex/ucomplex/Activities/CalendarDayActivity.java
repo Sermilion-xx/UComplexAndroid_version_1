@@ -53,8 +53,8 @@ public class CalendarDayActivity extends AppCompatActivity {
         adapter.addFragment(calendarBeltFragment, "Успеваемость");
 
         tabLayout = (TabLayout) findViewById(R.id.tabs);
-
         mViewPager.setAdapter(adapter);
+        tabLayout.setupWithViewPager(mViewPager);
 
     }
 
