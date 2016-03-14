@@ -1,7 +1,6 @@
 package org.ucomplex.ucomplex.Activities.Tasks;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
@@ -20,8 +19,7 @@ import org.ucomplex.ucomplex.Model.StudyStructure.Course;
 import org.ucomplex.ucomplex.Model.StudyStructure.Department;
 import org.ucomplex.ucomplex.Model.StudyStructure.File;
 import org.ucomplex.ucomplex.Model.StudyStructure.Progress;
-import org.ucomplex.ucomplex.Model.Users.Student;
-import org.ucomplex.ucomplex.Model.Users.Teacher;
+import org.ucomplex.ucomplex.Model.Users.User;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -79,7 +77,7 @@ public class FetchMySubjectsTask extends AsyncTask<Void, String, Course> impleme
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
             String loggedUserStr = prefs.getString("loggedUser", "");
             Gson gson = new Gson();
-            Student student = gson.fromJson(loggedUserStr, Student.class);
+            User student = gson.fromJson(loggedUserStr, User.class);
 
             if(jsonData==null){
                 jsonData = "";
@@ -127,10 +125,10 @@ public class FetchMySubjectsTask extends AsyncTask<Void, String, Course> impleme
                     JSONObject jsonFiles = filesArray.getJSONObject(i);
                     JSONObject teacher = jsonFiles.getJSONObject("teacher");
                     JSONArray filesArrayObject = jsonFiles.getJSONArray("files");
-                    Teacher teacher1 = new Teacher();
+                    User teacher1 = new User();
 
                     if (!teacher.isNull("id")) {
-                            teacher1 = new Teacher();
+                            teacher1 = new User();
                             teacher1.setName(teacher.getString("name"));
                             teacher1.setCode(teacher.getString("code"));
                             teacher1.setPhoto(teacher.getInt("photo"));

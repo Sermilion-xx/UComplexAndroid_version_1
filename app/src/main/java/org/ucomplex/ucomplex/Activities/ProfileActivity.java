@@ -1,6 +1,5 @@
 package org.ucomplex.ucomplex.Activities;
 
-import android.app.ProgressDialog;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -12,13 +11,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import org.javatuples.Triplet;
 import org.ucomplex.ucomplex.Activities.Tasks.FetchPersonTask;
 import org.ucomplex.ucomplex.Fragments.ProfileFragment;
 import org.ucomplex.ucomplex.Interfaces.OnTaskCompleteListener;
-import org.ucomplex.ucomplex.Model.Users.Teacher;
 import org.ucomplex.ucomplex.Model.Users.User;
 import org.ucomplex.ucomplex.R;
 
@@ -107,7 +104,7 @@ public class ProfileActivity extends AppCompatActivity implements OnTaskComplete
                 if(role.getType()==4){
                     aItem = new Triplet<>(positionName, String.valueOf(role.getType()), "-1");
                 }else{
-                    Teacher teach = (Teacher) role;
+                    User teach = (User) role;
                     aItem = new Triplet<>(teach.getSectionName(), role.getPositionName(),  "-1");
                 }
                 items.add(aItem);

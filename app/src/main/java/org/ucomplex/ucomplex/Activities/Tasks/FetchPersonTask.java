@@ -1,10 +1,9 @@
 package org.ucomplex.ucomplex.Activities.Tasks;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
-import android.graphics.Bitmap;
 import android.os.AsyncTask;
+import android.support.annotation.Nullable;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -12,8 +11,6 @@ import org.json.JSONObject;
 import org.ucomplex.ucomplex.Common;
 import org.ucomplex.ucomplex.Interfaces.IProgressTracker;
 import org.ucomplex.ucomplex.Interfaces.OnTaskCompleteListener;
-import org.ucomplex.ucomplex.Model.Users.Student;
-import org.ucomplex.ucomplex.Model.Users.Teacher;
 import org.ucomplex.ucomplex.Model.Users.User;
 
 
@@ -72,6 +69,30 @@ public class FetchPersonTask extends AsyncTask<Void, String, User> implements IP
         return user;
     }
 
+    private void teacherAdminStudentCommonSetter(User user, JSONObject roleJson){
+        try{
+            user.setRole(roleJson.getInt("role"));
+            user.setId(roleJson.getInt("id"));
+            user.setType(roleJson.getInt("type"));
+            try{
+                user.setPosition(roleJson.getInt("position"));
+            }catch (JSONException ignored){}
+            user.setPositionName(roleJson.getString("position_name"));
+            try{
+                user.setRate(roleJson.getInt("rate"));
+                user.setPerson(roleJson.getInt("person"));
+                user.setSection(roleJson.getInt("section"));
+                user.setSectionName(roleJson.getString("section_name"));
+                user.setLead(roleJson.getInt("lead"));
+            }catch (JSONException e){
+            e.printStackTrace();
+        }
+        }catch (JSONException e){
+            e.printStackTrace();
+        }
+    }
+
+    @Nullable
     private User getUserDataFromJson(String jsonData){
         User user;
         JSONObject userJson;
@@ -82,23 +103,17 @@ public class FetchPersonTask extends AsyncTask<Void, String, User> implements IP
             user.setName(userJson.getString("name"));
             user.setEmail(userJson.getString("email"));
             user.setCode(userJson.getString("code"));
+            user.setPhoto(userJson.getInt("photo"));
+            user.setCode(userJson.getString("code"));
 
             JSONArray rolesArray = userJson.getJSONArray("roles");
             for(int i=0;i<rolesArray.length();i++){
                 User role = null;
                 JSONObject roleJson = rolesArray.getJSONObject(i);
                 if(roleJson.getInt("type")==3){
-                    Teacher teacherRole = new Teacher();
-                    teacherRole.setId(roleJson.getInt("id"));
-                    teacherRole.setRate(roleJson.getInt("rate"));
-                    teacherRole.setPosition(roleJson.getInt("position"));
-                    teacherRole.setPerson(roleJson.getInt("person"));
-                    teacherRole.setType(roleJson.getInt("type"));
-                    teacherRole.setPositionName(roleJson.getString("position_name"));
-                    teacherRole.setSection(roleJson.getInt("section"));
-                    teacherRole.setSectionName(roleJson.getString("section_name"));
-                    teacherRole.setLead(roleJson.getInt("lead"));
-                    //-------------------------------------------------------
+                    User teacherRole = new User();
+                    teacherAdminStudentCommonSetter(teacherRole, roleJson);
+
                     teacherRole.setStatuses(userJson.getString("statuses"));
                     String academicAwards = userJson.getString("academic_awards");
                     teacherRole.setAcademicAwards(academicAwards);
@@ -106,23 +121,27 @@ public class FetchPersonTask extends AsyncTask<Void, String, User> implements IP
                     teacherRole.setAcademicDegree(userJson.getInt("academic_degree"));
                     teacherRole.setUpqualification(userJson.getString("upqualification"));
                     teacherRole.setPhoneWork(userJson.getString("phone_work"));
-                    role = teacherRole;
+                    user.addRole(teacherRole);
                 }else if(roleJson.getInt("type")==4){
-                    Student studentRole = new Student();
-                    studentRole.setId(roleJson.getInt("id"));
-                    studentRole.setType(roleJson.getInt("type"));
-                    studentRole.setGroup(roleJson.getInt("group"));
-                    studentRole.setPosition(roleJson.getInt("position"));
+                    User studentRole = new User();
+                    teacherAdminStudentCommonSetter(studentRole, roleJson);
+                    try{
+                        studentRole.setGroup(roleJson.getInt("group"));
+                    }catch (JSONException ignored){}
                     studentRole.setMajor(roleJson.getInt("major"));
                     studentRole.setStudy(roleJson.getInt("study"));
                     studentRole.setStudy(roleJson.getInt("year"));
                     studentRole.setPayment(roleJson.getInt("payment"));
                     studentRole.setContract_year(roleJson.getInt("contract_year"));
-                    studentRole.setPositionName(roleJson.getString("position_name"));
-                    role = studentRole;
-                }
-                if(role!=null){
-                    user.addRole(role);
+                    user.addRole(studentRole);
+                }else if(roleJson.getInt("type")==1){
+                    User employeeRole = new User();
+                    teacherAdminStudentCommonSetter(employeeRole, roleJson);
+                    user.addRole(employeeRole);
+                }else if(roleJson.getInt("type")==0){
+                    User adminRole = new User();
+                    teacherAdminStudentCommonSetter(adminRole, roleJson);
+                    user.addRole(adminRole);
                 }
             }
             if(userJson.has("black")){

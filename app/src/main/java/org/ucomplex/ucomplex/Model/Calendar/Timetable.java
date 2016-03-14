@@ -1,7 +1,5 @@
 package org.ucomplex.ucomplex.Model.Calendar;
 
-import org.ucomplex.ucomplex.Model.Users.Teacher;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 

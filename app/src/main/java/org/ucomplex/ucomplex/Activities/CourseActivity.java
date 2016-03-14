@@ -70,10 +70,6 @@ public class CourseActivity extends AppCompatActivity implements OnTaskCompleteL
         setContentView(R.layout.activity_course);
         mViewPager = (ViewPager) findViewById(R.id.viewpager);
         adapter = new ViewPagerAdapter(getSupportFragmentManager());
-//        adapter.addFragment(new Fragment(), "Дисциплина");
-//        adapter.addFragment(new Fragment(), "Материалы");
-//        adapter.addFragment(new Fragment(), "Лента");
-//        mViewPager.setAdapter(adapter);
 
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override

@@ -1,9 +1,6 @@
 package org.ucomplex.ucomplex.Fragments;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
-import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ListFragment;
@@ -11,10 +8,9 @@ import android.view.View;
 import android.widget.ListView;
 
 import org.javatuples.Quartet;
-import org.ucomplex.ucomplex.Activities.ProfileActivity;
 import org.ucomplex.ucomplex.Adaptors.CourseInfoAdapter;
 import org.ucomplex.ucomplex.Model.StudyStructure.Course;
-import org.ucomplex.ucomplex.Model.Users.Teacher;
+import org.ucomplex.ucomplex.Model.Users.User;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -52,10 +48,10 @@ public class CourseFragment extends ListFragment {
         if (courseData == null) {
             courseData = (Course) bundle.getSerializable("courseData");
             if (courseData != null) {
-                ArrayList<Teacher> teachers = courseData.getTeachers();
+                ArrayList<User> teachers = courseData.getTeachers();
                 Quartet<String, String, String, String> separatorItem1 = new Quartet<>("-1", "-1", "-1", "2");
                 mItems.add(separatorItem1);
-                for (Teacher teacher : teachers) {
+                for (User teacher : teachers) {
                     String code = "";
                     if (teacher.getPhoto() == 1) {
                         code = teacher.getCode();

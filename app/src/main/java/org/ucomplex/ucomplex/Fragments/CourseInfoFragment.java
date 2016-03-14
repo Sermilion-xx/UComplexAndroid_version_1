@@ -20,7 +20,6 @@ import org.ucomplex.ucomplex.Activities.Tasks.FetchPersonTask;
 import org.ucomplex.ucomplex.Common;
 import org.ucomplex.ucomplex.Interfaces.OnTaskCompleteListener;
 import org.ucomplex.ucomplex.Model.StudyStructure.Course;
-import org.ucomplex.ucomplex.Model.Users.Teacher;
 import org.ucomplex.ucomplex.Model.Users.User;
 import org.ucomplex.ucomplex.R;
 
@@ -317,7 +316,7 @@ public class CourseInfoFragment extends Fragment implements OnTaskCompleteListen
                 if (user.getRoles().get(i).getType() == 4) {
                     positionViews[i].setText("Студент - " + positionName);
                 } else if (user.getRoles().get(i).getType() == 3) {
-                    Teacher teach = (Teacher) user.getRoles().get(i);
+                    User teach = (User) user.getRoles().get(i);
                     String position = String.valueOf(positionName.charAt(0)).toUpperCase() + positionName.substring(1, positionName.length())
                             + " - " + teach.getSectionName();
                     if (positionViews[i] != null) {

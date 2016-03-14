@@ -4,7 +4,6 @@ package org.ucomplex.ucomplex.Fragments;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -25,6 +24,7 @@ import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
 import com.prolificinteractive.materialcalendarview.OnMonthChangedListener;
 import com.prolificinteractive.materialcalendarview.format.MonthArrayTitleFormatter;
 
+import org.javatuples.Quartet;
 import org.javatuples.Quintet;
 import org.ucomplex.ucomplex.Activities.CalendarDayActivity;
 import org.ucomplex.ucomplex.Activities.Tasks.AsyncTaskManager;
@@ -55,7 +55,6 @@ public class CalendarFragment extends Fragment implements OnTaskCompleteListener
     User user;
     private AsyncTaskManager mAsyncTaskManager;
     final String[] monthsTitles = {"Январь", "Февряль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"};
-
 
 
     public CalendarFragment() {
@@ -216,7 +215,7 @@ public class CalendarFragment extends Fragment implements OnTaskCompleteListener
     @Override
     public void onTaskComplete(AsyncTask task, Object... o) {
         linlaHeaderProgress.setVisibility(View.GONE);
-        if(task!=null){
+        if (task != null) {
 
             if (task.isCancelled()) {
                 Toast.makeText(context, "Операция отменена", Toast.LENGTH_LONG)
@@ -231,24 +230,19 @@ public class CalendarFragment extends Fragment implements OnTaskCompleteListener
                     try {
                         refreshMonth();
                     } catch (NullPointerException ignored) {
-
                     }
                     keys = new ArrayList<>();
                     for (String key : calendar.getCourses().keySet()) {
                         keys.add(key);
                     }
-
                     options.clear();
                     for (int i = 0; i < calendar.getCourses().size(); i++) {
                         options.add(calendar.getCourses().get(keys.get(i)));
                     }
-
                     ArrayAdapter<String> adapter = new ArrayAdapter<>(context,
                             android.R.layout.simple_spinner_item, options.toArray(new String[options.size()]));
-
                     adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     spinner.setAdapter(adapter);
-
 
                     materialCalendarView.setOnDateChangedListener(new OnDateSelectedListener() {
                         @Override
@@ -256,7 +250,8 @@ public class CalendarFragment extends Fragment implements OnTaskCompleteListener
 
                             String day = date.getDay() < 10 ? "0" + String.valueOf(date.getDay()) : String.valueOf(date.getDay());
 
-                            ArrayList dayTimetableArray = new ArrayList();
+                            //Успеваемость
+                            ArrayList<Quartet<Integer, String, String, Integer>> dayCalendarBeltArray = new ArrayList();
                             //dummy element for title
 //                            dayTimetableArray.add(new Quintet<>("-2", "-1", "-1", "-1", "-1"));
                             for (ChangedDay changeDay : calendar.getChangedDays()) {
@@ -265,25 +260,28 @@ public class CalendarFragment extends Fragment implements OnTaskCompleteListener
                                         int mark = lesson.getMark();
                                         int type = lesson.getType();
                                         int course = lesson.getCourse();
-                                        String color = "ffffff";
+                                        String color = "#ffffff";
                                         if (type == 0) {
                                             color = "#51cde7";
                                         } else if (type == 1) {
                                             color = "#fecd71";
                                         } else if (type == 2) {
                                             color = "#9ece2b";
+                                        } else if (type == 3) {
+                                            color = "#d18ec0";
                                         }
                                         int colorInt = Color.parseColor(color);
                                         String subjectName = calendar.getTimetable().getSubjects().get(String.valueOf(course));
-                                        //time, name, info, mark, color
-                                        Quintet<String, String, String, String, String> dayTimetable =
-                                                new Quintet<>("-1", subjectName, "-1", String.valueOf(mark), String.valueOf(colorInt));
-                                        dayTimetableArray.add(dayTimetable);
+                                        //mark, name, date, mark, color
+                                        Quartet<Integer, String, String, Integer> dayTimetable =
+                                                new Quartet<>(mark, subjectName,color, -2);
+                                        dayCalendarBeltArray.add(dayTimetable);
                                     }
                                 }
                             }
                             //dummy element for title
 //                            dayTimetableArray.add(new Quintet<>("-2", "-1", "-1", "-1", "-1"));
+                            ArrayList dayTimetableArray = new ArrayList();
                             for (HashMap entrie : calendar.getTimetable().getEntries()) {
                                 if (entrie.get("lessonDay").equals(day)) {
                                     String hour = calendar.getTimetable().getHours().get(entrie.get("hour"));
@@ -305,14 +303,16 @@ public class CalendarFragment extends Fragment implements OnTaskCompleteListener
                                     }
                                     //time, name, info, mark, color
                                     Quintet<String, String, String, String, String> dayTimetable =
-                                            new Quintet<>(hour, subjectName + "," + type, info, "-1", "-1");
+                                            new Quintet<>(hour, subjectName + "/" + type, info, "-1", "-1");
                                     dayTimetableArray.add(dayTimetable);
+                                    System.out.println();
                                 }
                             }
 
                             Intent intent = new Intent(context, CalendarDayActivity.class);
                             Bundle bundle = new Bundle();
                             bundle.putSerializable("calendarDay", dayTimetableArray);
+                            bundle.putSerializable("calendarBeltDay", dayCalendarBeltArray);
 
                             int dayMonth = date.getMonth();
                             String dayMonthStr = "";

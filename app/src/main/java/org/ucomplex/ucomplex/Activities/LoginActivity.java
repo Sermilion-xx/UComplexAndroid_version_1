@@ -23,7 +23,6 @@ import com.google.gson.Gson;
 
 import org.ucomplex.ucomplex.Activities.Tasks.LoginTask;
 import org.ucomplex.ucomplex.Common;
-import org.ucomplex.ucomplex.Model.Users.Student;
 import org.ucomplex.ucomplex.Model.Users.User;
 import org.ucomplex.ucomplex.R;
 
@@ -51,7 +50,7 @@ public class LoginActivity extends AppCompatActivity implements LoginTask.AsyncR
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         String loggedUserStr = prefs.getString("loggedUser", "");
         Gson gson = new Gson();
-        Student obj = gson.fromJson(loggedUserStr, Student.class);
+        User obj = gson.fromJson(loggedUserStr, User.class);
         String mLogin = "";
         String mPass = "";
         if (obj != null) {

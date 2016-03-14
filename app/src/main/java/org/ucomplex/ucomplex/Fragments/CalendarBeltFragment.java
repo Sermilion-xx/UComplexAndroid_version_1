@@ -16,6 +16,7 @@ import java.util.ArrayList;
 
 public class CalendarBeltFragment extends ListFragment {
 
+    //mark
     private ArrayList<Quartet<Integer, String, String, Integer>> feedItems = new ArrayList<>();
     private CourseCalendarBeltAdapter courseCalendarBeltAdapter;
 

@@ -7,9 +7,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.ucomplex.ucomplex.Common;
-import org.ucomplex.ucomplex.Model.Users.Administrator;
-import org.ucomplex.ucomplex.Model.Users.Student;
-import org.ucomplex.ucomplex.Model.Users.Teacher;
 import org.ucomplex.ucomplex.Model.Users.User;
 
 import java.util.ArrayList;
@@ -108,17 +105,17 @@ public class FetchUsersTask extends AsyncTask<Integer, Void, ArrayList<User>> {
                     }
                     User user = new User();
                     if (type == 1) {
-                        Administrator admin = new Administrator();
+                        User admin = new User();
                         admin.setType(type);
                         user = admin;
                     }else if (type == 4) {
-                        Student student = new Student();
+                        User student = new User();
                         student.setAlias(userJson.getString("alias"));
                         student.setType(type);
                         user = student;
                     }
                     if(getTypeInt == 3) {
-                        Teacher teacher = new Teacher();
+                        User teacher = new User();
                             teacher.setSex(userJson.getInt("sex"));
                             teacher.setStatuses(userJson.getString("statuses"));
                             String academicAwards = userJson.getString("academic_awards");

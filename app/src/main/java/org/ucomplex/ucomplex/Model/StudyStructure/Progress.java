@@ -1,6 +1,6 @@
 package org.ucomplex.ucomplex.Model.StudyStructure;
 
-import org.ucomplex.ucomplex.Model.Users.Teacher;
+import org.ucomplex.ucomplex.Model.Users.User;
 
 import java.io.Serializable;
 
@@ -10,7 +10,7 @@ import java.io.Serializable;
 public class Progress implements Serializable{
     private int student;
     private Course course;
-    private Teacher teacher;
+    private User teacher;
     private int table;
     private int time;
     private int mark;
@@ -41,11 +41,11 @@ public class Progress implements Serializable{
         this.course = course;
     }
 
-    public Teacher getTeacher() {
+    public User getTeacher() {
         return teacher;
     }
 
-    public void setTeacher(Teacher teacher) {
+    public void setTeacher(User teacher) {
         this.teacher = teacher;
     }
 

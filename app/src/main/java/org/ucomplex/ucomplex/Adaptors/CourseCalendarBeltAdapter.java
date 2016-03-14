@@ -58,23 +58,39 @@ public class CourseCalendarBeltAdapter extends ArrayAdapter<Quartet<Integer, Str
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder viewHolder;
+        Quartet<Integer, String, String, Integer> feedItem = getItem(position);
         if (convertView == null) {
             LayoutInflater inflater = LayoutInflater.from(getContext());
-            convertView = inflater.inflate(R.layout.list_item_course_calendar_belt, parent, false);
             viewHolder = new ViewHolder();
-            viewHolder.teacherNametextView = (TextView) convertView.findViewById(R.id.course_calendar_belt_listview_item_textview1);
-            viewHolder.dateTextView2 = (TextView) convertView.findViewById(R.id.course_calendar_belt_listview_item_textview2);
-            viewHolder.markImageView = (ImageView) convertView.findViewById(R.id.course_calendar_belt_listview_item_image);
-            viewHolder.timeIconttextView = (TextView) convertView.findViewById(R.id.course_calendar_belt_listview_time_icon);
+            if(feedItem.getValue3()==-2){
+                convertView = inflater.inflate(R.layout.list_item_calendar_calendar_belt, parent, false);
+                viewHolder.teacherNametextView = (TextView) convertView.findViewById(R.id.course_calendar_belt_listview_item_textview1);
+                viewHolder.markImageView = (ImageView) convertView.findViewById(R.id.course_calendar_belt_listview_item_image);
+            }else{
+                convertView = inflater.inflate(R.layout.list_item_course_calendar_belt, parent, false);
+                viewHolder.teacherNametextView = (TextView) convertView.findViewById(R.id.course_calendar_belt_listview_item_textview1);
+                viewHolder.dateTextView2 = (TextView) convertView.findViewById(R.id.course_calendar_belt_listview_item_textview2);
+                viewHolder.markImageView = (ImageView) convertView.findViewById(R.id.course_calendar_belt_listview_item_image);
+                viewHolder.timeIconttextView = (TextView) convertView.findViewById(R.id.course_calendar_belt_listview_time_icon);
+            }
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
-        Quartet<Integer, String, String, Integer> feedItem = getItem(position);
+
         viewHolder.teacherNametextView.setText(feedItem.getValue1());
-        viewHolder.dateTextView2.setText(Common.makeDate(feedItem.getValue2()));
-        String hex = this.colors[feedItem.getValue3()]; // green
+        if(!feedItem.getValue2().equals("-1")){
+            if(feedItem.getValue3()!=-2){
+                viewHolder.dateTextView2.setText(Common.makeDate(feedItem.getValue2()));
+            }
+        }
+        String hex;
+        if(feedItem.getValue3()==-2){
+            hex = feedItem.getValue2();
+        }else{
+            hex = this.colors[feedItem.getValue3()]; // green
+        }
         long thisCol = Long.decode(hex) + 4278190080L;
         int classColor = (int) thisCol;
         TextDrawable drawable;
@@ -88,13 +104,14 @@ public class CourseCalendarBeltAdapter extends ArrayAdapter<Quartet<Integer, Str
                     .buildRound(String.valueOf(getLetter(feedItem.getValue0())), classColor);
         }
         viewHolder.markImageView.setImageDrawable(drawable);
-        viewHolder.timeIconttextView.setTypeface(Typeface.createFromAsset(getContext().getAssets(), "fonts/fontawesome-webfont.ttf"));
-        viewHolder.timeIconttextView.setText("\uF017");
+        if(feedItem.getValue3()!=-2){
+            viewHolder.timeIconttextView.setTypeface(Typeface.createFromAsset(getContext().getAssets(), "fonts/fontawesome-webfont.ttf"));
+            viewHolder.timeIconttextView.setText("\uF017");
+        }
         return convertView;
     }
 
     private static String getLetter(int mark) {
-
         if (mark == -1) {
             return "н";
         } else if (mark == 0) {

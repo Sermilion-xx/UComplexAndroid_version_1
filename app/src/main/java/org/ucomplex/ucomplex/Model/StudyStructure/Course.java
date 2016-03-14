@@ -1,6 +1,6 @@
 package org.ucomplex.ucomplex.Model.StudyStructure;
 
-import org.ucomplex.ucomplex.Model.Users.Teacher;
+import org.ucomplex.ucomplex.Model.Users.User;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -15,7 +15,7 @@ public class Course implements Serializable {
     private int table;
     private int client;
     private int course_id;
-    private ArrayList<Teacher> teachers;
+    private ArrayList<User> teachers;
     private ArrayList<File> files;
     private Department department;
     private Progress progress;
@@ -70,14 +70,14 @@ public class Course implements Serializable {
         this.department = department;
     }
 
-    public void addTeacher(Teacher teacher){
+    public void addTeacher(User teacher){
         if(this.teachers==null){
             this.teachers = new ArrayList<>();
         }
         this.teachers.add(teacher);
     }
 
-    public Teacher getTeacher(int index){
+    public User getTeacher(int index){
         return this.teachers.get(index);
     }
 
@@ -133,11 +133,11 @@ public class Course implements Serializable {
         this.course_id = course_id;
     }
 
-    public ArrayList<Teacher> getTeachers() {
+    public ArrayList<User> getTeachers() {
         return teachers;
     }
 
-    public void setTeachers(ArrayList<Teacher> teachers) {
+    public void setTeachers(ArrayList<User> teachers) {
         this.teachers = teachers;
     }
 

@@ -152,7 +152,7 @@ public class CalendarDayAdapter extends ArrayAdapter<Quintet<String,String,Strin
         }else if(viewType==TYPE_SUBJECT){
             viewHolder.timeTextView.setTypeface(robotoFont);
             viewHolder.timeTextView.setText(getItem(position).getValue0());
-            String[] subjectAndType = getItem(position).getValue1().split(",");
+            String[] subjectAndType = getItem(position).getValue1().split("/");
             viewHolder.subjectTextView.setTypeface(robotoFont);
             viewHolder.subjectTextView.setText(subjectAndType[0]);
             viewHolder.subjectTypeTextView.setTypeface(robotoFont);

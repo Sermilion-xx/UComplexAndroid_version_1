@@ -52,7 +52,6 @@ public class UsersActivity extends AppCompatActivity {
                 builderSingle.show();
             }
         }
-
     }
 
     @Override

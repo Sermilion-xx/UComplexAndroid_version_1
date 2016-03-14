@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.design.widget.TabLayout;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -55,10 +56,6 @@ public class SettingsActivity2 extends AppCompatActivity implements OnTaskComple
 
     public static ImageButton doneButton;
 
-    @Override
-    public View onCreateView(View parent, String name, Context context, AttributeSet attrs) {
-        return super.onCreateView(parent, name, context, attrs);
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -122,7 +119,7 @@ public class SettingsActivity2 extends AppCompatActivity implements OnTaskComple
         }
         viewPager.setAdapter(adapter);
         tabLayout = (TabLayout) findViewById(R.id.settings_tabs);
-        tabLayout.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+        tabLayout.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimary));
         tabLayout.setSelectedTabIndicatorColor(Color.WHITE);
         tabLayout.setupWithViewPager(viewPager);
     }
