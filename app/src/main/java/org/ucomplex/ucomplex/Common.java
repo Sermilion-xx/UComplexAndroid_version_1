@@ -430,16 +430,22 @@ public class Common {
             Locale locale = new Locale("ru", "RU");
             Date date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", locale).parse(time);
             Date today = new Date();
+
             Calendar cal1 = Calendar.getInstance();
             cal1.setTime(today);
             int day1 = cal1.get(Calendar.DAY_OF_MONTH);
+            int month1 = cal1.get(Calendar.MONTH);
+            int year1 = cal1.get(Calendar.YEAR);
 
             Calendar cal2 = Calendar.getInstance();
             cal2.setTime(date);
+            int month2 = cal2.get(Calendar.MONTH);
+            int year2 = cal2.get(Calendar.YEAR);
             int day2 = cal2.get(Calendar.DAY_OF_MONTH);
-            if (day1 == day2) {
+
+            if (day1 == day2 && month1 == month2 && year1 == year2) {
                 r += "Сегодня";
-            } else if (day1 - 1 == day2) {
+            } else if (day1 - 1 == day2 && month1 == month2 && year1 == year2) {
                 r += "Вчера";
             } else {
                 String[] tempYyMMdd = yyyyMMdd.split("-");
