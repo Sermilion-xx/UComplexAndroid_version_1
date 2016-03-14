@@ -138,7 +138,7 @@ public class MyFilesActivity extends AppCompatActivity implements OnTaskComplete
                 }
             }.execute();
         }else{
-            Toast.makeText(this, "Введите название для новой папки.", Toast.LENGTH_LONG)
+            Toast.makeText(this, "Введите название.", Toast.LENGTH_SHORT)
                     .show();
         }
 

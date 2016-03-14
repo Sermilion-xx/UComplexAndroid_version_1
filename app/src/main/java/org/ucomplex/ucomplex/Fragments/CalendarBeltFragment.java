@@ -71,7 +71,6 @@ public class CalendarBeltFragment extends ListFragment {
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         Quartet<Integer, String, String, Integer> item = feedItems.get(position);
-        Toast.makeText(getActivity(), item.getValue1(), Toast.LENGTH_SHORT).show();
     }
 
 

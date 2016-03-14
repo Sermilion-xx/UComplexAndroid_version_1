@@ -7,6 +7,12 @@
     android:fitsSystemWindows="true"
     tools:context="org.ucomplex.ucomplex.Activities.UsersActivity">
 
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        app:elevation="0dp"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
         <android.support.v7.widget.Toolbar
             android:id="@+id/users_toolbar"
             android:layout_width="match_parent"
@@ -18,21 +24,20 @@
 
             </android.support.v7.widget.Toolbar>
 
+
         <com.astuetz.PagerSlidingTabStrip
-            android:layout_marginTop="40dp"
             android:id="@+id/tabs"
             android:background="@color/colorPrimary"
             android:layout_width="match_parent"
             android:layout_height="48dip" />
 
-
+    </android.support.design.widget.AppBarLayout>
 
     <include layout="@layout/content_users" />
 
 
 
     <android.support.v4.view.ViewPager
-        android:layout_marginTop="90dp"
         android:id="@+id/users_viewpager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

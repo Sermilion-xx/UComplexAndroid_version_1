@@ -132,8 +132,11 @@ public class SettingsOneFragment extends Fragment implements OnTaskCompleteListe
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_settings_one, container, false);
-
-        robotoFont = Typeface.createFromAsset(context.getAssets(), "fonts/Roboto-Regular.ttf");
+        if(context==null){
+            robotoFont = Typeface.createFromAsset(getContext().getAssets(), "fonts/Roboto-Regular.ttf");
+        }else{
+            robotoFont = Typeface.createFromAsset(context.getAssets(), "fonts/Roboto-Regular.ttf");
+        }
         //Photo
         profileBitmap = Common.decodePhotoPref(context, "profilePhoto");
         user = Common.getUserDataFromPref(context);

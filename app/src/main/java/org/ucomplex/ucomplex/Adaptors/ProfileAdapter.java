@@ -224,6 +224,7 @@ public class ProfileAdapter extends ArrayAdapter<Triplet> {
                     new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
+
                             if(Common.isNetworkConnected(mContext)){
                                 HashMap<String, String> params = new HashMap<>();
                                 params.put("user", String.valueOf(mUser.getId()));
@@ -233,6 +234,7 @@ public class ProfileAdapter extends ArrayAdapter<Triplet> {
                                     mUser.setReq_sent(false);
                                     Toast.makeText(mContext, mUser.getName() + " получил вашу заявку на дружбу :)", Toast.LENGTH_SHORT).show();
                                     mFriendButton.setText("В друзья");
+                                    mFriendButton.setCompoundDrawablesWithIntrinsicBounds( ic_add_friend, null, null, null);
                                     mFriendButton.setTextColor(ContextCompat.getColor(mContext,R.color.uc_gray_text));
                                     mFriendButton.setEnabled(false);
                                 } else if(mUser.isReq_sent() && !mUser.is_friend()){
@@ -245,6 +247,7 @@ public class ProfileAdapter extends ArrayAdapter<Triplet> {
                                     Toast.makeText(mContext, "Пользователь удален из друзей :(", Toast.LENGTH_SHORT).show();
                                     mUser.setIs_friend(false);
                                     mFriendButton.setText("В друзья");
+                                    mFriendButton.setCompoundDrawablesWithIntrinsicBounds( ic_add_friend, null, null, null);
                                     Common.userListChanged = 1;
                                 }
                             }else {

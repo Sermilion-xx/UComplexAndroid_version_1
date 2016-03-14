@@ -1,16 +1,12 @@
 package org.ucomplex.ucomplex.Fragments;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ListFragment;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 
 import org.javatuples.Triplet;
 import org.ucomplex.ucomplex.Adaptors.ProfileAdapter;
@@ -73,12 +69,13 @@ public class ProfileFragment extends ListFragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        if(hasPhoto==1 && mBitmap == null){
-            new AsyncTask<String,Void,Bitmap>(){
+        if (hasPhoto == 1 && mBitmap == null) {
+            new AsyncTask<String, Void, Bitmap>() {
                 @Override
                 protected Bitmap doInBackground(String... params) {
                     return Common.getBitmapFromURL(params[0]);
                 }
+
                 @Override
                 protected void onPostExecute(Bitmap bitmap) {
                     mBitmap = bitmap;
@@ -86,7 +83,7 @@ public class ProfileFragment extends ListFragment {
                     setListAdapter(mAdapter);
                 }
             }.execute(code);
-        }else{
+        } else {
             mAdapter = new ProfileAdapter(mContext, mItems, mBitmap);
             setListAdapter(mAdapter);
         }
