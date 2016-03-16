@@ -75,11 +75,8 @@ public class CalendarActivity extends AppCompatActivity implements AdapterView.O
                 if (this.feedItems == null) {
                     fetchCalendarBeltTask = new FetchCalendarBeltTask(this, this);
                     fetchCalendarBeltTask.setupTask();
-                } else {
-                    calendarBeltFragment.setFeedItems(this.feedItems);
                 }
             }
-
             statisticsFragment = new CalendarStatisticsFragment();
             adapter.addFragment(calendarFragment, "Дисциплина");
             adapter.addFragment(calendarBeltFragment, "Лента");
@@ -119,8 +116,11 @@ public class CalendarActivity extends AppCompatActivity implements AdapterView.O
                     this.feedItems = (ArrayList<Quartet<Integer, String, String, Integer>>) task.get();
                     if (calendarBeltFragment == null) {
                         calendarBeltFragment = new CalendarBeltFragment();
+                        calendarBeltFragment.setmContext(CalendarActivity.this);
                     }
                     calendarBeltFragment.getCourseCalendarBeltAdapter().changeItems(feedItems);
+                    calendarBeltFragment.checkLoadButton(feedItems);
+                    calendarBeltFragment.setmContext(CalendarActivity.this);
                 } catch (InterruptedException | ExecutionException e) {
                     e.printStackTrace();
                 }

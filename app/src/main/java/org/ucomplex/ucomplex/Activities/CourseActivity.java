@@ -244,6 +244,8 @@ public class CourseActivity extends AppCompatActivity implements OnTaskCompleteL
                             if (this.feedItems != null && this.feedItems.size() > 0) {
                                 calendarBeltFragment.setFeedItems(feedItems);
                                 calendarBeltFragment.initAdapter(CourseActivity.this);
+                                calendarBeltFragment.setmContext(CourseActivity.this);
+                                calendarBeltFragment.setGcourse(this.gcourse);
                                 calendarBeltFragment.getCourseCalendarBeltAdapter().notifyDataSetChanged();
                             }
 

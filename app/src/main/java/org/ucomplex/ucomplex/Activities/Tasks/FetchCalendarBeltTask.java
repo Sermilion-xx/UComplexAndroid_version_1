@@ -18,11 +18,10 @@ import java.util.Date;
 import java.util.HashMap;
 
 
-
 /**
  * Created by Sermilion on 07/12/2015.
  */
-public class FetchCalendarBeltTask extends AsyncTask<Integer, Void, ArrayList<Quartet<Integer, String, String, Integer>>> implements DialogInterface.OnCancelListener{
+public class FetchCalendarBeltTask extends AsyncTask<Integer, Void, ArrayList<Quartet<Integer, String, String, Integer>>> implements DialogInterface.OnCancelListener {
 
     Activity mContext;
     private final OnTaskCompleteListener mTaskCompleteListener;
@@ -34,7 +33,13 @@ public class FetchCalendarBeltTask extends AsyncTask<Integer, Void, ArrayList<Qu
         this.mTaskCompleteListener = taskCompleteListener;
     }
 
-    public void setupTask(Integer ... params) {
+    public FetchCalendarBeltTask(Activity context) {
+        this.mContext = context;
+        mTaskCompleteListener = null;
+    }
+
+
+    public void setupTask(Integer... params) {
         this.execute(params);
     }
 
@@ -42,15 +47,18 @@ public class FetchCalendarBeltTask extends AsyncTask<Integer, Void, ArrayList<Qu
     protected ArrayList<Quartet<Integer, String, String, Integer>> doInBackground(Integer... postParamsString) {
         String urlString = "http://you.com.ru/student/ajax/calendar_belt?json";
         HashMap<String, String> postParams = new HashMap<>();
-        if(postParamsString.length>0){
+        if (postParamsString.length == 1) {
             postParams.put("gcourse", String.valueOf(postParamsString[0]));
-        }else{
+        } else if (postParamsString.length == 0) {
             fromCalendar = true;
+        } else if (postParamsString.length == 2) {
+            fromCalendar = true;
+            postParams.put("gcourse", String.valueOf(postParamsString[0]));
+            postParams.put("start", String.valueOf(postParamsString[1]));
         }
         String jsonData = Common.httpPost(urlString, Common.getLoginDataFromPref(mContext), postParams);
         return getCalendarBeltDataFromJson(jsonData);
     }
-
 
 
     @Nullable
@@ -58,7 +66,7 @@ public class FetchCalendarBeltTask extends AsyncTask<Integer, Void, ArrayList<Qu
         JSONObject courseJson;
         feedItems = new ArrayList<>();
         try {
-            if(jsonData!=null) {
+            if (jsonData != null) {
                 courseJson = new JSONObject(jsonData);
                 HashMap<String, String> teachersMap = (HashMap<String, String>) Common.parseJsonKV(courseJson.getJSONObject("teachers"));
                 HashMap<String, String> coursesMap = (HashMap<String, String>) Common.parseJsonKV(courseJson.getJSONObject("courses"));
@@ -74,9 +82,9 @@ public class FetchCalendarBeltTask extends AsyncTask<Integer, Void, ArrayList<Qu
                     String teacherName = teachersMap.get(marksItemJson.getString("teacher"));
                     String courseName = coursesMap.get(marksItemJson.getString("course"));
                     String name;
-                    if(fromCalendar){
+                    if (fromCalendar) {
                         name = courseName;
-                    }else{
+                    } else {
                         name = teacherName;
                     }
                     Quartet<Integer, String, String, Integer> markItem = new Quartet<>(mark, name, time, marksItemJson.getInt("type"));
@@ -93,12 +101,16 @@ public class FetchCalendarBeltTask extends AsyncTask<Integer, Void, ArrayList<Qu
     @Override
     public void onCancel(DialogInterface dialog) {
         this.cancel(true);
-        mTaskCompleteListener.onTaskComplete(this);
+        if (mTaskCompleteListener != null) {
+            mTaskCompleteListener.onTaskComplete(this);
+        }
     }
 
     @Override
     protected void onPostExecute(ArrayList fileArrayList) {
-        mTaskCompleteListener.onTaskComplete(this);
+        if (mTaskCompleteListener != null) {
+            mTaskCompleteListener.onTaskComplete(this);
+        }
     }
 
 

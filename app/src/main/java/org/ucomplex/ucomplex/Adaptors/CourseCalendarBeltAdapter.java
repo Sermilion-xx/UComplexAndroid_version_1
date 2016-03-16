@@ -29,6 +29,10 @@ public class CourseCalendarBeltAdapter extends ArrayAdapter<Quartet<Integer, Str
     List<Quartet<Integer, String, String, Integer>> feedItems;
     Context mContext;
 
+    public void addAllFeedItems(List<Quartet<Integer, String, String, Integer>> feedItems) {
+        this.feedItems.addAll(feedItems);
+    }
+
     public CourseCalendarBeltAdapter(Context context, List<Quartet<Integer, String, String, Integer>> items) {
         super(context, R.layout.list_item_course_calendar_belt, items);
         feedItems = items;
