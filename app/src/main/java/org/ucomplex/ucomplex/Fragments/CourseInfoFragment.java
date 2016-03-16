@@ -204,7 +204,11 @@ public class CourseInfoFragment extends Fragment implements OnTaskCompleteListen
                 courseNameView.setText(courseData.getName());
                 int a = courseData.getProgress().getAbsence();
                 int b = courseData.getProgress().getHours();
-                double absence = ((double) a / (double) b) * 100;
+                double absence = 0;
+                if (a != 0 && b != 0) {
+                    absence = ((double) a / (double) b) * 100;
+                    absence = 100 - absence;
+                }
                 DecimalFormat df = new DecimalFormat("#.##");
                 absence = Double.valueOf(df.format(absence));
                 averageMarksView.setText(String.valueOf(courseData.getProgress().getMark()));

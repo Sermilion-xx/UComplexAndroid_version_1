@@ -18,6 +18,7 @@ import android.widget.ListAdapter;
 import android.widget.Toast;
 
 import org.javatuples.Quartet;
+import org.javatuples.Quintet;
 import org.ucomplex.ucomplex.Activities.Tasks.FetchAllStats;
 import org.ucomplex.ucomplex.Activities.Tasks.FetchCalendarBeltTask;
 import org.ucomplex.ucomplex.Adaptors.CalendarInfoAdapter;
@@ -25,6 +26,7 @@ import org.ucomplex.ucomplex.Adaptors.ViewPagerAdapter;
 import org.ucomplex.ucomplex.Common;
 import org.ucomplex.ucomplex.Fragments.CalendarBeltFragment;
 import org.ucomplex.ucomplex.Fragments.CalendarFragment;
+import org.ucomplex.ucomplex.Fragments.CalendarStatisticsFragment;
 import org.ucomplex.ucomplex.Interfaces.OnTaskCompleteListener;
 import org.ucomplex.ucomplex.R;
 
@@ -41,6 +43,7 @@ public class CalendarActivity extends AppCompatActivity implements AdapterView.O
     ArrayList<Quartet<Integer, String, String, Integer>> feedItems;
     CalendarBeltFragment calendarBeltFragment;
     FetchCalendarBeltTask fetchCalendarBeltTask;
+    CalendarStatisticsFragment statisticsFragment;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -76,9 +79,11 @@ public class CalendarActivity extends AppCompatActivity implements AdapterView.O
                     calendarBeltFragment.setFeedItems(this.feedItems);
                 }
             }
+
+            statisticsFragment = new CalendarStatisticsFragment();
             adapter.addFragment(calendarFragment, "Дисциплина");
             adapter.addFragment(calendarBeltFragment, "Лента");
-            adapter.addFragment(new Fragment(), "Статистика");
+            adapter.addFragment(statisticsFragment, "Статистика");
             viewPager.setAdapter(adapter);
 
             tabLayout.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
@@ -121,7 +126,8 @@ public class CalendarActivity extends AppCompatActivity implements AdapterView.O
                 }
             } else if (task instanceof FetchAllStats) {
                 try {
-                    ArrayList<Quartet<String, String, String, String>> statisticItems = ((FetchAllStats) task).get();
+                    ArrayList<Quintet<String, String, Double, Double, Integer>> statisticItems = ((FetchAllStats) task).get();
+                    statisticsFragment.setStatisticItems(statisticItems);
                     System.out.println();
                 } catch (InterruptedException | ExecutionException e) {
                     e.printStackTrace();

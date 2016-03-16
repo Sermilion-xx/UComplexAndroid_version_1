@@ -110,6 +110,7 @@
     <string name="study_degree_str_ru">Ученая степень</string>
     <string name="edu_stepen_str_ru">Ученое звание</string>
     <string name="study_degree2_str_ru">Ученая степень</string>
+    <string name="current_semester_str_ru">Текущий семестр</string>
 
 
 </resources>
