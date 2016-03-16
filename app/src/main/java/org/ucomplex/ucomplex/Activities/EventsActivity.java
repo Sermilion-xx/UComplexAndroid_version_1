@@ -43,6 +43,7 @@ public class EventsActivity extends AppCompatActivity implements OnTaskCompleteL
     ArrayList eventsArray = null;
     FetchUserEventsTask mEventsTask = null;
     User user;
+    public static Intent i;
 
     final String[] TITLES = {"События", "Дисциплины", "Материалы", "Пользователи", "Сообщения", "Календарь", "Настройки", "Выход"};
     final int[] ICONS = {R.drawable.ic_menu_events,
@@ -62,6 +63,10 @@ public class EventsActivity extends AppCompatActivity implements OnTaskCompleteL
     DrawerLayout Drawer;                                  // Declaring DrawerLayout
     ActionBarDrawerToggle mDrawerToggle;                  // Declaring Action Bar Drawer Toggle
     LinearLayout linlaHeaderProgress;
+
+    public Intent getI() {
+        return i;
+    }
 
     public EventsActivity() {
 
@@ -136,7 +141,7 @@ public class EventsActivity extends AppCompatActivity implements OnTaskCompleteL
         super.onCreate(savedInstanceState);
 
         Common.fetchMyNews(EventsActivity.this);
-        Intent i = new Intent(EventsActivity.this, MyService.class);
+        i = new Intent(EventsActivity.this, MyService.class);
         EventsActivity.this.startService(i);
         if ((savedInstanceState != null)
                 && (savedInstanceState.getSerializable("eventsArray") != null)) {

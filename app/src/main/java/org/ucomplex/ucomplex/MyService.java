@@ -36,7 +36,11 @@ public class MyService extends IntentService {
             new Timer().scheduleAtFixedRate(new TimerTask() {
                 @Override
                 public void run() {
-                    Common.fetchMyNews(context);
+                    if(context!=null){
+                        Common.fetchMyNews(context);
+                    }else{
+                        this.cancel();
+                    }
                 }
             }, 0, 5000);
     }

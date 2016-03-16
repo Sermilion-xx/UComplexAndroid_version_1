@@ -101,48 +101,50 @@ public class Common {
 
 
     public static void fetchMyNews(final Context context) {
-        new AsyncTask<Void, Void, String>() {
+        if(context!=null){
+            new AsyncTask<Void, Void, String>() {
 
-            @Override
-            protected String doInBackground(Void... params) {
-                String url = "http://you.com.ru/user/my_news?mobile=1";
-                return Common.httpPost(url, Common.getLoginDataFromPref(context));
-            }
+                @Override
+                protected String doInBackground(Void... params) {
+                    String url = "http://you.com.ru/user/my_news?mobile=1";
+                    return Common.httpPost(url, Common.getLoginDataFromPref(context));
+                }
 
-            @Override
-            protected void onPostExecute(String jsonData) {
-                super.onPostExecute(jsonData);
-                Log.e("MGS", "checked!!!!");
-                if (jsonData != null) {
-                    try {
-                        JSONObject jsonObject = new JSONObject(jsonData);
-                        JSONObject messagesJson = jsonObject.getJSONObject("messages");
-                        if (messagesJson != null) {
-                            ArrayList<String> fromMessagesStr = Common.getKeys(messagesJson);
-                            fromMessagesStr.remove("sum");
-                            fromMessages.clear();
-                            for (String from : fromMessagesStr) {
-                                fromMessages.add(Integer.valueOf(from));
-                            }
-                            if (newMesg != messagesJson.getInt("sum")) {
+                @Override
+                protected void onPostExecute(String jsonData) {
+                    super.onPostExecute(jsonData);
+                    Log.e("MGS", "checked!!!!");
+                    if (jsonData != null) {
+                        try {
+                            JSONObject jsonObject = new JSONObject(jsonData);
+                            JSONObject messagesJson = jsonObject.getJSONObject("messages");
+                            if (messagesJson != null) {
+                                ArrayList<String> fromMessagesStr = Common.getKeys(messagesJson);
+                                fromMessagesStr.remove("sum");
+                                fromMessages.clear();
+                                for (String from : fromMessagesStr) {
+                                    fromMessages.add(Integer.valueOf(from));
+                                }
+                                if (newMesg != messagesJson.getInt("sum")) {
+                                    Common.newMesg = messagesJson.getInt("sum");
+                                    Intent broadcast = new Intent();
+                                    broadcast.setAction("org.ucomplex.newMessageListBroadcast");
+                                    broadcast.putExtra("newMessage", Common.newMesg);
+                                    context.sendBroadcast(broadcast);
+                                }
                                 Common.newMesg = messagesJson.getInt("sum");
                                 Intent broadcast = new Intent();
-                                broadcast.setAction("org.ucomplex.newMessageListBroadcast");
+                                broadcast.setAction("org.ucomplex.newMessageMenuBroadcast");
                                 broadcast.putExtra("newMessage", Common.newMesg);
                                 context.sendBroadcast(broadcast);
                             }
-                            Common.newMesg = messagesJson.getInt("sum");
-                            Intent broadcast = new Intent();
-                            broadcast.setAction("org.ucomplex.newMessageMenuBroadcast");
-                            broadcast.putExtra("newMessage", Common.newMesg);
-                            context.sendBroadcast(broadcast);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
                     }
                 }
-            }
-        }.execute();
+            }.execute();
+        }
     }
 
 
@@ -563,7 +565,11 @@ public class Common {
         Gson gson = new Gson();
         String json = pref.getString("loggedUser", "");
         User obj = gson.fromJson(json, User.class);
-        return obj.getLogin() + ":" + obj.getPass() + ":" + obj.getId();
+        if(obj!=null){
+            return obj.getLogin() + ":" + obj.getPass() + ":" + obj.getId();
+        }else{
+            return "";
+        }
     }
 
     public static User getUserDataFromPref(Context mContext) {

@@ -45,7 +45,7 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
     private int mIcons[];
     private String name;
     private int msgCount;
-    private Context context;
+    private EventsActivity context;
     private static Bitmap profileBitmap;
     private User user;
 
@@ -162,6 +162,7 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
                 }
 
             } else if (getAdapterPosition() == 8) {
+                this.contxt.stopService(EventsActivity.i);
                 this.logout();
             }
         }
@@ -175,7 +176,7 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
         }
     }
 
-    public MenuAdapter(String Titles[], int Icons[], User user, Context passedContext) {
+    public MenuAdapter(String Titles[], int Icons[], User user, EventsActivity passedContext) {
         mNavTitles = Titles;
         mIcons = Icons;
         String tempName = user.getName();
