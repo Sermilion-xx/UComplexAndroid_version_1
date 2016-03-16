@@ -1,5 +1,6 @@
 package org.ucomplex.ucomplex.Activities;
 
+import android.animation.ObjectAnimator;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -10,8 +11,13 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.RotateAnimation;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -44,9 +50,12 @@ public class MessagesActivity extends AppCompatActivity implements OnTaskComplet
     String filePath;
     boolean file = false;
     FetchMessagesTask fetchNewMessagesTask;
-
     TextView nameTextView;
     CircleImageView profileImageView;
+    TextView messageTextView;
+    Button sendFileButton;
+    Button sendMsgButton;
+    boolean SEND_FILE_BUTTON_ROTATED;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,8 +91,30 @@ public class MessagesActivity extends AppCompatActivity implements OnTaskComplet
         fetchNewMessagesTask.setType(0);
         fetchNewMessagesTask.setupTask(companion);
 
-        Button sendMsgButton = (Button) findViewById(R.id.messages_send_button);
-        final TextView messageTextView = (TextView) findViewById(R.id.messages_text);
+        sendMsgButton = (Button) findViewById(R.id.messages_send_button);
+        sendMsgButton.setEnabled(false);
+        messageTextView = (TextView) findViewById(R.id.messages_text);
+        messageTextView.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                sendMsgButton.setEnabled(true);
+
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count,
+                                          int after) {
+                // TODO Auto-generated method stub
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                // TODO Auto-generated method stub
+
+            }
+        });
         sendMsgButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 fetchNewMessagesTask = new FetchMessagesTask(MessagesActivity.this, MessagesActivity.this);
@@ -93,17 +124,25 @@ public class MessagesActivity extends AppCompatActivity implements OnTaskComplet
                     String[] splitFilename = filePath.split("/");
                     String filename = splitFilename[splitFilename.length - 1];
                     fetchNewMessagesTask.setupTask(filePath, companion, filename, message);
+                    file = false;
                 } else {
                     fetchNewMessagesTask.setupTask(companion, messageTextView.getText().toString());
                 }
                 scrollMyListViewToBottom();
             }
         });
-        Button sendFileButton = (Button) findViewById(R.id.messages_file_button);
+        sendFileButton = (Button) findViewById(R.id.messages_file_button);
         sendFileButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                file = true;
-                showFileChooser();
+                if(!file){
+                    showFileChooser();
+                }else{
+                    file = false;
+                    filePath = "";
+                    messageTextView.setText("");
+                    ObjectAnimator.ofFloat(sendFileButton, "rotation", 1, 0).start();
+                }
+
             }
         });
         new Timer().scheduleAtFixedRate(new TimerTask() {
@@ -159,7 +198,13 @@ public class MessagesActivity extends AppCompatActivity implements OnTaskComplet
                         this.grantUriPermission("org.ucomplex.ucomplex.Activities", originalUri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
                     }
                     filePath = getPath(originalUri);
-//                    byte[] fileByte = Common.fileToByte(filePath);
+                    String[] splitFilename = filePath.split("/");
+                    String filename = splitFilename[splitFilename.length - 1];
+                    messageTextView.setText("Файл: "+filename);
+                    file = true;
+                    ObjectAnimator.ofFloat(sendFileButton, "rotation", 1, 45).start();
+
+// byte[] fileByte = Common.fileToByte(filePath);
 //                    if (fileByte != null) {
 //                        contentBody = new ByteArrayBody(fileByte, "filename");
 //                    }

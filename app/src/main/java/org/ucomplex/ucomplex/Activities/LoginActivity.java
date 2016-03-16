@@ -2,15 +2,19 @@ package org.ucomplex.ucomplex.Activities;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
@@ -18,6 +22,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 
@@ -26,6 +31,8 @@ import org.ucomplex.ucomplex.Common;
 import org.ucomplex.ucomplex.Model.Users.User;
 import org.ucomplex.ucomplex.R;
 
+import java.util.HashMap;
+
 public class LoginActivity extends AppCompatActivity implements LoginTask.AsyncResponse {
 
     private LoginTask mAuthTask = null;
@@ -33,6 +40,7 @@ public class LoginActivity extends AppCompatActivity implements LoginTask.AsyncR
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
+    private Button mForgotButton;
 
     @Override
     protected void onResume() {
@@ -86,6 +94,60 @@ public class LoginActivity extends AppCompatActivity implements LoginTask.AsyncR
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
+
+        mForgotButton = (Button) findViewById(R.id.forgot_pass_button);
+        mForgotButton.setOnClickListener(
+                new OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        showInputDialog();
+                    }
+                });
+    }
+
+    protected void showInputDialog() {
+        // get prompts.xml view
+        LayoutInflater layoutInflater = LayoutInflater.from(LoginActivity.this);
+        View promptView = layoutInflater.inflate(R.layout.dialog_forgot_password, null);
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(LoginActivity.this);
+        alertDialogBuilder.setView(promptView);
+
+        final EditText editText = (EditText) promptView.findViewById(R.id.edittext);
+        // setup a dialog window
+        alertDialogBuilder.setCancelable(false)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        if (Common.isNetworkConnected(LoginActivity.this)) {
+                            final String email = editText.getText().toString();
+                            new AsyncTask<Void, Void, Void>() {
+                                @Override
+                                protected Void doInBackground(Void... params) {
+                                    HashMap<String, String> postData = new HashMap<>();
+                                    postData.put("email", email);
+                                    String urlString = "https://chgu.org/public/password?mobile=1";
+                                    Common.httpPost(urlString, Common.getLoginDataFromPref(LoginActivity.this), postData);
+                                    return null;
+                                }
+
+                                @Override
+                                protected void onPostExecute(Void aVoid) {
+                                    super.onPostExecute(aVoid);
+                                    Toast.makeText(LoginActivity.this, "На указанный адрес отправленна ссылка для восстановления пароля.", Toast.LENGTH_LONG).show();
+                                }
+                            }.execute();
+                        } else {
+                            Toast.makeText(LoginActivity.this, "Проверьте интернет соединение.", Toast.LENGTH_LONG).show();
+                        }
+                    }
+                })
+                .setNegativeButton("Cancel",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
+        AlertDialog alert = alertDialogBuilder.create();
+        alert.show();
     }
 
     private void attemptLogin() {
@@ -168,11 +230,11 @@ public class LoginActivity extends AppCompatActivity implements LoginTask.AsyncR
             }
             Intent intent;
             Common.setRoleToPref(this, output.getType());
-            if(output.getRoles().size()>1){
+            if (output.getRoles().size() > 1) {
                 intent = new Intent(this, RoleSelectActivity.class);
                 startActivity(intent);
                 showProgress(false);
-            }else{
+            } else {
                 intent = new Intent(this, EventsActivity.class);
                 startActivity(intent);
                 showProgress(false);
