@@ -270,8 +270,7 @@ public class CalendarFragment extends Fragment implements OnTaskCompleteListener
                                         } else if (type == 3) {
                                             color = "#d18ec0";
                                         }
-                                        int colorInt = Color.parseColor(color);
-                                        String subjectName = calendar.getTimetable().getSubjects().get(String.valueOf(course));
+                                        String subjectName = calendar.getCourses().get(String.valueOf(course));
                                         //mark, name, date, mark, color
                                         Quartet<Integer, String, String, Integer> dayTimetable =
                                                 new Quartet<>(mark, subjectName,color, -2);
