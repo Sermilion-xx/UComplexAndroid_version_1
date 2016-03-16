@@ -1,13 +1,16 @@
 package org.ucomplex.ucomplex.Activities;
 
 import android.animation.ObjectAnimator;
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -18,7 +21,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
+import android.webkit.MimeTypeMap;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -32,6 +37,9 @@ import org.ucomplex.ucomplex.Model.Message;
 import org.ucomplex.ucomplex.Model.Users.User;
 import org.ucomplex.ucomplex.R;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.Timer;
@@ -55,7 +63,8 @@ public class MessagesActivity extends AppCompatActivity implements OnTaskComplet
     TextView messageTextView;
     Button sendFileButton;
     Button sendMsgButton;
-    boolean SEND_FILE_BUTTON_ROTATED;
+    CircleImageView messageImage;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +78,7 @@ public class MessagesActivity extends AppCompatActivity implements OnTaskComplet
         Typeface robotoFont = Typeface.createFromAsset(this.getAssets(), "fonts/Roboto-Regular.ttf");
         profileImageView = (CircleImageView) findViewById(R.id.list_messages_toolbar_profile);
         nameTextView = (TextView) findViewById(R.id.list_messages_toolbar_name);
+        messageImage = (CircleImageView) findViewById(R.id.message_image);
         nameTextView.setTypeface(robotoFont);
         companion = getIntent().getStringExtra("companion");
         name = getIntent().getStringExtra("name");
@@ -105,13 +115,12 @@ public class MessagesActivity extends AppCompatActivity implements OnTaskComplet
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count,
                                           int after) {
-                // TODO Auto-generated method stub
 
             }
 
             @Override
             public void afterTextChanged(Editable s) {
-                // TODO Auto-generated method stub
+
 
             }
         });
@@ -123,11 +132,13 @@ public class MessagesActivity extends AppCompatActivity implements OnTaskComplet
                 if (file && filePath != null) {
                     String[] splitFilename = filePath.split("/");
                     String filename = splitFilename[splitFilename.length - 1];
+
                     fetchNewMessagesTask.setupTask(filePath, companion, filename, message);
                     file = false;
                 } else {
                     fetchNewMessagesTask.setupTask(companion, messageTextView.getText().toString());
                 }
+                messageTextView.setText("");
                 scrollMyListViewToBottom();
             }
         });
@@ -203,16 +214,23 @@ public class MessagesActivity extends AppCompatActivity implements OnTaskComplet
                     messageTextView.setText("Файл: "+filename);
                     file = true;
                     ObjectAnimator.ofFloat(sendFileButton, "rotation", 1, 45).start();
-
-// byte[] fileByte = Common.fileToByte(filePath);
-//                    if (fileByte != null) {
-//                        contentBody = new ByteArrayBody(fileByte, "filename");
+//                    String type = getMimeType(filePath);
+//                    if(type.equals("jpg") || type.equals("png")){
+//                        File imgFile = new  File(filePath);
+//                        if(imgFile.exists()){
+//                            myMessageBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+//                        }
 //                    }
                     this.revokeUriPermission(originalUri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
                 }
                 break;
         }
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    public  String getMimeType(String filePath) {
+        String[] parts = filePath.split(".");
+        return parts[parts.length-1];
     }
 
     public String getPath(Uri uri) {

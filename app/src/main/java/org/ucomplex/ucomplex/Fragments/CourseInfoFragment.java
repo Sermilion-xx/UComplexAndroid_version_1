@@ -186,7 +186,7 @@ public class CourseInfoFragment extends Fragment implements OnTaskCompleteListen
 
                         @Override
                         protected Void doInBackground(Void... params) {
-                            bitmap = Common.getBitmapFromURL(courseData.getTeacher(0).getCode());
+                            bitmap = Common.getBitmapFromURL(courseData.getTeacher(0).getCode(), 0);
                             return null;
                         }
                     }.execute();

@@ -80,7 +80,7 @@ public class LoginTask extends AsyncTask<Void, Void, User> {
             try {
                 user = getUserFromJson(jsonData);
                 if(user.getPhoto()==1){
-                    photoBitmap = Common.getBitmapFromURL(user.getCode());
+                    photoBitmap = Common.getBitmapFromURL(user.getCode(), 0);
                     System.out.println();
                 }else {
                     Common.deleteFromPref(mContext, "profilePhoto");

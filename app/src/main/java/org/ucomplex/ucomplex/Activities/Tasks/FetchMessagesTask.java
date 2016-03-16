@@ -1,6 +1,7 @@
 package org.ucomplex.ucomplex.Activities.Tasks;
 
 import android.app.Activity;
+import android.app.job.JobInfo;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
@@ -13,10 +14,13 @@ import org.ucomplex.ucomplex.Common;
 import org.ucomplex.ucomplex.Interfaces.IProgressTracker;
 import org.ucomplex.ucomplex.Interfaces.OnTaskCompleteListener;
 import org.ucomplex.ucomplex.Model.Message;
+import org.ucomplex.ucomplex.Model.StudyStructure.File;
 import org.ucomplex.ucomplex.Model.Users.User;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
 
 /**
  * Created by Sermilion on 31/12/2015.
@@ -64,7 +68,7 @@ public class FetchMessagesTask extends AsyncTask<String, String, LinkedList> imp
             if (params.length > 2) {
                 //file path, companion, file name, message
                 jsonData = Common.sendFile(params[0], params[1], "Файл: " + params[2] + "\n" + params[3], Common.getLoginDataFromPref(mContext));
-            }else{
+            } else {
                 jsonData = Common.httpPost(urlString, Common.getLoginDataFromPref(mContext), httpParams);
             }
         } else if (type == 2) {
@@ -110,17 +114,40 @@ public class FetchMessagesTask extends AsyncTask<String, String, LinkedList> imp
         String myName = user.getName();
         user = null;
         messagesList = new LinkedList<>();
-        if(jsonData!=null) {
+        if (jsonData != null) {
             try {
                 JSONArray messagesJson = new JSONObject(jsonData).getJSONArray("messages");
                 JSONObject companionJson = new JSONObject(jsonData).getJSONObject("companion_info");
+                JSONObject filesJson = null;
+                try {
+                    filesJson = new JSONObject(jsonData).getJSONObject("files");
+                } catch (JSONException ignored) {
+                }
                 Bitmap profileImage = null;
                 if (companionJson.getString("photo").equals("1")) {
-                    profileImage = Common.getBitmapFromURL(companionJson.getString("code"));
+                    profileImage = Common.getBitmapFromURL(companionJson.getString("code"),0);
                 }
                 for (int i = 0; i < messagesJson.length(); i++) {
                     JSONObject messageJson = messagesJson.getJSONObject(i);
                     Message message = new Message();
+                    ArrayList<File> messageFiles = new ArrayList<>();
+                    try {
+                        for (int j = 0; j < filesJson.length(); j++) {
+                            JSONArray messageFilesJson = filesJson.getJSONArray(String.valueOf(messageJson.getInt("id")));
+                            messageFiles = new ArrayList<>();
+                            for(int l=0; j<messageFilesJson.length();l++){
+                                JSONObject tempJson = messageFilesJson.getJSONObject(l);
+                                File file = new File();
+                                file.setName(tempJson.getString("name"));
+                                file.setAddress(tempJson.getString("address"));
+                                file.setMessage(tempJson.getInt("message"));
+                                file.setFrom(tempJson.getInt("from"));
+                                messageFiles.add(file);
+                            }
+                        }
+                    } catch (JSONException ignored) {
+                    }
+                    message.setFiles(messageFiles);
                     message.setId(messageJson.getInt("id"));
                     message.setFrom(messageJson.getInt("from"));
                     message.setMessage(messageJson.getString("message"));

@@ -1,5 +1,9 @@
 package org.ucomplex.ucomplex.Model;
 
+import org.ucomplex.ucomplex.Model.StudyStructure.File;
+
+import java.util.ArrayList;
+
 /**
  * Created by Sermilion on 31/12/2015.
  */
@@ -11,8 +15,21 @@ public class Message {
     private int status;
     private String name;
     private String fileType;
+    private ArrayList<File> files;
 
     public Message() {
+    }
+
+    public void setFileType(String fileType) {
+        this.fileType = fileType;
+    }
+
+    public ArrayList<File> getFiles() {
+        return files;
+    }
+
+    public void setFiles(ArrayList<File> files) {
+        this.files = files;
     }
 
     public String getFileType() {

@@ -17,7 +17,24 @@ public class File implements Serializable{
     private String time;
     private String data;
     private String checkTime;
+    private int message;
+    private int from;
 
+    public int getFrom() {
+        return from;
+    }
+
+    public void setFrom(int from) {
+        this.from = from;
+    }
+
+    public int getMessage() {
+        return message;
+    }
+
+    public void setMessage(int message) {
+        this.message = message;
+    }
 
     public File(){
 

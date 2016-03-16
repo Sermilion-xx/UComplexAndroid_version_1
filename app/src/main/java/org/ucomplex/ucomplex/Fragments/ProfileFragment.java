@@ -73,7 +73,7 @@ public class ProfileFragment extends ListFragment {
             new AsyncTask<String, Void, Bitmap>() {
                 @Override
                 protected Bitmap doInBackground(String... params) {
-                    return Common.getBitmapFromURL(params[0]);
+                    return Common.getBitmapFromURL(params[0], 0);
                 }
 
                 @Override

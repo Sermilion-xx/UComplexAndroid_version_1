@@ -360,9 +360,14 @@ public class Common {
         return result.toString();
     }
 
-    public static Bitmap getBitmapFromURL(String code) {
+    public static Bitmap getBitmapFromURL(String code, int type) {
         try {
-            final String UC_BASE_URL = "https://ucomplex.org/files/photos/" + code + ".jpg";
+            String UC_BASE_URL;
+            if(type==0){
+                UC_BASE_URL = "https://ucomplex.org/files/photos/" + code + ".jpg";
+            }else{
+                UC_BASE_URL = "https://ucomplex.org/files/photos/" + code + ".jpg";
+            }
             URL url = new URL(UC_BASE_URL);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setDoInput(true);
