@@ -18,9 +18,32 @@
             android:id="@+id/list_messages_listview"
             android:dividerHeight="0dp"
             android:divider="@null"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="70dp">
+            android:layout_marginBottom="60dp">
         </ListView>
+
+    <RelativeLayout
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="70dp"
+        >
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/message_image_temp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="10dp" />
+
+        <ProgressBar
+            android:id="@+id/imagep_rogress"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:indeterminate="true"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="10dp"/>
+
+
+    </RelativeLayout>
 
 
 

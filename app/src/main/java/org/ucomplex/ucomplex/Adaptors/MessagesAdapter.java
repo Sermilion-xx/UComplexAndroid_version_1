@@ -175,10 +175,17 @@ public class MessagesAdapter extends ArrayAdapter {
             }
         }
 
-        Message item = (Message) getItem(position);
+        final Message item = (Message) getItem(position);
         viewHolder.messageTextView.setTypeface(robotoFont);
-        viewHolder.messageTextView.setText(item.getMessage());
-
+        if(item.getMessage().length()==0 && item.getFiles().size()>0){
+            StringBuilder sb = new StringBuilder();
+            for(File file: item.getFiles()){
+                sb.append(file.getName()+"\n");
+            }
+            viewHolder.messageTextView.setText(sb.toString());
+        }else{
+            viewHolder.messageTextView.setText(item.getMessage());
+        }
         viewHolder.timeTextView.setTypeface(robotoFont);
         viewHolder.timeTextView.setText(item.getTime().split(" ")[1]);
 
@@ -188,30 +195,35 @@ public class MessagesAdapter extends ArrayAdapter {
             String type = file.getAddress().split("\\.")[1];
 
             final ViewHolder finalViewHolder = viewHolder;
-            if (type.equals("jpg") || type.equals("png")) {
-                imageLoader.displayImage("http://storage.ucomplex.org/files/messages/" + ((Message) getItem(position)).getFiles().get(0).getFrom() + "/" + ((Message) getItem(position)).getFiles().get(0).getAddress(), viewHolder.messageBitmap, options, new SimpleImageLoadingListener() {
-                    @Override
-                    public void onLoadingStarted(String imageUri, View view) {
+            if(item.getMessageImage()==null) {
+                if (type.equals("jpg") || type.equals("png")) {
+                    imageLoader.displayImage("http://storage.ucomplex.org/files/messages/" + ((Message) getItem(position)).getFiles().get(0).getFrom() + "/" + ((Message) getItem(position)).getFiles().get(0).getAddress(), viewHolder.messageBitmap, options, new SimpleImageLoadingListener() {
+                        @Override
+                        public void onLoadingStarted(String imageUri, View view) {}
+                        @Override
+                        public void onLoadingFailed(String imageUri, View view, FailReason failReason) {}
 
-                    }
-
-                    @Override
-                    public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-                    }
-
-                    @Override
-                    public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                        if (loadedImage != null) {
-                            BitmapDrawable bitmapDrawable = ((BitmapDrawable) finalViewHolder.messageBitmap.getDrawable());
-                            Bitmap bitmap = bitmapDrawable.getBitmap();
-                            finalViewHolder.messageBitmap.setImageBitmap(bitmap);
+                        @Override
+                        public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                            if (loadedImage != null) {
+                                BitmapDrawable bitmapDrawable = ((BitmapDrawable) finalViewHolder.messageBitmap.getDrawable());
+                                Bitmap bitmap = bitmapDrawable.getBitmap();
+                                item.setMessageImage(bitmap);
+                                if (bitmap != null) {
+                                    finalViewHolder.messageBitmap.setImageBitmap(bitmap);
+                                }
+                            }
                         }
-                    }
-                }, new ImageLoadingProgressListener() {
-                    @Override
-                    public void onProgressUpdate(String imageUri, View view, int current, int total) {
-                    }
-                });
+                    }, new ImageLoadingProgressListener() {
+                        @Override
+                        public void onProgressUpdate(String imageUri, View view, int current, int total) {
+                        }
+                    });
+                } else {
+                    finalViewHolder.messageBitmap.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_attachment_dark));
+                }
+            }else{
+                viewHolder.messageBitmap.setImageBitmap(item.getMessageImage());
             }
         }else{
             ViewGroup group = ((ViewGroup) viewHolder.messageBitmap.getParent());

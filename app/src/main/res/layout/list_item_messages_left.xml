@@ -14,13 +14,9 @@
         android:background="@drawable/bubblein"
         android:id="@+id/message"
         android:layout_marginTop="5dp"
-        android:layout_marginBottom="5dp">
-
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/message_image"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_margin="5dp"/>
+        android:layout_marginBottom="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginLeft="10dp">
 
         <TextView
             android:layout_width="wrap_content"
@@ -28,12 +24,18 @@
             android:maxWidth="270dp"
             android:id="@+id/list_messages_message_left_text"
             android:text="cool dsfsdfdsfdsfdsfdsfdsfdsfdsfds"
-            android:layout_marginTop="7dp"
+            android:layout_marginTop="3dp"
             android:textColor="@color/black"
-
             android:textSize="14sp"
             android:layout_alignParentTop="true"
-            android:layout_marginLeft="10dp" />
+            android:layout_marginLeft="5dp"
+            android:layout_marginBottom="3dp" />
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/message_image"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_margin="5dp"/>
 
     </LinearLayout>
 
@@ -45,10 +47,10 @@
         android:id="@+id/list_messages_message_left_time"
         android:text="22:20"
         android:textSize="11sp"
-        android:layout_alignTop="@+id/message"
-        android:layout_toRightOf="@+id/message"
-        android:layout_toEndOf="@+id/message"
+        android:layout_below="@+id/message"
+        android:layout_alignParentLeft="true"
         android:layout_marginLeft="10dp"
-        android:layout_marginTop="6dp" />
+        android:layout_marginBottom="5dp"
+        />
 
 </RelativeLayout>

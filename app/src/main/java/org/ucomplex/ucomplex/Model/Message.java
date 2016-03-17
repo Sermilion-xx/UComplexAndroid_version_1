@@ -1,5 +1,7 @@
 package org.ucomplex.ucomplex.Model;
 
+import android.graphics.Bitmap;
+
 import org.ucomplex.ucomplex.Model.StudyStructure.File;
 
 import java.util.ArrayList;
@@ -16,8 +18,17 @@ public class Message {
     private String name;
     private String fileType;
     private ArrayList<File> files;
+    private Bitmap messageImage;
 
     public Message() {
+    }
+
+    public Bitmap getMessageImage() {
+        return messageImage;
+    }
+
+    public void setMessageImage(Bitmap messageImage) {
+        this.messageImage = messageImage;
     }
 
     public void setFileType(String fileType) {
