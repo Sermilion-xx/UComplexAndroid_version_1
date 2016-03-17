@@ -154,17 +154,19 @@ public class FetchMessagesTask extends AsyncTask<String, String, LinkedList> imp
                     Message message = new Message();
                     ArrayList<File> messageFiles = new ArrayList<>();
                     try {
-                        for (int j = 0; j < filesJson.length(); j++) {
-                            JSONArray messageFilesJson = filesJson.getJSONArray(String.valueOf(messageJson.getInt("id")));
-                            messageFiles = new ArrayList<>();
-                            for(int l=0; j<messageFilesJson.length();l++){
-                                JSONObject tempJson = messageFilesJson.getJSONObject(l);
-                                File file = new File();
-                                file.setName(tempJson.getString("name"));
-                                file.setAddress(tempJson.getString("address"));
-                                file.setMessage(tempJson.getInt("message"));
-                                file.setFrom(tempJson.getInt("from"));
-                                messageFiles.add(file);
+                        if(filesJson!=null){
+                            for (int j = 0; j < filesJson.length(); j++) {
+                                JSONArray messageFilesJson = filesJson.getJSONArray(String.valueOf(messageJson.getInt("id")));
+                                messageFiles = new ArrayList<>();
+                                for(int l=0; j<messageFilesJson.length();l++){
+                                    JSONObject tempJson = messageFilesJson.getJSONObject(l);
+                                    File file = new File();
+                                    file.setName(tempJson.getString("name"));
+                                    file.setAddress(tempJson.getString("address"));
+                                    file.setMessage(tempJson.getInt("message"));
+                                    file.setFrom(tempJson.getInt("from"));
+                                    messageFiles.add(file);
+                                }
                             }
                         }
                     } catch (JSONException ignored) {
