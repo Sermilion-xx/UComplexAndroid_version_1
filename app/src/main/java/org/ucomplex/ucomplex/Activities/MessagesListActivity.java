@@ -45,6 +45,8 @@ public class MessagesListActivity extends AppCompatActivity implements OnTaskCom
         IntentFilter filter = new IntentFilter();
         filter.addAction("org.ucomplex.newMessageListBroadcast");
         registerReceiver(receiver, filter);
+        FetchDialogsTask fetchDialogsTask = new FetchDialogsTask(MessagesListActivity.this, MessagesListActivity.this);
+        fetchDialogsTask.setupTask();
     }
 
     @Override
@@ -52,6 +54,7 @@ public class MessagesListActivity extends AppCompatActivity implements OnTaskCom
         unregisterReceiver(receiver);
         messagesListAdapter.notifyDataSetChanged();
         super.onPause();
+
     }
 
     BroadcastReceiver receiver = new BroadcastReceiver() {
