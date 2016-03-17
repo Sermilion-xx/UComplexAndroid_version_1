@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -147,6 +148,9 @@ public class MessagesListAdapter extends ArrayAdapter<Dialog> {
         }
         viewHolder.lastMessageTextView.setTypeface(robotoFont);
         viewHolder.lastMessageTextView.setText(item.getMessage());
+        if(item.getMessage().length()==0){
+            viewHolder.myMessageIcon.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_attachment_dark));
+        }
         viewHolder.timeTextView.setTypeface(robotoFont);
         viewHolder.timeTextView.setText(Common.makeDate(item.getTime(), false));
 
@@ -171,8 +175,11 @@ public class MessagesListAdapter extends ArrayAdapter<Dialog> {
                 viewHolder.myMessageIcon.setImageBitmap(user.getPhotoBitmap());
             }
         }else{
-            viewHolder.myMessageIcon.setVisibility(View.GONE);
-            viewHolder.lastMessageTextView.setPadding(20,0,0,0);
+            if(item.getMessage().length()!=0){
+                viewHolder.myMessageIcon.setVisibility(View.GONE);
+                viewHolder.lastMessageTextView.setPadding(20,0,0,0);
+            }
+
         }
 
 
