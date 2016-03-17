@@ -16,16 +16,13 @@ import android.widget.TextView;
 
 import com.amulyakhare.textdrawable.TextDrawable;
 
+import org.ucomplex.ucomplex.Activities.CalendarActivity;
 import org.ucomplex.ucomplex.Activities.EventsActivity;
-import org.ucomplex.ucomplex.Activities.LibraryActivity;
 import org.ucomplex.ucomplex.Activities.LoginActivity;
 import org.ucomplex.ucomplex.Activities.MessagesListActivity;
 import org.ucomplex.ucomplex.Activities.MyFilesActivity;
-import org.ucomplex.ucomplex.Activities.ReferenceActivity;
-import org.ucomplex.ucomplex.Activities.SettingsActivity;
 import org.ucomplex.ucomplex.Activities.SettingsActivity2;
 import org.ucomplex.ucomplex.Activities.SubjectsActivity;
-import org.ucomplex.ucomplex.Activities.CalendarActivity;
 import org.ucomplex.ucomplex.Activities.UsersActivity;
 import org.ucomplex.ucomplex.Common;
 import org.ucomplex.ucomplex.Model.Users.User;
@@ -44,7 +41,7 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
     private String mNavTitles[];
     private int mIcons[];
     private String name;
-    private int msgCount;
+    private int msgCount = 0 ;
     private EventsActivity context;
     private static Bitmap profileBitmap;
     private User user;
@@ -126,8 +123,8 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
                 Intent intent = new Intent(contxt, UsersActivity.class);
                 contxt.startActivity(intent);
             } else if (getAdapterPosition() == 5) {
-                Common.newMesg = 0;
                 Intent intent = new Intent(contxt, MessagesListActivity.class);
+                Common.newMesg = 0;
                 contxt.startActivity(intent);
             }
 //            else if (getAdapterPosition() == 7) {
@@ -198,11 +195,10 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
         } else if (viewType == TYPE_HEADER) {
             View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_menu_header, parent, false);
             return new ViewHolder(v, viewType, context);
-        } else if (viewType == TYPE_ITEM_MSG) {
+        } else {
             View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_menu_message, parent, false);
             return new ViewHolder(v, viewType, context);
         }
-        return null;
     }
 
     @Override
@@ -228,7 +224,7 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
         } else if (holder.Holderid == 2) {
             holder.textView.setText(mNavTitles[position - 1]);
             holder.imageView.setImageResource(mIcons[position - 1]);
-            if (msgCount > 0 || holder.msgCountImageView==null) {
+            if (msgCount > 0 || holder.msgCountImageView == null) {
                 TextDrawable drawable = TextDrawable.builder().beginConfig()
                         .width(604)
                         .height(604)
@@ -236,7 +232,6 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
                         .buildRect(String.valueOf(msgCount), Color.parseColor("#20bcfa"));
                 holder.msgCountImageView.setImageDrawable(drawable);
             }
-
         }
     }
 
@@ -247,11 +242,13 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
 
     @Override
     public int getItemViewType(int position) {
-        if (isPositionHeader(position))
+        if (isPositionHeader(position)) {
+            int i = TYPE_HEADER;
             return TYPE_HEADER;
-        else if (mNavTitles[position - 1].equals("Сообщения"))
+        }else if (mNavTitles[position - 1].equals("Сообщения"))
             return TYPE_ITEM_MSG;
-        return TYPE_ITEM;
+        else
+            return TYPE_ITEM;
     }
 
     private boolean isPositionHeader(int position) {

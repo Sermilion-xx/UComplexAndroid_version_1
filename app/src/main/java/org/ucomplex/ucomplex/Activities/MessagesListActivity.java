@@ -50,6 +50,7 @@ public class MessagesListActivity extends AppCompatActivity implements OnTaskCom
     @Override
     protected void onPause() {
         unregisterReceiver(receiver);
+        messagesListAdapter.notifyDataSetChanged();
         super.onPause();
     }
 

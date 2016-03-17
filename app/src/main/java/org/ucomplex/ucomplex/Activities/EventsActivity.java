@@ -114,10 +114,10 @@ public class EventsActivity extends AppCompatActivity implements OnTaskCompleteL
             int messageCount = bundle.getInt("newMessage");
             if (messageCount > 0 && messageCount != mAdapter.getMsgCount()) {
                 mAdapter.setMsgCount(messageCount);
-                mAdapter.notifyItemChanged(6);
+                mAdapter.notifyItemChanged(5);
             } else if (messageCount == 0 && mAdapter.getMsgCount() > 0) {
                 mAdapter.setMsgCount(messageCount);
-                mAdapter.notifyItemChanged(6);
+                mAdapter.notifyItemChanged(5);
             }
         }
     };

@@ -113,10 +113,11 @@ public class Common {
                 @Override
                 protected void onPostExecute(String jsonData) {
                     super.onPostExecute(jsonData);
-                    Log.e("MGS", "checked!!!!");
+
                     if (jsonData != null) {
                         try {
                             JSONObject jsonObject = new JSONObject(jsonData);
+                            Log.e("MGS", jsonData);
                             JSONObject messagesJson = jsonObject.getJSONObject("messages");
                             if (messagesJson != null) {
                                 ArrayList<String> fromMessagesStr = Common.getKeys(messagesJson);
