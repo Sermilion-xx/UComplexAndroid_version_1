@@ -147,6 +147,7 @@ public class MessagesActivity extends AppCompatActivity implements OnTaskComplet
                     file = false;
                 } else {
                     fetchNewMessagesTask.setupTask(companion, messageTextView.getText().toString());
+                    imageProgress.setVisibility(View.VISIBLE);
                 }
                 ObjectAnimator.ofFloat(sendFileButton, "rotation", 1, 0).start();
                 messageTextView.setText("");
@@ -176,7 +177,7 @@ public class MessagesActivity extends AppCompatActivity implements OnTaskComplet
                     fetchNewMessagesTask.setupTask(companion);
                 }
             }
-        }, 0, 3000);
+        }, 0, 1000);
     }
 
     private void scrollMyListViewToBottom() {
@@ -309,13 +310,13 @@ public class MessagesActivity extends AppCompatActivity implements OnTaskComplet
                                 if (result.size() > 0) {
                                     messagesAdapter.notifyDataSetChanged();
                                     listView.setSelection(messagesAdapter.getCount() - 1);
-                                    imageProgress.setVisibility(View.INVISIBLE);
                                 } else {
                                     Toast.makeText(this, "Ошибка при отправке сообщения", Toast.LENGTH_LONG)
                                             .show();
                                 }
                             }
                         }
+                        imageProgress.setVisibility(View.INVISIBLE);
                     }
                     fetchNewMessagesTask = null;
                 }

@@ -100,8 +100,17 @@ public class MessagesAdapter extends ArrayAdapter {
 
     @Override
     public int getItemViewType(int position) {
-        Message message = (Message) getItem(position);
-        return message.getFrom() == person ? TYPE_OUT : TYPE_IN;
+        if (!(getItem(position) instanceof Bitmap)) {
+            Message message = (Message) getItem(position);
+            return message.getFrom() == person ? TYPE_OUT : TYPE_IN;
+        } else {
+            if (values.getFirst() instanceof Bitmap) {
+                this.bitmap = (Bitmap) values.getFirst();
+                values.removeFirst();
+            }
+            Message message = (Message) getItem(position);
+            return message.getFrom() == person ? TYPE_OUT : TYPE_IN;
+        }
     }
 
     @Override
@@ -177,31 +186,34 @@ public class MessagesAdapter extends ArrayAdapter {
 
         final Message item = (Message) getItem(position);
         viewHolder.messageTextView.setTypeface(robotoFont);
-        if(item.getMessage().length()==0 && item.getFiles().size()>0){
+        if (item.getMessage().length() == 0 && item.getFiles().size() > 0) {
             StringBuilder sb = new StringBuilder();
-            for(File file: item.getFiles()){
-                sb.append(file.getName()+"\n");
+            for (File file : item.getFiles()) {
+                sb.append(file.getName() + "\n");
             }
             viewHolder.messageTextView.setText(sb.toString());
-        }else{
+        } else {
             viewHolder.messageTextView.setText(item.getMessage());
         }
         viewHolder.timeTextView.setTypeface(robotoFont);
         viewHolder.timeTextView.setText(item.getTime().split(" ")[1]);
 
-        if(item.getFiles()!=null && item.getFiles().size()>0){
+        if (item.getFiles() != null && item.getFiles().size() > 0) {
             File file = item.getFiles().get(0);
 
             String type = file.getAddress().split("\\.")[1];
 
             final ViewHolder finalViewHolder = viewHolder;
-            if(item.getMessageImage()==null) {
+            if (item.getMessageImage() == null) {
                 if (type.equals("jpg") || type.equals("png")) {
                     imageLoader.displayImage("http://storage.ucomplex.org/files/messages/" + ((Message) getItem(position)).getFiles().get(0).getFrom() + "/" + ((Message) getItem(position)).getFiles().get(0).getAddress(), viewHolder.messageBitmap, options, new SimpleImageLoadingListener() {
                         @Override
-                        public void onLoadingStarted(String imageUri, View view) {}
+                        public void onLoadingStarted(String imageUri, View view) {
+                        }
+
                         @Override
-                        public void onLoadingFailed(String imageUri, View view, FailReason failReason) {}
+                        public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+                        }
 
                         @Override
                         public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
@@ -222,12 +234,12 @@ public class MessagesAdapter extends ArrayAdapter {
                 } else {
                     finalViewHolder.messageBitmap.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_attachment_dark));
                 }
-            }else{
+            } else {
                 viewHolder.messageBitmap.setImageBitmap(item.getMessageImage());
             }
-        }else{
+        } else {
             ViewGroup group = ((ViewGroup) viewHolder.messageBitmap.getParent());
-            if(group!=null)
+            if (group != null)
                 group.removeView(viewHolder.messageBitmap);
         }
         return convertView;

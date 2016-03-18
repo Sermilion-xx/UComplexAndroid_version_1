@@ -94,7 +94,12 @@ public class FetchMessagesTask extends AsyncTask<String, String, LinkedList> imp
             try {
                 JSONArray messagesJson = new JSONObject(jsonData).getJSONArray("messages");
                 JSONObject messageJson = messagesJson.getJSONObject(0);
-                JSONObject filesJson = new JSONObject(jsonData).getJSONObject("files");
+                JSONObject filesJson = new JSONObject();
+                try{
+                    filesJson = new JSONObject(jsonData).getJSONObject("files");
+                } catch (JSONException ignored) {
+                }
+
                 ArrayList<File> messageFiles = new ArrayList<>();
                 for (int i = 0; i < messagesJson.length(); i++) {
 
