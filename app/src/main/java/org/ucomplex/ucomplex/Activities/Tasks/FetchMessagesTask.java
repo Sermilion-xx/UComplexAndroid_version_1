@@ -148,11 +148,14 @@ public class FetchMessagesTask extends AsyncTask<String, String, LinkedList> imp
                 JSONObject filesJson = null;
                 try {
                     filesJson = new JSONObject(jsonData).getJSONObject("files");
+                    System.out.println(filesJson);
                 } catch (JSONException ignored) {
                 }
                 Bitmap profileImage = null;
-                if (companionJson.getString("photo").equals("1")) {
-                    profileImage = Common.getBitmapFromURL(companionJson.getString("code"),0);
+                if(messagesJson.length()>0){
+                    if (companionJson.getString("photo").equals("1")) {
+                        profileImage = Common.getBitmapFromURL(companionJson.getString("code"),0);
+                    }
                 }
                 for (int i = 0; i < messagesJson.length(); i++) {
                     JSONObject messageJson = messagesJson.getJSONObject(i);
@@ -195,7 +198,6 @@ public class FetchMessagesTask extends AsyncTask<String, String, LinkedList> imp
                         message.setName(myName);
                     }
                 }
-                publishProgress("100%");
                 //Последний элемент - фото компаньона
                 if (profileImage != null) {
                     messagesList.addLast(profileImage);

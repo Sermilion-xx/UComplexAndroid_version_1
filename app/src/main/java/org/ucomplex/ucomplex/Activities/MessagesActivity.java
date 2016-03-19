@@ -1,7 +1,8 @@
 package org.ucomplex.ucomplex.Activities;
 
 import android.animation.ObjectAnimator;
-import android.content.ContentResolver;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -11,22 +12,17 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
-import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.RotateAnimation;
-import android.webkit.MimeTypeMap;
+import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -38,12 +34,10 @@ import org.ucomplex.ucomplex.Adaptors.MessagesAdapter;
 import org.ucomplex.ucomplex.Common;
 import org.ucomplex.ucomplex.Interfaces.OnTaskCompleteListener;
 import org.ucomplex.ucomplex.Model.Message;
+import org.ucomplex.ucomplex.Model.StudyStructure.File;
 import org.ucomplex.ucomplex.Model.Users.User;
 import org.ucomplex.ucomplex.R;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.Timer;
@@ -54,7 +48,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MessagesActivity extends AppCompatActivity implements OnTaskCompleteListener {
 
-    LinkedList<Message> messageArrayList = new LinkedList<>();
+    LinkedList messageArrayList = new LinkedList<>();
     ListView listView;
     String companion;
     MessagesAdapter messagesAdapter;
@@ -70,6 +64,8 @@ public class MessagesActivity extends AppCompatActivity implements OnTaskComplet
     CircleImageView messageImage;
     CircleImageView messageImageTemp;
     ProgressBar imageProgress;
+    boolean first;
+    boolean fetching;
 
 
     @Override
@@ -106,9 +102,66 @@ public class MessagesActivity extends AppCompatActivity implements OnTaskComplet
         messagesAdapter = new MessagesAdapter(this, messageArrayList, companion, name);
         listView = (ListView) findViewById(R.id.list_messages_listview);
         listView.setScrollingCacheEnabled(false);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
+                Message message = (Message) messagesAdapter.getItem(position);
+                if(message.getFiles().size()>0){
+                    if(((Message) messagesAdapter.getItem(position)).getMessageImage()==null){
+
+                    }else{
+                        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                switch (which){
+                                    case DialogInterface.BUTTON_POSITIVE:
+
+                                        View v = messagesAdapter.getViewByPosition(position, listView);
+                                        final MessagesAdapter.ViewHolder vh = (MessagesAdapter.ViewHolder) v.getTag();
+                                        vh.getFileProgressBar().setVisibility(View.VISIBLE);
+                                        new AsyncTask<Void, Void, Bitmap>(){
+
+                                            @Override
+                                            protected Bitmap doInBackground(Void... params) {
+                                                String url = "http://storage.ucomplex.org/files/messages/" + ((Message) messagesAdapter.getItem(position)).getFiles().get(0).getFrom() + "/" + ((Message) messagesAdapter.getItem(position)).getFiles().get(0).getAddress();
+                                                Bitmap bitmap = Common.getBitmapFromURL(url,1);
+                                                return bitmap;
+                                            }
+
+                                            @Override
+                                            protected void onPostExecute(Bitmap aVoid) {
+                                                super.onPostExecute(aVoid);
+                                                vh.getFileProgressBar().setVisibility(View.INVISIBLE);
+                                                MediaStore.Images.Media.insertImage(getContentResolver(), aVoid, ((Message) messagesAdapter.getItem(position)).getFiles().get(0).getName() , "");
+                                                Toast.makeText(MessagesActivity.this, "Фото сохранено.", Toast.LENGTH_LONG)
+                                                        .show();
+
+                                            }
+                                        }.execute();
+
+
+                                        break;
+                                    case DialogInterface.BUTTON_NEGATIVE:
+                                        //No button clicked
+                                        break;
+                                }
+                            }
+                        };
+
+                        AlertDialog.Builder builder = new AlertDialog.Builder(MessagesActivity.this);
+                        builder.setMessage("Сохранить фото?").setPositiveButton("Да", dialogClickListener)
+                                .setNegativeButton("Нет", dialogClickListener).show();
+
+
+                    }
+
+                }
+            }
+        });
         fetchNewMessagesTask = new FetchMessagesTask(this, this);
         fetchNewMessagesTask.setType(0);
         fetchNewMessagesTask.setupTask(companion);
+        first = true;
 
         sendMsgButton = (Button) findViewById(R.id.messages_send_button);
         sendMsgButton.setEnabled(false);
@@ -120,18 +173,10 @@ public class MessagesActivity extends AppCompatActivity implements OnTaskComplet
                 sendMsgButton.setEnabled(true);
 
             }
-
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count,
-                                          int after) {
-
-            }
-
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
             @Override
-            public void afterTextChanged(Editable s) {
-
-
-            }
+            public void afterTextChanged(Editable s) {}
         });
         sendMsgButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -168,16 +213,19 @@ public class MessagesActivity extends AppCompatActivity implements OnTaskComplet
                 ObjectAnimator.ofFloat(sendFileButton, "rotation", 1, 0).start();
             }
         });
-        new Timer().scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                if (fetchNewMessagesTask == null) {
-                    fetchNewMessagesTask = new FetchMessagesTask(MessagesActivity.this, MessagesActivity.this);
-                    fetchNewMessagesTask.setType(2);
-                    fetchNewMessagesTask.setupTask(companion);
-                }
-            }
-        }, 0, 1000);
+//        new Timer().scheduleAtFixedRate(new TimerTask() {
+//            @Override
+//            public void run() {
+//                if(!fetching) {
+//                    if (fetchNewMessagesTask == null) {
+//                        fetchNewMessagesTask = new FetchMessagesTask(MessagesActivity.this, MessagesActivity.this);
+//                        fetchNewMessagesTask.setType(0);
+//                        fetchNewMessagesTask.setupTask(companion);
+//                        fetching = true;
+//                    }
+//                }
+//            }
+//        }, 0, 10000);
     }
 
     private void scrollMyListViewToBottom() {
@@ -225,14 +273,13 @@ public class MessagesActivity extends AppCompatActivity implements OnTaskComplet
                     String filename = splitFilename[splitFilename.length - 1];
                     String[] fileNameArray = filename.split("\\.");
                     String format = fileNameArray[fileNameArray.length-1];
-//                    messageTextView.setText("Файл: "+filename);
                     file = true;
                     sendMsgButton.setEnabled(true);
 
                     ObjectAnimator.ofFloat(sendFileButton, "rotation", 1, 45).start();
 
                     if(format.equals("jpeg") || format.equals("jpg") || format.equals("png")){
-                        File image = new File(filePath);
+                        java.io.File image = new java.io.File(filePath);
                         BitmapFactory.Options bmOptions = new BitmapFactory.Options();
                         Bitmap bitmap = BitmapFactory.decodeFile(image.getAbsolutePath(),bmOptions);
                         if(bitmap!=null){
@@ -248,18 +295,6 @@ public class MessagesActivity extends AppCompatActivity implements OnTaskComplet
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    protected int sizeOf(Bitmap data) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB_MR1) {
-            return data.getRowBytes() * data.getHeight();
-        } else {
-            return data.getByteCount();
-        }
-    }
-
-    public  String getMimeType(String filePath) {
-        String[] parts = filePath.split(".");
-        return parts[parts.length-1];
-    }
 
     public String getPath(Uri uri) {
         String[] projection = {MediaStore.Images.Media.DATA};
@@ -281,18 +316,33 @@ public class MessagesActivity extends AppCompatActivity implements OnTaskComplet
 
                 } else {
                     FetchMessagesTask fmt = (FetchMessagesTask) task;
-                    if (fmt.getType() == 0) {
+                    if(fmt.getType() == 0){
                         messageArrayList = (LinkedList) task.get();
-                        if (messageArrayList != null) {
-                            Collections.reverse(messageArrayList);
-                            messagesAdapter = new MessagesAdapter(this, messageArrayList, companion, name);
-                            listView.setAdapter(messagesAdapter);
-                            listView.setSelection(messagesAdapter.getCount() - 1);
-                            if (messagesAdapter.getBitmap() != null) {
-                                profileImageView.setImageBitmap(messagesAdapter.getBitmap());
+                        if(messageArrayList != null){
+                            if(!first){
+                                messagesAdapter.getValues().clear();
+                                for(int i=0; i<messageArrayList.size(); i++){
+                                    if(messageArrayList.get(i) instanceof Bitmap){
+                                        messageArrayList.remove(i);
+                                    }
+                                }
+                                Collections.reverse(messageArrayList);
+                                messagesAdapter.getValues().addAll(messageArrayList);
+                                messagesAdapter.notifyDataSetChanged();
+                                listView.setSelection(messagesAdapter.getCount()-1);
+                            }else{
+                                Collections.reverse(messageArrayList);
+                                messagesAdapter = new MessagesAdapter(this, messageArrayList, companion, name);
+                                listView.setAdapter(messagesAdapter);
+                                listView.setSelection(messagesAdapter.getCount()-1);
+                                if(messagesAdapter.getBitmap() !=null){
+                                    profileImageView.setImageBitmap(messagesAdapter.getBitmap());
+                                }
+                                first = false;
                             }
                         }
-                    } else if (fmt.getType() == 1 || fmt.getType() == 2) {
+                    }
+                     else if (fmt.getType() == 1 || fmt.getType() == 2) {
 
                         LinkedList result = (LinkedList) task.get();
                         if (result != null) {
@@ -310,6 +360,7 @@ public class MessagesActivity extends AppCompatActivity implements OnTaskComplet
                                 if (result.size() > 0) {
                                     messagesAdapter.notifyDataSetChanged();
                                     listView.setSelection(messagesAdapter.getCount() - 1);
+
                                 } else {
                                     Toast.makeText(this, "Ошибка при отправке сообщения", Toast.LENGTH_LONG)
                                             .show();
@@ -319,11 +370,11 @@ public class MessagesActivity extends AppCompatActivity implements OnTaskComplet
                         imageProgress.setVisibility(View.INVISIBLE);
                     }
                     fetchNewMessagesTask = null;
+                    fetching = false;
                 }
             } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();
             }
-
         }
     }
 

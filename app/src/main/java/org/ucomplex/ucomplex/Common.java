@@ -367,7 +367,7 @@ public class Common {
             if(type==0){
                 UC_BASE_URL = "https://ucomplex.org/files/photos/" + code + ".jpg";
             }else{
-                UC_BASE_URL = "https://ucomplex.org/files/photos/" + code + ".jpg";
+                UC_BASE_URL = code;
             }
             URL url = new URL(UC_BASE_URL);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();

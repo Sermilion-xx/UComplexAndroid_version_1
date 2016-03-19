@@ -1,6 +1,7 @@
 package org.ucomplex.ucomplex.Model;
 
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 
 import org.ucomplex.ucomplex.Model.StudyStructure.File;
 
@@ -19,8 +20,17 @@ public class Message {
     private String fileType;
     private ArrayList<File> files;
     private Bitmap messageImage;
+    private Drawable messageDrawable;
 
     public Message() {
+    }
+
+    public Drawable getMessageDrawable() {
+        return messageDrawable;
+    }
+
+    public void setMessageDrawable(Drawable messageDrawable) {
+        this.messageDrawable = messageDrawable;
     }
 
     public Bitmap getMessageImage() {

@@ -31,28 +31,6 @@
             android:layout_marginLeft="5dp"
             android:layout_marginBottom="3dp" />
 
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/message_image"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_margin="5dp"/>
-
-            <ProgressBar
-                android:id="@+id/imagep_rogress_left"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:indeterminate="true"
-                android:layout_marginTop="15dp"
-                android:layout_marginLeft="15dp" />
-
-        </RelativeLayout>
-
-
-
     </LinearLayout>
 
 
