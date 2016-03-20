@@ -59,6 +59,10 @@ public class MessagesAdapter extends ArrayAdapter {
         return bitmap;
     }
 
+    public void setValues(LinkedList values) {
+        this.values = values;
+    }
+
     public MessagesAdapter(Context context, LinkedList<Message> messages, String companion, String name) {
         super(context, -1, messages);
         this.values = messages;
@@ -180,6 +184,7 @@ public class MessagesAdapter extends ArrayAdapter {
         ViewHolder viewHolder = null;
         final Message item = (Message) getItem(position);
         int viewType = getItemViewType(position);
+        convertView = null;
         if (convertView == null) {
             convertView = createConverterView(viewHolder, convertView, viewType, position, item);
             viewHolder = (ViewHolder) convertView.getTag();
@@ -202,36 +207,10 @@ public class MessagesAdapter extends ArrayAdapter {
             }
             if(type.equals("jpg") || type.equals("png")){
                 loadImage(item, viewHolder);
+            }else{
+                viewHolder.messageBitmap.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_attachment_dark));
             }
         }
-
-
-//        if (item.getFiles() != null && item.getFiles().size() > 0) {
-//            File file = item.getFiles().get(0);
-//            String type = file.getAddress().split("\\.")[1];
-//
-//            if (item.getMessageImage() == null) {
-//                if (type.equals("jpg") || type.equals("png")) {
-//                    loadImage(item, viewHolder);
-//                } else {
-//                    viewHolder.messageBitmap.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_attachment_dark));
-//                }
-//            } else if (item.getFiles() != null && item.getFiles().size() > 0) {
-//                if (item.getMessageImage() == null) {
-//                    viewHolder.messageBitmap.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_no_image));
-//                } else {
-//                    viewHolder.messageBitmap.setImageBitmap(item.getMessageImage());
-//                }
-////                if (item.getMessage().length() == 0 && item.getFiles().size() > 0) {
-////                    StringBuilder sb = new StringBuilder();
-////                    for (File file1 : item.getFiles()) {
-////                        sb.append(file1.getName() + "\n");
-////                        item.setMessage(sb.toString());
-////                    }
-////                }
-//                viewHolder.messageTextView.setText(item.getMessage());
-//            }
-//        }
         return convertView;
     }
 
@@ -268,11 +247,7 @@ public class MessagesAdapter extends ArrayAdapter {
                     }
                 }
             }
-        }, new ImageLoadingProgressListener() {
-            @Override
-            public void onProgressUpdate(String imageUri, View view, int current, int total) {
-            }
-        });
+        }, null);
     }
 
     private TextDrawable createDrawable(String name, int id) {

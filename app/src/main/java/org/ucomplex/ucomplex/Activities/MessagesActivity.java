@@ -213,19 +213,19 @@ public class MessagesActivity extends AppCompatActivity implements OnTaskComplet
                 ObjectAnimator.ofFloat(sendFileButton, "rotation", 1, 0).start();
             }
         });
-//        new Timer().scheduleAtFixedRate(new TimerTask() {
-//            @Override
-//            public void run() {
-//                if(!fetching) {
-//                    if (fetchNewMessagesTask == null) {
-//                        fetchNewMessagesTask = new FetchMessagesTask(MessagesActivity.this, MessagesActivity.this);
-//                        fetchNewMessagesTask.setType(0);
-//                        fetchNewMessagesTask.setupTask(companion);
-//                        fetching = true;
-//                    }
-//                }
-//            }
-//        }, 0, 10000);
+        new Timer().scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                if(!fetching) {
+                    if (fetchNewMessagesTask == null) {
+                        fetchNewMessagesTask = new FetchMessagesTask(MessagesActivity.this, MessagesActivity.this);
+                        fetchNewMessagesTask.setType(0);
+                        fetchNewMessagesTask.setupTask(companion);
+                        fetching = true;
+                    }
+                }
+            }
+        }, 0, 10000);
     }
 
     private void scrollMyListViewToBottom() {
@@ -320,14 +320,14 @@ public class MessagesActivity extends AppCompatActivity implements OnTaskComplet
                         messageArrayList = (LinkedList) task.get();
                         if(messageArrayList != null){
                             if(!first){
-                                messagesAdapter.getValues().clear();
+//                                messagesAdapter.getValues().clear();
                                 for(int i=0; i<messageArrayList.size(); i++){
                                     if(messageArrayList.get(i) instanceof Bitmap){
                                         messageArrayList.remove(i);
                                     }
                                 }
                                 Collections.reverse(messageArrayList);
-                                messagesAdapter.getValues().addAll(messageArrayList);
+                                messagesAdapter.setValues(messageArrayList);
                                 messagesAdapter.notifyDataSetChanged();
                                 listView.setSelection(messagesAdapter.getCount()-1);
                             }else{
@@ -356,7 +356,7 @@ public class MessagesActivity extends AppCompatActivity implements OnTaskComplet
                             }
 
                             if (cycles > 0) {
-                                messageArrayList.addLast((Message) result.get(0));
+                                messageArrayList.addLast(result.get(0));
                                 if (result.size() > 0) {
                                     messagesAdapter.notifyDataSetChanged();
                                     listView.setSelection(messagesAdapter.getCount() - 1);

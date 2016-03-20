@@ -49,7 +49,8 @@ public class ImageAdapter extends BaseAdapter {
     public Activity context;
 
     public ImageAdapter(ArrayList<User> items, Activity context, int usersType) {
-        this.inflater = LayoutInflater.from(context);
+        this.context = context;
+        this.inflater = LayoutInflater.from(this.context);
         options = new DisplayImageOptions.Builder()
                 .showImageOnLoading(null)
                 .showImageForEmptyUri(null)
@@ -63,7 +64,7 @@ public class ImageAdapter extends BaseAdapter {
         imageLoader = ImageLoader.getInstance();
         imageLoader.init(ImageLoaderConfiguration.createDefault(context));
         this.usersType = usersType;
-        this.context = context;
+
     }
 
     @Override
