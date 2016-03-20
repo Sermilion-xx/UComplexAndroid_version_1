@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
@@ -101,6 +102,7 @@ public class ImageAdapter extends BaseAdapter {
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
+
         viewHolder.icon.setImageDrawable(getDrawable(position));
         if (mItems.get(position).getPhotoBitmap()==null && mItems.get(position).getPhoto()==1){
             imageLoader.displayImage("http://ucomplex.org/files/photos/" + mItems.get(position).getCode() + ".jpg", viewHolder.icon, options, new SimpleImageLoadingListener() {
@@ -138,6 +140,9 @@ public class ImageAdapter extends BaseAdapter {
         }
 
         User user = getItem(position);
+        if(user.isFriendRequested()){
+            convertView.setBackgroundColor(Color.parseColor("#ecfbfe"));
+        }
         int type = user.getType();
         String typeStr = null;
         if (type == 0) {

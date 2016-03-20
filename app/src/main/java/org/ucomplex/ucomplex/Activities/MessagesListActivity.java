@@ -20,7 +20,6 @@ import android.widget.Toast;
 import org.ucomplex.ucomplex.Activities.Tasks.FetchDialogsTask;
 import org.ucomplex.ucomplex.Adaptors.MessagesListAdapter;
 import org.ucomplex.ucomplex.Common;
-import org.ucomplex.ucomplex.Fragments.CourseMaterialsFragment;
 import org.ucomplex.ucomplex.Interfaces.OnTaskCompleteListener;
 import org.ucomplex.ucomplex.Model.Dialog;
 import org.ucomplex.ucomplex.R;

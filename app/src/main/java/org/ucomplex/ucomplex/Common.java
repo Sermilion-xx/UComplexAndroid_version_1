@@ -77,8 +77,8 @@ public class Common {
     public static int GALLERY_INTENT_CALLED = 0;
     public static int GALLERY_KITKAT_INTENT_CALLED = 1;
     public static int newMesg = 0;
+    public static boolean newUsr;
     public static ArrayList<Integer> fromMessages = new ArrayList<>();
-    public static ArrayList<CalendarDay> decoratedDays = new ArrayList<>();
 
     public static Typeface getTypeFace(Context context, String typeFace) {
         Typeface tf = Typeface.createFromAsset(context.getAssets(),
@@ -117,7 +117,6 @@ public class Common {
                     if (jsonData != null) {
                         try {
                             JSONObject jsonObject = new JSONObject(jsonData);
-                            Log.e("MGS", jsonData);
                             JSONObject messagesJson = jsonObject.getJSONObject("messages");
                             if (messagesJson != null) {
                                 ArrayList<String> fromMessagesStr = Common.getKeys(messagesJson);
@@ -134,8 +133,10 @@ public class Common {
                                     context.sendBroadcast(broadcast);
                                 }
                                 Common.newMesg = messagesJson.getInt("sum");
+                                Common.newUsr = jsonObject.getBoolean("friends_req");
                                 Intent broadcast = new Intent();
                                 broadcast.setAction("org.ucomplex.newMessageMenuBroadcast");
+                                broadcast.putExtra("newFriend", Common.newUsr);
                                 broadcast.putExtra("newMessage", Common.newMesg);
                                 context.sendBroadcast(broadcast);
                             }

@@ -7,9 +7,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
+import android.media.MediaPlayer;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -63,6 +65,7 @@ public class EventsActivity extends AppCompatActivity implements OnTaskCompleteL
     DrawerLayout Drawer;                                  // Declaring DrawerLayout
     ActionBarDrawerToggle mDrawerToggle;                  // Declaring Action Bar Drawer Toggle
     LinearLayout linlaHeaderProgress;
+    MediaPlayer mAlert;
 
     public Intent getI() {
         return i;
@@ -112,12 +115,24 @@ public class EventsActivity extends AppCompatActivity implements OnTaskCompleteL
         public void onReceive(Context context, Intent intent) {
             Bundle bundle = intent.getExtras();
             int messageCount = bundle.getInt("newMessage");
+            boolean newFriend = bundle.getBoolean("newFriend");
+            if(!mAdapter.isNewFriend() && newFriend){
+                mAdapter.setNewFriend(newFriend);
+                mAdapter.notifyItemChanged(4);
+                mAlert.start();
+            }
             if (messageCount > 0 && messageCount != mAdapter.getMsgCount()) {
                 mAdapter.setMsgCount(messageCount);
                 mAdapter.notifyItemChanged(5);
+                if(mAlert != null){
+                    mAlert.start();
+                }
             } else if (messageCount == 0 && mAdapter.getMsgCount() > 0) {
                 mAdapter.setMsgCount(messageCount);
                 mAdapter.notifyItemChanged(5);
+                if(mAlert != null){
+                    mAlert.start();
+                }
             }
         }
     };
@@ -139,7 +154,7 @@ public class EventsActivity extends AppCompatActivity implements OnTaskCompleteL
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        mAlert = MediaPlayer.create(this, R.raw.alert);
         Common.fetchMyNews(EventsActivity.this);
         i = new Intent(EventsActivity.this, MyService.class);
         EventsActivity.this.startService(i);

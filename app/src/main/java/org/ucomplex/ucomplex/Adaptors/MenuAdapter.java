@@ -38,13 +38,23 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
     private static final int TYPE_HEADER = 0;
     private static final int TYPE_ITEM = 1;
     private static final int TYPE_ITEM_MSG = 2;
+    private static final int TYPE_ITEM_USR = 3;
     private String mNavTitles[];
     private int mIcons[];
     private String name;
-    private int msgCount = 0 ;
+    private int msgCount = 0;
+    private boolean newFriend;
     private EventsActivity context;
     private static Bitmap profileBitmap;
     private User user;
+
+    public void setNewFriend(boolean newFriend) {
+        this.newFriend = newFriend;
+    }
+
+    public boolean isNewFriend() {
+        return newFriend;
+    }
 
     public void setMsgCount(int msgCount) {
         this.msgCount = msgCount;
@@ -96,6 +106,12 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
                 imageView = (ImageView) itemView.findViewById(R.id.rowIcon);
                 msgCountImageView = (de.hdodenhof.circleimageview.CircleImageView) itemView.findViewById(R.id.rowMsgCount);
                 Holderid = 2;
+            }else if (ViewType == TYPE_ITEM_USR) {
+                textView = (TextView) itemView.findViewById(R.id.rowText);
+                textView.setTypeface(custom_font);
+                imageView = (ImageView) itemView.findViewById(R.id.rowIcon);
+                msgCountImageView = (de.hdodenhof.circleimageview.CircleImageView) itemView.findViewById(R.id.rowMsgCount);
+                Holderid = 3;
             }
 
 
@@ -115,10 +131,6 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
                 Intent intent = new Intent(contxt, MyFilesActivity.class);
                 contxt.startActivity(intent);
             }
-//            else if (getAdapterPosition() == 4) {
-//                Intent intent = new Intent(contxt, ReferenceActivity.class);
-//                contxt.startActivity(intent);
-//            }
             else if (getAdapterPosition() == 4) {
                 Intent intent = new Intent(contxt, UsersActivity.class);
                 contxt.startActivity(intent);
@@ -127,10 +139,6 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
                 Common.newMesg = 0;
                 contxt.startActivity(intent);
             }
-//            else if (getAdapterPosition() == 7) {
-//                Intent intent = new Intent(contxt, LibraryActivity.class);
-//                contxt.startActivity(intent);
-//            }
             else if (getAdapterPosition() == 6) {
                 Intent intent = new Intent(contxt, CalendarActivity.class);
                 contxt.startActivity(intent);
@@ -207,7 +215,7 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
             holder.textView.setText(mNavTitles[position - 1]);
             holder.imageView.setImageResource(mIcons[position - 1]);
         } else if (holder.Holderid == 0) {
-            if (profileBitmap != null) {
+             if (profileBitmap != null) {
                 holder.profile.setImageBitmap(profileBitmap);
             } else {
                 final int colorsCount = 16;
@@ -224,13 +232,26 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
         } else if (holder.Holderid == 2) {
             holder.textView.setText(mNavTitles[position - 1]);
             holder.imageView.setImageResource(mIcons[position - 1]);
-            if (msgCount > 0 || holder.msgCountImageView == null) {
+            if (msgCount > 0 && holder.msgCountImageView != null) {
                 TextDrawable drawable = TextDrawable.builder().beginConfig()
                         .width(604)
                         .height(604)
                         .endConfig()
                         .buildRect(String.valueOf(msgCount), Color.parseColor("#20bcfa"));
                 holder.msgCountImageView.setImageDrawable(drawable);
+            }
+        }else if (holder.Holderid == 3) {
+            holder.textView.setText(mNavTitles[position - 1]);
+            holder.imageView.setImageResource(mIcons[position - 1]);
+            if (newFriend && holder.msgCountImageView != null) {
+                Typeface iconFont  = Typeface.createFromAsset(context.getAssets(), "fonts/fontawesome-webfont.ttf");
+                TextDrawable drawable1 = TextDrawable.builder().beginConfig()
+                        .width(604)
+                        .height(604)
+                        .useFont(iconFont)
+                        .endConfig()
+                        .buildRect("\uF007", Color.parseColor("#20bcfa"));
+                holder.msgCountImageView.setImageDrawable(drawable1);
             }
         }
     }
@@ -247,6 +268,8 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
             return TYPE_HEADER;
         }else if (mNavTitles[position - 1].equals("Сообщения"))
             return TYPE_ITEM_MSG;
+        else if (mNavTitles[position - 1].equals("Пользователи"))
+            return TYPE_ITEM_USR;
         else
             return TYPE_ITEM;
     }

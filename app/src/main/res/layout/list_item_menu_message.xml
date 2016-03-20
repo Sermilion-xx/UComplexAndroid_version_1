@@ -19,7 +19,6 @@
             android:textColor="@drawable/text_selextor"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:layout_marginTop="5dp"
-            android:text="dfdfd"
             android:layout_marginLeft="15dp"
             android:textSize="16sp"
             android:padding="2dp"
@@ -30,7 +29,7 @@
         android:layout_width="25dp"
         android:layout_height="25dp"
         android:id="@+id/rowMsgCount"
-        android:layout_marginEnd="32dp"
+        android:layout_marginRight="32dp"
         android:layout_marginTop="7dp" />
 
 </LinearLayout>
