@@ -238,6 +238,7 @@ class ViewHolder {
                         }else{
                             actionsArrayList.add("Удалить из друзей");
                         }
+                        actionsArrayList.add("Отклонить заявку");
                         actionsArrayList.add("Заблокировать");
                         break;
                     case 4:
@@ -266,7 +267,7 @@ class ViewHolder {
                                     HandleMenuPress handleMenuPress1 = new HandleMenuPress();
                                     handleMenuPress1.execute("http://you.com.ru/user/blacklist/delete", params);
                                     mItems.remove(position);
-                                    Toast.makeText(context, "Пользователь удален из черного списка :)", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(context, "Пользователь удален из черного списка.", Toast.LENGTH_SHORT).show();
                                 }
                                 break;
                             case 1:
@@ -274,7 +275,7 @@ class ViewHolder {
                                     params.put("user", String.valueOf(mItems.get(position).getId()));
                                     HandleMenuPress handleMenuPress1 = new HandleMenuPress();
                                     handleMenuPress1.execute("http://you.com.ru/user/friends/add", params);
-                                    Toast.makeText(context, "Заявка на дружбу отправлена :)", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(context, "Заявка на дружбу отправлена.", Toast.LENGTH_SHORT).show();
                                 } else if (usersType == 1) {
                                     params.put("user", String.valueOf(mItems.get(position).getId()));
                                     if (mItems.get(position).isFriendRequested()) {
@@ -286,16 +287,26 @@ class ViewHolder {
                                         HandleMenuPress handleMenuPress = new HandleMenuPress();
                                         handleMenuPress.execute("http://you.com.ru/user/friends/delete", params);
                                         mItems.remove(position);
-                                        Toast.makeText(context, "Пользователь удален из друзей :(", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(context, "Пользователь удален из друзей.", Toast.LENGTH_SHORT).show();
                                     }
                                 }
                             case 2:
                                 if(usersType!=4) {
                                     params.put("user", String.valueOf(mItems.get(position).getId()));
                                     HandleMenuPress handleMenuPress = new HandleMenuPress();
+                                    handleMenuPress.execute("https://ucomplex.org/user/friends/reject", params);
+                                    mItems.remove(position);
+                                    Toast.makeText(context, "Заявка на дружбу отклонена.", Toast.LENGTH_SHORT).show();
+                                    break;
+                                }
+                                break;
+                            case 3:
+                                if(usersType!=4) {
+                                    params.put("user", String.valueOf(mItems.get(position).getId()));
+                                    HandleMenuPress handleMenuPress = new HandleMenuPress();
                                     handleMenuPress.execute("http://you.com.ru/user/blacklist/add", params);
                                     mItems.remove(position);
-                                    Toast.makeText(context, "Пользователь добавлен в черный список :(", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(context, "Пользователь добавлен в черный список.", Toast.LENGTH_SHORT).show();
                                     break;
                                 }
                         }

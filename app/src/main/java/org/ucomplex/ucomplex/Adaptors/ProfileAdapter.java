@@ -115,8 +115,6 @@ public class ProfileAdapter extends ArrayAdapter<Triplet> {
                 viewHolder.mLastNameView.setText(fullName[1] + " " + fullName[2]);
             }
 
-//            viewHolder.mEmailView.setTypeface(robotoFont);
-//            viewHolder.mEmailView.setText(mUser.getEmail());
         } else if (viewType == TYPE_INFO) {
             Integer[] icons = new Integer[]{
                     R.drawable.ic_role_1,
