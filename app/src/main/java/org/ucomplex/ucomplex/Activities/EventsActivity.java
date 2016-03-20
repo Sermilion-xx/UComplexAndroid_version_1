@@ -120,6 +120,9 @@ public class EventsActivity extends AppCompatActivity implements OnTaskCompleteL
                 mAdapter.setNewFriend(newFriend);
                 mAdapter.notifyItemChanged(4);
                 mAlert.start();
+            } else if (mAdapter.isNewFriend() && !newFriend){
+                mAdapter.setNewFriend(newFriend);
+                mAdapter.notifyItemChanged(4);
             }
             if (messageCount > 0 && messageCount != mAdapter.getMsgCount()) {
                 mAdapter.setMsgCount(messageCount);
@@ -131,7 +134,6 @@ public class EventsActivity extends AppCompatActivity implements OnTaskCompleteL
                 mAdapter.setMsgCount(messageCount);
                 mAdapter.notifyItemChanged(5);
                 if(mAlert != null){
-                    mAlert.start();
                 }
             }
         }
