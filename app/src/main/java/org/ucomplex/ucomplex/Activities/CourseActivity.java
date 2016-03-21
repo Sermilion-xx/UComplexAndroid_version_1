@@ -48,7 +48,6 @@ public class CourseActivity extends AppCompatActivity implements OnTaskCompleteL
 
 
     CourseMaterialsFragment courseMaterialsFragment;
-    CourseInfoFragment courseInfoFragment;
     CourseFragment courseFragment;
     CalendarBeltFragment calendarBeltFragment;
     ViewPagerAdapter adapter;
@@ -66,7 +65,9 @@ public class CourseActivity extends AppCompatActivity implements OnTaskCompleteL
         Bundle extras = getIntent().getExtras();
         this.gcourse = extras.getInt("gcourse", -1);
         this.courseName = extras.getString("courseName");
-        titles.add(this.courseName);
+        if(this.courseName!=null){
+            titles.add(Character.toUpperCase(this.courseName.charAt(0)) + this.courseName.substring(1));
+        }
         setContentView(R.layout.activity_course);
         mViewPager = (ViewPager) findViewById(R.id.viewpager);
         adapter = new ViewPagerAdapter(getSupportFragmentManager());
@@ -168,12 +169,8 @@ public class CourseActivity extends AppCompatActivity implements OnTaskCompleteL
     }
 
     private void setupViewPager(ViewPager viewPager) {
-        courseInfoFragment = new CourseInfoFragment();
-        courseInfoFragment.setmContext(this);
-
         Bundle cmBundel = new Bundle();
         cmBundel.putSerializable("courseData", coursedata);
-        courseInfoFragment.setArguments(cmBundel);
 
         courseFragment = new CourseFragment();
         courseFragment.setmContext(this);

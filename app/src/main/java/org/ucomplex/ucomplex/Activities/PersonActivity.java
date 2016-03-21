@@ -30,10 +30,6 @@ public class PersonActivity extends AppCompatActivity {
         if (extra != null) {
             personId = Integer.parseInt(extra.getString("person"));
             bitmap = extra.getParcelable("bitmap");
-//            FetchPersonTask fetchPersonTask = new FetchPersonTask(this, this);
-//            fetchPersonTask.setPerson(String.valueOf(personId));
-//            fetchPersonTask.setmContext(this);
-//            fetchPersonTask.setupTask();
         }
 
         CourseInfoFragment courseInfoFragment = new CourseInfoFragment();
@@ -46,7 +42,6 @@ public class PersonActivity extends AppCompatActivity {
                 fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.content_person, courseInfoFragment);
         fragmentTransaction.commit();
-
     }
 
     @Override

@@ -82,7 +82,6 @@ public class CourseCalendarBeltAdapter extends ArrayAdapter<Quartet<Integer, Str
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
-
         viewHolder.teacherNametextView.setText(feedItem.getValue1());
         if(!feedItem.getValue2().equals("-1")){
             if(feedItem.getValue3()!=-2){

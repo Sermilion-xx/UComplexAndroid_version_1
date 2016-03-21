@@ -4,13 +4,16 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ListFragment;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 
 import org.javatuples.Quartet;
 import org.ucomplex.ucomplex.Adaptors.CourseInfoAdapter;
 import org.ucomplex.ucomplex.Model.StudyStructure.Course;
 import org.ucomplex.ucomplex.Model.Users.User;
+import org.ucomplex.ucomplex.R;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;

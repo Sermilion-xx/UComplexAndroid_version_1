@@ -40,7 +40,6 @@ import java.util.ArrayList;
 public class EventsFragment extends ListFragment {
 
     private ArrayList<EventRowItem> eventItems = null;
-    ProgressDialog progressDialog;
     ImageAdapter imageAdapter;
     Button btnLoadExtra;
     ProgressDialog dialog;
@@ -62,8 +61,6 @@ public class EventsFragment extends ListFragment {
     @Override
     public void onStart() {
         super.onStart();
-        if (progressDialog != null)
-            progressDialog.dismiss();
     }
 
     @Override
@@ -77,8 +74,6 @@ public class EventsFragment extends ListFragment {
                 if (eventItems.get(position).getType() != 2) {
 
                 } else {
-                    progressDialog = ProgressDialog.show(getActivity(), "Загрузка...", "BИдет загрузка", true);
-                    progressDialog.getProgress();
                     Intent intent = new Intent(getActivity(), CourseActivity.class);
                     intent.putExtra("gcourse", eventItems.get(position).getParams().getGcourse());
                     intent.putExtra("type", eventItems.get(position).getType());
