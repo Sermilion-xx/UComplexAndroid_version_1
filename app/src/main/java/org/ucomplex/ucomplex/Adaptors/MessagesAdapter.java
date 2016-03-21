@@ -195,8 +195,7 @@ public class MessagesAdapter extends ArrayAdapter {
                 viewHolder = (ViewHolder) convertView.getTag();
             }
         }
-        viewHolder.messageTextView.setTypeface(robotoFont);
-        viewHolder.messageTextView.setText(item.getMessage());
+
         viewHolder.timeTextView.setTypeface(robotoFont);
         viewHolder.timeTextView.setText(item.getTime().split(" ")[1]);
         if(item.getFiles()!=null &&  item.getFiles().size()>0){
@@ -208,9 +207,16 @@ public class MessagesAdapter extends ArrayAdapter {
             if(type.equals("jpg") || type.equals("png")){
                 loadImage(item, viewHolder);
             }else{
+                StringBuilder sb = new StringBuilder();
+                for (File file : item.getFiles()) {
+                    sb.append(file.getName() + "\n");
+                    item.setMessage(sb.toString());
+                }
                 viewHolder.messageBitmap.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_attachment_dark));
             }
         }
+        viewHolder.messageTextView.setTypeface(robotoFont);
+        viewHolder.messageTextView.setText(item.getMessage());
         return convertView;
     }
 

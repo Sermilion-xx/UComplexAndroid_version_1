@@ -107,9 +107,35 @@ public class MessagesActivity extends AppCompatActivity implements OnTaskComplet
             public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
                 Message message = (Message) messagesAdapter.getItem(position);
                 if(message.getFiles().size()>0){
-                    if(((Message) messagesAdapter.getItem(position)).getMessageImage()==null){
+                    String[] typeArray = ((Message) messagesAdapter.getItem(position)).getFiles().get(0).getName().split("\\.");
+                    String type = typeArray[typeArray.length-1];
+                    if(!type.equals("jpg") && !type.equals("png")){
+                        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                switch (which){
+                                    case DialogInterface.BUTTON_POSITIVE:
+                                        new AsyncTask<Void, Void, Bitmap>(){
+                                            @Override
+                                            protected Bitmap doInBackground(Void... params) {
+                                                final String UC_BASE_URL = "http://storage.ucomplex.org/files/messages/" + ((Message) messagesAdapter.getItem(position)).getFiles().get(0).getFrom() + "/" + ((Message) messagesAdapter.getItem(position)).getFiles().get(0).getAddress();
+                                                MessagesActivity.this.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(UC_BASE_URL)));
+                                                return null;
+                                            }
+                                        }.execute();
+                                        break;
+                                    case DialogInterface.BUTTON_NEGATIVE:
+                                        //No button clicked
+                                        break;
+                                }
+                            }
+                        };
 
-                    }else{
+                        AlertDialog.Builder builder = new AlertDialog.Builder(MessagesActivity.this);
+                        builder.setMessage("Сохранить документ?").setPositiveButton("Да", dialogClickListener)
+                                .setNegativeButton("Нет", dialogClickListener).show();
+
+                    }else if (((Message) messagesAdapter.getItem(position)).getMessageImage()!=null){
                         DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
@@ -151,7 +177,6 @@ public class MessagesActivity extends AppCompatActivity implements OnTaskComplet
                         AlertDialog.Builder builder = new AlertDialog.Builder(MessagesActivity.this);
                         builder.setMessage("Сохранить фото?").setPositiveButton("Да", dialogClickListener)
                                 .setNegativeButton("Нет", dialogClickListener).show();
-
 
                     }
 
