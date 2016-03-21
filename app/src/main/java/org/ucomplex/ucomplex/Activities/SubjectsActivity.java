@@ -56,7 +56,6 @@ public class SubjectsActivity extends AppCompatActivity implements OnTaskComplet
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_menu);
         linlaHeaderProgress = (LinearLayout) findViewById(R.id.linlaHeaderProgress);
         listView = (ListView) findViewById(R.id.subject_listview);
-
         FetchSubjectsTask fetchSubjectsTask = new FetchSubjectsTask(this, this);
         linlaHeaderProgress.setVisibility(View.VISIBLE);
         fetchSubjectsTask.setupTask();

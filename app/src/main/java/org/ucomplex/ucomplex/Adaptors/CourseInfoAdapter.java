@@ -42,7 +42,6 @@ public class CourseInfoAdapter extends BaseAdapter {
     ArrayList<Quartet<String, String, String, String>> mItems;
     protected ImageLoader mImageLoader;
     Activity mContext;
-    private int HEADER_2_POSITION = 1;
     private Typeface robotoFont;
 
 
@@ -58,20 +57,12 @@ public class CourseInfoAdapter extends BaseAdapter {
                 .bitmapConfig(Bitmap.Config.RGB_565)
                 .build();
         this.mItems = items;
-        for (Quartet quartet : mItems) {
-            if (!quartet.getValue2().equals("-1")) {
-                HEADER_2_POSITION++;
-            }
-        }
         mImageLoader = ImageLoader.getInstance();
         mImageLoader.init(ImageLoaderConfiguration.createDefault(context));
         this.mContext = context;
         robotoFont  = Typeface.createFromAsset(mContext.getAssets(), "fonts/Roboto-Regular.ttf");
     }
 
-    public ArrayList<Quartet<String, String, String, String>> getmItems() {
-        return mItems;
-    }
 
     @Override
     public int getItemViewType(int position) {
@@ -212,10 +203,6 @@ public class CourseInfoAdapter extends BaseAdapter {
 
         TextView markTextView;
         TextView attendanceTextView;
-
-        public CircleImageView getTeacherImageView() {
-            return teacherImageView;
-        }
     }
 
 

@@ -90,11 +90,6 @@
                 android:resource="@xml/searchable" />
         </activity>
         <activity
-            android:name=".Activities.PersonActivity"
-            android:label="@string/title_activity_person"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme" />
-        <activity
             android:name=".Activities.CalendarActivity"
             android:label="@string/title_activity_calendar"
             android:screenOrientation="portrait"

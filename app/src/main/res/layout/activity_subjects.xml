@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/white"
     android:fitsSystemWindows="true"
-    app:popupTheme="@style/AppTheme.PopupOverlay">
+>
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar_subjects"
@@ -12,7 +12,7 @@
             android:background="?attr/colorPrimary"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            app:popupTheme="@style/AppTheme.NoActionBar"
             android:theme="@style/ThemeOverlay.MyApp.ActionBar"
             />
 
@@ -32,10 +32,11 @@
         </LinearLayout>
 
         <ListView
-            android:layout_marginTop="53dp"
+            android:layout_marginTop="56dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/subject_listview"
+            android:choiceMode="singleChoice"
             android:divider="@color/uc_gray_text"
             android:dividerHeight="1px">
         </ListView>

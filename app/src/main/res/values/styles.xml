@@ -5,6 +5,7 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="actionBarStyle">@style/MyActionBarTheme</item>
         <item name="colorControlActivated">@color/colorPrimary</item>
+
     </style>
 
     <style name="AwesomeIcon" parent="android:TextAppearance">

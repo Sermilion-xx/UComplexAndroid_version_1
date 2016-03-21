@@ -24,7 +24,6 @@ public class CalendarStatisticsAdapter extends ArrayAdapter<Quintet<String, Stri
     private static final int TYPE_TITLE_1 = 0;
     private static final int TYPE_TITLE_2 = 1;
     private static final int TYPE_MARK = 2;
-    Typeface robotoFont = Typeface.createFromAsset(getContext().getAssets(), "fonts/Roboto-Regular.ttf");
 
     public CalendarStatisticsAdapter(Context context, ArrayList<Quintet<String, String, Double, Double, Integer>> values) {
         super(context, -1, values);
@@ -42,7 +41,6 @@ public class CalendarStatisticsAdapter extends ArrayAdapter<Quintet<String, Stri
                 statisticItemsOld.add(item);
             }
         }
-
         this.values.addAll(statisticItemsCurrent);
         this.values.addAll(statisticItemsOld);
     }
