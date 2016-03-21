@@ -44,6 +44,7 @@ public class ProfileAdapter extends ArrayAdapter<Triplet> {
     private Typeface robotoFont = Typeface.createFromAsset(getContext().getAssets(), "fonts/Roboto-Regular.ttf");
     Drawable ic_remove_friend;
     Drawable ic_add_friend;
+    User user;
 
     public ProfileAdapter(Context context, List<Triplet> profileItems, Bitmap bitmap) {
         super(context, R.layout.list_item_profile_header, profileItems);
@@ -53,6 +54,7 @@ public class ProfileAdapter extends ArrayAdapter<Triplet> {
         mItems = profileItems;
         ic_add_friend = ContextCompat.getDrawable(mContext, R.drawable.ic_add_as_friend);
         ic_remove_friend = ContextCompat.getDrawable(mContext, R.drawable.ic_remove_friend);
+        user = Common.getUserDataFromPref(mContext);
     }
 
     private View createHolder(ViewHolder viewHolder, View convertView, int viewType, ViewGroup parent, int posision) {
@@ -191,6 +193,10 @@ public class ProfileAdapter extends ArrayAdapter<Triplet> {
         }
 
         public void setMessageButton() {
+            if(mUser.getId() == user.getId()){
+                mMessageButton.setEnabled(false);
+                mMessageButton.setTextColor(ContextCompat.getColor(mContext, R.color.uc_gray_text_events));
+            }
             mMessageButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -211,7 +217,11 @@ public class ProfileAdapter extends ArrayAdapter<Triplet> {
         }
 
         public void setFriendButton() {
-            if (mUser.is_friend()) {
+
+            if(mUser.getId() == user.getId()){
+                mFriendButton.setEnabled(false);
+                mFriendButton.setTextColor(ContextCompat.getColor(mContext, R.color.uc_gray_text_events));
+            }else if (mUser.is_friend()) {
                 mFriendButton.setText("Удалить");
                 mFriendButton.setCompoundDrawablesWithIntrinsicBounds( ic_remove_friend, null, null, null);
             } else {

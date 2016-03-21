@@ -529,10 +529,10 @@ public class Common {
 
     public static String readableFileSize(long bytes, boolean si) {
         int unit = si ? 1000 : 1024;
-        if (bytes < unit) return bytes + " B";
+        if (bytes < unit) return bytes + " б";
         int exp = (int) (Math.log(bytes) / Math.log(unit));
-        String pre = (si ? "kMGTPE" : "KMGTPE").charAt(exp - 1) + (si ? "" : "i");
-        return String.format("%.1f %sB", bytes / Math.pow(unit, exp), pre);
+        String pre = (si ? "кмгтпе" : "кмгтпе").charAt(exp - 1) + (si ? "" : "");
+        return String.format("%.1f %sб", bytes / Math.pow(unit, exp), pre);
     }
 
     public static ArrayList<String> getKeys(JSONObject object) throws JSONException {

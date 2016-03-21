@@ -77,7 +77,7 @@ public class FetchCalendarBeltTask extends AsyncTask<Integer, Void, ArrayList<Qu
                     JSONObject marksItemJson = marksArray.getJSONObject(i);
                     int mark = marksItemJson.getInt("mark");
                     Date date = new java.util.Date((long) marksItemJson.getInt("time") * 1000);
-                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                     String time = sdf.format(date);
                     String teacherName = teachersMap.get(marksItemJson.getString("teacher"));
                     String courseName = coursesMap.get(marksItemJson.getString("course"));

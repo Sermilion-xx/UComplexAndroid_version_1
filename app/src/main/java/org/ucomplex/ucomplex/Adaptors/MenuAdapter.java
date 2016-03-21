@@ -21,6 +21,7 @@ import org.ucomplex.ucomplex.Activities.EventsActivity;
 import org.ucomplex.ucomplex.Activities.LoginActivity;
 import org.ucomplex.ucomplex.Activities.MessagesListActivity;
 import org.ucomplex.ucomplex.Activities.MyFilesActivity;
+import org.ucomplex.ucomplex.Activities.ProfileActivity;
 import org.ucomplex.ucomplex.Activities.SettingsActivity2;
 import org.ucomplex.ucomplex.Activities.SubjectsActivity;
 import org.ucomplex.ucomplex.Activities.UsersActivity;
@@ -119,9 +120,15 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
 
         @Override
         public void onClick(View v) {
-
-            v.setSelected(true);
-            if (getAdapterPosition() == 1) {
+            if (getAdapterPosition() == 0) {
+                User user = Common.getUserDataFromPref(context);
+                Intent intent = new Intent(contxt, ProfileActivity.class);
+                intent.putExtra("person", String.valueOf(user.getPerson()));
+                intent.putExtra("bitmap",profileBitmap);
+                intent.putExtra("hasPhoto", String.valueOf(user.getPhoto()));
+                intent.putExtra("code",user.getCode());
+                contxt.startActivity(intent);
+            }if (getAdapterPosition() == 1) {
                 Intent intent = new Intent(contxt, EventsActivity.class);
                 contxt.startActivity(intent);
             } else if (getAdapterPosition() == 2) {
