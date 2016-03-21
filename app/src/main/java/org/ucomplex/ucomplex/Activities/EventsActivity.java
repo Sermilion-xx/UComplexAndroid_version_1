@@ -133,8 +133,6 @@ public class EventsActivity extends AppCompatActivity implements OnTaskCompleteL
             } else if (messageCount == 0 && mAdapter.getMsgCount() > 0) {
                 mAdapter.setMsgCount(messageCount);
                 mAdapter.notifyItemChanged(5);
-                if(mAlert != null){
-                }
             }
         }
     };

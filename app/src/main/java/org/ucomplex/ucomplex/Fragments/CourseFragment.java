@@ -70,9 +70,13 @@ public class CourseFragment extends ListFragment {
                         absence = 100;
                     }
                 }
+                double mark = 0.0;
+                if(courseData.getProgress().getMark()!=0 && courseData.getProgress().getMarkCount()!=0){
+                    mark = courseData.getProgress().getMark()/courseData.getProgress().getMarkCount();
+                }
                 DecimalFormat df = new DecimalFormat("#.##");
                 absence = Double.valueOf(df.format(absence));
-                Quartet<String, String, String, String> item = new Quartet<>(String.valueOf(absence) + "%", String.valueOf(courseData.getProgress().getMark()), "-1", "3");
+                Quartet<String, String, String, String> item = new Quartet<>(String.valueOf(absence) + "%", String.valueOf(df.format(mark)), "-1", "3");
                 mItems.add(item);
                 mAdapter = new CourseInfoAdapter(mItems, mContext);
                 setListAdapter(mAdapter);
