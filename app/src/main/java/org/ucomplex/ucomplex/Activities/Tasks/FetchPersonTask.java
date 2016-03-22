@@ -25,16 +25,10 @@ public class FetchPersonTask extends AsyncTask<Void, String, User> implements IP
 
     private IProgressTracker mProgressTracker;
     private final OnTaskCompleteListener mTaskCompleteListener;
-//    private final ProgressDialog mProgressDialog;
 
     public FetchPersonTask(Activity context, OnTaskCompleteListener taskCompleteListener) {
         this.mContext = context;
-
         this.mTaskCompleteListener = taskCompleteListener;
-//        mProgressDialog = new ProgressDialog(context);
-//        mProgressDialog.setIndeterminate(true);
-//        mProgressDialog.setCancelable(true);
-//        mProgressDialog.setOnCancelListener(this);
     }
 
     public void setupTask(Void ... params) {

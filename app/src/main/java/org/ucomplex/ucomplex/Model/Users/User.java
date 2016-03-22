@@ -66,6 +66,8 @@ public class User implements Serializable {
     private String activity_update;
     private int selection;
     private Department department;
+    private int departmentId;
+    private String departmentName;
     private int closed;
     private ArrayList<File> files;
     private int sex;
@@ -83,6 +85,49 @@ public class User implements Serializable {
     private int section;
     private String sectionName;
     private int lead;
+    private int activity;
+    private String facultyName;
+    private ArrayList<TimetableEntry> timetableEntries;
+
+    public ArrayList<TimetableEntry> getTimetableEntries() {
+        return timetableEntries;
+    }
+
+    public void setTimetableEntries(ArrayList<TimetableEntry> timetableEntries) {
+        this.timetableEntries = timetableEntries;
+    }
+
+    public String getFacultyName() {
+        return facultyName;
+    }
+
+    public void setFacultyName(String facultyName) {
+        this.facultyName = facultyName;
+    }
+
+    public String getDepartmentName() {
+        return departmentName;
+    }
+
+    public void setDepartmentName(String departmentName) {
+        this.departmentName = departmentName;
+    }
+
+    public int getActivity() {
+        return activity;
+    }
+
+    public void setActivity(int activity) {
+        this.activity = activity;
+    }
+
+    public int getDepartmentId() {
+        return departmentId;
+    }
+
+    public void setDepartmentId(int departmentId) {
+        this.departmentId = departmentId;
+    }
 
     public int getRate() {
         return rate;
