@@ -90,7 +90,6 @@ public class FetchRolePersonTask extends AsyncTask<Void, User, User> implements 
                     timetableEntryArrayList.add(timetableEntry);
                 }
                 user.setTimetableEntries(timetableEntryArrayList);
-
             }catch (JSONException e){
                 e.printStackTrace();
             }
