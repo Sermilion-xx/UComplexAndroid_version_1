@@ -113,7 +113,6 @@ public class CourseMaterialsFragment extends ListFragment {
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
-        // retrieve theListView item
         File item = mItems.get(position);
         if (item.getType().equals("f")) {
             mCallback.onFolderSelect(item.getName());
