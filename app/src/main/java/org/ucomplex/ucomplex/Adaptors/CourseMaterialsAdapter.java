@@ -85,16 +85,20 @@ public class CourseMaterialsAdapter extends ArrayAdapter<File> {
 
     @Override
     public int getItemViewType(int position) {
-        if (getItem(position).getType().equals("f")) {
-            return TYPE_FOLDER;
-        } else {
-            return TYPE_FILE;
+        if(mItems.size()>0){
+            if (getItem(position).getType().equals("f")) {
+                return TYPE_FOLDER;
+            } else {
+                return TYPE_FILE;
+            }
+        }else{
+            return -1;
         }
+
     }
 
     private View createHolder(ViewHolder viewHolder, View convertView, int viewType, Context context, ViewGroup parent, int position){
         viewHolder = new ViewHolder(context, this);
-        inflater = LayoutInflater.from(getContext());
         if(viewType==TYPE_FILE ){
             convertView = inflater.inflate(R.layout.list_item_course_material_file, parent, false);
             viewHolder.nameTextView = (TextView) convertView.findViewById(R.id.course_material_listview_item_name);
@@ -119,9 +123,28 @@ public class CourseMaterialsAdapter extends ArrayAdapter<File> {
     }
 
     @Override
+    public boolean isEnabled(int position) {
+        return mItems.size() != 0;
+    }
+
+    @Override
+    public int getCount() {
+        return mItems.size()>0?mItems.size():1;
+    }
+
+    @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder viewHolder = null;
         int viewType = getItemViewType(position);
+        inflater = LayoutInflater.from(getContext());
+        if(mItems.size()==0){
+            if(!Common.isNetworkConnected(getContext())){
+                convertView = inflater.inflate(R.layout.list_item_no_internet, parent, false);
+            }else{
+                convertView = inflater.inflate(R.layout.list_item_no_content, parent, false);
+            }
+            return convertView;
+        }
         if (convertView == null) {
             convertView = createHolder(viewHolder, convertView, viewType, context, parent, position);
             viewHolder = (ViewHolder) convertView.getTag();

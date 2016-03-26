@@ -59,7 +59,7 @@ public class SubjectsActivity extends AppCompatActivity implements OnTaskComplet
         FetchSubjectsTask fetchSubjectsTask = new FetchSubjectsTask(this, this);
         linlaHeaderProgress.setVisibility(View.VISIBLE);
         fetchSubjectsTask.setupTask();
-}
+    }
 
     @Override
     public void onTaskComplete(AsyncTask task, Object... o) {
@@ -74,30 +74,24 @@ public class SubjectsActivity extends AppCompatActivity implements OnTaskComplet
             } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();
             }
-            if(mItems!= null && mItems.size()>0){
-
-                SubjectsAdapter subjectsAdapter = new SubjectsAdapter(this,mItems);
-                listView.setAdapter(subjectsAdapter);
-                listView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
-                    @Override
-                    public void onItemClick(AdapterView<?> a, View v,int position, long id)
-                    {
-                        if(Common.isNetworkConnected(SubjectsActivity.this)){
-                            Intent intent = new Intent(getBaseContext(), CourseActivity.class);
-                            Bundle extras = new Bundle();
-                            extras.putInt("gcourse", mItems.get(position).getValue2());
-                            extras.putString("courseName", mItems.get(position).getValue0());
-                            intent.putExtras(extras);
-                            startActivity(intent);
-                        }else {
-                            Toast.makeText(SubjectsActivity.this, "Проверте интернет соединение.", Toast.LENGTH_LONG).show();
-                        }
+            SubjectsAdapter subjectsAdapter = new SubjectsAdapter(this, mItems);
+            listView.setAdapter(subjectsAdapter);
+            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> a, View v, int position, long id) {
+                    if (Common.isNetworkConnected(SubjectsActivity.this)) {
+                        Intent intent = new Intent(getBaseContext(), CourseActivity.class);
+                        Bundle extras = new Bundle();
+                        extras.putInt("gcourse", mItems.get(position).getValue2());
+                        extras.putString("courseName", mItems.get(position).getValue0());
+                        intent.putExtras(extras);
+                        startActivity(intent);
+                    } else {
+                        Toast.makeText(SubjectsActivity.this, "Проверте интернет соединение.", Toast.LENGTH_LONG).show();
                     }
-                });
-            }else{
-                Toast.makeText(this, "Ошибка загрузки", Toast.LENGTH_LONG)
-                        .show();
-            }
+                }
+            });
+
 
         }
     }

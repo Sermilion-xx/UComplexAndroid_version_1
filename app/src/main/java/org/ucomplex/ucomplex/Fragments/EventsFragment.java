@@ -42,7 +42,6 @@ public class EventsFragment extends ListFragment {
     private ArrayList<EventRowItem> eventItems = null;
     ImageAdapter imageAdapter;
     Button btnLoadExtra;
-    ProgressDialog dialog;
     Context context;
     int userType;
 
@@ -68,21 +67,28 @@ public class EventsFragment extends ListFragment {
         super.onViewCreated(view, savedInstanceState);
         getListView().setDivider(null);
         getListView().setAdapter(imageAdapter);
-        getListView().setOnItemClickListener(new OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (eventItems.get(position).getType() != 2) {
+        if ((eventItems != null ? eventItems.size() : 0) == 0) {
+            getListView().setClickable(false);
+        } else {
+            getListView().setOnItemClickListener(new OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    if (eventItems.get(position).getType() != 2) {
 
-                } else {
-                    Intent intent = new Intent(getActivity(), CourseActivity.class);
-                    intent.putExtra("gcourse", eventItems.get(position).getParams().getGcourse());
-                    intent.putExtra("type", eventItems.get(position).getType());
-                    intent.putExtra("bitmap", eventItems.get(position).getEventImageBitmap());
-                    intent.putExtra("courseName", eventItems.get(position).getParams().getCourseName());
-                    startActivity(intent);
+                    } else {
+                        if (eventItems.size() > 0) {
+                            Intent intent = new Intent(getActivity(), CourseActivity.class);
+                            intent.putExtra("gcourse", eventItems.get(position).getParams().getGcourse());
+                            intent.putExtra("type", eventItems.get(position).getType());
+                            intent.putExtra("bitmap", eventItems.get(position).getEventImageBitmap());
+                            intent.putExtra("courseName", eventItems.get(position).getParams().getCourseName());
+                            startActivity(intent);
+                        }
+
+                    }
                 }
-            }
-        });
+            });
+        }
 
         btnLoadExtra = new Button(getActivity());
         btnLoadExtra.setFocusable(false);
@@ -91,10 +97,7 @@ public class EventsFragment extends ListFragment {
 
             @Override
             public void onClick(View arg0) {
-                if(Common.isNetworkConnected(context)){
-                    dialog = ProgressDialog.show(getActivity(), "",
-                            "Идет подгрузка", true);
-                    dialog.show();
+                if (Common.isNetworkConnected(context)) {
                     new FetchUserEventsTask(getActivity()) {
                         @Override
                         protected void onPostExecute(ArrayList<EventRowItem> items) {
@@ -106,16 +109,13 @@ public class EventsFragment extends ListFragment {
                             } else {
                                 btnLoadExtra.setVisibility(View.GONE);
                             }
-                            dialog.dismiss();
-                            if(items!=null){
+                            if (items != null) {
                                 if (items.size() < 10) {
                                     btnLoadExtra.setVisibility(View.GONE);
                                 }
                             }
                         }
                     }.execute(userType, eventItems.size());
-                }else {
-                    Toast.makeText(context, "Проверте интернет соединение.", Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -125,10 +125,7 @@ public class EventsFragment extends ListFragment {
                 btnLoadExtra.setVisibility(View.GONE);
             }
             getListView().addFooterView(btnLoadExtra);
-        } else {
-            Toast.makeText(getActivity(), "Произошла ошибка", Toast.LENGTH_SHORT).show();
         }
-
     }
 
     @Override
@@ -164,17 +161,17 @@ public class EventsFragment extends ListFragment {
 
         @Override
         public int getCount() {
-            if (eventItems != null) {
-                return eventItems.size();
-            } else {
-                return 0;
-            }
+            return eventItems!=null?eventItems.size():1;
+        }
 
+        @Override
+        public boolean isEnabled(int position) {
+            return eventItems != null && eventItems.size() != 0;
         }
 
         @Override
         public Object getItem(int position) {
-            return null;
+            return eventItems!=null?eventItems.get(position):null;
         }
 
         @Override
@@ -185,23 +182,33 @@ public class EventsFragment extends ListFragment {
         @Override
         public View getView(final int position, View convertView, ViewGroup parent) {
             View view = convertView;
-            final ViewHolder viewHolder;
+            ViewHolder viewHolder = new ViewHolder();
             if (view == null) {
-                view = inflater.inflate(R.layout.list_item_events, parent, false);
-                viewHolder = new ViewHolder();
-                viewHolder.eventsImageView = (ImageView) view.findViewById(R.id.list_events_item_image);
-                viewHolder.eventTextView = (TextView) view.findViewById(R.id.list_events_item_text);
-                viewHolder.eventTextView.setTypeface(Common.getTypeFace(context, "Roboto-Regular.ttf"));
-                viewHolder.eventTime = (TextView) view.findViewById(R.id.list_events_item_date);
-                viewHolder.eventTime.setTypeface(Common.getTypeFace(context, "Roboto-Regular.ttf"));
-                viewHolder.eventPersonName = (TextView) view.findViewById(R.id.list_events_item_name);
-                viewHolder.eventPersonName.setTypeface(Common.getTypeFace(context, "Roboto-Regular.ttf"));
-                view.setTag(viewHolder);
+                if (eventItems == null) {
+                    if (!Common.isNetworkConnected(context)) {
+                        view = inflater.inflate(R.layout.list_item_no_internet, parent, false);
+                    } else {
+                        view = inflater.inflate(R.layout.list_item_no_content, parent, false);
+                    }
+                    return view;
+                } else {
+                    view = inflater.inflate(R.layout.list_item_events, parent, false);
+                    viewHolder.eventsImageView = (ImageView) view.findViewById(R.id.list_events_item_image);
+                    viewHolder.eventTextView = (TextView) view.findViewById(R.id.list_events_item_text);
+                    viewHolder.eventTextView.setTypeface(Common.getTypeFace(context, "Roboto-Regular.ttf"));
+                    viewHolder.eventTime = (TextView) view.findViewById(R.id.list_events_item_date);
+                    viewHolder.eventTime.setTypeface(Common.getTypeFace(context, "Roboto-Regular.ttf"));
+                    viewHolder.eventPersonName = (TextView) view.findViewById(R.id.list_events_item_name);
+                    viewHolder.eventPersonName.setTypeface(Common.getTypeFace(context, "Roboto-Regular.ttf"));
+                    view.setTag(viewHolder);
+                }
+
             } else {
                 viewHolder = (ViewHolder) view.getTag();
             }
 
             if (eventItems.get(position).getEventImageBitmap() == null && eventItems.get(position).getParams().getPhoto() == 1) {
+                final ViewHolder finalViewHolder = viewHolder;
                 imageLoader.displayImage("http://ucomplex.org/files/photos/" + eventItems.get(position).getParams().getCode() + ".jpg", viewHolder.eventsImageView, options, new SimpleImageLoadingListener() {
                     @Override
                     public void onLoadingStarted(String imageUri, View view) {
@@ -214,10 +221,10 @@ public class EventsFragment extends ListFragment {
 
                     @Override
                     public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                        BitmapDrawable bitmapDrawable = ((BitmapDrawable) viewHolder.eventsImageView.getDrawable());
+                        BitmapDrawable bitmapDrawable = ((BitmapDrawable) finalViewHolder.eventsImageView.getDrawable());
                         Bitmap bitmap = bitmapDrawable.getBitmap();
                         eventItems.get(position).setEventImageBitmap(bitmap);
-                        viewHolder.eventsImageView.setImageBitmap(bitmap);
+                        finalViewHolder.eventsImageView.setImageBitmap(bitmap);
                     }
                 }, new ImageLoadingProgressListener() {
                     @Override

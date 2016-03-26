@@ -57,16 +57,16 @@ public class MyFilesActivity extends AppCompatActivity implements OnTaskComplete
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_menu);
         linlaHeaderProgress = (LinearLayout) findViewById(R.id.linlaHeaderProgress);
-        FetchMyFilesTask fetchMyFilesTask = new FetchMyFilesTask(this,this);
+        FetchMyFilesTask fetchMyFilesTask = new FetchMyFilesTask(this, this);
         linlaHeaderProgress.setVisibility(View.VISIBLE);
         fetchMyFilesTask.setupTask();
     }
 
     @Override
-    public void onBackPressed(){
-        if(titles.size()>1){
-            toolbar.setTitle(titles.get(titles.size()-2));
-            titles.remove(titles.size()-1);
+    public void onBackPressed() {
+        if (titles.size() > 1) {
+            toolbar.setTitle(titles.get(titles.size() - 2));
+            titles.remove(titles.size() - 1);
         }
         super.onBackPressed();
     }
@@ -78,11 +78,11 @@ public class MyFilesActivity extends AppCompatActivity implements OnTaskComplete
                 onBackPressed();
                 return true;
             case R.id.my_files_add_file:
-                if (Build.VERSION.SDK_INT <19){
+                if (Build.VERSION.SDK_INT < 19) {
                     Intent intent = new Intent();
                     intent.setType("*/*");
                     intent.setAction(Intent.ACTION_GET_CONTENT);
-                    startActivityForResult(Intent.createChooser(intent, "Выберите документ"),Common.GALLERY_INTENT_CALLED);
+                    startActivityForResult(Intent.createChooser(intent, "Выберите документ"), Common.GALLERY_INTENT_CALLED);
                 } else {
                     Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
                     intent.addCategory(Intent.CATEGORY_OPENABLE);
@@ -94,15 +94,15 @@ public class MyFilesActivity extends AppCompatActivity implements OnTaskComplete
                 showInputDialog();
                 return true;
             case R.id.my_files_refresh:
-                FetchMyFilesTask fetchMyFilesTask = new FetchMyFilesTask(MyFilesActivity.this,MyFilesActivity.this);
+                FetchMyFilesTask fetchMyFilesTask = new FetchMyFilesTask(MyFilesActivity.this, MyFilesActivity.this);
                 fetchMyFilesTask.setupTask();
                 return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
-    protected void createFolder(final String folderName){
-        if (folderName != null && !folderName.equals("")){
+    protected void createFolder(final String folderName) {
+        if (folderName != null && !folderName.equals("")) {
             new AsyncTask<Void, Void, ArrayList>() {
 
                 @Override
@@ -127,17 +127,17 @@ public class MyFilesActivity extends AppCompatActivity implements OnTaskComplete
                 @Override
                 protected void onPostExecute(ArrayList newFolder) {
                     super.onPostExecute(newFolder);
-                    if(newFolder!=null){
+                    if (newFolder != null) {
                         courseMaterialsFragment.addFile((File) newFolder.get(0));
                         courseMaterialsFragment.getAdapter().notifyDataSetChanged();
-                    }else{
+                    } else {
                         Toast.makeText(MyFilesActivity.this, "Ошибка при создании папки.", Toast.LENGTH_SHORT)
                                 .show();
                     }
                     linlaHeaderProgress.setVisibility(View.GONE);
                 }
             }.execute();
-        }else{
+        } else {
             Toast.makeText(this, "Введите название.", Toast.LENGTH_SHORT)
                     .show();
         }
@@ -163,10 +163,10 @@ public class MyFilesActivity extends AppCompatActivity implements OnTaskComplete
         alertDialogBuilder.setCancelable(false)
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        if(Common.isNetworkConnected(MyFilesActivity.this)){
+                        if (Common.isNetworkConnected(MyFilesActivity.this)) {
                             String folderName = editText.getText().toString();
                             createFolder(folderName);
-                        }else {
+                        } else {
                             Toast.makeText(MyFilesActivity.this, "Проверьте интернет соединение.", Toast.LENGTH_LONG).show();
                         }
                     }
@@ -181,26 +181,27 @@ public class MyFilesActivity extends AppCompatActivity implements OnTaskComplete
         alert.show();
     }
 
-    private void uplodFile(final String filePath){
+    private void uplodFile(final String filePath) {
         linlaHeaderProgress.setVisibility(View.VISIBLE);
-        new AsyncTask<Void, Void, ArrayList>(){
+        new AsyncTask<Void, Void, ArrayList>() {
 
             @Override
             protected ArrayList doInBackground(Void... params) {
                 String jsonData = "";
-                if(Common.folderCode!=null){
+                if (Common.folderCode != null) {
                     jsonData = Common.uploadFile(filePath, Common.getLoginDataFromPref(MyFilesActivity.this), Common.folderCode);
 
-                }else{
+                } else {
                     jsonData = Common.uploadFile(filePath, Common.getLoginDataFromPref(MyFilesActivity.this));
                 }
                 return Common.getFileDataFromJson(jsonData, MyFilesActivity.this);
             }
+
             @Override
             protected void onPostExecute(ArrayList newFile) {
                 super.onPostExecute(newFile);
                 linlaHeaderProgress.setVisibility(View.GONE);
-                if(courseMaterialsFragment!=null) {
+                if (courseMaterialsFragment != null) {
                     courseMaterialsFragment.addFile((File) newFile.get(0));
                     courseMaterialsFragment.getAdapter().notifyDataSetChanged();
                 }
@@ -221,9 +222,9 @@ public class MyFilesActivity extends AppCompatActivity implements OnTaskComplete
             this.grantUriPermission("org.ucomplex.ucomplex.Activities", originalUri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
         }
         if (originalUri != null) {
-            if(Common.isNetworkConnected(this)){
+            if (Common.isNetworkConnected(this)) {
                 uplodFile(getPath(originalUri));
-            }else {
+            } else {
                 Toast.makeText(this, "Проверте интернет соединение.", Toast.LENGTH_LONG).show();
             }
         }
@@ -231,7 +232,7 @@ public class MyFilesActivity extends AppCompatActivity implements OnTaskComplete
     }
 
     public String getPath(Uri uri) {
-        String[] projection = { MediaStore.Images.Media.DATA };
+        String[] projection = {MediaStore.Images.Media.DATA};
         Cursor cursor = managedQuery(uri, projection, null, null, null);
         int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
         cursor.moveToFirst();
@@ -246,21 +247,21 @@ public class MyFilesActivity extends AppCompatActivity implements OnTaskComplete
         } else {
             try {
                 linlaHeaderProgress.setVisibility(View.GONE);
-                    mItems = (ArrayList) task.get();
-                    courseMaterialsFragment = new CourseMaterialsFragment();
-                    courseMaterialsFragment.setFiles(mItems);
-                    courseMaterialsFragment.setMyFiles(true);
-                    courseMaterialsFragment.setmContext(MyFilesActivity.this);
-                    courseMaterialsFragment.setMyFilesToolBarTitle(titles.get(titles.size()-1));
+                mItems = (ArrayList) task.get();
+                courseMaterialsFragment = new CourseMaterialsFragment();
+                courseMaterialsFragment.setFiles(mItems);
+                courseMaterialsFragment.setMyFiles(true);
+                courseMaterialsFragment.setmContext(MyFilesActivity.this);
+                courseMaterialsFragment.setMyFilesToolBarTitle(titles.get(titles.size() - 1));
 
-                    FragmentManager fragmentManager = getSupportFragmentManager();
-                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                    fragmentTransaction.replace(R.id.content_my_files, courseMaterialsFragment);
-                    if(!first)
-                        fragmentTransaction.addToBackStack("Мои файлы");
-                    else
-                        first = false;
-                    fragmentTransaction.commit();
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.replace(R.id.content_my_files, courseMaterialsFragment);
+                if (!first)
+                    fragmentTransaction.addToBackStack("Мои файлы");
+                else
+                    first = false;
+                fragmentTransaction.commit();
 
             } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();

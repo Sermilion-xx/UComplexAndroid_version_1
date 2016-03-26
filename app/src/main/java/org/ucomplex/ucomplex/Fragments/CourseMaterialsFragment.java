@@ -95,6 +95,7 @@ public class CourseMaterialsFragment extends ListFragment {
             adapter = new CourseMaterialsAdapter(getActivity(), mItems, myFiles, this);
         }
         setListAdapter(adapter);
+
     }
 
 
@@ -104,7 +105,9 @@ public class CourseMaterialsFragment extends ListFragment {
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        setListShown(true);
+        if(mItems.size()==0){
+            getListView().setDivider(null);
+        }
         super.onActivityCreated(savedInstanceState);
     }
 

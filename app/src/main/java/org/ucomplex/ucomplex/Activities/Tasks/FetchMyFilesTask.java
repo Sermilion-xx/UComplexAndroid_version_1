@@ -54,7 +54,7 @@ public class FetchMyFilesTask extends AsyncTask<String, String, ArrayList<File>>
                 return Common.getFileDataFromJson(jsonData,mContext);
             }
         }
-        return null;
+        return new ArrayList<>();
     }
 
     @Override

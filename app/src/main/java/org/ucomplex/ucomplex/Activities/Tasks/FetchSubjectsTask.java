@@ -30,7 +30,6 @@ public class FetchSubjectsTask extends AsyncTask<Void, String, ArrayList<Triplet
     private String mProgressMessage;
     private IProgressTracker mProgressTracker;
     private final OnTaskCompleteListener mTaskCompleteListener;
-//    private final ProgressDialog mProgressDialog;
     ArrayList<Triplet<String, String, Integer>> subjectsListArray;
 
 
@@ -38,10 +37,6 @@ public class FetchSubjectsTask extends AsyncTask<Void, String, ArrayList<Triplet
         this.mContext = context;
         this.caller = (SubjectsActivity) mContext;
         this.mTaskCompleteListener = taskCompleteListener;
-//        mProgressDialog = new ProgressDialog(context);
-//        mProgressDialog.setIndeterminate(true);
-//        mProgressDialog.setCancelable(true);
-//        mProgressDialog.setOnCancelListener(this);
     }
 
     public void setupTask(Void ... params) {
@@ -59,7 +54,9 @@ public class FetchSubjectsTask extends AsyncTask<Void, String, ArrayList<Triplet
                 return getSubjectDataFromJson(jsonData);
             }
         }
-        return null;
+
+        return new ArrayList<>();
+
     }
 
     @Nullable
@@ -87,11 +84,11 @@ public class FetchSubjectsTask extends AsyncTask<Void, String, ArrayList<Triplet
                 Triplet<String, String, Integer> subject = new Triplet<>(courseName, assesmentType[courseFrom], gcourse);
                 subjectsListArray.add(subject);
             }
-            return subjectsListArray;
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return null;
+        return subjectsListArray;
     }
 
 

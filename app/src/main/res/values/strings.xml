@@ -111,6 +111,8 @@
     <string name="edu_stepen_str_ru">Ученое звание</string>
     <string name="study_degree2_str_ru">Ученая степень</string>
     <string name="current_semester_str_ru">Текущий семестр</string>
+    <string name="no_internet_str">Пожалуйсто, проверьте ваше интернет соединение</string>
+    <string name="no_content_str">Нет контента для отображения</string>
 
 
 </resources>

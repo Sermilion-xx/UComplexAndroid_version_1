@@ -34,11 +34,11 @@
         <ListView
             android:layout_marginTop="56dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:id="@+id/subject_listview"
             android:choiceMode="singleChoice"
-            android:divider="@color/uc_gray_text"
-            android:dividerHeight="1px">
+            android:divider="@null"
+  >
         </ListView>
 
 
