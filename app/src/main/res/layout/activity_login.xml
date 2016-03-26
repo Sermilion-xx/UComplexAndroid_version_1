@@ -36,10 +36,10 @@
             android:gravity="center_vertical|center_horizontal">
 
             <ImageView
-                android:layout_height="70dp"
-                android:layout_width="70dp"
+                android:layout_height="60dp"
+                android:layout_width="60dp"
                 android:src="@drawable/u"
-                android:layout_marginTop="100dp"
+                android:layout_marginTop="80dp"
                 />
 
 
@@ -58,7 +58,7 @@
                 android:layout_height="wrap_content"
                 android:foreground="#00ffffff"
                 android:textColorHint="#ffffff"
-                android:layout_marginTop="50dp">
+                android:layout_marginTop="100dp">
 
                 <AutoCompleteTextView
                     android:id="@+id/email"
