@@ -70,13 +70,12 @@ public class ImageAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        if(mItems!=null){
-            return mItems.size();
-        }else
-            return 0;
+        return mItems.size()>0?mItems.size():1;
     }
-
-
+    @Override
+    public boolean isEnabled(int position) {
+        return mItems.size() != 0;
+    }
 
     @Override
     public User getItem(int position) {
@@ -90,8 +89,15 @@ public class ImageAdapter extends BaseAdapter {
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
-
         final ViewHolder viewHolder;
+        if (mItems.size()==0){
+            if(!Common.isNetworkConnected(context)){
+                convertView = inflater.inflate(R.layout.list_item_no_internet, null, false);
+            }else{
+                convertView = inflater.inflate(R.layout.list_item_no_content, null, false);
+            }
+            return convertView;
+        }
         if (convertView == null) {
             convertView = inflater.inflate(R.layout.list_item_users, null);
             viewHolder = new ViewHolder(convertView, position, this, usersType, mItems, context);

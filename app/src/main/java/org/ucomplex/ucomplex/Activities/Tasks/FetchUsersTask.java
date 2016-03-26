@@ -80,7 +80,7 @@ public class FetchUsersTask extends AsyncTask<Integer, Void, ArrayList<User>> {
                 return onlineUserList;
             }
         }
-        return null;
+        return new ArrayList<>();
     }
 
 
