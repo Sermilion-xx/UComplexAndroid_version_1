@@ -1,7 +1,6 @@
 package org.ucomplex.ucomplex.Adaptors;
 
 import android.content.Context;
-import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +8,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import org.javatuples.Quintet;
+import org.ucomplex.ucomplex.Common;
 import org.ucomplex.ucomplex.R;
 
 import java.util.ArrayList;
@@ -18,31 +18,41 @@ import java.util.ArrayList;
  */
 public class CalendarStatisticsAdapter extends ArrayAdapter<Quintet<String, String, Double, Double, Integer>> {
     private LayoutInflater inflater;
-    ArrayList<Quintet<String, String, Double, Double, Integer>> values;
+    ArrayList<Quintet<String, String, Double, Double, Integer>> mItems;
     ArrayList<Quintet<String, String, Double, Double, Integer>> statisticItemsCurrent;
     ArrayList<Quintet<String, String, Double, Double, Integer>> statisticItemsOld;
     private static final int TYPE_TITLE_1 = 0;
     private static final int TYPE_TITLE_2 = 1;
     private static final int TYPE_MARK = 2;
 
-    public CalendarStatisticsAdapter(Context context, ArrayList<Quintet<String, String, Double, Double, Integer>> values) {
-        super(context, -1, values);
+    public CalendarStatisticsAdapter(Context context, ArrayList<Quintet<String, String, Double, Double, Integer>> mItems) {
+        super(context, -1, mItems);
         statisticItemsCurrent = new ArrayList<>();
         statisticItemsOld = new ArrayList<>();
 
         statisticItemsCurrent.add(new Quintet<>("-1", "-1", -10.0, -10.0, -1));
         statisticItemsOld.add(new Quintet<>("-1", "-1", -10.0, -10.0, -2));
-        this.values = new ArrayList<>();
+        this.mItems = new ArrayList<>();
 
-        for (Quintet<String, String, Double, Double, Integer> item : values) {
+        for (Quintet<String, String, Double, Double, Integer> item : mItems) {
             if (item.getValue4() == 1) {
                 statisticItemsCurrent.add(item);
             } else if (item.getValue4() == 0) {
                 statisticItemsOld.add(item);
             }
         }
-        this.values.addAll(statisticItemsCurrent);
-        this.values.addAll(statisticItemsOld);
+        this.mItems.addAll(statisticItemsCurrent);
+        this.mItems.addAll(statisticItemsOld);
+    }
+
+    @Override
+    public boolean isEnabled(int position) {
+        return mItems.size() != 0;
+    }
+
+    @Override
+    public int getCount() {
+        return mItems.size()==2?1:mItems.size();
     }
 
     @Override
@@ -60,12 +70,11 @@ public class CalendarStatisticsAdapter extends ArrayAdapter<Quintet<String, Stri
 
     @Override
     public Quintet<String, String, Double, Double, Integer> getItem(int position) {
-        return this.values.get(position);
+        return this.mItems.get(position);
     }
 
     private View createHolder(ViewHolder viewHolder, View convertView, int viewType) {
         viewHolder = new ViewHolder();
-        inflater = LayoutInflater.from(getContext());
         if (viewType == TYPE_TITLE_1) {
             convertView = inflater.inflate(R.layout.list_item_calendar_statistics_header, null);
             viewHolder.titleTextView = (TextView) convertView.findViewById(R.id.calendar_statistics_title);
@@ -91,6 +100,18 @@ public class CalendarStatisticsAdapter extends ArrayAdapter<Quintet<String, Stri
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder viewHolder = null;
         int viewType = getItemViewType(position);
+        inflater = LayoutInflater.from(getContext());
+        if (mItems.size()==2){
+            if(!Common.isNetworkConnected(getContext())){
+                convertView = inflater.inflate(R.layout.list_item_no_internet, null, false);
+            }else{
+                convertView = inflater.inflate(R.layout.list_item_no_content, null, false);
+            }
+            return convertView;
+        }
+        if(convertView!=null && mItems.size()>0){
+            convertView = null;
+        }
         if (convertView == null) {
             convertView = createHolder(viewHolder, convertView, viewType);
             viewHolder = (ViewHolder) convertView.getTag();

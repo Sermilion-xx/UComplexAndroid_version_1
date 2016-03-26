@@ -35,7 +35,6 @@ public class FetchMySubjectsTask extends AsyncTask<Void, String, Course> impleme
     private IProgressTracker mProgressTracker;
     private final OnTaskCompleteListener mTaskCompleteListener;
     private String mProgressMessage;
-//    private final ProgressDialog mProgressDialog;
     CourseActivity caller;
     Course course;
 
@@ -43,10 +42,6 @@ public class FetchMySubjectsTask extends AsyncTask<Void, String, Course> impleme
         this.mContext = context;
         this.caller = (CourseActivity) mContext;
         this.mTaskCompleteListener = taskCompleteListener;
-//        mProgressDialog = new ProgressDialog(context);
-//        mProgressDialog.setIndeterminate(true);
-//        mProgressDialog.setCancelable(true);
-//        mProgressDialog.setOnCancelListener(this);
     }
 
     public Activity getmContext() {
@@ -74,10 +69,6 @@ public class FetchMySubjectsTask extends AsyncTask<Void, String, Course> impleme
         JSONObject courseJson = null;
         try {
             course = new Course();
-            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
-            String loggedUserStr = prefs.getString("loggedUser", "");
-            Gson gson = new Gson();
-            User student = gson.fromJson(loggedUserStr, User.class);
 
             if(jsonData==null){
                 jsonData = "";
@@ -85,7 +76,6 @@ public class FetchMySubjectsTask extends AsyncTask<Void, String, Course> impleme
             courseJson = new JSONObject(jsonData);
             JSONObject courseArray = courseJson.getJSONObject("course");
 
-            JSONObject teacherArray = courseJson.getJSONObject("teacher");
             JSONObject departmentArray;
             Department department = new Department();
             if (courseJson.has("depart")) {
@@ -186,7 +176,7 @@ public class FetchMySubjectsTask extends AsyncTask<Void, String, Course> impleme
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return null;
+        return new Course();
     }
 
     @Override
@@ -195,7 +185,12 @@ public class FetchMySubjectsTask extends AsyncTask<Void, String, Course> impleme
         HashMap<String, String> postParams = new HashMap<>();
         postParams.put("subjId", this.getGcourseString());
         jsonData = Common.httpPost(urlString, Common.getLoginDataFromPref(mContext), postParams);
-        return getCourseDataFromJson(jsonData);
+        if(jsonData!=null){
+            return getCourseDataFromJson(jsonData);
+        }else{
+            return new Course();
+        }
+
     }
 
     @Override
@@ -211,12 +206,10 @@ public class FetchMySubjectsTask extends AsyncTask<Void, String, Course> impleme
     @Override
     public void onComplete() {
         mTaskCompleteListener.onTaskComplete(this);
-//        mProgressDialog.dismiss();
     }
 
     @Override
     protected void onProgressUpdate(String... values) {
-        // Update progress message
         mProgressMessage = values[0];
         if (mProgressTracker != null) {
             mProgressTracker.onProgress(mProgressMessage);
@@ -225,10 +218,6 @@ public class FetchMySubjectsTask extends AsyncTask<Void, String, Course> impleme
 
     @Override
     public void onProgress(String message) {
-//        if (!mProgressDialog.isShowing()) {
-//            mProgressDialog.show();
-//        }
-//        mProgressDialog.setMessage(message);
     }
 
     @Override
@@ -249,9 +238,7 @@ public class FetchMySubjectsTask extends AsyncTask<Void, String, Course> impleme
 
     @Override
     public void onCancel(DialogInterface dialog) {
-        // Cancel task
         this.cancel(true);
-        // Notify activity about completion
         mTaskCompleteListener.onTaskComplete(this);
     }
 }

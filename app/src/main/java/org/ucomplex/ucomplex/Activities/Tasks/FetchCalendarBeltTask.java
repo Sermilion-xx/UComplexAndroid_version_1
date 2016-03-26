@@ -57,7 +57,12 @@ public class FetchCalendarBeltTask extends AsyncTask<Integer, Void, ArrayList<Qu
             postParams.put("start", String.valueOf(postParamsString[1]));
         }
         String jsonData = Common.httpPost(urlString, Common.getLoginDataFromPref(mContext), postParams);
-        return getCalendarBeltDataFromJson(jsonData);
+
+        if(jsonData!=null){
+            return getCalendarBeltDataFromJson(jsonData);
+        }else{
+            return new ArrayList<>();
+        }
     }
 
 
@@ -112,6 +117,4 @@ public class FetchCalendarBeltTask extends AsyncTask<Integer, Void, ArrayList<Qu
             mTaskCompleteListener.onTaskComplete(this);
         }
     }
-
-
 }

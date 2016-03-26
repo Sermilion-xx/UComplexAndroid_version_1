@@ -26,7 +26,7 @@ public class CalendarInfoAdapter extends ArrayAdapter<String> {
         TextView textView = (TextView) view.findViewById(android.R.id.text1);
         textView.setCompoundDrawablesWithIntrinsicBounds(images[position], 0, 0, 0);
         textView.setTextSize(20);
-        textView.setLayoutParams(new AbsListView.LayoutParams(AbsListView.LayoutParams.MATCH_PARENT, 150 /* this is item height */));
+        textView.setLayoutParams(new AbsListView.LayoutParams(AbsListView.LayoutParams.MATCH_PARENT, 150));
         textView.setCompoundDrawablePadding(
                 (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10, getContext().getResources().getDisplayMetrics()));
         return view;

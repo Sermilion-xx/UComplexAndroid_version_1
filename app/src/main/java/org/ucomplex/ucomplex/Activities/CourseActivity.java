@@ -62,7 +62,7 @@ public class CourseActivity extends AppCompatActivity implements OnTaskCompleteL
         Bundle extras = getIntent().getExtras();
         this.gcourse = extras.getInt("gcourse", -1);
         this.courseName = extras.getString("courseName");
-        if(this.courseName!=null){
+        if (this.courseName != null) {
             titles.add(Character.toUpperCase(this.courseName.charAt(0)) + this.courseName.substring(1));
         }
         setContentView(R.layout.activity_course);
@@ -71,12 +71,13 @@ public class CourseActivity extends AppCompatActivity implements OnTaskCompleteL
 
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            }
 
             @Override
             public void onPageSelected(int position) {
-                if(position==1){
-                    if(courseMaterialsFragment!=null){
+                if (position == 1) {
+                    if (courseMaterialsFragment != null) {
                         if (courseMaterialsFragment.getAdapter().getLevel() > 0) {
                             toolbar.setTitle(titles.get(courseMaterialsFragment.getAdapter().getLevel()));
                         }
@@ -87,7 +88,8 @@ public class CourseActivity extends AppCompatActivity implements OnTaskCompleteL
             }
 
             @Override
-            public void onPageScrollStateChanged(int state) {}
+            public void onPageScrollStateChanged(int state) {
+            }
         });
 
         tabLayout = (TabLayout) findViewById(R.id.tabs);
@@ -218,32 +220,24 @@ public class CourseActivity extends AppCompatActivity implements OnTaskCompleteL
                 } else if (task instanceof FetchMySubjectsTask) {
                     try {
                         this.coursedata = (Course) task.get();
-                        if (this.coursedata != null) {
                             setupViewPager(mViewPager);
                             tabLayout.setupWithViewPager(mViewPager);
                             tabLayout.setSelectedTabIndicatorColor(Color.WHITE);
                             loaded = true;
-
-                        }
                     } catch (InterruptedException | ExecutionException e) {
                         e.printStackTrace();
                     }
                 } else if (task instanceof FetchCalendarBeltTask) {
                     try {
-                        if (this.coursedata != null) {
                             this.feedItems = (ArrayList<Quartet<Integer, String, String, Integer>>) task.get();
                             if (calendarBeltFragment == null) {
                                 calendarBeltFragment = new CalendarBeltFragment();
                             }
-                            if (this.feedItems != null && this.feedItems.size() > 0) {
-                                calendarBeltFragment.setFeedItems(feedItems);
-                                calendarBeltFragment.initAdapter(CourseActivity.this);
-                                calendarBeltFragment.setmContext(CourseActivity.this);
-                                calendarBeltFragment.setGcourse(this.gcourse);
-                                calendarBeltFragment.getCourseCalendarBeltAdapter().notifyDataSetChanged();
-                            }
-
-                        }
+                            calendarBeltFragment.setFeedItems(feedItems);
+                            calendarBeltFragment.initAdapter(CourseActivity.this);
+                            calendarBeltFragment.setmContext(CourseActivity.this);
+                            calendarBeltFragment.setGcourse(this.gcourse);
+                            calendarBeltFragment.getCourseCalendarBeltAdapter().notifyDataSetChanged();
                     } catch (InterruptedException | ExecutionException e) {
                         e.printStackTrace();
                     }

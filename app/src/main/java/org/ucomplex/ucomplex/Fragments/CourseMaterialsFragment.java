@@ -127,6 +127,7 @@ public class CourseMaterialsFragment extends ListFragment {
                             ArrayList<File> newFiles = new ArrayList<>(fileArrayList);
                             mItems.addAll(newFiles);
                             adapter.stackFiles.add(newFiles);
+                            adapter.setmItems(mItems);
                             adapter.notifyDataSetChanged();
                         }
                     }.execute(item.getAddress(), item.getOwner());

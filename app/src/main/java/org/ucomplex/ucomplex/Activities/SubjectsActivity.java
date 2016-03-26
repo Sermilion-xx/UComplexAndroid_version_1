@@ -79,16 +79,12 @@ public class SubjectsActivity extends AppCompatActivity implements OnTaskComplet
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> a, View v, int position, long id) {
-                    if (Common.isNetworkConnected(SubjectsActivity.this)) {
-                        Intent intent = new Intent(getBaseContext(), CourseActivity.class);
-                        Bundle extras = new Bundle();
-                        extras.putInt("gcourse", mItems.get(position).getValue2());
-                        extras.putString("courseName", mItems.get(position).getValue0());
-                        intent.putExtras(extras);
-                        startActivity(intent);
-                    } else {
-                        Toast.makeText(SubjectsActivity.this, "Проверте интернет соединение.", Toast.LENGTH_LONG).show();
-                    }
+                    Intent intent = new Intent(getBaseContext(), CourseActivity.class);
+                    Bundle extras = new Bundle();
+                    extras.putInt("gcourse", mItems.get(position).getValue2());
+                    extras.putString("courseName", mItems.get(position).getValue0());
+                    intent.putExtras(extras);
+                    startActivity(intent);
                 }
             });
 

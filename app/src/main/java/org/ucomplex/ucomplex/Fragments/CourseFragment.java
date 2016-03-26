@@ -4,16 +4,13 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ListFragment;
-import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 
 import org.javatuples.Quartet;
 import org.ucomplex.ucomplex.Adaptors.CourseInfoAdapter;
 import org.ucomplex.ucomplex.Model.StudyStructure.Course;
 import org.ucomplex.ucomplex.Model.Users.User;
-import org.ucomplex.ucomplex.R;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -74,8 +71,8 @@ public class CourseFragment extends ListFragment {
                     }
                 }
                 double mark = 0.0;
-                if(courseData.getProgress().getMark()!=0 && courseData.getProgress().getMarkCount()!=0){
-                    mark = courseData.getProgress().getMark()/courseData.getProgress().getMarkCount();
+                if (courseData.getProgress().getMark() != 0 && courseData.getProgress().getMarkCount() != 0) {
+                    mark = courseData.getProgress().getMark() / courseData.getProgress().getMarkCount();
                 }
                 DecimalFormat df = new DecimalFormat("#.##");
                 absence = Double.valueOf(df.format(absence));
@@ -88,6 +85,7 @@ public class CourseFragment extends ListFragment {
         }
 
     }
+
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
 //        Intent intent = new Intent(getContext(), ProfileActivity.class);

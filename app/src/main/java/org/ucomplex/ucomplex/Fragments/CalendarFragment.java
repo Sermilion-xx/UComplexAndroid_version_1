@@ -156,11 +156,8 @@ public class CalendarFragment extends Fragment implements OnTaskCompleteListener
                         int Year = cal.get(Calendar.YEAR);
 
                         if (year <= Year) {
-//                    if(!checkedMonths.contains(date)){
                             mAsyncTaskManager.setupTask(new FetchCalendarTask(context), String.valueOf(user.getType()), monthStr, dateStr);
                             linlaHeaderProgress.setVisibility(View.VISIBLE);
-// checkedMonths.add(date);
-//                    }
                         } else {
                             Toast.makeText(getContext(), "Нету данных для следующего года!", Toast.LENGTH_SHORT).show();
                         }
@@ -223,10 +220,6 @@ public class CalendarFragment extends Fragment implements OnTaskCompleteListener
             } else {
                 try {
                     calendar = (UCCalendar) task.get();
-                    if (calendar == null) {
-                        Toast.makeText(context, "Нету данных", Toast.LENGTH_LONG)
-                                .show();
-                    }
                     try {
                         refreshMonth();
                     } catch (NullPointerException ignored) {
@@ -273,7 +266,7 @@ public class CalendarFragment extends Fragment implements OnTaskCompleteListener
                                         String subjectName = calendar.getCourses().get(String.valueOf(course));
                                         //mark, name, date, mark, color
                                         Quartet<Integer, String, String, Integer> dayTimetable =
-                                                new Quartet<>(mark, subjectName,color, -2);
+                                                new Quartet<>(mark, subjectName, color, -2);
                                         dayCalendarBeltArray.add(dayTimetable);
                                     }
                                 }
@@ -307,7 +300,6 @@ public class CalendarFragment extends Fragment implements OnTaskCompleteListener
                                     System.out.println();
                                 }
                             }
-
                             Intent intent = new Intent(context, CalendarDayActivity.class);
                             Bundle bundle = new Bundle();
                             bundle.putSerializable("calendarDay", dayTimetableArray);
@@ -351,7 +343,5 @@ public class CalendarFragment extends Fragment implements OnTaskCompleteListener
                 }
             }
         }
-
     }
-
 }

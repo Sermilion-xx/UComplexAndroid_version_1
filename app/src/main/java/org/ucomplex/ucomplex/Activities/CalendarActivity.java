@@ -6,6 +6,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -72,6 +73,7 @@ public class CalendarActivity extends AppCompatActivity implements AdapterView.O
             adapter = new ViewPagerAdapter(getSupportFragmentManager());
             if (calendarBeltFragment == null) {
                 calendarBeltFragment = new CalendarBeltFragment();
+                calendarBeltFragment.setmContext(this);
                 if (this.feedItems == null) {
                     fetchCalendarBeltTask = new FetchCalendarBeltTask(this, this);
                     fetchCalendarBeltTask.setupTask();
@@ -121,6 +123,9 @@ public class CalendarActivity extends AppCompatActivity implements AdapterView.O
                     calendarBeltFragment.getCourseCalendarBeltAdapter().changeItems(feedItems);
                     calendarBeltFragment.checkLoadButton(feedItems);
                     calendarBeltFragment.setmContext(CalendarActivity.this);
+                    if(feedItems.size()==0){
+                        calendarBeltFragment.getListView().setBackgroundColor(ContextCompat.getColor(this, R.color.activity_background));
+                    }
                 } catch (InterruptedException | ExecutionException e) {
                     e.printStackTrace();
                 }

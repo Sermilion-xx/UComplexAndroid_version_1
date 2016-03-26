@@ -43,14 +43,14 @@ public class CalendarDayAdapter extends ArrayAdapter<Quintet<String,String,Strin
         this.values = values;
         user = Common.getUserDataFromPref(context);
 //        if(user.getType() == 3){
-//            for (int i = 0; i<values.size(); i++) {
-//                if (values.get(i).getValue0().equals("-1") || values.get(i).getValue0().equals("-2")) {
-//                    values.remove(values.get(i));
+//            for (int i = 0; i<mItems.size(); i++) {
+//                if (mItems.get(i).getValue0().equals("-1") || mItems.get(i).getValue0().equals("-2")) {
+//                    mItems.remove(mItems.get(i));
 //                }
 //            }
 //            separatorPosition = 0;
 //        }else if(user.getType() == 4){
-//            for (Quintet<String, String, String, String, String> item : values) {
+//            for (Quintet<String, String, String, String, String> item : mItems) {
 //                if (item.getValue0().equals("-1")) {
 //                    separatorPosition++;
 //                }

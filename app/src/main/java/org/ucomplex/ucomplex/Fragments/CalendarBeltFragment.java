@@ -1,30 +1,25 @@
 package org.ucomplex.ucomplex.Fragments;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.graphics.Color;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import org.javatuples.Quartet;
 import org.ucomplex.ucomplex.Activities.Tasks.FetchCalendarBeltTask;
-import org.ucomplex.ucomplex.Activities.Tasks.FetchUserEventsTask;
 import org.ucomplex.ucomplex.Adaptors.CourseCalendarBeltAdapter;
 import org.ucomplex.ucomplex.Common;
-import org.ucomplex.ucomplex.Interfaces.OnTaskCompleteListener;
-import org.ucomplex.ucomplex.Model.EventRowItem;
 import org.ucomplex.ucomplex.R;
 
 import java.util.ArrayList;
 
 
-public class CalendarBeltFragment extends ListFragment{
+public class CalendarBeltFragment extends ListFragment {
 
     //mark
     private ArrayList<Quartet<Integer, String, String, Integer>> feedItems = new ArrayList<>();
@@ -49,14 +44,9 @@ public class CalendarBeltFragment extends ListFragment{
         return courseCalendarBeltAdapter;
     }
 
-    public void initAdapter(Activity activity){
-        if(feedItems!=null){
-            if(feedItems.size()>0){
-                courseCalendarBeltAdapter = new CourseCalendarBeltAdapter(activity, feedItems);
-            }
-        }else{
-            setListShown(true);
-        }
+    public void initAdapter(Activity activity) {
+        courseCalendarBeltAdapter = new CourseCalendarBeltAdapter(activity, feedItems);
+
     }
 
     public CalendarBeltFragment() {
@@ -70,16 +60,13 @@ public class CalendarBeltFragment extends ListFragment{
         getListView().setBackgroundColor(Color.WHITE);
         setListShown(true);
 
-        if(courseCalendarBeltAdapter==null) {
-            if(feedItems!=null){
-                courseCalendarBeltAdapter = new CourseCalendarBeltAdapter(getActivity(), feedItems);
-            }
+        if (courseCalendarBeltAdapter == null) {
+            courseCalendarBeltAdapter = new CourseCalendarBeltAdapter(getActivity(), feedItems);
+
         }
-        if(feedItems!=null){
-            setListAdapter(courseCalendarBeltAdapter);
-        }
+        setListAdapter(courseCalendarBeltAdapter);
         getListView().addFooterView(btnLoadExtra);
-        if (courseCalendarBeltAdapter.getFeedItems().size() < 21) {
+        if (courseCalendarBeltAdapter != null && courseCalendarBeltAdapter.getmItems().size() < 21) {
             btnLoadExtra.setVisibility(View.GONE);
         }
     }
@@ -93,36 +80,36 @@ public class CalendarBeltFragment extends ListFragment{
         btnLoadExtra.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View arg0) {
-                if(Common.isNetworkConnected(getContext())){
+                if (Common.isNetworkConnected(getContext())) {
                     new FetchCalendarBeltTask(mContext) {
                         @Override
                         protected void onPostExecute(ArrayList fileArrayList) {
                             super.onPostExecute(fileArrayList);
-                            if(fileArrayList!=null){
+                            if (fileArrayList != null) {
                                 courseCalendarBeltAdapter.addAllFeedItems(fileArrayList);
                                 courseCalendarBeltAdapter.notifyDataSetChanged();
                             }
-                            if (courseCalendarBeltAdapter.getFeedItems() != null) {
-                                if (courseCalendarBeltAdapter.getFeedItems().size() < 21) {
+                            if (courseCalendarBeltAdapter.getmItems() != null) {
+                                if (courseCalendarBeltAdapter.getmItems().size() < 21) {
                                     btnLoadExtra.setVisibility(View.GONE);
                                 }
                             } else {
                                 Toast.makeText(getActivity(), "Произошла ошибка", Toast.LENGTH_SHORT).show();
                             }
                         }
-                    }.setupTask(gcourse, courseCalendarBeltAdapter.getFeedItems().size());
-                }else {
+                    }.setupTask(gcourse, courseCalendarBeltAdapter.getmItems().size());
+                } else {
                     Toast.makeText(getContext(), "Проверте интернет соединение.", Toast.LENGTH_LONG).show();
                 }
             }
         });
     }
 
-    public void checkLoadButton(ArrayList<Quartet<Integer, String, String, Integer>> items){
-        if (courseCalendarBeltAdapter.getFeedItems() != null) {
+    public void checkLoadButton(ArrayList<Quartet<Integer, String, String, Integer>> items) {
+        if (courseCalendarBeltAdapter.getmItems() != null) {
             if (items.size() < 20) {
                 btnLoadExtra.setVisibility(View.GONE);
-            }else{
+            } else {
                 btnLoadExtra.setVisibility(View.VISIBLE);
             }
         } else {

@@ -11,6 +11,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.ucomplex.ucomplex.Common;
 import org.ucomplex.ucomplex.Interfaces.OnTaskCompleteListener;
+import org.ucomplex.ucomplex.Model.StudyStructure.Course;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -39,7 +40,12 @@ public class FetchAllStats extends AsyncTask<Integer, Void, ArrayList<Quintet<St
     protected ArrayList<Quintet<String, String, Double, Double, Integer>> doInBackground(Integer... params) {
         String urlString = "http://you.com.ru/student/ajax/all_courses_stat?mobile=1";
         String jsonData = Common.httpPost(urlString, Common.getLoginDataFromPref(mContext));
-        return getCalendarBeltDataFromJson(jsonData);
+
+        if(jsonData!=null){
+            return getCalendarBeltDataFromJson(jsonData);
+        }else{
+            return new ArrayList<>();
+        }
     }
 
     private ArrayList<Quintet<String, String, Double, Double, Integer>> getCalendarBeltDataFromJson(String jsonData) {
@@ -81,7 +87,7 @@ public class FetchAllStats extends AsyncTask<Integer, Void, ArrayList<Quintet<St
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return null;
+        return new ArrayList<>();
     }
 
     @Override

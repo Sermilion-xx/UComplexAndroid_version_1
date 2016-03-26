@@ -43,6 +43,7 @@ public class CourseInfoAdapter extends BaseAdapter {
     protected ImageLoader mImageLoader;
     Activity mContext;
     private Typeface robotoFont;
+    LayoutInflater inflater;
 
 
     public CourseInfoAdapter(ArrayList<Quartet<String, String, String, String>> items, Activity context) {
@@ -84,10 +85,11 @@ public class CourseInfoAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        if (mItems != null) {
-            return mItems.size();
-        } else
-            return 0;
+        return mItems.size()==3?1:mItems.size();
+    }
+    @Override
+    public boolean isEnabled(int position) {
+        return mItems.size() != 3;
     }
 
     @Override
@@ -102,7 +104,6 @@ public class CourseInfoAdapter extends BaseAdapter {
 
     private View createConverterView(ViewHolder viewHolder, View convertView, int viewType) {
         viewHolder = new ViewHolder();
-        LayoutInflater inflater = LayoutInflater.from(mContext);
         if (viewType == TYPE_HEADER) {
             convertView = inflater.inflate(R.layout.list_item_course_header, null);
             viewHolder.holderId = TYPE_HEADER;
@@ -126,10 +127,21 @@ public class CourseInfoAdapter extends BaseAdapter {
         return convertView;
     }
 
+
+
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
         ViewHolder viewHolder = new ViewHolder();
         int viewType = getItemViewType(position);
+        inflater = LayoutInflater.from(mContext);
+        if (mItems.size()==3){
+            if(!Common.isNetworkConnected(mContext)){
+                convertView = inflater.inflate(R.layout.list_item_no_internet, parent, false);
+            }else{
+                convertView = inflater.inflate(R.layout.list_item_no_content, parent, false);
+            }
+            return convertView;
+        }
         if (convertView == null) {
             convertView = createConverterView(viewHolder, convertView, viewType);
             viewHolder = (ViewHolder) convertView.getTag();

@@ -3,7 +3,6 @@ package org.ucomplex.ucomplex.Adaptors;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,45 +25,62 @@ import java.util.List;
 public class CourseCalendarBeltAdapter extends ArrayAdapter<Quartet<Integer, String, String, Integer>> {
 
     String[] colors = {"#51cde7", "#fecd71", "#9ece2b", "#d18ec0"};
-    List<Quartet<Integer, String, String, Integer>> feedItems;
+    List<Quartet<Integer, String, String, Integer>> mItems;
     Context mContext;
+    LayoutInflater inflater;
 
     public void addAllFeedItems(List<Quartet<Integer, String, String, Integer>> feedItems) {
-        this.feedItems.addAll(feedItems);
+        this.mItems.addAll(feedItems);
     }
 
     public CourseCalendarBeltAdapter(Context context, List<Quartet<Integer, String, String, Integer>> items) {
         super(context, R.layout.list_item_course_calendar_belt, items);
-        feedItems = items;
+        mItems = items;
         mContext = context;
     }
 
     public void changeItems(ArrayList<Quartet<Integer, String, String, Integer>> feedItems){
-        this.feedItems.clear();
-        this.feedItems.addAll(feedItems);
+        this.mItems.clear();
+        this.mItems.addAll(feedItems);
         notifyDataSetChanged();
     }
 
     @Override
     public Quartet<Integer, String, String, Integer> getItem(int position) {
-        return this.feedItems.get(position);
+        return this.mItems.get(position);
     }
 
-    public List<Quartet<Integer, String, String, Integer>> getFeedItems() {
-        return feedItems;
+    public List<Quartet<Integer, String, String, Integer>> getmItems() {
+        return mItems;
+    }
+
+    @Override
+    public boolean isEnabled(int position) {
+        return mItems.size() != 0;
     }
 
     @Override
     public int getCount() {
-        return this.feedItems.size();
+        return mItems.size()>0?mItems.size():1;
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder viewHolder;
+        inflater = LayoutInflater.from(getContext());
+        if (mItems.size()==0){
+            if(!Common.isNetworkConnected(getContext())){
+                convertView = inflater.inflate(R.layout.list_item_no_internet, null, false);
+            }else{
+                convertView = inflater.inflate(R.layout.list_item_no_content, null, false);
+            }
+            return convertView;
+        }
+        if(convertView!=null && mItems.size()>0){
+            convertView = null;
+        }
         Quartet<Integer, String, String, Integer> feedItem = getItem(position);
         if (convertView == null) {
-            LayoutInflater inflater = LayoutInflater.from(getContext());
             viewHolder = new ViewHolder();
             if(feedItem.getValue3()==-2){
                 convertView = inflater.inflate(R.layout.list_item_calendar_calendar_belt, parent, false);

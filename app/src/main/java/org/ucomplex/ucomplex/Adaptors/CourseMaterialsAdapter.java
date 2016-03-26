@@ -47,6 +47,9 @@ public class CourseMaterialsAdapter extends ArrayAdapter<File> {
         this.stackFiles = new ArrayList<>();
     }
 
+    public void setmItems(List<File> mItems) {
+        this.mItems = mItems;
+    }
 
     public boolean isMyFiles() {
         return myFiles;
@@ -86,7 +89,8 @@ public class CourseMaterialsAdapter extends ArrayAdapter<File> {
     @Override
     public int getItemViewType(int position) {
         if(mItems.size()>0){
-            if (getItem(position).getType().equals("f")) {
+            File file = getItem(position);
+            if (file.getType().equals("f")) {
                 return TYPE_FOLDER;
             } else {
                 return TYPE_FILE;
@@ -130,6 +134,11 @@ public class CourseMaterialsAdapter extends ArrayAdapter<File> {
     @Override
     public int getCount() {
         return mItems.size()>0?mItems.size():1;
+    }
+
+    @Override
+    public File getItem(int position) {
+        return mItems.get(position);
     }
 
     @Override
