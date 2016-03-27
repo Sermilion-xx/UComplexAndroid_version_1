@@ -84,7 +84,6 @@ public class EventsFragment extends ListFragment {
                             intent.putExtra("courseName", eventItems.get(position).getParams().getCourseName());
                             startActivity(intent);
                         }
-
                     }
                 }
             });

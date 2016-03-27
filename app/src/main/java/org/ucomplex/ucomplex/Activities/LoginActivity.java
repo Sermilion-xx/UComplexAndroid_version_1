@@ -168,7 +168,7 @@ public class LoginActivity extends AppCompatActivity implements LoginTask.AsyncR
             mPasswordView.setError(getString(R.string.error_incorrect_password));
             focusView = mPasswordView;
             cancel = true;
-        }else if (!TextUtils.isEmpty(password)) {
+        }else if (TextUtils.isEmpty(password)) {
             mPasswordView.setError(getString(R.string.error_field_required));
             focusView = mPasswordView;
             cancel = true;

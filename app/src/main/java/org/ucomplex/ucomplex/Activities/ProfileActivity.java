@@ -64,13 +64,6 @@ public class ProfileActivity extends AppCompatActivity implements OnTaskComplete
         }
     }
 
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        getMenuInflater().inflate(R.menu.menu_profile, menu);
-//        this.menu = menu;
-//        return true;
-//    }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -99,13 +92,12 @@ public class ProfileActivity extends AppCompatActivity implements OnTaskComplete
             Triplet<Bitmap, User, String> item = new Triplet<>(bitmap, mUser, "-1");
             items.add(item);
             for (User role : mUser.getRoles()) {
-                Triplet<String, String, String> aItem = null;
+                Triplet<String, String, String> aItem;
                 String positionName = role.getPositionName();
                 if(role.getType()==4){
                     aItem = new Triplet<>(positionName, String.valueOf(role.getType()), "-1");
                 }else{
-                    User teach = (User) role;
-                    aItem = new Triplet<>(teach.getSectionName(), role.getPositionName(),  "-1");
+                    aItem = new Triplet<>(role.getSectionName(), role.getPositionName(),  "-1");
                 }
                 items.add(aItem);
             }

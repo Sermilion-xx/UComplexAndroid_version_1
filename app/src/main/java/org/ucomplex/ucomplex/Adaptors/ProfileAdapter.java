@@ -138,8 +138,6 @@ public class ProfileAdapter extends ArrayAdapter<Triplet> {
         if(viewType==TYPE_HEADER){
             convertView.setBackgroundColor(mContext.getResources().getColor(R.color.colorPrimary));
         }
-//        convertView.setBackgroundColor(Color.WHITE);
-
         return convertView;
     }
 
@@ -184,7 +182,6 @@ public class ProfileAdapter extends ArrayAdapter<Triplet> {
         CircleImageView mRole;
         TextView mFirstNameView;
         TextView mLastNameView;
-//        TextView mEmailView;
 
         TextView mInfoKey;
         TextView mInfoValue;
@@ -211,6 +208,7 @@ public class ProfileAdapter extends ArrayAdapter<Triplet> {
                     name = String.valueOf(mUser.getName());
                     intent.putExtra("companion", companion);
                     intent.putExtra("name", name);
+                    intent.putExtra("profileImage", mBitmap);
                     getContext().startActivity(intent);
                 }
             });

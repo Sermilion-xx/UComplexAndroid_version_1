@@ -165,7 +165,6 @@ public class MessagesListActivity extends AppCompatActivity implements OnTaskCom
                             Intent intent = new Intent(MessagesListActivity.this, MessagesActivity.class);
                             intent.putExtra("companion", String.valueOf(dialogs.get(position).getCompanion()));
                             intent.putExtra("name", String.valueOf(dialogs.get(position).getName()));
-//                            intent.putExtra("user",messagesListAdapter.getItem(position));
                             startActivity(intent);
                         }
                     });

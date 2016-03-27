@@ -73,7 +73,6 @@ public class MessagesActivity extends AppCompatActivity implements OnTaskComplet
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_message);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-//        toolbar.setTitle("Сообщения");
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -87,15 +86,18 @@ public class MessagesActivity extends AppCompatActivity implements OnTaskComplet
         nameTextView.setTypeface(robotoFont);
         companion = getIntent().getStringExtra("companion");
         name = getIntent().getStringExtra("name");
-
+        Bitmap bmp = getIntent().getParcelableExtra("profileImage");
         User aUser = new User();
+        if(bmp==null){
+            profileImageView.setImageDrawable(Common.getDrawable(aUser));
+        }else{
+            profileImageView.setImageBitmap((Bitmap)getIntent().getParcelableExtra("profileImage"));
+        }
         aUser.setId(Integer.valueOf(companion));
         aUser.setName(name);
-        profileImageView.setImageDrawable(Common.getDrawable(aUser));
-
         String[] aName = name.split(" ");
-        if(aName.length==2){
-            nameTextView.setText(aName[0] + " " + aName[1]);
+        if(aName.length>1){
+            nameTextView.setText(aName[1] + " " + aName[2]);
         }else{
             nameTextView.setText(aName[0]);
         }
@@ -345,7 +347,6 @@ public class MessagesActivity extends AppCompatActivity implements OnTaskComplet
                         messageArrayList = (LinkedList) task.get();
                         if(messageArrayList != null){
                             if(!first){
-//                                messagesAdapter.getValues().clear();
                                 for(int i=0; i<messageArrayList.size(); i++){
                                     if(messageArrayList.get(i) instanceof Bitmap){
                                         messageArrayList.remove(i);

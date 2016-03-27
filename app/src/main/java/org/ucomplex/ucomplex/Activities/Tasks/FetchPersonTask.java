@@ -72,15 +72,22 @@ public class FetchPersonTask extends AsyncTask<Void, String, User> implements IP
                 user.setPosition(roleJson.getInt("position"));
             }catch (JSONException ignored){}
             user.setPositionName(roleJson.getString("position_name"));
-            try{
-                user.setRate(roleJson.getInt("rate"));
-                user.setPerson(roleJson.getInt("person"));
-                user.setSection(roleJson.getInt("section"));
-                user.setSectionName(roleJson.getString("section_name"));
-                user.setLead(roleJson.getInt("lead"));
-            }catch (JSONException e){
-            e.printStackTrace();
-        }
+                try{
+                    user.setRate(roleJson.getInt("rate"));
+                }catch (JSONException ignored){}
+                try{
+                    user.setPerson(roleJson.getInt("person"));
+                }catch (JSONException ignored){}
+                try{
+                    user.setPerson(roleJson.getInt("section"));
+                }catch (JSONException ignored){}
+                try{
+                    user.setSectionName(roleJson.getString("section_name"));
+                }catch (JSONException ignored){}
+                try{
+                    user.setLead(roleJson.getInt("lead"));
+                }catch (JSONException ignored){}
+
         }catch (JSONException e){
             e.printStackTrace();
         }
