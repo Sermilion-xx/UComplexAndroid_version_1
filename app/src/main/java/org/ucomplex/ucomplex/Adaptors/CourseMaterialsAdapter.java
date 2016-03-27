@@ -212,7 +212,7 @@ public class CourseMaterialsAdapter extends ArrayAdapter<File> {
                                         public void onClick(DialogInterface dialog, int which) {
                                             switch (which) {
                                                 case 0:
-                                                    showInputDialog(position);
+                                                    showInputDialog(position, nameTextView.getText().toString());
                                                     break;
                                                 case 1:
                                                     if(Common.isNetworkConnected(context)){
@@ -241,7 +241,7 @@ public class CourseMaterialsAdapter extends ArrayAdapter<File> {
         }
 
 
-        protected void showInputDialog(final int position) {
+        protected void showInputDialog(final int position, String oldName) {
             // get prompts.xml view
             LayoutInflater layoutInflater = LayoutInflater.from(context);
             View promptView = layoutInflater.inflate(R.layout.dialog_input, null);
@@ -249,6 +249,7 @@ public class CourseMaterialsAdapter extends ArrayAdapter<File> {
             alertDialogBuilder.setView(promptView);
 
             final EditText editText = (EditText) promptView.findViewById(R.id.edittext);
+            editText.setText(oldName);
             // setup a dialog window
             alertDialogBuilder.setCancelable(false)
                     .setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -276,6 +277,7 @@ public class CourseMaterialsAdapter extends ArrayAdapter<File> {
         }
 
         private void removeItem(final int pos) {
+
             new AsyncTask<Void, Void, ArrayList>() {
                 @Override
                 protected ArrayList doInBackground(Void... params) {
@@ -291,6 +293,9 @@ public class CourseMaterialsAdapter extends ArrayAdapter<File> {
                     super.onPostExecute(newFile);
                     adapter.mItems.remove(pos);
                     adapter.notifyDataSetChanged();
+                    if(adapter.mItems.size()==0){
+                        fragment.getListView().setDivider(null);
+                    }
                 }
             }.execute();
         }

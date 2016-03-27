@@ -43,6 +43,7 @@ public class MyFilesActivity extends AppCompatActivity implements OnTaskComplete
     LinearLayout linlaHeaderProgress;
     Toolbar toolbar;
     ArrayList<String> titles = new ArrayList<>();
+    AsyncTask<Void, Void, ArrayList> uploadFileTask;
 
 
     @Override
@@ -64,6 +65,10 @@ public class MyFilesActivity extends AppCompatActivity implements OnTaskComplete
 
     @Override
     public void onBackPressed() {
+        if(uploadFileTask!=null){
+            uploadFileTask.cancel(true);
+        }
+        linlaHeaderProgress.setVisibility(View.INVISIBLE);
         if (titles.size() > 1) {
             toolbar.setTitle(titles.get(titles.size() - 2));
             titles.remove(titles.size() - 1);
@@ -76,6 +81,10 @@ public class MyFilesActivity extends AppCompatActivity implements OnTaskComplete
         switch (item.getItemId()) {
             case android.R.id.home:
                 onBackPressed();
+                if(uploadFileTask!=null){
+                    uploadFileTask.cancel(true);
+                }
+                linlaHeaderProgress.setVisibility(View.INVISIBLE);
                 return true;
             case R.id.my_files_add_file:
                 if (Build.VERSION.SDK_INT < 19) {
@@ -183,7 +192,7 @@ public class MyFilesActivity extends AppCompatActivity implements OnTaskComplete
 
     private void uplodFile(final String filePath) {
         linlaHeaderProgress.setVisibility(View.VISIBLE);
-        new AsyncTask<Void, Void, ArrayList>() {
+        uploadFileTask = new AsyncTask<Void, Void, ArrayList>() {
 
             @Override
             protected ArrayList doInBackground(Void... params) {
@@ -198,6 +207,13 @@ public class MyFilesActivity extends AppCompatActivity implements OnTaskComplete
             }
 
             @Override
+            protected void onCancelled() {
+                super.onCancelled();
+                uploadFileTask.cancel(true);
+                linlaHeaderProgress.setVisibility(View.INVISIBLE);
+            }
+
+            @Override
             protected void onPostExecute(ArrayList newFile) {
                 super.onPostExecute(newFile);
                 linlaHeaderProgress.setVisibility(View.GONE);
@@ -205,6 +221,8 @@ public class MyFilesActivity extends AppCompatActivity implements OnTaskComplete
                     courseMaterialsFragment.addFile((File) newFile.get(0));
                     courseMaterialsFragment.getAdapter().notifyDataSetChanged();
                 }
+                uploadFileTask = null;
+                cancel(true);
             }
         }.execute();
     }

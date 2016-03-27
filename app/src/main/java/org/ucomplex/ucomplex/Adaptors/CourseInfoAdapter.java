@@ -197,7 +197,7 @@ public class CourseInfoAdapter extends BaseAdapter {
     public Drawable getDrawable(int position) {
         final int colorsCount = 16;
         final int number = (Integer.valueOf(getItem(position).getValue3()) <= colorsCount) ? Integer.valueOf(getItem(position).getValue3()) : Integer.valueOf(getItem(position).getValue0()) % colorsCount;
-        char firstLetter = getItem(position).getValue1().split("")[1].charAt(0);
+        char firstLetter = getItem(position).getValue1().split(" ")[1].charAt(0);
 
         TextDrawable drawable = TextDrawable.builder().beginConfig()
                 .width(60)

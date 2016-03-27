@@ -1,7 +1,6 @@
 package org.ucomplex.ucomplex.Fragments;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
@@ -28,11 +27,12 @@ public class UsersFragment extends ListFragment {
     ArrayList<User> loadedUsers;
     int lastPos;
     Activity activity;
-
+    User user;
 
 
     public void setActivity(Activity activity) {
         this.activity = activity;
+        user = Common.getUserDataFromPref(activity);
     }
 
 
@@ -58,7 +58,7 @@ public class UsersFragment extends ListFragment {
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
-        if(Common.isNetworkConnected(activity)){
+        if (Common.isNetworkConnected(activity)) {
             User user = mItems.get(position);
             Intent intent = new Intent(getContext(), ProfileActivity.class);
             Bundle extras = new Bundle();
@@ -74,8 +74,19 @@ public class UsersFragment extends ListFragment {
             extras.putString("code", user.getCode());
             intent.putExtras(extras);
             startActivity(intent);
-        }else {
+        } else {
             Toast.makeText(activity, "Проверте интернет соединение.", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    @Override
+    public void setMenuVisibility(final boolean visible) {
+        super.setMenuVisibility(visible);
+        if (visible) {
+            if (usersType == Common.userListChanged) {
+                fetchUsers();
+                Common.userListChanged = -1;
+            }
         }
     }
 
@@ -83,10 +94,13 @@ public class UsersFragment extends ListFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
+        btnLoadExtra = new Button(getContext());
+        btnLoadExtra.setFocusable(false);
+        btnLoadExtra.setText("Загрузить еще...");
         if (savedInstanceState != null) {
             mItems = (ArrayList<User>) savedInstanceState.getSerializable("mItems");
         }
-        if ((mItems != null ? mItems.size() : 0) == 0) {
+        if (mItems.size() == 0) {
             fetchUsers();
         }
     }
@@ -103,7 +117,10 @@ public class UsersFragment extends ListFragment {
     @Override
     public void onResume() {
         super.onResume();
-
+        if (usersType == Common.userListChanged) {
+            fetchUsers();
+            Common.userListChanged = -1;
+        }
     }
 
     private void fetchUsers() {
@@ -113,6 +130,21 @@ public class UsersFragment extends ListFragment {
                 super.onPostExecute(users);
                 mItems = users;
                 setListAdapter(new ImageAdapter(mItems, activity, usersType));
+                if (mItems != null) {
+                    if (mItems.size() < 20) {
+                        btnLoadExtra.setVisibility(View.GONE);
+                    }
+                    if (mItems.size() > 1) {
+                        if (mItems.get(0).getName().equals(user.getName())) {
+                            mItems.remove(0);
+                        }else if(mItems.get(1).getName().equals(user.getName())){
+                            mItems.remove(1);
+                        }
+                    }
+                    imageAdapter.getmItems().clear();
+                    imageAdapter.setmItems(mItems);
+                    imageAdapter.notifyDataSetChanged();
+                }
             }
         }.execute(usersType);
     }
@@ -124,14 +156,9 @@ public class UsersFragment extends ListFragment {
         imageAdapter = new ImageAdapter(mItems, getActivity(), usersType);
 
         if (usersType != 3) {
-            btnLoadExtra = new Button(getContext());
-            btnLoadExtra.setFocusable(false);
-            btnLoadExtra.setText("Загрузить еще...");
             btnLoadExtra.setOnClickListener(new View.OnClickListener() {
-
                 @Override
                 public void onClick(View arg0) {
-
                     new FetchUsersTask(getActivity()) {
                         @Override
                         protected void onPostExecute(ArrayList<User> users) {
@@ -143,25 +170,14 @@ public class UsersFragment extends ListFragment {
                             }
                             mItems.addAll(loadedUsers);
                             setListAdapter(new ImageAdapter(mItems, getActivity(), usersType));
-                            getListView().setSelection(lastPos - 2);
+                            getListView().setSelection(lastPos - 1);
                         }
-                    }.execute(usersType);
+                    }.execute(usersType, mItems.size() - 1);
                 }
             });
-
-            if (mItems != null) {
-                if (mItems.size() <= 20) {
-                    btnLoadExtra.setVisibility(View.GONE);
-                }
-                getListView().addFooterView(btnLoadExtra);
-            } else {
-                Toast.makeText(getActivity(), "Произошла ошибка", Toast.LENGTH_SHORT).show();
-            }
         }
 
-        if (mItems.size() == 0) {
-            fetchUsers();
-        }
+        getListView().addFooterView(btnLoadExtra);
     }
 
 

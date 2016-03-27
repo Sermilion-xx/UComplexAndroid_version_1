@@ -79,6 +79,7 @@ public class Common {
     public static int newMesg = 0;
     public static boolean newUsr;
     public static ArrayList<Integer> fromMessages = new ArrayList<>();
+    public static DefaultHttpClient client;
 
     public static Typeface getTypeFace(Context context, String typeFace) {
         Typeface tf = Typeface.createFromAsset(context.getAssets(),
@@ -224,7 +225,7 @@ public class Common {
             httpPost.setEntity(yourEntity);
 
             StringBuilder builderString = new StringBuilder();
-            DefaultHttpClient client = new DefaultHttpClient();
+            client = new DefaultHttpClient();
             HttpResponse response = null;
             response = client.execute(httpPost);
             InputStream content = response.getEntity().getContent();
@@ -385,7 +386,7 @@ public class Common {
     public static Drawable getDrawable(User user) {
         final int colorsCount = 16;
         final int number = (user.getId() <= colorsCount) ? user.getId() : user.getId() % colorsCount;
-        char firstLetter = user.getName().split("")[1].charAt(0);
+        char firstLetter = user.getName().split(" ")[1].charAt(0);
 
         return TextDrawable.builder().beginConfig()
                 .width(120)

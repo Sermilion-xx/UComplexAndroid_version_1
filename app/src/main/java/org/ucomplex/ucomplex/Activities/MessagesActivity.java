@@ -88,16 +88,17 @@ public class MessagesActivity extends AppCompatActivity implements OnTaskComplet
         name = getIntent().getStringExtra("name");
         Bitmap bmp = getIntent().getParcelableExtra("profileImage");
         User aUser = new User();
+        aUser.setId(Integer.valueOf(companion));
+        aUser.setName(name);
         if(bmp==null){
             profileImageView.setImageDrawable(Common.getDrawable(aUser));
         }else{
             profileImageView.setImageBitmap((Bitmap)getIntent().getParcelableExtra("profileImage"));
         }
-        aUser.setId(Integer.valueOf(companion));
-        aUser.setName(name);
+
         String[] aName = name.split(" ");
         if(aName.length>1){
-            nameTextView.setText(aName[1] + " " + aName[2]);
+            nameTextView.setText(aName[1] + " " + aName[0]);
         }else{
             nameTextView.setText(aName[0]);
         }

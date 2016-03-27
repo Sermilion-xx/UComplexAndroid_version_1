@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -48,6 +49,14 @@ public class ImageAdapter extends BaseAdapter {
     protected ImageLoader imageLoader;
     private int usersType;
     public Activity context;
+
+    public void setmItems(ArrayList<User> mItems) {
+        this.mItems = mItems;
+    }
+
+    public ArrayList<User> getmItems() {
+        return mItems;
+    }
 
     public ImageAdapter(ArrayList<User> items, Activity context, int usersType) {
         this.context = context;
@@ -101,6 +110,7 @@ public class ImageAdapter extends BaseAdapter {
         if (convertView == null) {
             convertView = inflater.inflate(R.layout.list_item_users, null);
             viewHolder = new ViewHolder(convertView, position, this, usersType, mItems, context);
+            viewHolder.btnMenu.setTag(position);
             if (convertView != null) {
                 convertView.setTag(viewHolder);
             }
@@ -210,42 +220,49 @@ class ViewHolder {
     ArrayList<String> actionsArrayList = new ArrayList<>();
     ImageAdapter imageAdapter;
     Activity context;
+    int pos;
 
 
-    public ViewHolder(View itemView, final int position, final ImageAdapter adapter, final int usersType, final ArrayList<User> mItems, final Activity context) {
+    public ViewHolder(View itemView, final int position1, final ImageAdapter adapter, final int usersType, final ArrayList<User> mItems, final Activity context) {
         imageAdapter = adapter;
         this.textView1 = (TextView) itemView.findViewById(R.id.list_users_item_textview1);
         this.textView2 = (TextView) itemView.findViewById(R.id.list_users_item_textview2);
         this.icon      = (ImageView) itemView.findViewById(R.id.list_users_item_image);
         this.btnMenu        = (Button) itemView.findViewById(R.id.list_users_item_menu_button);
         this.context = context;
+        this.btnMenu.setTag(position1);
 
         this.btnMenu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                View parentRow = (View) v.getParent();
+                ListView listView = (ListView) parentRow.getParent();
+                final int position = listView.getPositionForView(parentRow);
                 actionsArrayList.clear();
                 switch (usersType){
                     case 0:
                         actionsArrayList.add("Написать сообщение");
                         actionsArrayList.add("Добавить в друзья");
+                        actionsArrayList.add("Заблокировать");
                         break;
                     case 2:
                         actionsArrayList.add("Написать сообщение");
                         actionsArrayList.add("Добавить в друзья");
+                        actionsArrayList.add("Заблокировать");
                         break;
                     case 3:
                         actionsArrayList.add("Написать сообщение");
                         actionsArrayList.add("Добавить в друзья");
+                        actionsArrayList.add("Заблокировать");
                         break;
                     case 1:
                         actionsArrayList.add("Написать сообщение");
                         if(mItems.get(position).isFriendRequested()){
                             actionsArrayList.add("Принять заявку");
+                            actionsArrayList.add("Отклонить заявку");
                         }else{
                             actionsArrayList.add("Удалить из друзей");
                         }
-                        actionsArrayList.add("Отклонить заявку");
-                        actionsArrayList.add("Заблокировать");
                         break;
                     case 4:
                         actionsArrayList.add("Удалить из списка");
@@ -262,64 +279,71 @@ class ViewHolder {
                             case 0:
                                 if (usersType == 0 || usersType == 1 || usersType == 2 || usersType == 3) {
                                     Intent intent = new Intent(context, MessagesActivity.class);
-                                    String companion = String.valueOf(mItems.get(which).getPerson());
-                                    String name = String.valueOf(mItems.get(which).getName());
+                                    String companion = String.valueOf(mItems.get(position).getPerson());
+                                    String name = String.valueOf(mItems.get(position).getName());
                                     intent.putExtra("companion", companion);
                                     intent.putExtra("name", name);
+                                    intent.putExtra("profileImage", mItems.get(position).getPhotoBitmap());
                                     context.startActivity(intent);
-                                }
-                                else if (usersType == 4) {
-                                    params.put("user", String.valueOf(mItems.get(position).getId()));
+                                }else if (usersType == 4) {
+                                    params.put("user", String.valueOf(mItems.get(position).getPerson()));
                                     HandleMenuPress handleMenuPress1 = new HandleMenuPress();
                                     handleMenuPress1.execute("http://you.com.ru/user/blacklist/delete", params);
-                                    mItems.remove(position);
                                     Toast.makeText(context, "Пользователь удален из черного списка.", Toast.LENGTH_SHORT).show();
+                                    mItems.remove(position);
+                                    adapter.notifyDataSetChanged();
                                 }
                                 break;
                             case 1:
-                                if (usersType == 0 || usersType == 3 || usersType == 3) {
-                                    params.put("user", String.valueOf(mItems.get(position).getId()));
+                                if (usersType !=1 && usersType !=4) {
+                                    params.put("user", String.valueOf(mItems.get(position).getPerson()));
                                     HandleMenuPress handleMenuPress1 = new HandleMenuPress();
                                     handleMenuPress1.execute("http://you.com.ru/user/friends/add", params);
                                     Toast.makeText(context, "Заявка на дружбу отправлена.", Toast.LENGTH_SHORT).show();
+                                    break;
                                 } else if (usersType == 1) {
                                     params.put("user", String.valueOf(mItems.get(position).getId()));
                                     if (mItems.get(position).isFriendRequested()) {
                                         HandleMenuPress handleMenuPress = new HandleMenuPress();
                                         handleMenuPress.execute("http://you.com.ru/user/friends/accept", params);
                                         mItems.get(position).setFriendRequested(false);
-                                        Toast.makeText(context, mItems.get(position).getName() + " теперь ваш друг :)", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(context, mItems.get(position).getName() + " теперь ваш друг.", Toast.LENGTH_SHORT).show();
+                                        break;
                                     } else {
                                         HandleMenuPress handleMenuPress = new HandleMenuPress();
                                         handleMenuPress.execute("http://you.com.ru/user/friends/delete", params);
-                                        mItems.remove(position);
                                         Toast.makeText(context, "Пользователь удален из друзей.", Toast.LENGTH_SHORT).show();
+                                        mItems.remove(position);
+                                        adapter.notifyDataSetChanged();
+                                        break;
                                     }
                                 }
                             case 2:
-                                if(usersType!=4) {
+                                if(usersType==1) {
                                     params.put("user", String.valueOf(mItems.get(position).getId()));
                                     HandleMenuPress handleMenuPress = new HandleMenuPress();
                                     handleMenuPress.execute("https://ucomplex.org/user/friends/reject", params);
-                                    mItems.remove(position);
                                     Toast.makeText(context, "Заявка на дружбу отклонена.", Toast.LENGTH_SHORT).show();
+                                    mItems.remove(position);
+                                    adapter.notifyDataSetChanged();
                                     break;
-                                }
-                                break;
-                            case 3:
-                                if(usersType!=4) {
-                                    params.put("user", String.valueOf(mItems.get(position).getId()));
+                                }else if(usersType==0 || usersType==2 || usersType==3) {
+                                    params.put("user", String.valueOf(mItems.get(position).getPerson()));
                                     HandleMenuPress handleMenuPress = new HandleMenuPress();
                                     handleMenuPress.execute("http://you.com.ru/user/blacklist/add", params);
-                                    mItems.remove(position);
-                                    Toast.makeText(context, "Пользователь добавлен в черный список.", Toast.LENGTH_SHORT).show();
+                                    Common.userListChanged = 4;
+                                    Toast.makeText(context, "Пользователь "+ mItems.get(position).getName()+" добавлен в черный список.", Toast.LENGTH_SHORT).show();
+                                    break;
+                                }
+                            case 3:
+                                params.put("user", String.valueOf(mItems.get(position).getPerson()));
+                                if(usersType==1) {
+                                    HandleMenuPress handleMenuPress = new HandleMenuPress();
+                                    handleMenuPress.execute("http://you.com.ru/user/blacklist/add", params);
+                                    Toast.makeText(context, "Пользователь "+ mItems.get(position).getName()+" добавлен в черный список.", Toast.LENGTH_SHORT).show();
                                     break;
                                 }
                         }
-                        UsersActivity act = (UsersActivity)context;
-                        ViewPager viewPager = (ViewPager) context.findViewById(R.id.users_viewpager);
-                        act.setupViewPager(viewPager);
-                        viewPager.setCurrentItem(usersType);
                     }
                 }).create().show();
             }
