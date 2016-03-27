@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -115,6 +116,9 @@ public class EventsFragment extends ListFragment {
                             }
                         }
                     }.execute(userType, eventItems.size());
+                }else{
+                    Toast.makeText(getActivity(), "Проверьте интернет соединение.",
+                            Toast.LENGTH_SHORT).show();
                 }
             }
         });

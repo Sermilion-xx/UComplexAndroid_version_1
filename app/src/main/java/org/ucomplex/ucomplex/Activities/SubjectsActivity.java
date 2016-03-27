@@ -1,8 +1,10 @@
 package org.ucomplex.ucomplex.Activities;
 
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
@@ -13,11 +15,9 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import org.javatuples.Triplet;
-
 import org.ucomplex.ucomplex.Activities.Tasks.FetchSubjectsTask;
-import org.ucomplex.ucomplex.Common;
-import org.ucomplex.ucomplex.Interfaces.OnTaskCompleteListener;
 import org.ucomplex.ucomplex.Adaptors.SubjectsAdapter;
+import org.ucomplex.ucomplex.Interfaces.OnTaskCompleteListener;
 import org.ucomplex.ucomplex.R;
 
 import java.util.ArrayList;
@@ -76,6 +76,12 @@ public class SubjectsActivity extends AppCompatActivity implements OnTaskComplet
             }
             SubjectsAdapter subjectsAdapter = new SubjectsAdapter(this, mItems);
             listView.setAdapter(subjectsAdapter);
+            if(mItems.size()>0){
+                listView.setDivider(new ColorDrawable(ContextCompat.getColor(this, R.color.activity_background)));
+                listView.setDividerHeight(3);
+            }else{
+                listView.setDivider(null);
+            }
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> a, View v, int position, long id) {
