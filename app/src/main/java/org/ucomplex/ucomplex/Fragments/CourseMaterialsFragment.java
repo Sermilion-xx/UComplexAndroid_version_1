@@ -125,6 +125,9 @@ public class CourseMaterialsFragment extends ListFragment {
                         protected void onPostExecute(ArrayList fileArrayList) {
                             mItems.clear();
                             ArrayList<File> newFiles = new ArrayList<>(fileArrayList);
+                            if(newFiles.size()==0){
+                                getListView().setDivider(null);
+                            }
                             mItems.addAll(newFiles);
                             adapter.stackFiles.add(newFiles);
                             adapter.setmItems(mItems);
@@ -164,9 +167,12 @@ public class CourseMaterialsFragment extends ListFragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        getListView().setDivider(new ColorDrawable(ContextCompat.getColor(mContext, R.color.activity_background)));
-        getListView().setDividerHeight(3);
-
+        if(mItems.size()==0){
+            getListView().setDivider(null);
+        }else{
+            getListView().setDivider(new ColorDrawable(ContextCompat.getColor(mContext, R.color.activity_background)));
+            getListView().setDividerHeight(3);
+        }
     }
 
     @Override

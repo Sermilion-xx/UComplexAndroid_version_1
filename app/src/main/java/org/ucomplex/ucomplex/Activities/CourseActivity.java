@@ -2,6 +2,7 @@ package org.ucomplex.ucomplex.Activities;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
@@ -129,6 +130,12 @@ public class CourseActivity extends AppCompatActivity implements OnTaskCompleteL
                         courseMaterialsFragment.getAdapter().getStackFiles().remove(courseMaterialsFragment.getAdapter().getStackFiles().size() - 1);
                     }
                     courseMaterialsFragment.getmItems().addAll(newFiles);
+                    if(newFiles.size()==0){
+                        courseMaterialsFragment.getListView().setDivider(null);
+                    }else{
+                        courseMaterialsFragment.getListView().setDivider(new ColorDrawable(ContextCompat.getColor(this, R.color.activity_background)));
+                        courseMaterialsFragment.getListView().setDividerHeight(3);
+                    }
                     courseMaterialsFragment.getAdapter().notifyDataSetChanged();
                 }
             }
@@ -153,6 +160,12 @@ public class CourseActivity extends AppCompatActivity implements OnTaskCompleteL
                             courseMaterialsFragment.getAdapter().getStackFiles().remove(courseMaterialsFragment.getAdapter().getStackFiles().size() - 1);
                         }
                         courseMaterialsFragment.getmItems().addAll(newFiles);
+                        if(newFiles.size()==0){
+                            courseMaterialsFragment.getListView().setDivider(null);
+                        }else{
+                            courseMaterialsFragment.getListView().setDivider(new ColorDrawable(ContextCompat.getColor(this, R.color.activity_background)));
+                            courseMaterialsFragment.getListView().setDividerHeight(3);
+                        }
                         courseMaterialsFragment.getAdapter().notifyDataSetChanged();
                         return true;
                     } else {
