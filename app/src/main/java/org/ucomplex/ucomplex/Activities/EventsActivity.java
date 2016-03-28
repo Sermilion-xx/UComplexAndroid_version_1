@@ -49,15 +49,13 @@ public class EventsActivity extends AppCompatActivity implements OnTaskCompleteL
 
     final String[] TITLES = {"События", "Дисциплины", "Материалы", "Пользователи", "Сообщения", "Календарь", "Настройки", "Выход"};
     final int[] ICONS = {R.drawable.ic_menu_events,
-            R.drawable.ic_menu_events,
             R.drawable.ic_menu_subjects,
-//            R.drawable.ic_menu_events,
+            R.drawable.ic_menu_materials,
             R.drawable.ic_menu_users,
             R.drawable.ic_menu_messages,
-//            R.drawable.ic_library,
             R.drawable.ic_menu_timetable,
             R.drawable.ic_menu_settings,
-            R.drawable.ic_menu_events};
+            R.drawable.ic_menu_exit};
 
     RecyclerView mRecyclerView;                           // Declaring RecyclerView
     MenuAdapter mAdapter;                        // Declaring Adapter For Recycler View
