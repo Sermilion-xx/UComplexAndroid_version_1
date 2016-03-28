@@ -13,6 +13,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -34,6 +35,7 @@ public class MessagesListActivity extends AppCompatActivity implements OnTaskCom
     MessagesListAdapter messagesListAdapter;
     private int selectedItemPos;
     LinearLayout linlaHeaderProgress;
+    Button newMessageButton;
 
     @Override
     protected void onResume() {
@@ -76,6 +78,14 @@ public class MessagesListActivity extends AppCompatActivity implements OnTaskCom
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_messages_list);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        newMessageButton = (Button) findViewById(R.id.message_list_new_message_button);
+        newMessageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MessagesListActivity.this, UsersActivity.class);
+                startActivity(intent);
+            }
+        });
         toolbar.setTitle("Сообщения");
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
