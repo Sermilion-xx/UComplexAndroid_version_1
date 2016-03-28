@@ -229,6 +229,9 @@ public class CalendarFragment extends Fragment implements OnTaskCompleteListener
                         keys.add(key);
                     }
                     options.clear();
+                    options.add("Показать все");
+                    options.add("Все дисциплины");
+                    options.add("События");
                     for (int i = 0; i < calendar.getCourses().size(); i++) {
                         options.add(calendar.getCourses().get(keys.get(i)));
                     }

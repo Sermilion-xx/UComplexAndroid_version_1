@@ -234,15 +234,15 @@ public class LoginActivity extends AppCompatActivity implements LoginTask.AsyncR
             }
             Intent intent;
             Common.setRoleToPref(this, output.getType());
-            if (output.getRoles().size() > 1) {
-                intent = new Intent(this, RoleSelectActivity.class);
-                startActivity(intent);
-                showProgress(false);
-            } else {
+//            if (output.getRoles().size() > 1) {
+//                intent = new Intent(this, RoleSelectActivity.class);
+//                startActivity(intent);
+//                showProgress(false);
+//            } else {
                 intent = new Intent(this, EventsActivity.class);
                 startActivity(intent);
                 showProgress(false);
-            }
+//            }
             mAuthTask = null;
         } else {
             showProgress(false);
