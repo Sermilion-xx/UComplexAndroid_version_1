@@ -43,6 +43,7 @@ public class MessagesListAdapter extends ArrayAdapter<Dialog> {
     private Typeface robotoFont = Typeface.createFromAsset(getContext().getAssets(), "fonts/Roboto-Regular.ttf");
     private User user;
     private Bitmap profileImage;
+    private Context mContext;
 
     public User getUser() {
         return user;
@@ -50,6 +51,7 @@ public class MessagesListAdapter extends ArrayAdapter<Dialog> {
 
     public MessagesListAdapter(Context context, ArrayList<Dialog> dialogs) {
         super(context, -1, dialogs);
+        this.mContext = context;
         this.dialogs = dialogs;
         user = Common.getUserDataFromPref(context);
         profileImage = Common.decodePhotoPref(context,"profilePhoto");
@@ -70,8 +72,25 @@ public class MessagesListAdapter extends ArrayAdapter<Dialog> {
         return dialogs.get(position);
     }
 
+    @Override
+    public int getCount() {
+        return dialogs.size()>0?dialogs.size():1;
+    }
+    @Override
+    public boolean isEnabled(int position) {
+        return dialogs.size() != 0;
+    }
+
     public View getView(final int position, View convertView, ViewGroup parent) {
         ViewHolder viewHolder = null;
+        if (dialogs.size()==0){
+            if(!Common.isNetworkConnected(mContext)){
+                convertView = inflater.inflate(R.layout.list_item_no_internet, null, false);
+            }else{
+                convertView = inflater.inflate(R.layout.list_item_no_messages, null, false);
+            }
+            return convertView;
+        }
 
         if (convertView == null) {
             inflater = LayoutInflater.from(getContext());

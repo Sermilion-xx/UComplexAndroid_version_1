@@ -46,7 +46,7 @@ public class ProfileAdapter extends ArrayAdapter<Triplet> {
     Drawable ic_add_friend;
     User user;
 
-    public ProfileAdapter(Context context, List<Triplet> profileItems, Bitmap bitmap) {
+    public ProfileAdapter(Context context, List<Triplet> profileItems, Bitmap bitmap, User user) {
         super(context, R.layout.list_item_profile_header, profileItems);
         mUser = (User) profileItems.get(0).getValue1();
         mContext = context;
@@ -54,7 +54,7 @@ public class ProfileAdapter extends ArrayAdapter<Triplet> {
         mItems = profileItems;
         ic_add_friend = ContextCompat.getDrawable(mContext, R.drawable.ic_add_as_friend);
         ic_remove_friend = ContextCompat.getDrawable(mContext, R.drawable.ic_remove_friend);
-        user = Common.getUserDataFromPref(mContext);
+        this.user = user;
     }
 
     private View createHolder(ViewHolder viewHolder, View convertView, int viewType, ViewGroup parent, int posision) {

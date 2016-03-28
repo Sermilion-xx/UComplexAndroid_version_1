@@ -51,7 +51,7 @@ public class MessagesListActivity extends AppCompatActivity implements OnTaskCom
     @Override
     protected void onPause() {
         unregisterReceiver(receiver);
-        if(messagesListAdapter!=null){
+        if (messagesListAdapter != null) {
             messagesListAdapter.notifyDataSetChanged();
         }
         super.onPause();
@@ -156,28 +156,26 @@ public class MessagesListActivity extends AppCompatActivity implements OnTaskCom
             try {
                 linlaHeaderProgress.setVisibility(View.GONE);
                 dialogs = (ArrayList<Dialog>) task.get();
-                if (dialogs != null && dialogs.size() > 0) {
-                    messagesListAdapter = new MessagesListAdapter(this, dialogs);
-                    ListView listView = (ListView) findViewById(R.id.messages_listview);
-                    listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                        @Override
-                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                            Intent intent = new Intent(MessagesListActivity.this, MessagesActivity.class);
-                            intent.putExtra("companion", String.valueOf(dialogs.get(position).getCompanion()));
-                            intent.putExtra("name", String.valueOf(dialogs.get(position).getName()));
-                            startActivity(intent);
-                        }
-                    });
-                    listView.setAdapter(messagesListAdapter);
-                    listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-                        public boolean onItemLongClick(AdapterView parent, View view, final int position, long id) {
-                            selectedItemPos = position;
-                            MessagesListActivity.this.startActionMode(modeCallBack);
-                            view.setSelected(true);
-                            return true;
-                        }
-                    });
-                }
+                messagesListAdapter = new MessagesListAdapter(this, dialogs);
+                ListView listView = (ListView) findViewById(R.id.messages_listview);
+                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        Intent intent = new Intent(MessagesListActivity.this, MessagesActivity.class);
+                        intent.putExtra("companion", String.valueOf(dialogs.get(position).getCompanion()));
+                        intent.putExtra("name", String.valueOf(dialogs.get(position).getName()));
+                        startActivity(intent);
+                    }
+                });
+                listView.setAdapter(messagesListAdapter);
+                listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+                    public boolean onItemLongClick(AdapterView parent, View view, final int position, long id) {
+                        selectedItemPos = position;
+                        MessagesListActivity.this.startActionMode(modeCallBack);
+                        view.setSelected(true);
+                        return true;
+                    }
+                });
             } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();
             }

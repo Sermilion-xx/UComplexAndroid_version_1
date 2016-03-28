@@ -114,6 +114,7 @@
     <string name="current_semester_str_ru">Текущий семестр</string>
     <string name="no_internet_str">Пожалуйста, проверьте ваше интернет соединение</string>
     <string name="no_content_str">Нет контента для отображения</string>
+    <string name="no_dilogs_str">Нет диалогов</string>
 
 
 </resources>

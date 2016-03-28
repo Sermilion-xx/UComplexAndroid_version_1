@@ -28,6 +28,7 @@ public class ProfileFragment extends ListFragment {
     List<Triplet> mItems;
     int hasPhoto = 0;
     String code;
+    User user;
 
     public ProfileFragment() {
 
@@ -67,24 +68,32 @@ public class ProfileFragment extends ListFragment {
     }
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        user = Common.getUserDataFromPref(mContext);
+    }
+
+    @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
         if (hasPhoto == 1 && mBitmap == null) {
             new AsyncTask<String, Void, Bitmap>() {
                 @Override
                 protected Bitmap doInBackground(String... params) {
                     return Common.getBitmapFromURL(params[0], 0);
+
                 }
 
                 @Override
                 protected void onPostExecute(Bitmap bitmap) {
                     mBitmap = bitmap;
-                    mAdapter = new ProfileAdapter(mContext, mItems, mBitmap);
+                    mAdapter = new ProfileAdapter(mContext, mItems, mBitmap, user);
                     setListAdapter(mAdapter);
                 }
             }.execute(code);
         } else {
-            mAdapter = new ProfileAdapter(mContext, mItems, mBitmap);
+            mAdapter = new ProfileAdapter(mContext, mItems, mBitmap, user);
             setListAdapter(mAdapter);
         }
         getListView().setDivider(null);

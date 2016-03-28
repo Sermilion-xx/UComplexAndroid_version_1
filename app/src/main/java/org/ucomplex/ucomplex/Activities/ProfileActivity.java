@@ -54,7 +54,7 @@ public class ProfileActivity extends AppCompatActivity implements OnTaskComplete
             bitmap = extra.getParcelable("bitmap");
             hasPhoto = Integer.parseInt(extra.getString("hasPhoto"));
             code = extra.getString("code");
-
+            profileFragment = new ProfileFragment();
             FetchPersonTask fetchPersonTask = new FetchPersonTask(this, this);
             fetchPersonTask.setPerson(String.valueOf(personId));
             fetchPersonTask.setmContext(this);
@@ -101,7 +101,7 @@ public class ProfileActivity extends AppCompatActivity implements OnTaskComplete
                 }
                 items.add(aItem);
             }
-            profileFragment = new ProfileFragment();
+
             profileFragment.setContext(this);
             profileFragment.setBitmap(bitmap);
             profileFragment.setHasPhoto(hasPhoto);
@@ -115,6 +115,7 @@ public class ProfileActivity extends AppCompatActivity implements OnTaskComplete
                     fragmentManager.beginTransaction();
             fragmentTransaction.replace(R.id.content_person, profileFragment);
             fragmentTransaction.commit();
+            getSupportFragmentManager().executePendingTransactions();
             linlaHeaderProgress.setVisibility(View.GONE);
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();

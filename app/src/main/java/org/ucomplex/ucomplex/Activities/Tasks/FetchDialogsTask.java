@@ -50,7 +50,7 @@ public class FetchDialogsTask extends AsyncTask<Integer, String, ArrayList> impl
                 return getDialogsFromJson(jsonData);
             }
         }
-        return null;
+        return new ArrayList();
     }
 
     private ArrayList getDialogsFromJson(String jsonData) {
@@ -76,7 +76,7 @@ public class FetchDialogsTask extends AsyncTask<Integer, String, ArrayList> impl
         }catch (JSONException e) {
             e.printStackTrace();
         }
-        return null;
+        return new ArrayList();
     }
 
     @Override
