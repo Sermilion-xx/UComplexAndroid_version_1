@@ -206,7 +206,7 @@ public class LoginActivity extends AppCompatActivity implements LoginTask.AsyncR
                     mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
                 }
             });
-
+//89640633856
             mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
             mProgressView.animate().setDuration(shortAnimTime).alpha(
                     show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
@@ -246,7 +246,7 @@ public class LoginActivity extends AppCompatActivity implements LoginTask.AsyncR
             mAuthTask = null;
         } else {
             showProgress(false);
-            mPasswordView.setError(getString(R.string.error_incorrect_password));
+            mPasswordView.setError("Неверные данные");
             mPasswordView.requestFocus();
         }
     }

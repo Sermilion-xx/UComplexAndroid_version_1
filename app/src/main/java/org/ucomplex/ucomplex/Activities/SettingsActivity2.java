@@ -89,19 +89,19 @@ public class SettingsActivity2 extends AppCompatActivity implements OnTaskComple
                         uploadPhotoTask.setupTask(settingsOneFragment.getContentBody());
                         SettingsOneFragment.PROFILE_IMAGE_CHANGED = false;
                     }
-                    if (SettingsOneFragment.CURRENT_PASSWORD_CHANGE && SettingsOneFragment.NEW_PASSWORD_CHANGE && SettingsOneFragment.NEW_PASSWORD_AGAIN_CHANGE) {
+                if (SettingsOneFragment.CURRENT_PASSWORD_CHANGE || SettingsOneFragment.NEW_PASSWORD_CHANGE || SettingsOneFragment.NEW_PASSWORD_AGAIN_CHANGE) {
                         settingsOneFragment.resetPassword(settingsOneFragment.currentPasswordTextView,
                                 settingsOneFragment.newPasswordTextView,
                                 settingsOneFragment.newPasswordAgainTextView, settingsOneFragment.user);
                     } else if (SettingsOneFragment.CURRENT_PASSWORD_CHANGE || SettingsOneFragment.NEW_PASSWORD_CHANGE || SettingsOneFragment.NEW_PASSWORD_AGAIN_CHANGE) {
                         Toast.makeText(SettingsActivity2.this, "Заполните все поля!", Toast.LENGTH_LONG).show();
                     }
-                    if (SettingsOneFragment.NEW_EMAIL_CHANGE && SettingsOneFragment.NEW_EMAIL_PASSWORD_CHANGE) {
+                    if (SettingsOneFragment.NEW_EMAIL_CHANGE || SettingsOneFragment.NEW_EMAIL_PASSWORD_CHANGE) {
                         settingsOneFragment.changeEmail(settingsOneFragment.passwordEmalTextView, settingsOneFragment.newEmalTextView);
                     } else if (SettingsOneFragment.NEW_EMAIL_CHANGE || SettingsOneFragment.NEW_EMAIL_PASSWORD_CHANGE) {
                         Toast.makeText(SettingsActivity2.this, "Заполните все поля!", Toast.LENGTH_LONG).show();
                     }
-                    if (SettingsOneFragment.NEW_PHONE_CHANGED && SettingsOneFragment.NEW_PHONE_PASSWORD_CHANGE) {
+                    if (SettingsOneFragment.NEW_PHONE_CHANGED || SettingsOneFragment.NEW_PHONE_PASSWORD_CHANGE) {
                         settingsOneFragment.changePhoneNumber(settingsOneFragment.newPhoneTextView, settingsOneFragment.oldPasswordPhoneTextView);
                     } else if (SettingsOneFragment.NEW_PHONE_CHANGED || SettingsOneFragment.NEW_PHONE_PASSWORD_CHANGE) {
                         Toast.makeText(SettingsActivity2.this, "Заполните все поля!", Toast.LENGTH_LONG).show();
@@ -183,17 +183,28 @@ public class SettingsActivity2 extends AppCompatActivity implements OnTaskComple
             } else {
                 try {
                     User user = Common.getUserDataFromPref(SettingsActivity2.this);
-                    if (SettingsOneFragment.CURRENT_PASSWORD_CHANGE && SettingsOneFragment.NEW_PASSWORD_CHANGE && SettingsOneFragment.NEW_PASSWORD_AGAIN_CHANGE) {
-                        user.setPass(settingsOneFragment.newPasswordTextView.getText().toString());
-                        Common.setUserDataToPref(SettingsActivity2.this, user);
+                    if (SettingsOneFragment.CURRENT_PASSWORD_CHANGE || SettingsOneFragment.NEW_PASSWORD_CHANGE || SettingsOneFragment.NEW_PASSWORD_AGAIN_CHANGE) {
+                        if(!settingsOneFragment.newPasswordTextView.getText().toString().equals("")){
+                            user.setPass(settingsOneFragment.newPasswordTextView.getText().toString());
+                            Common.setUserDataToPref(SettingsActivity2.this, user);
+                            settingsOneFragment.user.setPass(settingsOneFragment.newPasswordTextView.getText().toString());
+                        }
                         SettingsOneFragment.CURRENT_PASSWORD_CHANGE = false;
                         SettingsOneFragment.NEW_PASSWORD_CHANGE = false;
                         SettingsOneFragment.NEW_PASSWORD_AGAIN_CHANGE = false;
+                        settingsOneFragment.newPasswordTextView.setText("");
+                        settingsOneFragment.newPasswordAgainTextView.setText("");
+                        settingsOneFragment.currentPasswordTextView.setText("");
+
                     }
                     if (task.get() != null) {
                         if (task.get().equals("success")) {
                             if ((int) o[0] == 3) {
                                 //phone
+                                if(!settingsOneFragment.newPhoneTextView.getText().toString().equals("")){
+                                    user.setPhone(settingsOneFragment.newPhoneTextView.getText().toString());
+                                    Common.setUserDataToPref(SettingsActivity2.this, user);
+                                }
                                 String phone = settingsOneFragment.formatPhoneNumber(user.getPhone());
                                 settingsOneFragment.oldPhoneTextView.setText(phone);
                                 settingsOneFragment.oldPasswordPhoneTextView.setText("");
@@ -202,6 +213,10 @@ public class SettingsActivity2 extends AppCompatActivity implements OnTaskComple
                                 SettingsOneFragment.NEW_PHONE_CHANGED = false;
                             } else if ((int) o[0] == 2) {
                                 //email
+                                if(!settingsOneFragment.newEmalTextView.getText().toString().equals("")){
+                                    user.setEmail(settingsOneFragment.newEmalTextView.getText().toString());
+                                    Common.setUserDataToPref(SettingsActivity2.this, user);
+                                }
                                 settingsOneFragment.currentEmalTextView.setText(user.getEmail());
                                 settingsOneFragment.passwordEmalTextView.setText("");
                                 settingsOneFragment.newEmalTextView.setText("");
