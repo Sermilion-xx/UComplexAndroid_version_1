@@ -41,7 +41,7 @@ public class LoginTask extends AsyncTask<Void, Void, User> {
         JSONObject rolesJson = new JSONObject(rolesJsonStr);
         JSONArray rolesArray = rolesJson.getJSONArray("roles");
         JSONObject roles = new JSONObject();
-        for(int i = 0; i < rolesArray.length(); i++) {
+        for (int i = 0; i < rolesArray.length(); i++) {
             roles = rolesArray.getJSONObject(i);
             User userRole = new User();
             userRole.setId(roles.getInt("id"));
@@ -53,10 +53,18 @@ public class LoginTask extends AsyncTask<Void, Void, User> {
 
         JSONObject userSession = rolesJson.getJSONObject("session");
         User user = new User();
-        if(rolesArray.length()==1){
-            user.setType(roles.getInt("type"));
-            user.setId(roles.getInt("id"));
+//        if(rolesArray.length()==1){
+//            user.setType(roles.getInt("type"));
+//            user.setId(roles.getInt("id"));
+//        }
+        user.setType(-1);
+        for (int i = 0; i < rolesArray.length(); i++) {
+            if (rolesArray.getJSONObject(i).getInt("type") == 4) {
+                user.setType(rolesArray.getJSONObject(i).getInt("type"));
+                user.setId(rolesArray.getJSONObject(i).getInt("id"));
+            }
         }
+
         user.setPhoto(userSession.getInt("photo"));
         user.setCode(userSession.getString("code"));
         user.setPerson(userSession.getInt("person"));
@@ -75,14 +83,14 @@ public class LoginTask extends AsyncTask<Void, Void, User> {
     protected User doInBackground(Void... params) {
         String urlString = "http://you.com.ru/auth?mobile=1";
         String jsonData = Common.httpPost(urlString, mLogin + ":" + mPassword);
-        if(jsonData !=null && !jsonData.equals("")) {
+        if (jsonData != null && !jsonData.equals("")) {
             User user = null;
             try {
                 user = getUserFromJson(jsonData);
-                if(user.getPhoto()==1){
+                if (user.getPhoto() == 1) {
                     photoBitmap = Common.getBitmapFromURL(user.getCode(), 0);
                     System.out.println();
-                }else {
+                } else {
                     Common.deleteFromPref(mContext, "profilePhoto");
                 }
             } catch (JSONException e) {
@@ -91,7 +99,7 @@ public class LoginTask extends AsyncTask<Void, Void, User> {
             return user;
         }
 
-        return null;
+        return new User();
     }
 
     @Override
@@ -105,7 +113,8 @@ public class LoginTask extends AsyncTask<Void, Void, User> {
     }
 
     public interface AsyncResponse {
-        void processFinish(User output, Bitmap  bitmap);
+        void processFinish(User output, Bitmap bitmap);
+
         void canceled(boolean canceled);
     }
 }

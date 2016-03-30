@@ -31,12 +31,14 @@ import java.util.List;
 public class CourseMaterialsAdapter extends ArrayAdapter<File> {
 
     private Context context;
+
     private CourseMaterialsFragment fragment;
     private List<File> mItems;
     protected boolean myFiles;
     public int level = 0;
     public ArrayList<ArrayList<File>> stackFiles = new ArrayList<>();
     private LayoutInflater inflater;
+    private String previousName;
 
     public CourseMaterialsAdapter(Context context, List<File> items, boolean myFiles, CourseMaterialsFragment fragment) {
         super(context, R.layout.list_item_course_material_folder, items);
@@ -258,6 +260,9 @@ public class CourseMaterialsAdapter extends ArrayAdapter<File> {
                                 String newName = editText.getText().toString();
                                 if(!newName.equals("")){
                                     renameItem(position, newName);
+                                    previousName = adapter.mItems.get(position).getName();
+                                    adapter.mItems.get(position).setName(newName);
+                                    adapter.notifyDataSetChanged();
                                 }else{
                                     Toast.makeText(context, "Название не может быть пустым.", Toast.LENGTH_LONG).show();
                                 }
@@ -284,7 +289,7 @@ public class CourseMaterialsAdapter extends ArrayAdapter<File> {
                     String url = "http://you.com.ru/student/my_files/delete_file?mobile=1";
                     HashMap<String, String> httpParams = new HashMap();
                     httpParams.put("file", adapter.mItems.get(pos).getAddress());
-                    Common.httpPost(url, Common.getLoginDataFromPref(context), httpParams);
+                    String jsonData = Common.httpPost(url, Common.getLoginDataFromPref(context), httpParams);
                     return null;
                 }
 
@@ -304,6 +309,7 @@ public class CourseMaterialsAdapter extends ArrayAdapter<File> {
             new AsyncTask<Void, Void, String>() {
                 @Override
                 protected String doInBackground(Void... params) {
+
                     String jsonData;
                     String url = "http://you.com.ru/student/my_files/rename_file?mobile=1";
                     HashMap<String, String> httpParams = new HashMap();
@@ -317,9 +323,9 @@ public class CourseMaterialsAdapter extends ArrayAdapter<File> {
                 protected void onPostExecute(String newFile) {
                     super.onPostExecute(newFile);
                     if (newFile != null) {
-                        adapter.mItems.get(pos).setName(newName);
-                        adapter.notifyDataSetChanged();
+
                     } else {
+                        adapter.mItems.get(pos).setName(previousName);
                         Snackbar snackbar = Snackbar
                                 .make(null, "Ошибка", Snackbar.LENGTH_LONG);
                         snackbar.show();

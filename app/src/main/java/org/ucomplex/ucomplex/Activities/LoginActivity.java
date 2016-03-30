@@ -224,16 +224,20 @@ public class LoginActivity extends AppCompatActivity implements LoginTask.AsyncR
     @Override
     public void processFinish(User output, Bitmap bitmap) {
         if (output != null) {
-            Common.setUserDataToPref(this, output);
-            SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(this).edit();
-            editor.putBoolean("logged", true);
-            editor.apply();
+            if(output.getId()==-1){
+                showProgress(false);
+                Toast.makeText(this, "Ошибка роли", Toast.LENGTH_SHORT).show();
+            } else {
+                Common.setUserDataToPref(this, output);
+                SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(this).edit();
+                editor.putBoolean("logged", true);
+                editor.apply();
 
-            if (bitmap != null) {
-                Common.encodePhotoPref(this, bitmap, "profilePhoto");
-            }
-            Intent intent;
-            Common.setRoleToPref(this, output.getType());
+                if (bitmap != null) {
+                    Common.encodePhotoPref(this, bitmap, "profilePhoto");
+                }
+                Intent intent;
+                Common.setRoleToPref(this, output.getType());
 //            if (output.getRoles().size() > 1) {
 //                intent = new Intent(this, RoleSelectActivity.class);
 //                startActivity(intent);
@@ -243,7 +247,8 @@ public class LoginActivity extends AppCompatActivity implements LoginTask.AsyncR
                 startActivity(intent);
                 showProgress(false);
 //            }
-            mAuthTask = null;
+                mAuthTask = null;
+            }
         } else {
             showProgress(false);
             mPasswordView.setError("Неверные данные");

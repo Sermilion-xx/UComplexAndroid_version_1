@@ -26,9 +26,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="26dp"
-            android:layout_toRightOf="@+id/course_calendar_belt_listview_item_image"
             android:lines="1"
-            android:text="Название предмета"
+
             android:textColor="#000000"
             android:textSize="16sp" />
 
@@ -39,7 +38,6 @@
             android:layout_below="@+id/course_calendar_belt_listview_item_subject_name"
             android:layout_marginLeft="26dp"
             android:lines="1"
-            android:text="Имя Фамильвева Отчествовна"
             />
 
 
@@ -59,8 +57,7 @@
             android:layout_below="@+id/course_calendar_belt_listview_item_teacher_name"
             android:layout_marginLeft="5dp"
             android:layout_toRightOf="@+id/course_calendar_belt_listview_time_icon"
-            android:lines="1"
-            android:text="Время" />
+            android:lines="1" />
 
     </RelativeLayout>
 

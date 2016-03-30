@@ -61,7 +61,7 @@ public class FetchUserEventsTask extends AsyncTask<Integer, Void, ArrayList<Even
         } catch (JSONException e) {
         e.printStackTrace();
         }
-        return null;
+        return new ArrayList<>();
     }
 
     @Override

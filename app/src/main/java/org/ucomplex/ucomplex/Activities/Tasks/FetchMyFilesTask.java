@@ -86,8 +86,8 @@ public class FetchMyFilesTask extends AsyncTask<String, String, ArrayList<File>>
         super.onPostExecute(filesData);
         if (mProgressTracker != null) {
             mProgressTracker.onComplete();
+            mProgressTracker = null;
         }
-        mProgressTracker = null;
     }
 
     @Override

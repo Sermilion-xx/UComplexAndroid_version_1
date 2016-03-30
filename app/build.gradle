@@ -1,9 +1,18 @@
 apply plugin: 'com.android.application'
 
 android {
+    signingConfigs {
+        config {
+            keyAlias 'uComplex'
+            keyPassword 'Emocore95'
+            storeFile file('/Users/Sermilion/AndroidStudioProjects/Keystore.jks')
+            storePassword 'Emocore95'
+        }
+        config1 {
+        }
+    }
     compileSdkVersion 23
     buildToolsVersion "23.0.2"
-
     defaultConfig {
         applicationId "org.ucomplex.ucomplex"
         minSdkVersion 16
@@ -19,7 +28,6 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-
     packagingOptions {
         exclude 'META-INF/DEPENDENCIES.txt'
         exclude 'META-INF/LICENSE.txt'
@@ -32,14 +40,13 @@ android {
         exclude 'META-INF/dependencies.txt'
         exclude 'META-INF/LGPL2.1'
     }
-
     useLibrary 'org.apache.http.legacy'
 }
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
-    compile group: 'org.apache.httpcomponents', name: 'httpclient-android', version: '4.3.5.1'
+    compile 'org.apache.httpcomponents:httpclient-android:4.3.5.1'
     compile('org.apache.httpcomponents:httpmime:4.3') {
         exclude module: "httpclient"
 

@@ -16,6 +16,7 @@ import android.view.ContextMenu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import org.ucomplex.ucomplex.Activities.Tasks.FetchMyFilesTask;
@@ -33,6 +34,7 @@ public class CourseMaterialsFragment extends ListFragment {
 
     private ArrayList<File> mItems;
     OnHeadlineSelectedListener mCallback;
+    LinearLayout linlaHeaderProgress;
 
     private Activity mContext;
     private boolean myFiles = false;
@@ -167,6 +169,7 @@ public class CourseMaterialsFragment extends ListFragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        linlaHeaderProgress = (LinearLayout) view.findViewById(R.id.linlaHeaderProgress);
         if(mItems.size()==0){
             getListView().setDivider(null);
         }else{
