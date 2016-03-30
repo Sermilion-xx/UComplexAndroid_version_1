@@ -17,10 +17,10 @@ android {
         applicationId "org.ucomplex.ucomplex"
         minSdkVersion 16
         targetSdkVersion 23
-        versionCode 1
-        versionName "1.0"
+        versionName '1.0.1'
         // Enabling multidex support.
         multiDexEnabled true
+        versionCode 2
     }
     buildTypes {
         release {
@@ -41,6 +41,8 @@ android {
         exclude 'META-INF/LGPL2.1'
     }
     useLibrary 'org.apache.http.legacy'
+    productFlavors {
+    }
 }
 
 dependencies {
