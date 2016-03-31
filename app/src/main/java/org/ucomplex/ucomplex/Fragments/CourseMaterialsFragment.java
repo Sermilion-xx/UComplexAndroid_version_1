@@ -84,6 +84,11 @@ public class CourseMaterialsFragment extends ListFragment {
 
     public void addFile(File file) {
         this.mItems.add(file);
+        ArrayList tempItems = new ArrayList();
+        tempItems.add(file);
+        tempItems.addAll(this.mItems);
+        this.mItems.clear();
+        this.mItems.addAll(tempItems);
     }
 
     public void setFiles(ArrayList<File> files) {
