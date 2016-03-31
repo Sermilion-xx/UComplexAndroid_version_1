@@ -70,6 +70,10 @@ public class CourseMaterialsFragment extends ListFragment {
         this.myFiles = myFiles;
     }
 
+    public boolean isMyFiles() {
+        return myFiles;
+    }
+
     public CourseMaterialsFragment() {
         // Required empty public constructor
     }
@@ -95,6 +99,7 @@ public class CourseMaterialsFragment extends ListFragment {
         //form Materials menu
         if (adapter == null) {
             adapter = new CourseMaterialsAdapter(getActivity(), mItems, myFiles, this);
+            adapter.setActivity(mContext);
         }
         setListAdapter(adapter);
 

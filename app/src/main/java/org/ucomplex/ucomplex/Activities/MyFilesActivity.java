@@ -247,11 +247,9 @@ public class MyFilesActivity extends AppCompatActivity implements OnTaskComplete
             this.grantUriPermission("org.ucomplex.ucomplex.Activities", originalUri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
         }
         if (originalUri != null) {
-//            String path1 = originalUri.getPath();
             String path = getPath(this, originalUri);
             if (Common.isNetworkConnected(this)) {
                 uplodFile(path);
-
             } else {
                 Toast.makeText(this, "Проверте интернет соединение", Toast.LENGTH_LONG).show();
             }
@@ -384,14 +382,6 @@ public class MyFilesActivity extends AppCompatActivity implements OnTaskComplete
         return "com.android.providers.media.documents".equals(uri.getAuthority());
     }
 
-    public String getPath(Uri uri) {
-        String[] projection = {MediaStore.Images.Media.DATA};
-        Cursor cursor = managedQuery(uri, projection, null, null, null);
-        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-        cursor.moveToFirst();
-        return cursor.getString(column_index);
-    }
-
     @Override
     public void onTaskComplete(AsyncTask task, Object... o) {
         if (task.isCancelled()) {
@@ -406,7 +396,6 @@ public class MyFilesActivity extends AppCompatActivity implements OnTaskComplete
                 courseMaterialsFragment.setMyFiles(true);
                 courseMaterialsFragment.setmContext(MyFilesActivity.this);
                 courseMaterialsFragment.setMyFilesToolBarTitle(titles.get(titles.size() - 1));
-
                 FragmentManager fragmentManager = getSupportFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                 fragmentTransaction.replace(R.id.content_my_files, courseMaterialsFragment);

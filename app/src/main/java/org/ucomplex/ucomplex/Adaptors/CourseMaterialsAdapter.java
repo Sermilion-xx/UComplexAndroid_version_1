@@ -1,5 +1,6 @@
 package org.ucomplex.ucomplex.Adaptors;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Typeface;
@@ -16,6 +17,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.ucomplex.ucomplex.Common;
 import org.ucomplex.ucomplex.Fragments.CourseMaterialsFragment;
 import org.ucomplex.ucomplex.Model.StudyStructure.File;
@@ -31,7 +34,7 @@ import java.util.List;
 public class CourseMaterialsAdapter extends ArrayAdapter<File> {
 
     private Context context;
-
+    Activity activity;
     private CourseMaterialsFragment fragment;
     private List<File> mItems;
     protected boolean myFiles;
@@ -39,6 +42,10 @@ public class CourseMaterialsAdapter extends ArrayAdapter<File> {
     public ArrayList<ArrayList<File>> stackFiles = new ArrayList<>();
     private LayoutInflater inflater;
     private String previousName;
+
+    public void setActivity(Activity activity) {
+        this.activity = activity;
+    }
 
     public CourseMaterialsAdapter(Context context, List<File> items, boolean myFiles, CourseMaterialsFragment fragment) {
         super(context, R.layout.list_item_course_material_folder, items);
@@ -283,24 +290,33 @@ public class CourseMaterialsAdapter extends ArrayAdapter<File> {
 
         private void removeItem(final int pos) {
 
-            new AsyncTask<Void, Void, ArrayList>() {
+            new AsyncTask<Void, Void, String>() {
                 @Override
-                protected ArrayList doInBackground(Void... params) {
+                protected String doInBackground(Void... params) {
                     String url = "http://you.com.ru/student/my_files/delete_file?mobile=1";
                     HashMap<String, String> httpParams = new HashMap();
                     httpParams.put("file", adapter.mItems.get(pos).getAddress());
-                    String jsonData = Common.httpPost(url, Common.getLoginDataFromPref(context), httpParams);
-                    return null;
+                    return Common.httpPost(url, Common.getLoginDataFromPref(context), httpParams);
                 }
 
                 @Override
-                protected void onPostExecute(ArrayList newFile) {
+                protected void onPostExecute(String newFile) {
                     super.onPostExecute(newFile);
-                    adapter.mItems.remove(pos);
-                    adapter.notifyDataSetChanged();
-                    if(adapter.mItems.size()==0){
-                        fragment.getListView().setDivider(null);
+                    try {
+                        JSONObject jsonObject = new JSONObject(newFile);
+                        if(jsonObject.getBoolean("general")){
+                            adapter.mItems.remove(pos);
+                            adapter.notifyDataSetChanged();
+                            if(adapter.mItems.size()==0){
+                                fragment.getListView().setDivider(null);
+                            }
+                        }else{
+                            Toast.makeText(context, "Произошла ошибка", Toast.LENGTH_LONG).show();
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
+
                 }
             }.execute();
         }

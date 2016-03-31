@@ -245,7 +245,7 @@ public class Common {
     }
 
 
-    public static ArrayList getFileDataFromJson(String jsonData, Activity contex) {
+    public static ArrayList<org.ucomplex.ucomplex.Model.StudyStructure.File> getFileDataFromJson(String jsonData, Activity contex) {
         ArrayList<org.ucomplex.ucomplex.Model.StudyStructure.File> files = new ArrayList<>();
         JSONObject fileJson;
         if (jsonData != null) {
