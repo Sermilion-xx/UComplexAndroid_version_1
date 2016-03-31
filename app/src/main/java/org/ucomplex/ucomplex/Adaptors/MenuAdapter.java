@@ -124,6 +124,7 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
                 User user = Common.getUserDataFromPref(context);
                 Intent intent = new Intent(contxt, ProfileActivity.class);
                 intent.putExtra("person", String.valueOf(user.getPerson()));
+//                profileBitmap = Common.decodePhotoPref(context, "profilePhoto");
                 intent.putExtra("bitmap",profileBitmap);
                 intent.putExtra("hasPhoto", String.valueOf(user.getPhoto()));
                 intent.putExtra("code",user.getCode());
@@ -164,7 +165,7 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
                     //Cleanup
                     stream.close();
                     if (profileBitmap != null) {
-                        profileBitmap.recycle();
+//                        profileBitmap.recycle();
                     }
                     //Pop intent
                     intent.putExtra("image", filename);
