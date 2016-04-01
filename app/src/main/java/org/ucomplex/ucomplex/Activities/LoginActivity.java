@@ -2,6 +2,7 @@ package org.ucomplex.ucomplex.Activities;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -33,7 +34,7 @@ import org.ucomplex.ucomplex.R;
 
 import java.util.HashMap;
 
-public class LoginActivity extends AppCompatActivity implements LoginTask.AsyncResponse {
+public class LoginActivity extends Activity implements LoginTask.AsyncResponse {
 
     private LoginTask mAuthTask = null;
     private AutoCompleteTextView mEmailView;
