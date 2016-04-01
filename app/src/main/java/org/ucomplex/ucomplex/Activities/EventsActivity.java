@@ -120,7 +120,7 @@ public class EventsActivity extends AppCompatActivity implements OnTaskCompleteL
             fragment.setArguments(data);
             getFragmentManager().beginTransaction()
                     .replace(R.id.container, fragment)
-                    .commit();
+                    .commitAllowingStateLoss();
             linlaHeaderProgress.setVisibility(View.GONE);
         }
     }

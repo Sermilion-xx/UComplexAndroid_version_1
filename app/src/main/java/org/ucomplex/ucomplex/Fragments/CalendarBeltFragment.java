@@ -99,7 +99,7 @@ public class CalendarBeltFragment extends ListFragment {
                                 Toast.makeText(getActivity(), "Произошла ошибка", Toast.LENGTH_SHORT).show();
                             }
                         }
-                    }.setupTask(gcourse, courseCalendarBeltAdapter.getmItems().size());
+                    }.setupTask(gcourse, courseCalendarBeltAdapter.getmItems().size()+1);
                 } else {
                     Toast.makeText(getContext(), "Проверте интернет соединение.", Toast.LENGTH_LONG).show();
                 }
