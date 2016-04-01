@@ -50,7 +50,9 @@ public class CalendarActivity extends AppCompatActivity implements AdapterView.O
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        user = Common.getUserDataFromPref(this);
+        if(user==null){
+            user = Common.getUserDataFromPref(this);
+        }
         int content_view;
         if (user.getType() == 4) {
             content_view = R.layout.activity_calendar;

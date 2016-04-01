@@ -39,7 +39,7 @@ public class CalendarStatisticsFragment extends ListFragment {
             CalendarStatisticsAdapter calendarStatisticsAdapter = new CalendarStatisticsAdapter(getContext(), this.statisticItems);
             getListView().setAdapter(calendarStatisticsAdapter);
         }
-        if((statisticItems != null ? statisticItems.size() : 0) ==0){
+        if((statisticItems != null ? statisticItems.size() : 0) == 0){
             getListView().setDivider(null);
         }else{
             getListView().setDivider(ContextCompat.getDrawable(getContext(), R.color.uc_gray_text_events));

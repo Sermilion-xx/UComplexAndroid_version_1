@@ -80,6 +80,7 @@ public class Common {
     public static boolean newUsr;
     public static ArrayList<Integer> fromMessages = new ArrayList<>();
     public static DefaultHttpClient client;
+    User user;
 
     public static Typeface getTypeFace(Context context, String typeFace) {
         Typeface tf = Typeface.createFromAsset(context.getAssets(),

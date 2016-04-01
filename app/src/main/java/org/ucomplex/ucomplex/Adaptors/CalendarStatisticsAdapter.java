@@ -11,6 +11,7 @@ import org.javatuples.Quintet;
 import org.ucomplex.ucomplex.Common;
 import org.ucomplex.ucomplex.R;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 /**
@@ -34,6 +35,7 @@ public class CalendarStatisticsAdapter extends ArrayAdapter<Quintet<String, Stri
         statisticItemsOld.add(new Quintet<>("-1", "-1", -10.0, -10.0, -2));
         this.mItems = new ArrayList<>();
 
+        DecimalFormat df = new DecimalFormat("#.##");
         for (Quintet<String, String, Double, Double, Integer> item : mItems) {
             if (item.getValue4() == 1) {
                 statisticItemsCurrent.add(item);
@@ -41,6 +43,29 @@ public class CalendarStatisticsAdapter extends ArrayAdapter<Quintet<String, Stri
                 statisticItemsOld.add(item);
             }
         }
+        double markAverage = 0;
+        double attendanceAverage = 0;
+
+        if (statisticItemsCurrent.size() > 1) {
+            int markCount = 0;
+            int attendanceCount = 0;
+            for (int i = 1; i < statisticItemsCurrent.size(); i++) {
+                if(statisticItemsCurrent.get(i).getValue2()>0){
+                    markAverage += statisticItemsCurrent.get(i).getValue2();
+                    markCount++;
+                }
+                if(statisticItemsCurrent.get(i).getValue3()>0){
+                    attendanceAverage += statisticItemsCurrent.get(i).getValue3();
+                    attendanceCount++;
+                }
+            }
+            markAverage = Double.valueOf(df.format(markAverage / markCount));
+            attendanceAverage = Double.valueOf(df.format(attendanceAverage / attendanceCount));
+            Quintet<String, String, Double, Double, Integer> markAverageItemCurrent = new Quintet<>("-1", "Итого", markAverage, attendanceAverage, 0);
+            statisticItemsCurrent.add(markAverageItemCurrent);
+        }
+
+
         this.mItems.addAll(statisticItemsCurrent);
         this.mItems.addAll(statisticItemsOld);
     }
@@ -52,7 +77,7 @@ public class CalendarStatisticsAdapter extends ArrayAdapter<Quintet<String, Stri
 
     @Override
     public int getCount() {
-        return mItems.size()==2?1:mItems.size();
+        return mItems.size() == 2 ? 1 : mItems.size();
     }
 
     @Override
@@ -101,15 +126,15 @@ public class CalendarStatisticsAdapter extends ArrayAdapter<Quintet<String, Stri
         ViewHolder viewHolder = null;
         int viewType = getItemViewType(position);
         inflater = LayoutInflater.from(getContext());
-        if (mItems.size()==2){
-            if(!Common.isNetworkConnected(getContext())){
+        if (mItems.size() == 2) {
+            if (!Common.isNetworkConnected(getContext())) {
                 convertView = inflater.inflate(R.layout.list_item_no_internet, null, false);
-            }else{
+            } else {
                 convertView = inflater.inflate(R.layout.list_item_no_content, null, false);
             }
             return convertView;
         }
-        if(convertView!=null && mItems.size()>0){
+        if (convertView != null && mItems.size() > 0) {
             convertView = null;
         }
         if (convertView == null) {
