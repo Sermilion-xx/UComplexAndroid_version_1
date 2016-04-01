@@ -89,7 +89,7 @@ public class RoleSelectFragment extends Fragment {
         public void onClick(View v) {
             User user = Common.getUserDataFromPref(getContext());
             user.setType(mUser.getType());
-            user.setId(mUser.getId());
+            user.setId(mUser.getPerson());
             Common.setUserDataToPref(getContext(), user);
             user = null;
             Common.setRoleToPref(getContext(),mUser.getType());

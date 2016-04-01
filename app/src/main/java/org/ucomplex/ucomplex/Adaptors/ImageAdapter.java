@@ -101,9 +101,9 @@ public class ImageAdapter extends BaseAdapter {
         final ViewHolder viewHolder;
         if (mItems.size()==0){
             if(!Common.isNetworkConnected(context)){
-                convertView = inflater.inflate(R.layout.list_item_no_internet, null, false);
+                convertView = inflater.inflate(R.layout.list_item_no_internet, parent, false);
             }else{
-                convertView = inflater.inflate(R.layout.list_item_no_content, null, false);
+                convertView = inflater.inflate(R.layout.list_item_no_content, parent, false);
             }
             return convertView;
         }
@@ -200,7 +200,7 @@ public class ImageAdapter extends BaseAdapter {
 
     public Drawable getDrawable(int position){
         final int colorsCount = 16;
-        final int number = (getItem(position).getId() <= colorsCount) ? getItem(position).getId() : getItem(position).getId() % colorsCount;
+        final int number = (getItem(position).getPerson() <= colorsCount) ? getItem(position).getPerson() : getItem(position).getPerson() % colorsCount;
         char firstLetter = getItem(position).getName().split("")[1].charAt(0);
 
         TextDrawable drawable = TextDrawable.builder().beginConfig()
@@ -302,7 +302,7 @@ class ViewHolder {
                                     Toast.makeText(context, "Заявка на дружбу отправлена.", Toast.LENGTH_SHORT).show();
                                     break;
                                 } else if (usersType == 1) {
-                                    params.put("user", String.valueOf(mItems.get(position).getId()));
+                                    params.put("user", String.valueOf(mItems.get(position).getPerson()));
                                     if (mItems.get(position).isFriendRequested()) {
                                         HandleMenuPress handleMenuPress = new HandleMenuPress();
                                         handleMenuPress.execute("http://you.com.ru/user/friends/accept", params);
@@ -320,7 +320,7 @@ class ViewHolder {
                                 }
                             case 2:
                                 if(usersType==1) {
-                                    params.put("user", String.valueOf(mItems.get(position).getId()));
+                                    params.put("user", String.valueOf(mItems.get(position).getPerson()));
                                     HandleMenuPress handleMenuPress = new HandleMenuPress();
                                     handleMenuPress.execute("https://ucomplex.org/user/friends/reject", params);
                                     Toast.makeText(context, "Заявка на дружбу отклонена.", Toast.LENGTH_SHORT).show();

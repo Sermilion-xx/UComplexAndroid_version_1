@@ -91,17 +91,18 @@ public class ProfileActivity extends AppCompatActivity implements OnTaskComplete
             List<Triplet> items = new ArrayList<>();
             Triplet<Bitmap, User, String> item = new Triplet<>(bitmap, mUser, "-1");
             items.add(item);
-            for (User role : mUser.getRoles()) {
-                Triplet<String, String, String> aItem;
-                String positionName = role.getPositionName();
-                if(role.getType()==4){
-                    aItem = new Triplet<>(positionName, String.valueOf(role.getType()), "-1");
-                }else{
-                    aItem = new Triplet<>(role.getSectionName(), role.getPositionName(),  "-1");
+            if(mUser!=null){
+                for (User role : mUser.getRoles()) {
+                    Triplet<String, String, String> aItem;
+                    String positionName = role.getPositionName();
+                    if(role.getType()==4){
+                        aItem = new Triplet<>(positionName, String.valueOf(role.getType()), "-1");
+                    }else{
+                        aItem = new Triplet<>(role.getSectionName(), role.getPositionName(),  "-1");
+                    }
+                    items.add(aItem);
                 }
-                items.add(aItem);
             }
-
             profileFragment.setContext(this);
             profileFragment.setBitmap(bitmap);
             profileFragment.setHasPhoto(hasPhoto);

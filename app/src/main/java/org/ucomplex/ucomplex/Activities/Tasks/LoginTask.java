@@ -40,7 +40,7 @@ public class LoginTask extends AsyncTask<Void, Void, User> {
         ArrayList<User> userRoles = new ArrayList<>();
         JSONObject rolesJson = new JSONObject(rolesJsonStr);
         JSONArray rolesArray = rolesJson.getJSONArray("roles");
-        JSONObject roles = new JSONObject();
+        JSONObject roles;
         for (int i = 0; i < rolesArray.length(); i++) {
             roles = rolesArray.getJSONObject(i);
             User userRole = new User();
@@ -53,10 +53,6 @@ public class LoginTask extends AsyncTask<Void, Void, User> {
 
         JSONObject userSession = rolesJson.getJSONObject("session");
         User user = new User();
-//        if(rolesArray.length()==1){
-//            user.setType(roles.getInt("type"));
-//            user.setId(roles.getInt("id"));
-//        }
         user.setType(-1);
         for (int i = 0; i < rolesArray.length(); i++) {
             if (rolesArray.getJSONObject(i).getInt("type") == 4) {
@@ -64,10 +60,9 @@ public class LoginTask extends AsyncTask<Void, Void, User> {
                 user.setId(rolesArray.getJSONObject(i).getInt("id"));
             }
         }
-
+        user.setPerson(userSession.getInt("person"));
         user.setPhoto(userSession.getInt("photo"));
         user.setCode(userSession.getString("code"));
-        user.setPerson(userSession.getInt("person"));
         user.setName(userSession.getString("name"));
         user.setClient(userSession.getInt("client"));
         user.setEmail(userSession.getString("email"));

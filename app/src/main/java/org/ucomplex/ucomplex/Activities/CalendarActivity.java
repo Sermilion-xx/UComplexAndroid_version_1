@@ -3,7 +3,6 @@ package org.ucomplex.ucomplex.Activities;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
@@ -29,6 +28,7 @@ import org.ucomplex.ucomplex.Fragments.CalendarBeltFragment;
 import org.ucomplex.ucomplex.Fragments.CalendarFragment;
 import org.ucomplex.ucomplex.Fragments.CalendarStatisticsFragment;
 import org.ucomplex.ucomplex.Interfaces.OnTaskCompleteListener;
+import org.ucomplex.ucomplex.Model.Users.User;
 import org.ucomplex.ucomplex.R;
 
 import java.util.ArrayList;
@@ -45,31 +45,33 @@ public class CalendarActivity extends AppCompatActivity implements AdapterView.O
     CalendarBeltFragment calendarBeltFragment;
     FetchCalendarBeltTask fetchCalendarBeltTask;
     CalendarStatisticsFragment statisticsFragment;
+    User user;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        user = Common.getUserDataFromPref(this);
         int content_view;
-        if(Common.ROLE == 4){
+        if (user.getType() == 4) {
             content_view = R.layout.activity_calendar;
-        }else{
+        } else {
             content_view = R.layout.activity_calendar_teacher;
         }
         setContentView(content_view);
+        viewPager = (ViewPager) findViewById(R.id.viewpager_calendar);
         Toolbar toolbar = (Toolbar) findViewById(R.id.calendar_toolbar2);
         toolbar.setTitle("Календарь");
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_menu);
-
+        statisticsFragment = new CalendarStatisticsFragment();
         CalendarFragment calendarFragment = new CalendarFragment();
         calendarFragment.setContext(this);
-        viewPager = (ViewPager) findViewById(R.id.viewpager_calendar);
         tabLayout = (TabLayout) findViewById(R.id.tabs);
         FetchAllStats fetchAllStats = new FetchAllStats(this, this);
         fetchAllStats.setupTask();
         //role related
-        if (Common.ROLE == 4) {
+        if (user.getType() == 4) {
             adapter = new ViewPagerAdapter(getSupportFragmentManager());
             if (calendarBeltFragment == null) {
                 calendarBeltFragment = new CalendarBeltFragment();
@@ -79,7 +81,7 @@ public class CalendarActivity extends AppCompatActivity implements AdapterView.O
                     fetchCalendarBeltTask.setupTask();
                 }
             }
-            statisticsFragment = new CalendarStatisticsFragment();
+
             adapter.addFragment(calendarFragment, "Дисциплина");
             adapter.addFragment(calendarBeltFragment, "Лента");
             adapter.addFragment(statisticsFragment, "Статистика");
@@ -88,7 +90,7 @@ public class CalendarActivity extends AppCompatActivity implements AdapterView.O
             tabLayout.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
             tabLayout.setupWithViewPager(viewPager);
 
-        } else if (Common.ROLE == 3) {
+        } else if (user.getType() == 3) {
             FragmentManager fragmentManager = getSupportFragmentManager();
             FragmentTransaction fragmentTransaction =
                     fragmentManager.beginTransaction();
@@ -123,7 +125,7 @@ public class CalendarActivity extends AppCompatActivity implements AdapterView.O
                     calendarBeltFragment.getCourseCalendarBeltAdapter().changeItems(feedItems);
                     calendarBeltFragment.checkLoadButton(feedItems);
                     calendarBeltFragment.setmContext(CalendarActivity.this);
-                    if(feedItems.size()==0){
+                    if (feedItems.size() == 0) {
                         calendarBeltFragment.getListView().setBackgroundColor(ContextCompat.getColor(this, R.color.activity_background));
                     }
                 } catch (InterruptedException | ExecutionException e) {

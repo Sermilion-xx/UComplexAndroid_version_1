@@ -57,7 +57,7 @@ public class CourseFragment extends ListFragment {
                     if (teacher.getPhoto() == 1) {
                         code = teacher.getCode();
                     }
-                    Quartet<String, String, String, String> item = new Quartet<>(code, teacher.getName(), String.valueOf(teacher.getId()), "1");
+                    Quartet<String, String, String, String> item = new Quartet<>(code, teacher.getName(), String.valueOf(teacher.getPerson()), "1");
                     mItems.add(item);
                 }
                 Quartet<String, String, String, String> separatorItem = new Quartet<>("-1", "-1", "-1", "2");

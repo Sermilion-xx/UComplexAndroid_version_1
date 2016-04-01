@@ -190,77 +190,77 @@ public class ProfileAdapter extends ArrayAdapter<Triplet> {
         }
 
         public void setMessageButton() {
-            if(mUser.getId() == user.getId()){
-                mMessageButton.setEnabled(false);
-                mMessageButton.setTextColor(ContextCompat.getColor(mContext, R.color.uc_gray_text_events));
-            }
-            mMessageButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    String companion;
-                    String name;
-                    Intent intent = new Intent(getContext(), MessagesActivity.class);
-                    if (mUser.getPerson() == 0) {
-                        companion = String.valueOf(mUser.getId());
-                    } else {
-                        companion = String.valueOf(mUser.getPerson());
-                    }
-                    name = String.valueOf(mUser.getName());
-                    intent.putExtra("companion", companion);
-                    intent.putExtra("name", name);
-                    intent.putExtra("profileImage", mBitmap);
-                    getContext().startActivity(intent);
+            if (mUser != null) {
+                if (mUser.getPerson() == user.getPerson()) {
+                    mMessageButton.setEnabled(false);
+                    mMessageButton.setTextColor(ContextCompat.getColor(mContext, R.color.uc_gray_text_events));
                 }
-            });
+                mMessageButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String companion;
+                        String name;
+                        Intent intent = new Intent(getContext(), MessagesActivity.class);
+                        companion = String.valueOf(mUser.getPerson());
+                        name = String.valueOf(mUser.getName());
+                        intent.putExtra("companion", companion);
+                        intent.putExtra("name", name);
+                        intent.putExtra("profileImage", mBitmap);
+                        getContext().startActivity(intent);
+                    }
+                });
+            }
         }
 
         public void setFriendButton() {
+            if (mUser != null) {
 
-            if(mUser.getId() == user.getId()){
-                mFriendButton.setEnabled(false);
-                mFriendButton.setTextColor(ContextCompat.getColor(mContext, R.color.uc_gray_text_events));
-            }else if (mUser.is_friend()) {
-                mFriendButton.setText("Удалить");
-                mFriendButton.setCompoundDrawablesWithIntrinsicBounds( ic_remove_friend, null, null, null);
-            } else {
-                mFriendButton.setText("В друзья");
-                mFriendButton.setCompoundDrawablesWithIntrinsicBounds( ic_add_friend, null, null, null);
-            }
-            this.mFriendButton.setOnClickListener(
-                    new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
+                if (mUser.getPerson() == user.getPerson()) {
+                    mFriendButton.setEnabled(false);
+                    mFriendButton.setTextColor(ContextCompat.getColor(mContext, R.color.uc_gray_text_events));
+                } else if (mUser.is_friend()) {
+                    mFriendButton.setText("Удалить");
+                    mFriendButton.setCompoundDrawablesWithIntrinsicBounds(ic_remove_friend, null, null, null);
+                } else {
+                    mFriendButton.setText("В друзья");
+                    mFriendButton.setCompoundDrawablesWithIntrinsicBounds(ic_add_friend, null, null, null);
+                }
+                this.mFriendButton.setOnClickListener(
+                        new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
 
-                            if(Common.isNetworkConnected(mContext)){
-                                HashMap<String, String> params = new HashMap<>();
-                                params.put("user", String.valueOf(mUser.getId()));
-                                if (!mUser.isReq_sent() && !mUser.is_friend()) {
-                                    HandleMenuPress handleMenuPress = new HandleMenuPress();
-                                    handleMenuPress.execute("http://you.com.ru/user/friends/accept?mobile=1", params);
-                                    mUser.setReq_sent(false);
-                                    Toast.makeText(mContext, mUser.getName() + " получил вашу заявку на дружбу :)", Toast.LENGTH_SHORT).show();
-                                    mFriendButton.setText("В друзья");
-                                    mFriendButton.setCompoundDrawablesWithIntrinsicBounds( ic_add_friend, null, null, null);
-                                    mFriendButton.setTextColor(ContextCompat.getColor(mContext,R.color.uc_gray_text));
-                                    mFriendButton.setEnabled(false);
-                                } else if(mUser.isReq_sent() && !mUser.is_friend()){
-                                    mFriendButton.setTextColor(ContextCompat.getColor(mContext,R.color.uc_gray_text));
-                                    mFriendButton.setEnabled(false);
-                                    Toast.makeText(mContext, "Заявка уже отправленна.", Toast.LENGTH_SHORT).show();
-                                } else if(mUser.is_friend()){
-                                    HandleMenuPress handleMenuPress = new HandleMenuPress();
-                                    handleMenuPress.execute("http://you.com.ru/user/friends/delete?mobile=1", params);
-                                    Toast.makeText(mContext, "Пользователь удален из друзей :(", Toast.LENGTH_SHORT).show();
-                                    mUser.setIs_friend(false);
-                                    mFriendButton.setText("В друзья");
-                                    mFriendButton.setCompoundDrawablesWithIntrinsicBounds( ic_add_friend, null, null, null);
-                                    Common.userListChanged = 1;
+                                if (Common.isNetworkConnected(mContext)) {
+                                    HashMap<String, String> params = new HashMap<>();
+                                    params.put("user", String.valueOf(mUser.getPerson()));
+                                    if (!mUser.isReq_sent() && !mUser.is_friend()) {
+                                        HandleMenuPress handleMenuPress = new HandleMenuPress();
+                                        handleMenuPress.execute("http://you.com.ru/user/friends/accept?mobile=1", params);
+                                        mUser.setReq_sent(false);
+                                        Toast.makeText(mContext, mUser.getName() + " получил вашу заявку на дружбу :)", Toast.LENGTH_SHORT).show();
+                                        mFriendButton.setText("В друзья");
+                                        mFriendButton.setCompoundDrawablesWithIntrinsicBounds(ic_add_friend, null, null, null);
+                                        mFriendButton.setTextColor(ContextCompat.getColor(mContext, R.color.uc_gray_text));
+                                        mFriendButton.setEnabled(false);
+                                    } else if (mUser.isReq_sent() && !mUser.is_friend()) {
+                                        mFriendButton.setTextColor(ContextCompat.getColor(mContext, R.color.uc_gray_text));
+                                        mFriendButton.setEnabled(false);
+                                        Toast.makeText(mContext, "Заявка уже отправленна.", Toast.LENGTH_SHORT).show();
+                                    } else if (mUser.is_friend()) {
+                                        HandleMenuPress handleMenuPress = new HandleMenuPress();
+                                        handleMenuPress.execute("http://you.com.ru/user/friends/delete?mobile=1", params);
+                                        Toast.makeText(mContext, "Пользователь удален из друзей :(", Toast.LENGTH_SHORT).show();
+                                        mUser.setIs_friend(false);
+                                        mFriendButton.setText("В друзья");
+                                        mFriendButton.setCompoundDrawablesWithIntrinsicBounds(ic_add_friend, null, null, null);
+                                        Common.userListChanged = 1;
+                                    }
+                                } else {
+                                    Toast.makeText(mContext, "Проверте интернет соединение.", Toast.LENGTH_LONG).show();
                                 }
-                            }else {
-                                Toast.makeText(mContext, "Проверте интернет соединение.", Toast.LENGTH_LONG).show();
                             }
-                        }
-                    });
+                        });
+            }
         }
     }
 
@@ -268,13 +268,13 @@ public class ProfileAdapter extends ArrayAdapter<Triplet> {
         if(Common.isNetworkConnected(mContext)){
             HashMap<String, String> params = new HashMap<>();
             if (!mUser.isIs_black()) {
-                params.put("user", String.valueOf(mUser.getId()));
+                params.put("user", String.valueOf(mUser.getPerson()));
                 HandleMenuPress handleMenuPress = new HandleMenuPress();
                 handleMenuPress.execute("http://you.com.ru/user/blacklist/add", params);
                 Toast.makeText(mContext, "Пользователь добавлен в черный список :(", Toast.LENGTH_SHORT).show();
                 mUser.setIs_black(true);
             } else {
-                params.put("user", String.valueOf(mUser.getId()));
+                params.put("user", String.valueOf(mUser.getPerson()));
                 HandleMenuPress handleMenuPress1 = new HandleMenuPress();
                 handleMenuPress1.execute("http://you.com.ru/user/blacklist/delete", params);
                 Toast.makeText(mContext, "Пользователь удален из черного списка :)", Toast.LENGTH_SHORT).show();

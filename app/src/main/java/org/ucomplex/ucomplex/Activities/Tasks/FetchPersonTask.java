@@ -31,7 +31,7 @@ public class FetchPersonTask extends AsyncTask<Void, String, User> implements IP
         this.mTaskCompleteListener = taskCompleteListener;
     }
 
-    public void setupTask(Void ... params) {
+    public void setupTask(Void... params) {
         this.setProgressTracker(this);
         this.execute(params);
     }
@@ -54,7 +54,7 @@ public class FetchPersonTask extends AsyncTask<Void, String, User> implements IP
 
     @Override
     protected User doInBackground(Void... params) {
-        String urlString = "http://you.com.ru/user/person/"+this.person +"?json";
+        String urlString = "http://you.com.ru/user/person/" + this.person + "?json";
         String jsonData = Common.httpPost(urlString, Common.getLoginDataFromPref(mContext));
         if (jsonData != null && jsonData.length() > 2) {
             user = getUserDataFromJson(jsonData);
@@ -63,44 +63,50 @@ public class FetchPersonTask extends AsyncTask<Void, String, User> implements IP
         return user;
     }
 
-    private void teacherAdminStudentCommonSetter(User user, JSONObject roleJson){
-        try{
+    private void teacherAdminStudentCommonSetter(User user, JSONObject roleJson) {
+        try {
             user.setRole(roleJson.getInt("role"));
             user.setId(roleJson.getInt("id"));
             user.setType(roleJson.getInt("type"));
-            try{
+            try {
                 user.setPosition(roleJson.getInt("position"));
-            }catch (JSONException ignored){}
+            } catch (JSONException ignored) {
+            }
             user.setPositionName(roleJson.getString("position_name"));
-                try{
-                    user.setRate(roleJson.getInt("rate"));
-                }catch (JSONException ignored){}
-                try{
-                    user.setPerson(roleJson.getInt("person"));
-                }catch (JSONException ignored){}
-                try{
-                    user.setPerson(roleJson.getInt("section"));
-                }catch (JSONException ignored){}
-                try{
-                    user.setSectionName(roleJson.getString("section_name"));
-                }catch (JSONException ignored){}
-                try{
-                    user.setLead(roleJson.getInt("lead"));
-                }catch (JSONException ignored){}
+            try {
+                user.setRate(roleJson.getInt("rate"));
+            } catch (JSONException ignored) {
+            }
+            try {
+                user.setPerson(roleJson.getInt("person"));
+            } catch (JSONException ignored) {
+            }
+            try {
+                user.setPerson(roleJson.getInt("section"));
+            } catch (JSONException ignored) {
+            }
+            try {
+                user.setSectionName(roleJson.getString("section_name"));
+            } catch (JSONException ignored) {
+            }
+            try {
+                user.setLead(roleJson.getInt("lead"));
+            } catch (JSONException ignored) {
+            }
 
-        }catch (JSONException e){
+        } catch (JSONException e) {
             e.printStackTrace();
         }
     }
 
     @Nullable
-    private User getUserDataFromJson(String jsonData){
+    private User getUserDataFromJson(String jsonData) {
         User user;
         JSONObject userJson;
-        try{
+        try {
             userJson = new JSONObject(jsonData);
             user = new User();
-            user.setId(userJson.getInt("id"));
+            user.setPerson(userJson.getInt("id"));
             user.setName(userJson.getString("name"));
             user.setEmail(userJson.getString("email"));
             user.setCode(userJson.getString("code"));
@@ -108,10 +114,10 @@ public class FetchPersonTask extends AsyncTask<Void, String, User> implements IP
             user.setCode(userJson.getString("code"));
 
             JSONArray rolesArray = userJson.getJSONArray("roles");
-            for(int i=0;i<rolesArray.length();i++){
+            for (int i = 0; i < rolesArray.length(); i++) {
                 User role = null;
                 JSONObject roleJson = rolesArray.getJSONObject(i);
-                if(roleJson.getInt("type")==3){
+                if (roleJson.getInt("type") == 3) {
                     User teacherRole = new User();
                     teacherAdminStudentCommonSetter(teacherRole, roleJson);
 
@@ -123,34 +129,35 @@ public class FetchPersonTask extends AsyncTask<Void, String, User> implements IP
                     teacherRole.setUpqualification(userJson.getString("upqualification"));
                     teacherRole.setPhoneWork(userJson.getString("phone_work"));
                     user.addRole(teacherRole);
-                }else if(roleJson.getInt("type")==4){
+                } else if (roleJson.getInt("type") == 4) {
                     User studentRole = new User();
                     teacherAdminStudentCommonSetter(studentRole, roleJson);
-                    try{
+                    try {
                         studentRole.setGroup(roleJson.getInt("group"));
-                    }catch (JSONException ignored){}
+                    } catch (JSONException ignored) {
+                    }
                     studentRole.setMajor(roleJson.getInt("major"));
                     studentRole.setStudy(roleJson.getInt("study"));
                     studentRole.setStudy(roleJson.getInt("year"));
                     studentRole.setPayment(roleJson.getInt("payment"));
                     studentRole.setContract_year(roleJson.getInt("contract_year"));
                     user.addRole(studentRole);
-                }else if(roleJson.getInt("type")==1){
+                } else if (roleJson.getInt("type") == 1) {
                     User employeeRole = new User();
                     teacherAdminStudentCommonSetter(employeeRole, roleJson);
                     user.addRole(employeeRole);
-                }else if(roleJson.getInt("type")==0){
+                } else if (roleJson.getInt("type") == 0) {
                     User adminRole = new User();
                     teacherAdminStudentCommonSetter(adminRole, roleJson);
                     user.addRole(adminRole);
                 }
             }
-            if(userJson.has("black")){
+            if (userJson.has("black")) {
                 JSONObject blackJson = userJson.getJSONObject("black");
                 user.setIs_black(blackJson.getBoolean("is_black"));
                 user.setMe_black(blackJson.getBoolean("me_black"));
             }
-            if(userJson.has("friends")){
+            if (userJson.has("friends")) {
                 JSONObject friendJson = userJson.getJSONObject("friends");
                 user.setIs_friend(friendJson.getBoolean("is_friend"));
                 user.setReq_sent(friendJson.getBoolean("req_sent"));
@@ -159,8 +166,8 @@ public class FetchPersonTask extends AsyncTask<Void, String, User> implements IP
             return user;
 
         } catch (JSONException e) {
-        e.printStackTrace();
-    }
+            e.printStackTrace();
+        }
         return null;
     }
 

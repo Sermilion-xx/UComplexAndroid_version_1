@@ -1,14 +1,12 @@
 package org.ucomplex.ucomplex.Fragments;
 
 import android.app.ListFragment;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -55,12 +53,18 @@ public class EventsFragment extends ListFragment {
     }
 
     public EventsFragment() {
-
+        System.out.println();
     }
+
 
     @Override
     public void onStart() {
         super.onStart();
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
     }
 
     @Override
@@ -116,7 +120,7 @@ public class EventsFragment extends ListFragment {
                             }
                         }
                     }.execute(userType, eventItems.size());
-                }else{
+                } else {
                     Toast.makeText(getActivity(), "Проверьте интернет соединение.",
                             Toast.LENGTH_SHORT).show();
                 }
@@ -164,7 +168,7 @@ public class EventsFragment extends ListFragment {
 
         @Override
         public int getCount() {
-            return eventItems!=null?eventItems.size():1;
+            return eventItems != null && eventItems.size()>0 ? eventItems.size() : 1;
         }
 
         @Override
@@ -174,7 +178,7 @@ public class EventsFragment extends ListFragment {
 
         @Override
         public Object getItem(int position) {
-            return eventItems!=null?eventItems.get(position):null;
+            return eventItems != null ? eventItems.get(position) : null;
         }
 
         @Override
@@ -185,6 +189,14 @@ public class EventsFragment extends ListFragment {
         @Override
         public View getView(final int position, View convertView, ViewGroup parent) {
             View view = convertView;
+            if (eventItems.size()==0){
+                if(!Common.isNetworkConnected(context)){
+                    convertView = inflater.inflate(R.layout.list_item_no_internet, parent, false);
+                }else{
+                    convertView = inflater.inflate(R.layout.list_item_no_content, parent, false);
+                }
+                return convertView;
+            }
             ViewHolder viewHolder = new ViewHolder();
             if (view == null) {
                 if (eventItems == null) {

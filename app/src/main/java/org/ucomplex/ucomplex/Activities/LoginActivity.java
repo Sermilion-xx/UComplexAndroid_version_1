@@ -224,7 +224,7 @@ public class LoginActivity extends AppCompatActivity implements LoginTask.AsyncR
     @Override
     public void processFinish(User output, Bitmap bitmap) {
         if (output != null) {
-            if(output.getId()==-1){
+            if(output.getType()!=4){
                 showProgress(false);
                 Toast.makeText(this, "Ошибка роли", Toast.LENGTH_SHORT).show();
             } else {

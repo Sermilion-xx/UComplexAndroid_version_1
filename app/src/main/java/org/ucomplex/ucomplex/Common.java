@@ -385,8 +385,8 @@ public class Common {
 
     public static Drawable getDrawable(User user) {
         final int colorsCount = 16;
-        final int number = (user.getId() <= colorsCount) ? user.getId() : user.getId() % colorsCount;
-        char firstLetter = user.getName().split(" ")[1].charAt(0);
+        final int number = (user.getPerson() <= colorsCount) ? user.getPerson() : user.getPerson() % colorsCount;
+        char firstLetter = user.getName().split(" ").length>1?user.getName().split(" ")[1].charAt(0):user.getName().split(" ")[0].charAt(0);
 
         return TextDrawable.builder().beginConfig()
                 .width(120)

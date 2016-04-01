@@ -88,28 +88,41 @@ public class EventsActivity extends AppCompatActivity implements OnTaskCompleteL
             mAdapter.notifyDataSetChanged();
         }
         user = Common.getUserDataFromPref(this);
-        LoginTask loginTask = new LoginTask(user.getLogin(), user.getPass(), EventsActivity.this);
-        loginTask.delegate = this;
-        loginTask.execute();
+        if(user!=null && user.getPerson()!=0) {
+            LoginTask loginTask = new LoginTask(user.getLogin(), user.getPass(), EventsActivity.this);
+            loginTask.delegate = this;
+            loginTask.execute();
 
-        new FetchUserEventsTask(this) {
-            @Override
-            protected void onPostExecute(ArrayList<EventRowItem> items) {
-                super.onPostExecute(items);
-                eventsArray = items;
-                EventsFragment fragment = new EventsFragment();
-                fragment.setContext(EventsActivity.this);
-                fragment.setUserType(user.getType());
-                Bundle data = new Bundle();
-                data.putSerializable("eventItems", eventsArray);
-                fragment.setArguments(data);
-                getFragmentManager().beginTransaction()
-                        .replace(R.id.container, fragment)
-                        .commit();
-                linlaHeaderProgress.setVisibility(View.GONE);
-            }
-        }.execute(user.getType());
-        refreshed = true;
+            new FetchUserEventsTask(this) {
+                @Override
+                protected void onPostExecute(ArrayList<EventRowItem> items) {
+                    super.onPostExecute(items);
+                    eventsArray = items;
+                    EventsFragment fragment = new EventsFragment();
+                    fragment.setContext(EventsActivity.this);
+                    fragment.setUserType(user.getType());
+                    Bundle data = new Bundle();
+                    data.putSerializable("eventItems", eventsArray);
+                    fragment.setArguments(data);
+                    getFragmentManager().beginTransaction()
+                            .replace(R.id.container, fragment)
+                            .commit();
+                    linlaHeaderProgress.setVisibility(View.GONE);
+                }
+            }.execute(user.getType());
+            refreshed = true;
+        }else{
+            EventsFragment fragment = new EventsFragment();
+            fragment.setContext(EventsActivity.this);
+            fragment.setUserType(user.getType());
+            Bundle data = new Bundle();
+            data.putSerializable("eventItems", eventsArray);
+            fragment.setArguments(data);
+            getFragmentManager().beginTransaction()
+                    .replace(R.id.container, fragment)
+                    .commit();
+            linlaHeaderProgress.setVisibility(View.GONE);
+        }
     }
 
     BroadcastReceiver receiver = new BroadcastReceiver() {
@@ -167,27 +180,15 @@ public class EventsActivity extends AppCompatActivity implements OnTaskCompleteL
                 && (savedInstanceState.getSerializable("eventsArray") != null)) {
             eventsArray = (ArrayList) savedInstanceState.getSerializable("eventsArray");
         }
-
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar);
         toolbar.setTitle("События");
         setSupportActionBar(toolbar);
         user = Common.getUserDataFromPref(this);
-
-        if (Common.ROLE == -1) {
-            Common.ROLE = Common.getRoleFromPref(this);
-        }
         Bitmap bmp;
         if (Common.hasKeyPref(this, "profilePhoto")) {
             bmp = Common.decodePhotoPref(this, "profilePhoto");
             user.setPhotoBitmap(bmp);
         }
-//        if (!refreshed) {
-//            if (eventsArray == null) {
-//                mEventsTask = (FetchUserEventsTask) new FetchUserEventsTask(this, this).execute(user.getType());
-//                linlaHeaderProgress.setVisibility(View.VISIBLE);
-//            }
-//        }
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -256,8 +257,12 @@ public class EventsActivity extends AppCompatActivity implements OnTaskCompleteL
     @Override
     public void processFinish(User output, Bitmap bitmap) {
         if (output != null) {
-            Common.setUserDataToPref(this, output);
-            mAdapter.setProfileBitmap(bitmap);
+            if(output.getPerson()!=0){
+                Common.setUserDataToPref(this, output);
+            }
+            if(MenuAdapter.getProfileBitmap()==null){
+                mAdapter.setProfileBitmap(bitmap);
+            }
             if (bitmap != null) {
                 Common.encodePhotoPref(this, bitmap, "profileBitmap");
                 user.setPhotoBitmap(bitmap);

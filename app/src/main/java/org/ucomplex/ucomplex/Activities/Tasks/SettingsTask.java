@@ -27,7 +27,7 @@ public class SettingsTask extends AsyncTask<Pair<String, String>, Void, String> 
     Pair<String, String> change;
     int type;
 
-    private String mProgressMessage;
+    private String ProgressMessage;
     private IProgressTracker mProgressTracker;
     private final OnTaskCompleteListener mTaskCompleteListener;
     private final ProgressDialog mProgressDialog;

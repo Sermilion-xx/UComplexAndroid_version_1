@@ -43,6 +43,7 @@ public class UsersActivity extends AppCompatActivity {
     private ViewPagerAdapter adapter;
     AlertDialog.Builder builderSingle;
     boolean searchShowing;
+    User user;
 
     @Override
     protected void onResume() {
@@ -70,6 +71,7 @@ public class UsersActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        user = Common.getUserDataFromPref(this);
         setContentView(R.layout.activity_users);
         final Toolbar toolbar = (Toolbar) findViewById(R.id.users_toolbar);
         toolbar.setTitle("Пользователи");
@@ -116,7 +118,7 @@ public class UsersActivity extends AppCompatActivity {
         friendsUsersFragment.setActivity(UsersActivity.this);
         adapter.addFragment(friendsUsersFragment, "Друзья");
 
-        if(Common.ROLE==4){
+        if(user.getType()==4){
             UsersFragment groupsUsersFragment = new UsersFragment();
             groupsUsersFragment.setUsersType(2);
             groupsUsersFragment.setActivity(UsersActivity.this);
@@ -127,7 +129,7 @@ public class UsersActivity extends AppCompatActivity {
             teachersUsersFragment.setActivity(UsersActivity.this);
             adapter.addFragment(teachersUsersFragment, "Преподаватели");
 
-        }else if(Common.ROLE == 3){
+        }else if(user.getType() == 3){
             UsersFragment groupsUsersFragment = new UsersFragment();
             groupsUsersFragment.setUsersType(12);
             groupsUsersFragment.setActivity(UsersActivity.this);
@@ -267,11 +269,7 @@ public class UsersActivity extends AppCompatActivity {
                                 User user = imageAdapter.getItem(which);
                                 Intent intent = new Intent(UsersActivity.this, ProfileActivity.class);
                                 Bundle extras = new Bundle();
-                                if (user.getPerson() == 0) {
-                                    extras.putString("person", String.valueOf(user.getId()));
-                                } else {
-                                    extras.putString("person", String.valueOf(user.getPerson()));
-                                }
+                                extras.putString("person", String.valueOf(user.getPerson()));
                                 if (user.getPhotoBitmap() != null) {
                                     intent.putExtra("bitmap", user.getPhotoBitmap());
                                 }

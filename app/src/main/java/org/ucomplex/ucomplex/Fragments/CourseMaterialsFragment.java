@@ -83,7 +83,6 @@ public class CourseMaterialsFragment extends ListFragment {
     }
 
     public void addFile(File file) {
-        this.mItems.add(file);
         ArrayList tempItems = new ArrayList();
         tempItems.add(file);
         tempItems.addAll(this.mItems);
@@ -224,7 +223,7 @@ public class CourseMaterialsFragment extends ListFragment {
         @Override
         protected String doInBackground(File... item) {
 
-            final String UC_BASE_URL = "http://storage.ucomplex.org/files/users/" + String.valueOf(item[0].getOwner().getId()) + "/" + item[0].getAddress() + "." + item[0].getType();
+            final String UC_BASE_URL = "http://storage.ucomplex.org/files/users/" + String.valueOf(item[0].getOwner().getPerson()) + "/" + item[0].getAddress() + "." + item[0].getType();
             mContext.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(UC_BASE_URL)));
             return null;
         }

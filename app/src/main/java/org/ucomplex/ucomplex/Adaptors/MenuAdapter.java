@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.amulyakhare.textdrawable.TextDrawable;
 
@@ -55,6 +56,10 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
 
     public boolean isNewFriend() {
         return newFriend;
+    }
+
+    public static Bitmap getProfileBitmap() {
+        return profileBitmap;
     }
 
     public void setMsgCount(int msgCount) {
@@ -114,21 +119,25 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
                 msgCountImageView = (de.hdodenhof.circleimageview.CircleImageView) itemView.findViewById(R.id.rowMsgCount);
                 Holderid = 3;
             }
-
-
         }
 
         @Override
         public void onClick(View v) {
             if (getAdapterPosition() == 0) {
-                User user = Common.getUserDataFromPref(context);
-                Intent intent = new Intent(contxt, ProfileActivity.class);
-                intent.putExtra("person", String.valueOf(user.getPerson()));
+                if(Common.isNetworkConnected(context)){
+                    User user = Common.getUserDataFromPref(context);
+                    Intent intent = new Intent(contxt, ProfileActivity.class);
+                    intent.putExtra("person", String.valueOf(user.getPerson()));
 //                profileBitmap = Common.decodePhotoPref(context, "profilePhoto");
-                intent.putExtra("bitmap",profileBitmap);
-                intent.putExtra("hasPhoto", String.valueOf(user.getPhoto()));
-                intent.putExtra("code",user.getCode());
-                contxt.startActivity(intent);
+                    intent.putExtra("bitmap",profileBitmap);
+                    intent.putExtra("hasPhoto", String.valueOf(user.getPhoto()));
+                    intent.putExtra("code",user.getCode());
+                    contxt.startActivity(intent);
+                }else{
+                    Toast.makeText(context, "Проверьте интернет соединение.",
+                            Toast.LENGTH_SHORT).show();
+                }
+
             }if (getAdapterPosition() == 1) {
                 Intent intent = new Intent(contxt, EventsActivity.class);
                 contxt.startActivity(intent);
@@ -193,14 +202,16 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
         mNavTitles = Titles;
         mIcons = Icons;
         String tempName = user.getName();
-        if (tempName.split(" ").length > 1) {
-            name = tempName.split(" ")[1];
-        } else {
-            name = tempName;
+        if(tempName!=null){
+            if (tempName.split(" ").length > 1) {
+                name = tempName.split(" ")[1];
+            } else {
+                name = tempName;
+            }
+            profileBitmap = user.getPhotoBitmap();
+            this.user = user;
         }
         this.context = passedContext;
-        profileBitmap = user.getPhotoBitmap();
-        this.user = user;
     }
 
     @Override
@@ -226,15 +237,24 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
              if (profileBitmap != null) {
                 holder.profile.setImageBitmap(profileBitmap);
             } else {
-                final int colorsCount = 16;
-                final int number = (user.getPerson() <= colorsCount) ? user.getPerson() : user.getPerson() % colorsCount;
-                char firstLetter = user.getName().split(" ")[1].charAt(0);
-                TextDrawable drawable = TextDrawable.builder().beginConfig()
-                        .width(604)
-                        .height(604)
-                        .endConfig()
-                        .buildRect(String.valueOf(firstLetter), Common.getColor(number));
-                holder.profile.setImageDrawable(drawable);
+                 final int colorsCount = 16;
+                 TextDrawable drawable;
+                 if(user!=null){
+                     final int number = (user.getPerson() <= colorsCount) ? user.getPerson() : user.getPerson() % colorsCount;
+                     char firstLetter = user.getName().split(" ")[1].charAt(0);
+                     drawable = TextDrawable.builder().beginConfig()
+                             .width(604)
+                             .height(604)
+                             .endConfig()
+                             .buildRect(String.valueOf(firstLetter), Common.getColor(number));
+                 }else{
+                     drawable = TextDrawable.builder().beginConfig()
+                             .width(604)
+                             .height(604)
+                             .endConfig()
+                             .buildRect(String.valueOf(" "), Common.getColor(1));
+                 }
+                 holder.profile.setImageDrawable(drawable);
             }
             holder.Name.setText(name);
         } else if (holder.Holderid == 2) {
