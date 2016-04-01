@@ -64,6 +64,7 @@ public class EventsActivity extends AppCompatActivity implements OnTaskCompleteL
     ActionBarDrawerToggle mDrawerToggle;                  // Declaring Action Bar Drawer Toggle
     LinearLayout linlaHeaderProgress;
     MediaPlayer mAlert;
+    boolean refreshed;
 
     public Intent getI() {
         return i;
@@ -103,9 +104,12 @@ public class EventsActivity extends AppCompatActivity implements OnTaskCompleteL
                 data.putSerializable("eventItems", eventsArray);
                 fragment.setArguments(data);
                 getFragmentManager().beginTransaction()
-                        .replace(R.id.container, fragment).commit();
+                        .replace(R.id.container, fragment)
+                        .commit();
+                linlaHeaderProgress.setVisibility(View.GONE);
             }
         }.execute(user.getType());
+        refreshed = true;
     }
 
     BroadcastReceiver receiver = new BroadcastReceiver() {
@@ -114,18 +118,18 @@ public class EventsActivity extends AppCompatActivity implements OnTaskCompleteL
             Bundle bundle = intent.getExtras();
             int messageCount = bundle.getInt("newMessage");
             boolean newFriend = bundle.getBoolean("newFriend");
-            if(!mAdapter.isNewFriend() && newFriend){
+            if (!mAdapter.isNewFriend() && newFriend) {
                 mAdapter.setNewFriend(newFriend);
                 mAdapter.notifyItemChanged(4);
                 mAlert.start();
-            } else if (mAdapter.isNewFriend() && !newFriend){
+            } else if (mAdapter.isNewFriend() && !newFriend) {
                 mAdapter.setNewFriend(newFriend);
                 mAdapter.notifyItemChanged(4);
             }
             if (messageCount > 0 && messageCount != mAdapter.getMsgCount()) {
                 mAdapter.setMsgCount(messageCount);
                 mAdapter.notifyItemChanged(5);
-                if(mAlert != null){
+                if (mAlert != null) {
                     mAlert.start();
                 }
             } else if (messageCount == 0 && mAdapter.getMsgCount() > 0) {
@@ -152,6 +156,9 @@ public class EventsActivity extends AppCompatActivity implements OnTaskCompleteL
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_events);
+        linlaHeaderProgress = (LinearLayout) findViewById(R.id.linlaHeaderProgress);
+        refresh();
         mAlert = MediaPlayer.create(this, R.raw.alert);
         Common.fetchMyNews(EventsActivity.this);
         i = new Intent(EventsActivity.this, MyService.class);
@@ -160,14 +167,14 @@ public class EventsActivity extends AppCompatActivity implements OnTaskCompleteL
                 && (savedInstanceState.getSerializable("eventsArray") != null)) {
             eventsArray = (ArrayList) savedInstanceState.getSerializable("eventsArray");
         }
-        setContentView(R.layout.activity_events);
-        linlaHeaderProgress = (LinearLayout) findViewById(R.id.linlaHeaderProgress);
+
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar);
         toolbar.setTitle("События");
         setSupportActionBar(toolbar);
         user = Common.getUserDataFromPref(this);
 
-        if(Common.ROLE == -1){
+        if (Common.ROLE == -1) {
             Common.ROLE = Common.getRoleFromPref(this);
         }
         Bitmap bmp;
@@ -175,12 +182,12 @@ public class EventsActivity extends AppCompatActivity implements OnTaskCompleteL
             bmp = Common.decodePhotoPref(this, "profilePhoto");
             user.setPhotoBitmap(bmp);
         }
-
-        if (eventsArray == null) {
-            mEventsTask = (FetchUserEventsTask) new FetchUserEventsTask(this, this).execute(user.getType());
-            linlaHeaderProgress.setVisibility(View.VISIBLE);
-        }
-
+//        if (!refreshed) {
+//            if (eventsArray == null) {
+//                mEventsTask = (FetchUserEventsTask) new FetchUserEventsTask(this, this).execute(user.getType());
+//                linlaHeaderProgress.setVisibility(View.VISIBLE);
+//            }
+//        }
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
