@@ -59,7 +59,9 @@ public class CalendarBeltFragment extends ListFragment {
         getListView().setDivider(null);
         getListView().setBackgroundColor(Color.WHITE);
         setListShown(true);
-
+        if(feedItems==null){
+            feedItems = new ArrayList<>();
+        }
         if (courseCalendarBeltAdapter == null) {
             courseCalendarBeltAdapter = new CourseCalendarBeltAdapter(getActivity(), feedItems);
 

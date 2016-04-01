@@ -70,27 +70,27 @@ public class FetchUserEventsTask extends AsyncTask<Integer, Void, ArrayList<Even
         if(mTaskCompleteListener!=null){
             mTaskCompleteListener.onTaskComplete(this);
         }else {
-            if (Common.connection != null) {
-                String uc_version = Common.connection.getHeaderField("X-UVERSION");
-                if (uc_version != null) {
-                    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
-                    String uc_version_pref = prefs.getString("X-UVERSION", "");
-                    if (!uc_version.equals(uc_version_pref)) {
-                        FetchLangTask flt = new FetchLangTask();
-                        flt.setmContext(mContext);
-                        boolean success = false;
-                        try {
-                            success = flt.execute().get();
-                        } catch (InterruptedException | ExecutionException e) {
-                            e.printStackTrace();
-                        }
-                        if (success) {
-                            Common.X_UVERSION = uc_version;
-                            prefs.edit().putString("X-UVERSION", uc_version).apply();
-                        }
-                    }
-                }
-            }
+//            if (Common.connection != null) {
+//                String uc_version = Common.connection.getHeaderField("X-UVERSION");
+//                if (uc_version != null) {
+//                    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+//                    String uc_version_pref = prefs.getString("X-UVERSION", "");
+//                    if (!uc_version.equals(uc_version_pref)) {
+//                        FetchLangTask flt = new FetchLangTask();
+//                        flt.setmContext(mContext);
+//                        boolean success = false;
+//                        try {
+//                            success = flt.execute().get();
+//                        } catch (InterruptedException | ExecutionException e) {
+//                            e.printStackTrace();
+//                        }
+//                        if (success) {
+//                            Common.X_UVERSION = uc_version;
+//                            prefs.edit().putString("X-UVERSION", uc_version).apply();
+//                        }
+//                    }
+//                }
+//            }
         }
     }
 

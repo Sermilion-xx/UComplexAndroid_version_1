@@ -25,7 +25,7 @@ import java.util.List;
 public class CourseCalendarBeltAdapter extends ArrayAdapter<Quartet<Integer, String, String, Integer>> {
 
     String[] colors = {"#51cde7", "#fecd71", "#9ece2b", "#d18ec0"};
-    List<Quartet<Integer, String, String, Integer>> mItems;
+    List<Quartet<Integer, String, String, Integer>> mItems = new ArrayList<>();
     Context mContext;
     LayoutInflater inflater;
 
@@ -61,6 +61,9 @@ public class CourseCalendarBeltAdapter extends ArrayAdapter<Quartet<Integer, Str
 
     @Override
     public int getCount() {
+        if(mItems==null){
+            mItems = new ArrayList<>();
+        }
         return mItems.size()>0?mItems.size():1;
     }
 
