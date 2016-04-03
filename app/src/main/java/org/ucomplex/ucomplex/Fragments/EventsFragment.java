@@ -257,7 +257,7 @@ public class EventsFragment extends ListFragment {
             viewHolder.eventTextView.setText(eventItems.get(position).getEventText());
             viewHolder.eventTime.setText(eventItems.get(position).getTime());
             if (eventItems.get(position).getParams().getName() == null) {
-                viewHolder.eventPersonName.setText("uComplex");
+                viewHolder.eventPersonName.setText("UComplex");
             } else {
                 viewHolder.eventPersonName.setText(eventItems.get(position).getParams().getName());
             }

@@ -14,9 +14,11 @@ import org.ucomplex.ucomplex.Interfaces.OnTaskCompleteListener;
 import org.ucomplex.ucomplex.Model.StudyStructure.Course;
 
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 
 /**
  * Created by Sermilion on 28/02/16.
@@ -71,7 +73,8 @@ public class FetchAllStats extends AsyncTask<Integer, Void, ArrayList<Quintet<St
                         absence = ((double) a / (double) b) * 100;
                     }
                     absence = 100.0 - absence;
-                    DecimalFormat df = new DecimalFormat("#.##");
+                    Locale dLocale = new Locale("ru");
+                    DecimalFormat df = new DecimalFormat("#.##",  new DecimalFormatSymbols(Locale.US));
                     absence = Double.valueOf(df.format(absence));
                     mark = Double.valueOf(df.format(mark));
                     item = new Quintet<>(

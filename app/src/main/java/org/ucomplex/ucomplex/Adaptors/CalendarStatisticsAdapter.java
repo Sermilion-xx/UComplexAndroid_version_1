@@ -12,7 +12,9 @@ import org.ucomplex.ucomplex.Common;
 import org.ucomplex.ucomplex.R;
 
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
+import java.util.Locale;
 
 /**
  * Created by Sermilion on 16/03/16.
@@ -35,7 +37,7 @@ public class CalendarStatisticsAdapter extends ArrayAdapter<Quintet<String, Stri
         statisticItemsOld.add(new Quintet<>("-1", "-1", -10.0, -10.0, -2));
         this.mItems = new ArrayList<>();
 
-        DecimalFormat df = new DecimalFormat("#.##");
+        DecimalFormat df = new DecimalFormat("#.##", new DecimalFormatSymbols(Locale.US));
         for (Quintet<String, String, Double, Double, Integer> item : mItems) {
             if (item.getValue4() == 1) {
                 statisticItemsCurrent.add(item);
