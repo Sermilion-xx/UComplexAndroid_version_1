@@ -115,7 +115,7 @@ public class ProfileActivity extends AppCompatActivity implements OnTaskComplete
             FragmentTransaction fragmentTransaction =
                     fragmentManager.beginTransaction();
             fragmentTransaction.replace(R.id.content_person, profileFragment);
-            fragmentTransaction.commit();
+            fragmentTransaction.commitAllowingStateLoss();
             getSupportFragmentManager().executePendingTransactions();
             linlaHeaderProgress.setVisibility(View.GONE);
         } catch (InterruptedException | ExecutionException e) {
