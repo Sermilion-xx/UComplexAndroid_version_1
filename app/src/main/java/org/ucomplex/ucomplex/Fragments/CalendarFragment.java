@@ -236,9 +236,10 @@ public class CalendarFragment extends Fragment implements OnTaskCompleteListener
                         options.add(calendar.getCourses().get(keys.get(i)));
                     }
                     ArrayAdapter<String> adapter = new ArrayAdapter<>(context,
-                            android.R.layout.simple_spinner_item, options.toArray(new String[options.size()]));
+                            R.layout.spinner_item, options.toArray(new String[options.size()]));
                     adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     spinner.setAdapter(adapter);
+                    spinner.setSelection(0);
 
                     materialCalendarView.setOnDateChangedListener(new OnDateSelectedListener() {
                         @Override

@@ -117,10 +117,10 @@
         <activity
             android:name=".Activities.MessagesListActivity"
             android:screenOrientation="portrait"
+            android:label="Сообщения"
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity
             android:name=".Activities.MessagesActivity"
-            android:label=""
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"/>

@@ -81,7 +81,7 @@ public class CalendarDayDecorator implements DayViewDecorator {
                     .buildRound(null, Color.parseColor("#09c8fa"));
             view.setBackgroundDrawable(drawable);
         }else {
-            view.addSpan(new DayDecoratorSpan(9, Color.parseColor(color)));
+            view.addSpan(new DayDecoratorSpan(5, Color.parseColor(color)));
         }
 
     }

@@ -403,7 +403,7 @@ public class MyFilesActivity extends AppCompatActivity implements OnTaskComplete
                     fragmentTransaction.addToBackStack("Мои файлы");
                 else
                     first = false;
-                fragmentTransaction.commit();
+                fragmentTransaction.commitAllowingStateLoss();
 
             } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();

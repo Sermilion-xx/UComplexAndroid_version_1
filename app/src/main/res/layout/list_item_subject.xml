@@ -27,7 +27,7 @@
         android:layout_below="@+id/subject_listview_item_text1"
         android:layout_alignLeft="@+id/subject_listview_item_text1"
         android:layout_alignStart="@+id/subject_listview_item_text1"
-        android:layout_marginBottom="21dp" />
+        android:paddingBottom="21dp" />
 
 
 </RelativeLayout>

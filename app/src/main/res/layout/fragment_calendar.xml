@@ -26,13 +26,14 @@
                 android:paddingBottom="10dp"
                 android:paddingRight="5dp"
                 android:paddingLeft="5dp"
-                android:background="@color/white"
                 android:id="@+id/calendar_choice"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/calendar_show_all" />
+                android:text="@string/calendar_show_all"
+                />
 
-            <com.prolificinteractive.materialcalendarview.MaterialCalendarView xmlns:app="http://schemas.android.com/apk/res-auto"
+            <com.prolificinteractive.materialcalendarview.MaterialCalendarView
+                xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/calendarView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

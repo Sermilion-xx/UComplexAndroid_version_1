@@ -12,7 +12,7 @@
         <item name="actionMenuTextColor">@color/colorPrimaryDark</item>
         <item name="android:textColorPrimary">@color/uc_dark_menu</item>
         <item name="android:textColorSecondary">@color/white</item>
-        <item name="android:textColor">@color/white</item>
+        <item name="android:textColor">@color/uc_gray_text_events</item>
     </style>
 
     <style name="AwesomeIcon" parent="android:TextAppearance">
@@ -34,6 +34,8 @@
         <item name="android:textColorSecondary">@color/white</item>
         <item name="android:textColor">@color/white</item>
         <item name="android:background">@color/colorPrimary</item>
+        <item name="android:spinnerItemStyle">@color/uc_dark_menu</item>
+
     </style>
 
     <style name="MyActionBarTheme" parent="Base.Widget.AppCompat.Light.ActionBar.Solid">
