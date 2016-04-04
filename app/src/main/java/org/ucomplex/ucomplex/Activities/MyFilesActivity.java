@@ -16,6 +16,8 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
@@ -36,6 +38,7 @@ import org.ucomplex.ucomplex.Fragments.CourseMaterialsFragment;
 import org.ucomplex.ucomplex.Model.StudyStructure.File;
 import org.ucomplex.ucomplex.R;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
@@ -192,6 +195,7 @@ public class MyFilesActivity extends AppCompatActivity implements OnTaskComplete
                             }
                         });
         AlertDialog alert = alertDialogBuilder.create();
+//        alert.getWindow().setBackgroundDrawableResource(android.R.color.background_light);
         alert.show();
     }
 
@@ -260,7 +264,7 @@ public class MyFilesActivity extends AppCompatActivity implements OnTaskComplete
     }
 
 
-    public static String getPath(final Context context, final Uri uri) {
+    public String getPath(final Context context, final Uri uri) {
 
         final boolean isKitKat = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
 
@@ -324,17 +328,9 @@ public class MyFilesActivity extends AppCompatActivity implements OnTaskComplete
         return null;
     }
 
-    /**
-     * Get the value of the data column for this Uri. This is useful for
-     * MediaStore Uris, and other file-based ContentProviders.
-     *
-     * @param context The context.
-     * @param uri The Uri to query.
-     * @param selection (Optional) Filter used in the query.
-     * @param selectionArgs (Optional) Selection arguments used in the query.
-     * @return The value of the _data column, which is typically a file path.
-     */
-    public static String getDataColumn(Context context, Uri uri, String selection,
+
+    @Nullable
+    public String getDataColumn(Context context, Uri uri, String selection,
                                        String[] selectionArgs) {
 
         Cursor cursor = null;
@@ -342,14 +338,15 @@ public class MyFilesActivity extends AppCompatActivity implements OnTaskComplete
         final String[] projection = {
                 column
         };
-
         try {
+            this.grantUriPermission("org.ucomplex.ucomplex.Activities", uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
             cursor = context.getContentResolver().query(uri, projection, selection, selectionArgs,
                     null);
             if (cursor != null && cursor.moveToFirst()) {
                 final int column_index = cursor.getColumnIndexOrThrow(column);
                 return cursor.getString(column_index);
             }
+            this.revokeUriPermission(uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
         } finally {
             if (cursor != null)
                 cursor.close();
@@ -382,6 +379,8 @@ public class MyFilesActivity extends AppCompatActivity implements OnTaskComplete
         return "com.android.providers.media.documents".equals(uri.getAuthority());
     }
 
+
+
     @Override
     public void onTaskComplete(AsyncTask task, Object... o) {
         if (task.isCancelled()) {
@@ -404,7 +403,6 @@ public class MyFilesActivity extends AppCompatActivity implements OnTaskComplete
                 else
                     first = false;
                 fragmentTransaction.commitAllowingStateLoss();
-
             } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();
             }

@@ -3,16 +3,19 @@
     <style name="AppTheme.NoActionBar" parent="Theme.AppCompat">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorPrimary</item>
+
         <item name="actionBarStyle">@style/MyActionBarTheme</item>
         <item name="colorControlActivated">@color/colorPrimary</item>
         <item name="windowNoTitle">true</item>
         <item name="android:windowBackground">@color/white</item>
         <item name="windowActionBar">false</item>
         <item name="android:windowContentOverlay">@null</item>
-        <item name="actionMenuTextColor">@color/colorPrimaryDark</item>
-        <item name="android:textColorPrimary">@color/uc_dark_menu</item>
-        <item name="android:textColorSecondary">@color/white</item>
+        <item name="actionMenuTextColor">@color/uc_gray_text_events</item>
+        <item name="android:textColorPrimary">@color/white</item>
+        <item name="android:textColorSecondary">@color/uc_gray_text_events</item>
         <item name="android:textColor">@color/uc_gray_text_events</item>
+        <item name="textColorAlertDialogListItem">@color/black</item>
     </style>
 
     <style name="AwesomeIcon" parent="android:TextAppearance">
@@ -35,6 +38,7 @@
         <item name="android:textColor">@color/white</item>
         <item name="android:background">@color/colorPrimary</item>
         <item name="android:spinnerItemStyle">@color/uc_dark_menu</item>
+        <item name="textColorAlertDialogListItem">@color/black</item>
 
     </style>
 

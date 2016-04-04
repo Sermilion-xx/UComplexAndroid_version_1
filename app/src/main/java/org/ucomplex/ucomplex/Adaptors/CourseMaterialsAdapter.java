@@ -234,7 +234,10 @@ public class CourseMaterialsAdapter extends ArrayAdapter<File> {
                                                     break;
                                             }
                                         }
-                                    }).create().show();
+                                    });
+                                    AlertDialog alert = build.create();
+//                                    alert.getWindow().setBackgroundDrawableResource(android.R.color.background_light);
+                                    alert.show();
                                 }
                             }
                         }
@@ -285,6 +288,7 @@ public class CourseMaterialsAdapter extends ArrayAdapter<File> {
                         }
                     });
             AlertDialog alert = alertDialogBuilder.create();
+//            alert.getWindow().setBackgroundDrawableResource(android.R.color.background_light);
             alert.show();
         }
 

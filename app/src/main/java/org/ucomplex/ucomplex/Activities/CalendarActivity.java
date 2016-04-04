@@ -171,9 +171,9 @@ public class CalendarActivity extends AppCompatActivity implements AdapterView.O
                         "Индивидуальное занятие", "Нерабочий день", "Расписание"};
 
                 ListAdapter adapter = new CalendarInfoAdapter(this, items, infoDrawables);
-
-                new AlertDialog.Builder(this).setAdapter(adapter, null).show();
-
+                AlertDialog alertDialog = new AlertDialog.Builder(this).setAdapter(adapter, null).create();
+//                alertDialog.getWindow().setBackgroundDrawableResource(android.R.color.background_light);
+                alertDialog.show();
         }
         return super.onOptionsItemSelected(item);
     }

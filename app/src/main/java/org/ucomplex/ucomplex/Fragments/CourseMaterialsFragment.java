@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.ListFragment;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
@@ -27,6 +28,7 @@ import org.ucomplex.ucomplex.Interfaces.OnTaskCompleteListener;
 import org.ucomplex.ucomplex.Model.StudyStructure.File;
 import org.ucomplex.ucomplex.R;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 
 public class CourseMaterialsFragment extends ListFragment {
@@ -41,7 +43,6 @@ public class CourseMaterialsFragment extends ListFragment {
     private CourseMaterialsAdapter adapter;
 
     public static final int DIALOG_DOWNLOAD_PROGRESS = 0;
-    private ProgressDialog mProgressDialog;
     String myFilesToolBarTitle;
 
 
@@ -49,9 +50,6 @@ public class CourseMaterialsFragment extends ListFragment {
         this.myFilesToolBarTitle = myFilesToolBarTitle;
     }
 
-    public String getMyFilesToolBarTitle() {
-        return myFilesToolBarTitle;
-    }
 
     public void setAdapter(CourseMaterialsAdapter adapter) {
         this.adapter = adapter;
@@ -68,10 +66,6 @@ public class CourseMaterialsFragment extends ListFragment {
 
     public void setMyFiles(boolean myFiles) {
         this.myFiles = myFiles;
-    }
-
-    public boolean isMyFiles() {
-        return myFiles;
     }
 
     public CourseMaterialsFragment() {
@@ -92,6 +86,21 @@ public class CourseMaterialsFragment extends ListFragment {
 
     public void setFiles(ArrayList<File> files) {
         this.mItems = files;
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        try {
+            Field childFragmentManager = Fragment.class.getDeclaredField("mChildFragmentManager");
+            childFragmentManager.setAccessible(true);
+            childFragmentManager.set(this, null);
+
+        } catch (NoSuchFieldException e) {
+            throw new RuntimeException(e);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
@@ -203,7 +212,6 @@ public class CourseMaterialsFragment extends ListFragment {
     }
 
     private void startDownload(File item) {
-        String url = "http://storage.ucomplex.org/files/users/683/821dd76f2f47f08a.docx";
         new DownloadFileAsync().execute(item);
     }
 
@@ -213,29 +221,20 @@ public class CourseMaterialsFragment extends ListFragment {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            mProgressDialog = new ProgressDialog(getContext());
-            mProgressDialog.setMessage("Downloading file..");
-            mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-            mProgressDialog.setCancelable(false);
-            mProgressDialog.show();
         }
 
         @Override
         protected String doInBackground(File... item) {
-
-            final String UC_BASE_URL = "http://storage.ucomplex.org/files/users/" + String.valueOf(item[0].getOwner().getPerson()) + "/" + item[0].getAddress() + "." + item[0].getType();
+            final String UC_BASE_URL = "http://storage.ucomplex.org/files/users/" + String.valueOf(item[0].getOwner().getId()) + "/" + item[0].getAddress() + "." + item[0].getType();
             mContext.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(UC_BASE_URL)));
             return null;
         }
 
         protected void onProgressUpdate(String... progress) {
-            Log.d("ANDRO_ASYNC", progress[0]);
-            mProgressDialog.setProgress(Integer.parseInt(progress[0]));
         }
 
         @Override
         protected void onPostExecute(String unused) {
-            mProgressDialog.dismiss();
         }
     }
 
