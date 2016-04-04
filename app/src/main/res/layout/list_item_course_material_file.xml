@@ -11,7 +11,7 @@
         android:layout_marginLeft="28dp"
         android:layout_marginTop="12dp"
         android:src="@drawable/ic_file"
-        android:paddingBottom="12dp"/>
+        />
 
     <TextView
         android:id="@+id/course_material_listview_item_name"
