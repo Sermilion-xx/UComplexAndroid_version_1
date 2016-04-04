@@ -377,7 +377,6 @@ public class MessagesActivity extends AppCompatActivity implements OnTaskComplet
                     final String[] selectionArgs = new String[] {
                             split[1]
                     };
-
                     return getDataColumn(context, contentUri, selection, selectionArgs);
                 }else if ("file".equalsIgnoreCase(uri.getScheme())) {
                     return uri.getPath();
