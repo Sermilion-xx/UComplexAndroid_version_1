@@ -11,7 +11,7 @@
         xmlns:card_view="http://schemas.android.com/apk/res-auto"
         android:id="@+id/card_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         card_view:cardCornerRadius="0dp">
 
         <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -37,7 +37,6 @@
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:layout_below="@+id/list_events_item_text"
-                android:layout_marginBottom="19dp"
                 android:layout_marginLeft="19dp"
                 android:layout_marginTop="18dp"
                 android:layout_alignParentLeft="true"
@@ -73,7 +72,9 @@
                 android:layout_below="@+id/list_events_item_name"
                 android:text="Сегодня в 15:36"
                 android:textColor="#999999"
-                android:textSize="13sp" />
+                android:textSize="13sp"
+
+                android:paddingBottom="20dp"/>
 
 
         </RelativeLayout>

@@ -1,5 +1,6 @@
 package org.ucomplex.ucomplex.Activities;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
