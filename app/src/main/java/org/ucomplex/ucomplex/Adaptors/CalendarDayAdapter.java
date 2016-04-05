@@ -27,13 +27,10 @@ public class CalendarDayAdapter extends ArrayAdapter<Quintet<String,String,Strin
     private LayoutInflater inflater;
     private final Context context;
     ArrayList values = new ArrayList();
-    int separatorPosition=1;
     User user;
     Typeface robotoFont = Typeface.createFromAsset(getContext().getAssets(), "fonts/Roboto-Regular.ttf");
 
-    private static final int TYPE_MARK_TITLE = 0;
     private static final int TYPE_MARK = 1;
-    private static final int TYPE_SUBJECT_TITLE = 2;
     private static final int TYPE_SUBJECT = 3;
 
     //time, name, info, mark, color
@@ -42,45 +39,11 @@ public class CalendarDayAdapter extends ArrayAdapter<Quintet<String,String,Strin
         this.context = context;
         this.values = values;
         user = Common.getUserDataFromPref(context);
-//        if(user.getType() == 3){
-//            for (int i = 0; i<mItems.size(); i++) {
-//                if (mItems.get(i).getValue0().equals("-1") || mItems.get(i).getValue0().equals("-2")) {
-//                    mItems.remove(mItems.get(i));
-//                }
-//            }
-//            separatorPosition = 0;
-//        }else if(user.getType() == 4){
-//            for (Quintet<String, String, String, String, String> item : mItems) {
-//                if (item.getValue0().equals("-1")) {
-//                    separatorPosition++;
-//                }
-//            }
-//        }
     }
 
     @Override
     public int getItemViewType(int position) {
         return TYPE_SUBJECT;
-//        if(user.getType() == 3){
-//            if(position==0){
-//                return TYPE_SUBJECT_TITLE;
-//            }else{
-//                return TYPE_SUBJECT;
-//            }
-//        }else if(user.getType() == 4){
-//            if(position==0){
-//                return TYPE_MARK_TITLE;
-//            }else if(position>0 && position<separatorPosition){
-//                return TYPE_MARK;
-//            }else if(position==separatorPosition){
-//                return TYPE_SUBJECT_TITLE;
-//            }else if(position>separatorPosition){
-//                return TYPE_SUBJECT;
-//            }else{
-//                return -1;
-//            }
-//        }
-//        return -1;
     }
 
     @Override
@@ -90,7 +53,6 @@ public class CalendarDayAdapter extends ArrayAdapter<Quintet<String,String,Strin
 
     private View createHolder(ViewHolder viewHolder,View convertView, int viewType){
         viewHolder = new ViewHolder();
-        inflater = LayoutInflater.from(getContext());
             if(viewType==TYPE_MARK ){
                 convertView = inflater.inflate(R.layout.list_item_calendar_day_mark, null);
             viewHolder.subjectTextView = (TextView) convertView.findViewById(R.id.list_calendar_day_mark_subject);
@@ -113,8 +75,26 @@ public class CalendarDayAdapter extends ArrayAdapter<Quintet<String,String,Strin
     }
 
     @Override
+    public int getCount() {
+        return values.size()>0?values.size():1;
+    }
+    @Override
+    public boolean isEnabled(int position) {
+        return values.size() != 0;
+    }
+
+    @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder viewHolder = null;
+        inflater = LayoutInflater.from(getContext());
+        if (values.size()==0){
+            if(!Common.isNetworkConnected(context)){
+                convertView = inflater.inflate(R.layout.list_item_no_internet, null, false);
+            }else{
+                convertView = inflater.inflate(R.layout.list_item_no_content, null, false);
+            }
+            return convertView;
+        }
         int viewType = getItemViewType(position);
         if (convertView == null) {
             convertView = createHolder(viewHolder, convertView, viewType);
@@ -150,13 +130,8 @@ public class CalendarDayAdapter extends ArrayAdapter<Quintet<String,String,Strin
             String roomNum = info[1].replaceAll("\\s+","");
             viewHolder.subjectRoomTextView.setTypeface(robotoFont);
             viewHolder.subjectRoomTextView.setText(Character.toUpperCase(roomNum.charAt(0)) + roomNum.substring(1));
-//            viewHolder.titleTextView.setTypeface(robotoFont);
         }
-//        else if(viewType==TYPE_SUBJECT_TITLE){
-//            viewHolder.titleTextView.setText("Расписание");
-//        }else if(viewType==TYPE_MARK_TITLE){
-//            viewHolder.titleTextView.setText("Успеваемость");
-//        }
+
         return convertView;
     }
 
@@ -182,7 +157,6 @@ public class CalendarDayAdapter extends ArrayAdapter<Quintet<String,String,Strin
         TextView subjectTeacherTextView;
         TextView subjectRoomTextView;
         ImageView markTextView;
-        TextView titleTextView;
 
         public ViewHolder(){}
 

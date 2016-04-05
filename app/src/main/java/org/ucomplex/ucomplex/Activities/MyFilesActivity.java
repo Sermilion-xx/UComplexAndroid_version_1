@@ -73,6 +73,7 @@ public class MyFilesActivity extends AppCompatActivity implements OnTaskComplete
     public void onBackPressed() {
         if (uploadFileTask != null) {
             uploadFileTask.cancel(true);
+            Common.connection.disconnect();
         }
         linlaHeaderProgress.setVisibility(View.INVISIBLE);
         if (titles.size() > 1) {
@@ -89,6 +90,7 @@ public class MyFilesActivity extends AppCompatActivity implements OnTaskComplete
                 onBackPressed();
                 if (uploadFileTask != null) {
                     uploadFileTask.cancel(true);
+                    Common.connection.disconnect();
                 }
                 linlaHeaderProgress.setVisibility(View.INVISIBLE);
                 return true;
@@ -137,6 +139,12 @@ public class MyFilesActivity extends AppCompatActivity implements OnTaskComplete
                     String jsonData = Common.httpPost(url, Common.getLoginDataFromPref(MyFilesActivity.this), httpParams);
                     ArrayList<File> newFolder = Common.getFileDataFromJson(jsonData, MyFilesActivity.this);
                     return newFolder;
+                }
+
+                @Override
+                protected void onCancelled() {
+                    Common.connection.disconnect();
+                    linlaHeaderProgress.setVisibility(View.INVISIBLE);
                 }
 
                 @Override
@@ -216,7 +224,7 @@ public class MyFilesActivity extends AppCompatActivity implements OnTaskComplete
             @Override
             protected void onCancelled() {
                 super.onCancelled();
-                uploadFileTask.cancel(true);
+                Common.connection.disconnect();
                 linlaHeaderProgress.setVisibility(View.INVISIBLE);
             }
 

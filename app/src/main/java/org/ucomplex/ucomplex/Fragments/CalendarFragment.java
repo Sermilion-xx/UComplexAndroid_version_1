@@ -54,6 +54,7 @@ public class CalendarFragment extends Fragment implements OnTaskCompleteListener
     LinearLayout linlaHeaderProgress;
     User user;
     private AsyncTaskManager mAsyncTaskManager;
+    FetchCalendarTask fetchCalendarTask;
     final String[] monthsTitles = {"Январь", "Февряль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"};
 
 
@@ -141,10 +142,15 @@ public class CalendarFragment extends Fragment implements OnTaskCompleteListener
         materialCalendarView.setOnMonthChangedListener(new OnMonthChangedListener() {
             @Override
             public void onMonthChanged(MaterialCalendarView widget, final CalendarDay date) {
+
                 final Handler handler = new Handler();
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
+                        if(fetchCalendarTask!=null){
+                            fetchCalendarTask.cancel(true);
+                        }
+                        fetchCalendarTask = new FetchCalendarTask(context);
                         spinner.setSelection(0);
                         int month = date.getMonth() + 1;
                         int year = date.getYear();
@@ -156,8 +162,9 @@ public class CalendarFragment extends Fragment implements OnTaskCompleteListener
                         int Year = cal.get(Calendar.YEAR);
 
                         if (year <= Year) {
-                            mAsyncTaskManager.setupTask(new FetchCalendarTask(context), String.valueOf(user.getType()), monthStr, dateStr);
+                            mAsyncTaskManager.setupTask(fetchCalendarTask, String.valueOf(user.getType()), monthStr, dateStr);
                             linlaHeaderProgress.setVisibility(View.VISIBLE);
+
                         } else {
                             Toast.makeText(getContext(), "Нету данных для следующего года!", Toast.LENGTH_SHORT).show();
                         }
@@ -213,7 +220,6 @@ public class CalendarFragment extends Fragment implements OnTaskCompleteListener
     public void onTaskComplete(AsyncTask task, Object... o) {
         linlaHeaderProgress.setVisibility(View.GONE);
         if (task != null) {
-
             if (task.isCancelled()) {
                 Toast.makeText(context, "Операция отменена", Toast.LENGTH_LONG)
                         .show();
@@ -342,6 +348,7 @@ public class CalendarFragment extends Fragment implements OnTaskCompleteListener
                             startActivity(intent);
                         }
                     });
+                    fetchCalendarTask = null;
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

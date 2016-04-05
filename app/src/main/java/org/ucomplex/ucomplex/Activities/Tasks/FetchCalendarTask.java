@@ -244,6 +244,7 @@ public class FetchCalendarTask extends AsyncTask<String, String, UCCalendar> {
     @Override
     protected void onCancelled() {
         mProgressTracker = null;
+        Common.connection.disconnect();
     }
 
     @Override
