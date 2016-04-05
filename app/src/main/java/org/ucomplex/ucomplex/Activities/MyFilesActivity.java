@@ -1,5 +1,6 @@
 package org.ucomplex.ucomplex.Activities;
 
+import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -16,6 +17,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -311,8 +313,11 @@ public class MyFilesActivity extends AppCompatActivity implements OnTaskComplete
                     final String[] selectionArgs = new String[] {
                             split[1]
                     };
-
                     return getDataColumn(context, contentUri, selection, selectionArgs);
+                }else if ("file".equalsIgnoreCase(uri.getScheme())) {
+                    return uri.getPath();
+                }else if ("content".equalsIgnoreCase(uri.getScheme())) {
+                    return getDataColumn(context, uri, null, null);
                 }
             }
 
@@ -340,6 +345,16 @@ public class MyFilesActivity extends AppCompatActivity implements OnTaskComplete
         };
         try {
             this.grantUriPermission("org.ucomplex.ucomplex.Activities", uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                if (!Settings.System.canWrite(this)) {
+                    requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                            Manifest.permission.READ_EXTERNAL_STORAGE}, 2909);
+                } else {
+                    cursor = context.getContentResolver().query(uri, projection, selection, selectionArgs, null);
+                }
+            } else {
+                cursor = context.getContentResolver().query(uri, projection, selection, selectionArgs, null);
+            }
             cursor = context.getContentResolver().query(uri, projection, selection, selectionArgs,
                     null);
             if (cursor != null && cursor.moveToFirst()) {

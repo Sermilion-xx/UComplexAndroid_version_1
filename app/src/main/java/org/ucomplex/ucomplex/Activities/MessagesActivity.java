@@ -1,11 +1,13 @@
 package org.ucomplex.ucomplex.Activities;
 
+import android.Manifest;
 import android.animation.ObjectAnimator;
 import android.app.ProgressDialog;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -17,6 +19,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
@@ -24,6 +27,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -397,6 +401,7 @@ public class MessagesActivity extends AppCompatActivity implements OnTaskComplet
     }
 
 
+
     @Nullable
     public String getDataColumn(Context context, Uri uri, String selection,
                                 String[] selectionArgs) {
@@ -408,8 +413,18 @@ public class MessagesActivity extends AppCompatActivity implements OnTaskComplet
         };
         try {
             this.grantUriPermission("org.ucomplex.ucomplex.Activities", uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            cursor = context.getContentResolver().query(uri, projection, selection, selectionArgs,
-                    null);
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                if (!Settings.System.canWrite(this)) {
+                    requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                            Manifest.permission.READ_EXTERNAL_STORAGE}, 2909);
+                } else {
+                    cursor = context.getContentResolver().query(uri, projection, selection, selectionArgs, null);
+                }
+            } else {
+                cursor = context.getContentResolver().query(uri, projection, selection, selectionArgs, null);
+            }
+            cursor = context.getContentResolver().query(uri, projection, selection, selectionArgs, null);
             if (cursor != null && cursor.moveToFirst()) {
                 final int column_index = cursor.getColumnIndexOrThrow(column);
                 return cursor.getString(column_index);
@@ -420,6 +435,20 @@ public class MessagesActivity extends AppCompatActivity implements OnTaskComplet
                 cursor.close();
         }
         return null;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case 2909: {
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Log.e("Permission", "Granted");
+                } else {
+                    Log.e("Permission", "Denied");
+                }
+                return;
+            }
+        }
     }
 
 
