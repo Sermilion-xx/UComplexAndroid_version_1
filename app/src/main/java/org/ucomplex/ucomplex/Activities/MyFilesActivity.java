@@ -1,9 +1,7 @@
 package org.ucomplex.ucomplex.Activities;
 
 import android.Manifest;
-import android.annotation.TargetApi;
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -19,7 +17,6 @@ import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
@@ -34,13 +31,12 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import org.ucomplex.ucomplex.Activities.Tasks.FetchMyFilesTask;
-import org.ucomplex.ucomplex.Interfaces.OnTaskCompleteListener;
 import org.ucomplex.ucomplex.Common;
 import org.ucomplex.ucomplex.Fragments.CourseMaterialsFragment;
+import org.ucomplex.ucomplex.Interfaces.OnTaskCompleteListener;
 import org.ucomplex.ucomplex.Model.StudyStructure.File;
 import org.ucomplex.ucomplex.R;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
@@ -75,7 +71,7 @@ public class MyFilesActivity extends AppCompatActivity implements OnTaskComplete
 
     @Override
     public void onBackPressed() {
-        if(uploadFileTask!=null){
+        if (uploadFileTask != null) {
             uploadFileTask.cancel(true);
         }
         linlaHeaderProgress.setVisibility(View.INVISIBLE);
@@ -91,7 +87,7 @@ public class MyFilesActivity extends AppCompatActivity implements OnTaskComplete
         switch (item.getItemId()) {
             case android.R.id.home:
                 onBackPressed();
-                if(uploadFileTask!=null){
+                if (uploadFileTask != null) {
                     uploadFileTask.cancel(true);
                 }
                 linlaHeaderProgress.setVisibility(View.INVISIBLE);
@@ -228,7 +224,7 @@ public class MyFilesActivity extends AppCompatActivity implements OnTaskComplete
             protected void onPostExecute(ArrayList newFile) {
                 super.onPostExecute(newFile);
                 linlaHeaderProgress.setVisibility(View.GONE);
-                if(newFile!=null){
+                if (newFile != null) {
                     if (courseMaterialsFragment != null) {
                         courseMaterialsFragment.addFile((File) newFile.get(0));
                         courseMaterialsFragment.getAdapter().notifyDataSetChanged();
@@ -259,7 +255,7 @@ public class MyFilesActivity extends AppCompatActivity implements OnTaskComplete
             } else {
                 Toast.makeText(this, "Проверте интернет соединение", Toast.LENGTH_LONG).show();
             }
-        }else{
+        } else {
             Toast.makeText(this, "Ошибка выбора файла", Toast.LENGTH_LONG).show();
         }
         this.revokeUriPermission(originalUri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
@@ -310,13 +306,13 @@ public class MyFilesActivity extends AppCompatActivity implements OnTaskComplete
                     }
 
                     final String selection = "_id=?";
-                    final String[] selectionArgs = new String[] {
+                    final String[] selectionArgs = new String[]{
                             split[1]
                     };
                     return getDataColumn(context, contentUri, selection, selectionArgs);
-                }else if ("file".equalsIgnoreCase(uri.getScheme())) {
+                } else if ("file".equalsIgnoreCase(uri.getScheme())) {
                     return uri.getPath();
-                }else if ("content".equalsIgnoreCase(uri.getScheme())) {
+                } else if ("content".equalsIgnoreCase(uri.getScheme())) {
                     return getDataColumn(context, uri, null, null);
                 }
             }
@@ -329,14 +325,12 @@ public class MyFilesActivity extends AppCompatActivity implements OnTaskComplete
         else if ("file".equalsIgnoreCase(uri.getScheme())) {
             return uri.getPath();
         }
-
         return null;
     }
 
-
     @Nullable
     public String getDataColumn(Context context, Uri uri, String selection,
-                                       String[] selectionArgs) {
+                                String[] selectionArgs) {
 
         Cursor cursor = null;
         final String column = "_data";
@@ -393,7 +387,6 @@ public class MyFilesActivity extends AppCompatActivity implements OnTaskComplete
     public static boolean isMediaDocument(Uri uri) {
         return "com.android.providers.media.documents".equals(uri.getAuthority());
     }
-
 
 
     @Override
