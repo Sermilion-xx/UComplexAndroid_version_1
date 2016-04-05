@@ -2,6 +2,7 @@ package org.ucomplex.ucomplex.Model.Calendar;
 
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
@@ -81,7 +82,11 @@ public class CalendarDayDecorator implements DayViewDecorator {
                     .buildRound(null, Color.parseColor("#09c8fa"));
             view.setBackgroundDrawable(drawable);
         }else {
-            view.addSpan(new DayDecoratorSpan(5, Color.parseColor(color)));
+            int dotSize = 5;
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
+                dotSize = 8;
+            }
+            view.addSpan(new DayDecoratorSpan(dotSize, Color.parseColor(color)));
         }
 
     }

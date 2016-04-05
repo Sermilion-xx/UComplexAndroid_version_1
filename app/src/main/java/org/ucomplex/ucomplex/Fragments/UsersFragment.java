@@ -28,6 +28,7 @@ public class UsersFragment extends ListFragment {
     int lastPos;
     Activity activity;
     User user;
+    FetchUsersTask loadMoreTask;
 
 
     public void setActivity(Activity activity) {
@@ -93,10 +94,16 @@ public class UsersFragment extends ListFragment {
         btnLoadExtra = new Button(getContext());
         btnLoadExtra.setFocusable(false);
         btnLoadExtra.setText("Загрузить еще...");
+        if (usersType>1) {
+            btnLoadExtra.setVisibility(View.INVISIBLE);
+        }
         if (savedInstanceState != null) {
             mItems = (ArrayList<User>) savedInstanceState.getSerializable("mItems");
+            if (mItems != null && mItems.size() > 0 && mItems.size() < 20) {
+                btnLoadExtra.setVisibility(View.INVISIBLE);
+            }
         }
-        if (mItems.size() == 0) {
+        if ((mItems != null ? mItems.size() : 0) == 0) {
             fetchUsers();
         }
     }
@@ -104,10 +111,6 @@ public class UsersFragment extends ListFragment {
     @Override
     public void onStart() {
         super.onStart();
-        if (usersType == Common.userListChanged) {
-            fetchUsers();
-            Common.userListChanged = -1;
-        }
     }
 
     @Override
@@ -141,6 +144,9 @@ public class UsersFragment extends ListFragment {
                     imageAdapter.setmItems(mItems);
                     imageAdapter.notifyDataSetChanged();
                 }
+                if (users != null && users.size() > 0 && users.size() < 20) {
+                    btnLoadExtra.setVisibility(View.INVISIBLE);
+                }
             }
         }.execute(usersType);
     }
@@ -155,24 +161,29 @@ public class UsersFragment extends ListFragment {
             btnLoadExtra.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View arg0) {
-                    new FetchUsersTask(getActivity()) {
-                        @Override
-                        protected void onPostExecute(ArrayList<User> users) {
-                            super.onPostExecute(users);
-                            lastPos = mItems.size();
-                            loadedUsers = users;
-                            if (loadedUsers.size() <= 20) {
-                                btnLoadExtra.setVisibility(View.GONE);
+                    if(loadMoreTask == null){
+                        loadMoreTask = (FetchUsersTask) new FetchUsersTask(getActivity()) {
+                            @Override
+                            protected void onPostExecute(ArrayList<User> users) {
+                                super.onPostExecute(users);
+                                lastPos = mItems.size();
+                                loadedUsers = users;
+                                if (loadedUsers.size() <= 20) {
+                                    btnLoadExtra.setVisibility(View.GONE);
+                                }
+                                mItems.addAll(loadedUsers);
+                                setListAdapter(new ImageAdapter(mItems, getActivity(), usersType));
+                                getListView().setSelection(lastPos - 1);
+                                if (users.size() > 0 && users.size() < 20) {
+                                    btnLoadExtra.setVisibility(View.INVISIBLE);
+                                }
+                                loadMoreTask = null;
                             }
-                            mItems.addAll(loadedUsers);
-                            setListAdapter(new ImageAdapter(mItems, getActivity(), usersType));
-                            getListView().setSelection(lastPos - 1);
-                        }
-                    }.execute(usersType, mItems.size() - 1);
+                        }.execute(usersType, mItems.size() - 1);
+                    }
                 }
             });
         }
-
         getListView().addFooterView(btnLoadExtra);
     }
 

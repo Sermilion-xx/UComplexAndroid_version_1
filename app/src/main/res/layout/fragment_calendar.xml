@@ -30,7 +30,8 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/calendar_show_all"
-                />
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp" />
 
             <com.prolificinteractive.materialcalendarview.MaterialCalendarView
                 xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -38,8 +39,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/calendar_choice"
-                app:mcv_selectionColor="#c3ccd3"
-                app:mcv_showOtherDates="all"
+                app:mcv_showOtherDates="none"
+                app:mcv_selectionColor="@color/uc_gray_text"
                 android:layout_margin="5dp"
                 android:background="@color/white"/>
 

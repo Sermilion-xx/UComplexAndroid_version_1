@@ -138,7 +138,6 @@ public class CalendarFragment extends Fragment implements OnTaskCompleteListener
         MonthArrayTitleFormatter monthArrayTitleFormatter = new MonthArrayTitleFormatter(monthsTitles);
         materialCalendarView = (MaterialCalendarView) view.findViewById(R.id.calendarView);
         materialCalendarView.setTitleFormatter(monthArrayTitleFormatter);
-        materialCalendarView.setSelectionColor(Color.BLACK);
         materialCalendarView.setOnMonthChangedListener(new OnMonthChangedListener() {
             @Override
             public void onMonthChanged(MaterialCalendarView widget, final CalendarDay date) {
