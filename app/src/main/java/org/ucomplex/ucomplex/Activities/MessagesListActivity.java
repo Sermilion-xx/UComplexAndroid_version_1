@@ -2,10 +2,12 @@ package org.ucomplex.ucomplex.Activities;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.ActionMode;
@@ -23,6 +25,7 @@ import org.ucomplex.ucomplex.Adaptors.MessagesListAdapter;
 import org.ucomplex.ucomplex.Common;
 import org.ucomplex.ucomplex.Interfaces.OnTaskCompleteListener;
 import org.ucomplex.ucomplex.Model.Dialog;
+import org.ucomplex.ucomplex.Model.Message;
 import org.ucomplex.ucomplex.R;
 
 import java.util.ArrayList;
@@ -106,49 +109,19 @@ public class MessagesListActivity extends AppCompatActivity implements OnTaskCom
         return super.onOptionsItemSelected(item);
     }
 
-    private ActionMode.Callback modeCallBack = new ActionMode.Callback() {
-
-        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-            return false;
-        }
-
-        public void onDestroyActionMode(ActionMode mode) {
-        }
-
-        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-            mode.getMenuInflater().inflate(R.menu.menu_message_list, menu);
-            return true;
-        }
-
-        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-
-            int id = item.getItemId();
-            switch (id) {
-                case R.id.action_message_delete: {
-                    deleteDialog(selectedItemPos);
-                    mode.finish();
-                    break;
-                }
-                default:
-                    return false;
-            }
-            return false;
-        }
-    };
-
     public void deleteDialog(final int position) {
-        new AsyncTask<Void, Void, Void>() {
+        new AsyncTask<Void, Void, String>() {
             @Override
-            protected Void doInBackground(Void... params) {
+            protected String doInBackground(Void... params) {
                 HashMap<String, String> httpParas = new HashMap<>();
-                httpParas.put("id", String.valueOf(dialogs.get(position).getId()));
+                httpParas.put("id", String.valueOf(dialogs.get(position).getCompanion()));
                 String url = "https://ucomplex.org/user/messages/del_dialog?mobile=1";
-                Common.httpPost(url, Common.getLoginDataFromPref(MessagesListActivity.this), httpParas);
-                return null;
+                String result = Common.httpPost(url, Common.getLoginDataFromPref(MessagesListActivity.this), httpParas);
+                return result;
             }
 
             @Override
-            protected void onPostExecute(Void aVoid) {
+            protected void onPostExecute(String aVoid) {
                 super.onPostExecute(aVoid);
                 dialogs.remove(position);
                 messagesListAdapter.notifyDataSetChanged();
@@ -181,8 +154,17 @@ public class MessagesListActivity extends AppCompatActivity implements OnTaskCom
                 listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
                     public boolean onItemLongClick(AdapterView parent, View view, final int position, long id) {
                         selectedItemPos = position;
-                        MessagesListActivity.this.startActionMode(modeCallBack);
-                        view.setSelected(true);
+                        new AlertDialog.Builder(MessagesListActivity.this)
+                                .setMessage("Удалить диалог?")
+                                .setCancelable(false)
+                                .setPositiveButton("Да", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        deleteDialog(position);
+                                    }
+                                })
+                                .setNegativeButton("Нет", null)
+                                .show();
+
                         return true;
                     }
                 });

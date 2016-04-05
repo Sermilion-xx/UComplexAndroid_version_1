@@ -340,26 +340,19 @@ public class MessagesActivity extends AppCompatActivity implements OnTaskComplet
 
         // DocumentProvider
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-//            if (isKitKat && DocumentsContract.isDocumentUri(context, uri)) {
-                // ExternalStorageProvider
                 if (isExternalStorageDocument(uri)) {
                     final String docId = DocumentsContract.getDocumentId(uri);
                     final String[] split = docId.split(":");
                     final String type = split[0];
-
                     if ("primary".equalsIgnoreCase(type)) {
                         return Environment.getExternalStorageDirectory() + "/" + split[1];
                     }
-
-                    // TODO handle non-primary volumes
                 }
                 // DownloadsProvider
                 else if (isDownloadsDocument(uri)) {
-
                     final String id = DocumentsContract.getDocumentId(uri);
                     final Uri contentUri = ContentUris.withAppendedId(
                             Uri.parse("content://downloads/public_downloads"), Long.valueOf(id));
-
                     return getDataColumn(context, contentUri, null, null);
                 }
                 // MediaProvider
@@ -367,7 +360,6 @@ public class MessagesActivity extends AppCompatActivity implements OnTaskComplet
                     final String docId = DocumentsContract.getDocumentId(uri);
                     final String[] split = docId.split(":");
                     final String type = split[0];
-
                     Uri contentUri = null;
                     if ("image".equals(type)) {
                         contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
@@ -376,11 +368,8 @@ public class MessagesActivity extends AppCompatActivity implements OnTaskComplet
                     } else if ("audio".equals(type)) {
                         contentUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
                     }
-
                     final String selection = "_id=?";
-                    final String[] selectionArgs = new String[] {
-                            split[1]
-                    };
+                    final String[] selectionArgs = new String[] {split[1]};
                     return getDataColumn(context, contentUri, selection, selectionArgs);
                 }else if ("file".equalsIgnoreCase(uri.getScheme())) {
                     return uri.getPath();
@@ -396,24 +385,16 @@ public class MessagesActivity extends AppCompatActivity implements OnTaskComplet
         else if ("file".equalsIgnoreCase(uri.getScheme())) {
             return uri.getPath();
         }
-
         return null;
     }
 
-
-
     @Nullable
-    public String getDataColumn(Context context, Uri uri, String selection,
-                                String[] selectionArgs) {
-
+    public String getDataColumn(Context context, Uri uri, String selection,  String[] selectionArgs) {
         Cursor cursor = null;
         final String column = "_data";
-        final String[] projection = {
-                column
-        };
+        final String[] projection = {column};
         try {
             this.grantUriPermission("org.ucomplex.ucomplex.Activities", uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
-
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 if (!Settings.System.canWrite(this)) {
                     requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
@@ -436,21 +417,6 @@ public class MessagesActivity extends AppCompatActivity implements OnTaskComplet
         }
         return null;
     }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        switch (requestCode) {
-            case 2909: {
-                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Log.e("Permission", "Granted");
-                } else {
-                    Log.e("Permission", "Denied");
-                }
-                return;
-            }
-        }
-    }
-
 
     /**
      * @param uri The Uri to check.
