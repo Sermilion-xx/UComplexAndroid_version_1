@@ -88,20 +88,20 @@ public class CalendarFragment extends Fragment implements OnTaskCompleteListener
                 } else if (position == 1) {
                     materialCalendarView.removeDecorators();
                     //Расписание
-                    materialCalendarView.addDecorator(new CalendarDayDecorator(calendar, 5));
+                    materialCalendarView.addDecorator(new CalendarDayDecorator(calendar, 5, context));
                     //занятие
-                    materialCalendarView.addDecorator(new CalendarDayDecorator(calendar, 0));
+                    materialCalendarView.addDecorator(new CalendarDayDecorator(calendar, 0, context));
                     //индивидуадбное занятие
-                    materialCalendarView.addDecorator(new CalendarDayDecorator(calendar, 3));
+                    materialCalendarView.addDecorator(new CalendarDayDecorator(calendar, 3, context));
                     //аттестация
-                    materialCalendarView.addDecorator(new CalendarDayDecorator(calendar, 1));
+                    materialCalendarView.addDecorator(new CalendarDayDecorator(calendar, 1, context));
                     //экзамен
-                    materialCalendarView.addDecorator(new CalendarDayDecorator(calendar, 2));
+                    materialCalendarView.addDecorator(new CalendarDayDecorator(calendar, 2, context));
 
                 } else if (position == 2) {
                     //событие
                     materialCalendarView.removeDecorators();
-                    materialCalendarView.addDecorator(new CalendarDayDecorator(calendar, 4));
+                    materialCalendarView.addDecorator(new CalendarDayDecorator(calendar, 4, context));
                 } else {
                     materialCalendarView.removeDecorators();
                     courseValue = options.get(position);
@@ -180,19 +180,19 @@ public class CalendarFragment extends Fragment implements OnTaskCompleteListener
     private void refreshMonth() {
         //выставленны по приоритету, так как каджый декоратор накладываеться на предыдущий
         //сегодня
-        materialCalendarView.addDecorator(new CalendarDayDecorator(calendar, 6));
+        materialCalendarView.addDecorator(new CalendarDayDecorator(calendar, 6, context));
         //Расписание
-        materialCalendarView.addDecorator(new CalendarDayDecorator(calendar, 5));
+        materialCalendarView.addDecorator(new CalendarDayDecorator(calendar, 5, context));
         //занятие
-        materialCalendarView.addDecorator(new CalendarDayDecorator(calendar, 0));
+        materialCalendarView.addDecorator(new CalendarDayDecorator(calendar, 0, context));
         //индивидуадбное занятие
-        materialCalendarView.addDecorator(new CalendarDayDecorator(calendar, 3));
+        materialCalendarView.addDecorator(new CalendarDayDecorator(calendar, 3, context));
         //аттестация
-        materialCalendarView.addDecorator(new CalendarDayDecorator(calendar, 1));
+        materialCalendarView.addDecorator(new CalendarDayDecorator(calendar, 1, context));
         //экзамен
-        materialCalendarView.addDecorator(new CalendarDayDecorator(calendar, 2));
+        materialCalendarView.addDecorator(new CalendarDayDecorator(calendar, 2, context));
         //события
-        materialCalendarView.addDecorator(new CalendarDayDecorator(calendar, 4));
+        materialCalendarView.addDecorator(new CalendarDayDecorator(calendar, 4, context));
 
     }
 

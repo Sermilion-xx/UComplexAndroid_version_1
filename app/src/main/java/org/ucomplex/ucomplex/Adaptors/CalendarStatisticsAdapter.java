@@ -37,7 +37,6 @@ public class CalendarStatisticsAdapter extends ArrayAdapter<Quintet<String, Stri
         statisticItemsOld.add(new Quintet<>("-1", "-1", -10.0, -10.0, -2));
         this.mItems = new ArrayList<>();
 
-        DecimalFormat df = new DecimalFormat("#.##", new DecimalFormatSymbols(Locale.US));
         for (Quintet<String, String, Double, Double, Integer> item : mItems) {
             if (item.getValue4() == 1) {
                 statisticItemsCurrent.add(item);
@@ -61,8 +60,8 @@ public class CalendarStatisticsAdapter extends ArrayAdapter<Quintet<String, Stri
                     attendanceCount++;
                 }
             }
-            markAverage = Double.valueOf(df.format(markAverage / markCount));
-            attendanceAverage = Double.valueOf(df.format(attendanceAverage / attendanceCount));
+            markAverage = Common.round(markAverage / markCount, 2);
+            attendanceAverage = Common.round(attendanceAverage / attendanceCount,2);
             Quintet<String, String, Double, Double, Integer> markAverageItemCurrent = new Quintet<>("-1", "Итого", markAverage, attendanceAverage, 0);
             statisticItemsCurrent.add(markAverageItemCurrent);
         }

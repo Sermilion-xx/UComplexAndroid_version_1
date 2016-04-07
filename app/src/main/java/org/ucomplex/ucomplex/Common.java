@@ -51,6 +51,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.net.HttpURLConnection;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -690,6 +692,14 @@ public class Common {
             typeStr = context.getResources().getString(R.string.otdel_kadrov);
         }
         return typeStr;
+    }
+
+    public static double round(double value, int places) {
+        if (places < 0) throw new IllegalArgumentException();
+
+        BigDecimal bd = new BigDecimal(value);
+        bd = bd.setScale(places, RoundingMode.HALF_UP);
+        return bd.doubleValue();
     }
 
 }

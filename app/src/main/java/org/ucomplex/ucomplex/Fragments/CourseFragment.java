@@ -9,9 +9,12 @@ import android.widget.ListView;
 
 import org.javatuples.Quartet;
 import org.ucomplex.ucomplex.Adaptors.CourseInfoAdapter;
+import org.ucomplex.ucomplex.Common;
 import org.ucomplex.ucomplex.Model.StudyStructure.Course;
 import org.ucomplex.ucomplex.Model.Users.User;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
@@ -75,17 +78,16 @@ public class CourseFragment extends ListFragment {
                 if (courseData.getProgress().getMark() != 0 && courseData.getProgress().getMarkCount() != 0) {
                     mark = courseData.getProgress().getMark() / courseData.getProgress().getMarkCount();
                 }
-                DecimalFormat df = new DecimalFormat("#.##");
-                absence = Double.valueOf(df.format(absence));
-                Quartet<String, String, String, String> item = new Quartet<>(String.valueOf(absence) + "%", String.valueOf(df.format(mark)), "-1", "3");
+                absence = Common.round(absence, 2);
+                Quartet<String, String, String, String> item = new Quartet<>(String.valueOf(absence) + "%", String.valueOf(Common.round(mark, 2)), "-1", "3");
                 mItems.add(item);
                 mAdapter = new CourseInfoAdapter(mItems, mContext);
                 setListAdapter(mAdapter);
-
             }
         }
-
     }
+
+
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {

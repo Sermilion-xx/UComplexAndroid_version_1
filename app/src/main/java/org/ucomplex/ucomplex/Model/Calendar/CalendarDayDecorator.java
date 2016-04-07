@@ -1,5 +1,6 @@
 package org.ucomplex.ucomplex.Model.Calendar;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -27,12 +28,14 @@ public class CalendarDayDecorator implements DayViewDecorator {
     private int type;
     private HashSet<CalendarDay> dates;
     String[] colors = {"#51cde7","#fecd71","#9ece2b","#d18ec0","#fe7877","#8ea3d1","#c3ccd3"};
+    private Context context;
+
     //"Занятие",
     //"Аттестация",
     //"Экзамен",
     //"Индивидуальное занятие"
 
-    public CalendarDayDecorator(UCCalendar calendar, int type ) {
+    public CalendarDayDecorator(UCCalendar calendar, int type, Context context) {
         this.type = type;
         year = calendar.getYear();
         month = calendar.getMonth();
@@ -48,7 +51,7 @@ public class CalendarDayDecorator implements DayViewDecorator {
             Calendar cal = Calendar.getInstance();
             dates.add(CalendarDay.from(cal.get(Calendar.YEAR),cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH)));
         }
-
+        this.context = context;
     }
 
     public CalendarDayDecorator(ArrayList<ChangedDay> days, String year, String month, int type ) {
@@ -83,7 +86,7 @@ public class CalendarDayDecorator implements DayViewDecorator {
             view.setBackgroundDrawable(drawable);
         }else {
             int dotSize = 5;
-            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
+            if(context.getResources().getDisplayMetrics().density>2){
                 dotSize = 8;
             }
             view.addSpan(new DayDecoratorSpan(dotSize, Color.parseColor(color)));
