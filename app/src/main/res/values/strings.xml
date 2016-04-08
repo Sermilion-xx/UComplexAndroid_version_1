@@ -116,6 +116,5 @@
     <string name="no_content_str">Нет контента для отображения</string>
     <string name="no_dilogs_str">Нет диалогов</string>
     <string name="subjects_str">Дисциплины</string>
-
-
+    <string name="title_activity_profile_statistics">ProfileStatisticsActivity</string>
 </resources>

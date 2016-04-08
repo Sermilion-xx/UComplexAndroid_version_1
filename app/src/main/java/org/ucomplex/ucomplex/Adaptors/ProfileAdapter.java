@@ -126,10 +126,10 @@ public class ProfileAdapter extends ArrayAdapter<Triplet> {
                     R.drawable.ic_role_5};
             viewHolder.mRole.setImageResource(icons[position] - 1);
             viewHolder.mInfoKey.setTypeface(robotoFont);
-            if (isInt(item.getValue1())) {
+            if (Common.isInt(item.getValue1())) {
                 viewHolder.mInfoKey.setText(Common.getStringUserType(mContext, Integer.parseInt(item.getValue1())));
             } else {
-                viewHolder.mInfoKey.setText(item.getValue1());
+                viewHolder.mInfoKey.setText(item.getValue1().split("/")[0]);
             }
             viewHolder.mInfoValue.setTypeface(robotoFont);
             viewHolder.mInfoValue.setText(item.getValue0());
@@ -141,14 +141,7 @@ public class ProfileAdapter extends ArrayAdapter<Triplet> {
         return convertView;
     }
 
-    static boolean isInt(String s) {
-        try {
-            int i = Integer.parseInt(s);
-            return true;
-        } catch (NumberFormatException er) {
-            return false;
-        }
-    }
+
 
     @Override
     public int getItemViewType(int position) {

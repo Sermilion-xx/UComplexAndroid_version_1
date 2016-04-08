@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <TextView
+        android:id="@+id/profile_statistics_attendance_key"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Посещамость:"
+        android:textSize="16sp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="10dp" />
+
+    <TextView
+        android:id="@+id/profile_statistics_attendance_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="100sdfsdfsafa dsfasdfasdfas sadfasdfsadf asdfadsf"
+        android:maxLines="2"
+        android:layout_toRightOf="@+id/profile_statistics_attendance_key"
+        android:layout_toEndOf="@+id/profile_statistics_attendance_key"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="11dp"
+        android:layout_marginRight="20dp" />
+
+</RelativeLayout>

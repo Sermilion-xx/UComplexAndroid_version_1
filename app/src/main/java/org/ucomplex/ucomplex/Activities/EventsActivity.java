@@ -87,8 +87,10 @@ public class EventsActivity extends AppCompatActivity implements OnTaskCompleteL
         linlaHeaderProgress.setVisibility(View.VISIBLE);
         Common.fetchMyNews(EventsActivity.this);
         if (Common.newMesg > 0) {
-            mAdapter.setMsgCount(Common.newMesg);
-            mAdapter.notifyDataSetChanged();
+            if(mAdapter!=null){
+                mAdapter.setMsgCount(Common.newMesg);
+                mAdapter.notifyDataSetChanged();
+            }
         }
         user = Common.getUserDataFromPref(this);
         if(user!=null && user.getPerson()!=0) {

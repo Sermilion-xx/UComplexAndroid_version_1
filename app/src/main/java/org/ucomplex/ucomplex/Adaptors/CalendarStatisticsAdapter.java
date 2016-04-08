@@ -11,10 +11,7 @@ import org.javatuples.Quintet;
 import org.ucomplex.ucomplex.Common;
 import org.ucomplex.ucomplex.R;
 
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
-import java.util.Locale;
 
 /**
  * Created by Sermilion on 16/03/16.
@@ -151,16 +148,14 @@ public class CalendarStatisticsAdapter extends ArrayAdapter<Quintet<String, Stri
 
         Quintet<String, String, Double, Double, Integer> item = getItem(position);
         if (viewType == TYPE_MARK) {
-
             viewHolder.subjectTextView.setText(item.getValue1());
             viewHolder.markTextView.setText(String.valueOf(item.getValue2()));
-            viewHolder.attendanceTextView.setText(String.valueOf(item.getValue3()));
+            viewHolder.attendanceTextView.setText(String.valueOf(item.getValue3())+" %");
         } else if (viewType == TYPE_TITLE_2) {
             viewHolder.titleTextView.setText("Предыдушие семестры");
         } else if (viewType == TYPE_TITLE_1) {
             viewHolder.titleTextView.setText("Текущий семестр");
         }
-
         return convertView;
     }
 

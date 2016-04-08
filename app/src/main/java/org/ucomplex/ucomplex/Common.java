@@ -694,12 +694,64 @@ public class Common {
         return typeStr;
     }
 
+    public static String getStudyForm(Context context, int type){
+        String typeStr = null;
+        if(type==1){
+            return "Очная";
+        }else if(type==2){
+            return "Заочная";
+        }else if(type==3){
+            return "Очно-аочная";
+        }else if(type==4){
+            return "Второе высшее";
+        }
+        return "Ошибка";
+    }
+
+    public static String getPayment(Context context, int type){
+        String typeStr = null;
+        if(type==1){
+            return "Бюджет";
+        }else if(type==2){
+            return "Внебюджет";
+        }else if(type==3){
+            return "Бюджет целев";
+        }else if(type==4){
+            return "Льготы";
+        }
+        return "Ошибка";
+    }
+
+    public static String getStudyLevel(Context context, int type){
+        String typeStr = null;
+        if(type==1){
+            return "Бакалавриат";
+        }else if(type==2){
+            return "Специалитет";
+        }else if(type==3){
+            return "Магистратура";
+        }else if(type==4){
+            return "Аспирантура";
+        }
+        return "Ошибка";
+    }
+
+
     public static double round(double value, int places) {
         if (places < 0) throw new IllegalArgumentException();
 
         BigDecimal bd = new BigDecimal(value);
         bd = bd.setScale(places, RoundingMode.HALF_UP);
         return bd.doubleValue();
+    }
+
+    public static boolean isInt(String s) {
+        try {
+            int i = Integer.parseInt(s);
+            return true;
+        } catch (NumberFormatException er) {
+            return false;
+        }
     }
 
 }

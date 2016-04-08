@@ -1,6 +1,7 @@
 package org.ucomplex.ucomplex.Fragments;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -8,8 +9,11 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.ListFragment;
 import android.view.View;
+import android.widget.AdapterView;
 
 import org.javatuples.Triplet;
+import org.ucomplex.ucomplex.Activities.EventsActivity;
+import org.ucomplex.ucomplex.Activities.ProfileStatisticsActivity;
 import org.ucomplex.ucomplex.Adaptors.ProfileAdapter;
 import org.ucomplex.ucomplex.Common;
 import org.ucomplex.ucomplex.Model.Users.User;
@@ -99,7 +103,6 @@ public class ProfileFragment extends ListFragment {
                 @Override
                 protected Bitmap doInBackground(String... params) {
                     return Common.getBitmapFromURL(params[0], 0);
-
                 }
 
                 @Override
@@ -114,6 +117,21 @@ public class ProfileFragment extends ListFragment {
             setListAdapter(mAdapter);
         }
         getListView().setDivider(null);
+        getListView().setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(mContext, ProfileStatisticsActivity.class);
+                intent.putExtra("role", (String) mItems.get(position).getValue2());
+                String role = (String) mItems.get(position).getValue1();
+                if(!Common.isInt(role)){
+                    String type = (String) mItems.get(position).getValue1();
+                    intent.putExtra("type", type.split("/")[1]);
+                }else{
+                    intent.putExtra("type", (String) mItems.get(position).getValue1());
+                }
+                mContext.startActivity(intent);
+            }
+        });
     }
 
     @Override

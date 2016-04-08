@@ -54,11 +54,12 @@ public class CalendarDayDecorator implements DayViewDecorator {
         this.context = context;
     }
 
-    public CalendarDayDecorator(ArrayList<ChangedDay> days, String year, String month, int type ) {
+    public CalendarDayDecorator(ArrayList<ChangedDay> days, String year, String month, int type, Context context ) {
         this.year = year;
         this.month = month;
         this.color = colors[type];
         dates = changedDaysToCalendarDays(days,type);
+        this.context = context;
 
 
     }
@@ -91,7 +92,6 @@ public class CalendarDayDecorator implements DayViewDecorator {
             }
             view.addSpan(new DayDecoratorSpan(dotSize, Color.parseColor(color)));
         }
-
     }
 
     private HashSet<CalendarDay> changedDaysToCalendarDays(List changedDays, int type){

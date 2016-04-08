@@ -19,6 +19,9 @@ import java.util.ArrayList;
  */
 public class User implements Serializable {
     private int id;
+    private int studyLevel;
+    private String majorName;
+    private String groupName;
     private int role;
     private int client;
     private String name;
@@ -48,6 +51,8 @@ public class User implements Serializable {
     private boolean me_black;
     private boolean req_sent;
     private boolean is_friend;
+    private int ratingGeneral;
+    private int ratingFaculty;
 
 
 
@@ -88,6 +93,46 @@ public class User implements Serializable {
     private int activity;
     private String facultyName;
     private ArrayList<TimetableEntry> timetableEntries;
+
+    public int getRatingGeneral() {
+        return ratingGeneral;
+    }
+
+    public void setRatingGeneral(int ratingGeneral) {
+        this.ratingGeneral = ratingGeneral;
+    }
+
+    public int getRatingFaculty() {
+        return ratingFaculty;
+    }
+
+    public void setRatingFaculty(int ratingFaculty) {
+        this.ratingFaculty = ratingFaculty;
+    }
+
+    public String getGroupName() {
+        return groupName;
+    }
+
+    public void setGroupName(String groupName) {
+        this.groupName = groupName;
+    }
+
+    public String getMajorName() {
+        return majorName;
+    }
+
+    public void setMajorName(String majorName) {
+        this.majorName = majorName;
+    }
+
+    public int getStudyLevel() {
+        return studyLevel;
+    }
+
+    public void setStudyLevel(int studyLevel) {
+        this.studyLevel = studyLevel;
+    }
 
     public ArrayList<TimetableEntry> getTimetableEntries() {
         return timetableEntries;
