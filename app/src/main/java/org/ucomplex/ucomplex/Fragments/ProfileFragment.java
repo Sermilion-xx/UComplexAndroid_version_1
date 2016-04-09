@@ -126,7 +126,7 @@ public class ProfileFragment extends ListFragment {
                 if(!Common.isInt(role)){
                     String type = (String) mItems.get(position).getValue1();
                     intent.putExtra("type", type.split("/")[1]);
-                }else{
+                }else {
                     intent.putExtra("type", (String) mItems.get(position).getValue1());
                 }
                 mContext.startActivity(intent);

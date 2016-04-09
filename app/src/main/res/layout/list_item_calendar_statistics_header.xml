@@ -5,15 +5,31 @@
     android:background="@color/white">
 
     <TextView
-        android:layout_width="match_parent"
+        android:maxWidth="250dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/calendar_statistics_title"
         android:text="@string/current_semester_str_ru"
-        android:textSize="19dp"
+        android:textSize="19sp"
+        android:layout_centerVertical="true"
         android:textColor="@color/colorPrimary"
         android:layout_marginLeft="20dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/calendar_statistics_online"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="20dp" />
+        android:gravity="end"
+        android:textSize="14sp"
+        android:textColor="@color/uc_gray_text_events"
+        android:layout_toRightOf="@+id/calendar_statistics_title"
+        android:layout_marginRight="20dp"
+        android:text="dfdfdf" />
 
 </RelativeLayout>

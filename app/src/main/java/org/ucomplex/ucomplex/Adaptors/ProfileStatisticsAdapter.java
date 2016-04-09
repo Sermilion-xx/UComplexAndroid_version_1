@@ -59,6 +59,7 @@ public class ProfileStatisticsAdapter extends ArrayAdapter<Pair<String, String>>
         if (viewType == TYPE_HEADER) {
             convertView = inflater.inflate(R.layout.list_item_calendar_statistics_header, null);
             viewHolder.headerTextView = (TextView) convertView.findViewById(R.id.calendar_statistics_title);
+            viewHolder.onlineTextView = (TextView) convertView.findViewById(R.id.calendar_statistics_online);
             viewHolder.holderId = TYPE_HEADER;
         } else if (viewType == TYPE_INFO) {
             convertView = inflater.inflate(R.layout.list_item_profile_statistics, null);
@@ -77,7 +78,7 @@ public class ProfileStatisticsAdapter extends ArrayAdapter<Pair<String, String>>
         ViewHolder viewHolder = new ViewHolder();
         int viewType = getItemViewType(position);
         inflater = LayoutInflater.from(getContext());
-        if (mItems.size() == 2) {
+        if (mItems.size() == 0) {
             if (!Common.isNetworkConnected(getContext())) {
                 convertView = inflater.inflate(R.layout.list_item_no_internet, null, false);
             } else {
@@ -102,6 +103,9 @@ public class ProfileStatisticsAdapter extends ArrayAdapter<Pair<String, String>>
         Pair<String, String> item = getItem(position);
         if (viewType == TYPE_HEADER) {
             viewHolder.headerTextView.setText(item.getValue0());
+            if(!item.getValue1().equals(" ")){
+                viewHolder.onlineTextView.setText(Common.makeDate(item.getValue1()));
+            }
         } else if (viewType == TYPE_INFO) {
             viewHolder.keyTextView.setText(item.getValue0());
             viewHolder.valueTextView.setText(item.getValue1());
@@ -114,6 +118,7 @@ public class ProfileStatisticsAdapter extends ArrayAdapter<Pair<String, String>>
         TextView headerTextView;
         TextView keyTextView;
         TextView valueTextView;
+        TextView onlineTextView;
 
         public ViewHolder() {
         }

@@ -96,9 +96,9 @@ public class ProfileActivity extends AppCompatActivity implements OnTaskComplete
                     Triplet<String, String, String> aItem;
                     String positionName = role.getPositionName();
                     if(role.getType()==4){
-                        aItem = new Triplet<>(positionName, String.valueOf(role.getType()), String.valueOf(role.getId()));
+                        aItem = new Triplet<>(positionName, String.valueOf(role.getType()), String.valueOf(role.getRole()));
                     }else{
-                        aItem = new Triplet<>(role.getSectionName(), role.getPositionName()+"/"+String.valueOf(role.getId()),  String.valueOf(role.getId()));
+                        aItem = new Triplet<>(role.getSectionName(), role.getPositionName()+"/"+role.getType(),  String.valueOf(role.getRole()));
                     }
                     items.add(aItem);
                 }
