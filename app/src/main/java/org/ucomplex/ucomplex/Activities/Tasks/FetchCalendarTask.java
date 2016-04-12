@@ -47,9 +47,9 @@ public class FetchCalendarTask extends AsyncTask<String, String, UCCalendar> {
     protected UCCalendar doInBackground(String... params) {
         String urlString = "";
         if(params[0].equals("3")){
-            urlString = "http://you.com.ru/teacher/ajax/calendar?json";
+            urlString = "https://ucomplex.org/teacher/ajax/calendar?json";
         }else if(params[0].equals("4")){
-            urlString = "http://you.com.ru/student/ajax/calendar?json";
+            urlString = "https://ucomplex.org/student/ajax/calendar?json";
         }
         HashMap<String, String> postParams;
         String jsonData;

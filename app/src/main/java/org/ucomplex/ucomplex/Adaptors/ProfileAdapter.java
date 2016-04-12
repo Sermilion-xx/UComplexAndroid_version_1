@@ -103,17 +103,17 @@ public class ProfileAdapter extends ArrayAdapter<Triplet> {
         }
         Triplet<String, String, String> item = getItem(position);
         if (viewType == TYPE_HEADER) {
-            if(mBitmap==null){
+            if (mBitmap == null) {
                 Drawable drawable = Common.getDrawable((User) mItems.get(0).getValue1());
                 viewHolder.mUserImageView.setImageDrawable(drawable);
-            }else{
+            } else {
                 viewHolder.mUserImageView.setImageBitmap(mBitmap);
             }
             viewHolder.mFirstNameView.setTypeface(robotoFont);
             String[] fullName = mUser.getName().split(" ");
             viewHolder.mFirstNameView.setText(fullName[0]);
             viewHolder.mLastNameView.setTypeface(robotoFont);
-            if(fullName.length>1){
+            if (fullName.length > 1) {
                 viewHolder.mLastNameView.setText(fullName[1] + " " + fullName[2]);
             }
 
@@ -126,21 +126,27 @@ public class ProfileAdapter extends ArrayAdapter<Triplet> {
                     R.drawable.ic_role_5};
             viewHolder.mRole.setImageResource(icons[position] - 1);
             viewHolder.mInfoKey.setTypeface(robotoFont);
-            if (Common.isInt(item.getValue1())) {
-                viewHolder.mInfoKey.setText(Common.getStringUserType(mContext, Integer.parseInt(item.getValue1())));
-            } else {
-                viewHolder.mInfoKey.setText(item.getValue1().split("/")[0]);
-            }
             viewHolder.mInfoValue.setTypeface(robotoFont);
-            viewHolder.mInfoValue.setText(item.getValue0());
 
+            int type;
+            String[] typeTmp = item.getValue1().split("/");
+            if (typeTmp.length > 1) {
+                type = Integer.parseInt(typeTmp[1]);
+                viewHolder.mInfoKey.setText(typeTmp[0]);
+            } else {
+                type = Integer.parseInt(typeTmp[0]);
+                viewHolder.mInfoKey.setText(Common.getStringUserType(mContext, type));
+            }
+            if (type == 9)
+                viewHolder.mInfoKey.setText("Абитуриент");
+            if (type != 9 && type != 1)
+                viewHolder.mInfoValue.setText(item.getValue0());
         }
-        if(viewType==TYPE_HEADER){
+        if (viewType == TYPE_HEADER) {
             convertView.setBackgroundColor(mContext.getResources().getColor(R.color.colorPrimary));
         }
         return convertView;
     }
-
 
 
     @Override
@@ -258,7 +264,7 @@ public class ProfileAdapter extends ArrayAdapter<Triplet> {
     }
 
     public void blockUser() {
-        if(Common.isNetworkConnected(mContext)){
+        if (Common.isNetworkConnected(mContext)) {
             HashMap<String, String> params = new HashMap<>();
             if (!mUser.isIs_black()) {
                 params.put("user", String.valueOf(mUser.getPerson()));
@@ -274,7 +280,7 @@ public class ProfileAdapter extends ArrayAdapter<Triplet> {
                 mUser.setIs_black(false);
             }
             Common.userListChanged = 4;
-        }else {
+        } else {
             Toast.makeText(mContext, "Проверте интернет соединение.", Toast.LENGTH_LONG).show();
         }
     }

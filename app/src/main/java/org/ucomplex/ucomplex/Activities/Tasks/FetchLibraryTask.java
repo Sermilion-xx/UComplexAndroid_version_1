@@ -56,7 +56,7 @@ public class FetchLibraryTask extends AsyncTask<Integer, String, ArrayList> impl
         if(params[0]==0){
             //collections  collections (0) - > all_selections (1) - > open_selection (selection - 45, pure - 1) (2)
             //категории
-            urlString = "https://chgu.org/user/collections?mobile=1";
+            urlString = "https://ucomplex.org/user/collections?mobile=1";
             jsonData = Common.httpPost(urlString, Common.getLoginDataFromPref(mContext));
             if(jsonData!=null){
                 if(jsonData.length()>0) {
@@ -67,7 +67,7 @@ public class FetchLibraryTask extends AsyncTask<Integer, String, ArrayList> impl
         }else if(params[0]==1){
             //all selections
             //просто категории
-            urlString = "https://chgu.org/user/collections/all_sections?mobile=1";
+            urlString = "https://ucomplex.org/user/collections/all_sections?mobile=1";
             jsonData = Common.httpPost(urlString, Common.getLoginDataFromPref(mContext));
             if(jsonData!=null){
                 if(jsonData.length()>0) {
@@ -77,7 +77,7 @@ public class FetchLibraryTask extends AsyncTask<Integer, String, ArrayList> impl
 
         }else if(params[0]==2){
             //single selection
-            urlString = "https://chgu.org/user/collections/open_section?mobile=1";
+            urlString = "https://ucomplex.org/user/collections/open_section?mobile=1";
             httpParams.put("pure", "1");
             httpParams.put("collections_sections",String.valueOf(params[1]));
             jsonData = Common.httpPost(urlString, Common.getLoginDataFromPref(mContext), httpParams);
@@ -89,7 +89,7 @@ public class FetchLibraryTask extends AsyncTask<Integer, String, ArrayList> impl
 
         }else if(params[0]==3){
             //all books for category
-            urlString = "https://chgu.org/user/collections/open_collection?mobile=1";
+            urlString = "https://ucomplex.org/user/collections/open_collection?mobile=1";
             httpParams.put("collection",String.valueOf(params[1]));
             jsonData = Common.httpPost(urlString, Common.getLoginDataFromPref(mContext), httpParams);
             if(jsonData!=null){

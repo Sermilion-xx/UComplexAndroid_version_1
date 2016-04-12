@@ -26,7 +26,6 @@ import android.util.Log;
 
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.google.gson.Gson;
-import com.prolificinteractive.materialcalendarview.CalendarDay;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -67,6 +66,8 @@ import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 
+import javax.net.ssl.HttpsURLConnection;
+
 /**
  * Created by Sermi lion on 04/12/2015.
  */
@@ -82,6 +83,10 @@ public class Common {
     public static boolean newUsr;
     public static ArrayList<Integer> fromMessages = new ArrayList<>();
     public static DefaultHttpClient client;
+
+    public static HttpURLConnection connection;
+    public static String X_UVERSION;
+    public static String messageCompanionName = "-";
     User user;
 
     public static Typeface getTypeFace(Context context, String typeFace) {
@@ -553,11 +558,6 @@ public class Common {
 
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD;
     }
-
-
-    public static HttpURLConnection connection;
-    public static String X_UVERSION;
-    public static String messageCompanionName = "-";
 
     public static void setRoleToPref(Context mContext, int role) {
         SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(mContext).edit();

@@ -37,16 +37,16 @@ public class FetchUsersTask extends AsyncTask<Integer, Void, ArrayList<User>> {
     @Override
     protected ArrayList<User> doInBackground(Integer... params) {
         String urlString = null;
-        String urlString0 = "http://you.com.ru/student/online?mobile=1";
-        String urlString2 = "http://you.com.ru/student/ajax/my_group?mobile=1";
-        String urlString3 = "http://you.com.ru/student/ajax/my_teachers?mobile=1";
+        String urlString0 = "https://ucomplex.org/student/online?mobile=1";
+        String urlString2 = "https://ucomplex.org/student/ajax/my_group?mobile=1";
+        String urlString3 = "https://ucomplex.org/student/ajax/my_teachers?mobile=1";
 
-        String urlString4 = "http://you.com.ru/user/blacklist?mobile=1";
-        String urlString1 = "http://you.com.ru/user/friends?mobile=1";
+        String urlString4 = "https://ucomplex.org/user/blacklist?mobile=1";
+        String urlString1 = "https://ucomplex.org/user/friends?mobile=1";
 
-        String urlString10 = "http://you.com.ru/teacher/online?mobile=1";
-        String urlString5 = "http://you.com.ru/teacher/ajax/my_department?mobile=1";
-        String urlString12 = "http://you.com.ru/teacher/ajax/my_groups?mobile=1";
+        String urlString10 = "https://ucomplex.org/teacher/online?mobile=1";
+        String urlString5 = "https://ucomplex.org/teacher/ajax/my_department?mobile=1";
+        String urlString12 = "https://ucomplex.org/teacher/ajax/my_groups?mobile=1";
 
         HashMap<String, String> postData = new HashMap<>();
         if (params[0] == 0) {
@@ -100,10 +100,11 @@ public class FetchUsersTask extends AsyncTask<Integer, Void, ArrayList<User>> {
                 try {
                     JSONObject userJson = usersArray.getJSONObject(i);
                     int type = -1;
+                    User user = new User();
                     if (userJson.has("type")) {
                         type = userJson.getInt("type");
+                        user.setType(userJson.getInt("type"));
                     }
-                    User user = new User();
                     if (type == 1) {
                         User admin = new User();
                         admin.setType(type);

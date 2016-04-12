@@ -46,7 +46,7 @@ public class FetchSubjectsTask extends AsyncTask<Void, String, ArrayList<Triplet
 
     @Override
     protected ArrayList<Triplet<String, String, Integer>> doInBackground(Void... params) {
-        String urlString = "http://you.com.ru/student/subjects_list?json";
+        String urlString = "https://ucomplex.org/student/subjects_list?json";
         String jsonData = Common.httpPost(urlString, Common.getLoginDataFromPref(mContext));
 
         if(jsonData!=null){

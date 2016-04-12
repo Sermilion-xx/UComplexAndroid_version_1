@@ -40,12 +40,12 @@ public class FetchUserEventsTask extends AsyncTask<Integer, Void, ArrayList<Even
     protected ArrayList<EventRowItem> doInBackground(Integer... params) {
         String urlString = "";
         if(params[0]==4){
-            urlString = "http://you.com.ru/student?mobile=1";
+            urlString = "https://ucomplex.org/student?mobile=1";
         }else if(params[0]==3){
-            urlString = "http://you.com.ru/teacher?mobile=1";
+            urlString = "https://ucomplex.org/teacher?mobile=1";
         }
         if(params.length>1){
-            urlString = "http://you.com.ru/user/events?mobile=1";
+            urlString = "https://ucomplex.org/user/events?mobile=1";
             HashMap<String, String> httpParams = new HashMap<>();
             httpParams.put("start", String.valueOf(params[1]));
             jsonData = Common.httpPost(urlString, Common.getLoginDataFromPref(mContext),httpParams);

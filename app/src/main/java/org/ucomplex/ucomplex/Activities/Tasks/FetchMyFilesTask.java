@@ -40,7 +40,7 @@ public class FetchMyFilesTask extends AsyncTask<String, String, ArrayList<File>>
 
     @Override
     protected ArrayList<File> doInBackground(String... params) {
-        String urlString = "http://you.com.ru/student/my_files?mobile=1";
+        String urlString = "https://ucomplex.org/student/my_files?mobile=1";
         HashMap<String, String> httpParams = new HashMap<>();
         String jsonData = "";
         if(params.length>0){

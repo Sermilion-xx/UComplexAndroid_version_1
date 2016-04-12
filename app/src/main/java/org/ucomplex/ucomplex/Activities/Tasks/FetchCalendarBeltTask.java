@@ -45,7 +45,7 @@ public class FetchCalendarBeltTask extends AsyncTask<Integer, Void, ArrayList<Qu
 
     @Override
     protected ArrayList<Quartet<Integer, String, String, Integer>> doInBackground(Integer... postParamsString) {
-        String urlString = "http://you.com.ru/student/ajax/calendar_belt?json";
+        String urlString = "https://ucomplex.org/student/ajax/calendar_belt?json";
         HashMap<String, String> postParams = new HashMap<>();
         if (postParamsString.length == 1) {
             postParams.put("gcourse", String.valueOf(postParamsString[0]));

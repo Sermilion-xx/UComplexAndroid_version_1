@@ -53,7 +53,7 @@ public class FetchTeacherFilesTask extends AsyncTask<Object, String, ArrayList> 
 
     @Override
     protected ArrayList doInBackground(Object... params) {
-        String urlString = "https://chgu.org/student/ajax/teacher_files?mobile=1";
+        String urlString = "https://ucomplex.org/student/ajax/teacher_files?mobile=1";
         HashMap<String, String> httpParams = new HashMap<>();
         httpParams.put("folder", (String) params[0]);
         if(params.length>1){

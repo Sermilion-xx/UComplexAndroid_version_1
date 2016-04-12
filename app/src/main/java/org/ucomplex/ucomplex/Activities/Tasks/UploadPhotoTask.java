@@ -48,7 +48,7 @@ public class UploadPhotoTask extends AsyncTask<Object, Void, Integer> implements
     @TargetApi(Build.VERSION_CODES.KITKAT)
     @Override
     protected Integer doInBackground(Object... params) {
-        HttpPost httpPost = new HttpPost("http://you.com.ru/user/load_photo");
+        HttpPost httpPost = new HttpPost("https://ucomplex.org/user/load_photo");
         try {
             MultipartEntity entity = new MultipartEntity();
             ByteArrayBody fileBody = (ByteArrayBody) params[0];

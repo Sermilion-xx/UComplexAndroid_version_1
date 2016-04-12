@@ -54,7 +54,7 @@ public class FetchPersonTask extends AsyncTask<Void, String, User> implements IP
 
     @Override
     protected User doInBackground(Void... params) {
-        String urlString = "http://you.com.ru/user/person/" + this.person + "?json";
+        String urlString = "https://ucomplex.org/user/person/" + this.person + "?json";
         String jsonData = Common.httpPost(urlString, Common.getLoginDataFromPref(mContext));
         if (jsonData != null && jsonData.length() > 2) {
             user = getUserDataFromJson(jsonData);
@@ -150,6 +150,19 @@ public class FetchPersonTask extends AsyncTask<Void, String, User> implements IP
                     User adminRole = new User();
                     teacherAdminStudentCommonSetter(adminRole, roleJson);
                     user.addRole(adminRole);
+                }else if (roleJson.getInt("type") == 9) {
+                    User aspirantRole = new User();
+                    teacherAdminStudentCommonSetter(aspirantRole, roleJson);
+                    aspirantRole.setName(roleJson.getString("name"));
+                    aspirantRole.setCode(roleJson.getString("code"));
+                    aspirantRole.setPhoto(roleJson.getInt("photo"));
+                    aspirantRole.setBirthday(roleJson.getString("birthday"));
+                    aspirantRole.setRow(roleJson.getInt("row"));
+                    aspirantRole.setBenefit(roleJson.getInt("benefit"));
+                    aspirantRole.setOut(roleJson.getInt("out"));
+                    aspirantRole.setOriginal(roleJson.getInt("original"));
+                    aspirantRole.setSelector(roleJson.getInt("selector"));
+                    user.addRole(aspirantRole);
                 }
             }
             if (userJson.has("black")) {

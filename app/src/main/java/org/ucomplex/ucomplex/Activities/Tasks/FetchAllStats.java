@@ -40,7 +40,7 @@ public class FetchAllStats extends AsyncTask<Integer, Void, ArrayList<Quintet<St
 
     @Override
     protected ArrayList<Quintet<String, String, Double, Double, Integer>> doInBackground(Integer... params) {
-        String urlString = "http://you.com.ru/student/ajax/all_courses_stat?mobile=1";
+        String urlString = "https://ucomplex.org/student/ajax/all_courses_stat?mobile=1";
         String jsonData = Common.httpPost(urlString, Common.getLoginDataFromPref(mContext));
 
         if(jsonData!=null){

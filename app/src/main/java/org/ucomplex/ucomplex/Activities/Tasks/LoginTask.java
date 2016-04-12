@@ -76,7 +76,7 @@ public class LoginTask extends AsyncTask<Void, Void, User> {
 
     @Override
     protected User doInBackground(Void... params) {
-        String urlString = "http://you.com.ru/auth?mobile=1";
+        String urlString = "https://ucomplex.org/auth?mobile=1";
         String jsonData = Common.httpPost(urlString, mLogin + ":" + mPassword);
         if (jsonData != null && !jsonData.equals("")) {
             User user = null;
@@ -93,7 +93,6 @@ public class LoginTask extends AsyncTask<Void, Void, User> {
             }
             return user;
         }
-
         return new User();
     }
 

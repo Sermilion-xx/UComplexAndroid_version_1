@@ -24,7 +24,7 @@ public class FetchProfileTask extends AsyncTask<Void, Void, Pair<String, String>
 
     @Override
     protected Pair<String, String> doInBackground(Void... params) {
-        String urlString = "http://you.com.ru/user/profile?json";
+        String urlString = "https://ucomplex.org/user/profile?json";
         String jsonData = Common.httpPost(urlString, Common.getLoginDataFromPref(mContext));
         if(jsonData!=null){
             try {

@@ -33,7 +33,7 @@ public class FetchRolePersonTask extends AsyncTask<Void, User, User> implements 
 
     @Override
     protected User doInBackground(Void... params) {
-        String urlString = "http://you.com.ru/user/page/21866?mobile=1";
+        String urlString = "https://ucomplex.org/user/page/21866?mobile=1";
         String jsonData = Common.httpPost(urlString, Common.getLoginDataFromPref(mContext));
         if(jsonData!=null){
             return getUserDataFromJson(jsonData);

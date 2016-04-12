@@ -53,6 +53,11 @@ public class User implements Serializable {
     private boolean is_friend;
     private int ratingGeneral;
     private int ratingFaculty;
+    private int row;
+    private int benefit;
+    private int out;
+    private int original;
+    private int selector;
 
 
 
@@ -93,6 +98,46 @@ public class User implements Serializable {
     private int activity;
     private String facultyName;
     private ArrayList<TimetableEntry> timetableEntries;
+
+    public int getOut() {
+        return out;
+    }
+
+    public void setOut(int out) {
+        this.out = out;
+    }
+
+    public int getOriginal() {
+        return original;
+    }
+
+    public void setOriginal(int original) {
+        this.original = original;
+    }
+
+    public int getSelector() {
+        return selector;
+    }
+
+    public void setSelector(int selector) {
+        this.selector = selector;
+    }
+
+    public int getBenefit() {
+        return benefit;
+    }
+
+    public void setBenefit(int benefit) {
+        this.benefit = benefit;
+    }
+
+    public int getRow() {
+        return row;
+    }
+
+    public void setRow(int row) {
+        this.row = row;
+    }
 
     public int getRatingGeneral() {
         return ratingGeneral;

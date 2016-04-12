@@ -37,7 +37,13 @@ public class ProfileStatisticsAdapter extends ArrayAdapter<Pair<String, String>>
 
     @Override
     public int getCount() {
-        return mItems.size() == 2 ? 1 : mItems.size();
+        int count = mItems.size() == 0 ? 1 : mItems.size();
+        if(mItems.size()==1){
+            if(mItems.get(0).getValue0().equals("Студент")){
+                mItems.add(new Pair<>("Профиль закрыт",""));
+            }
+        }
+        return count;
     }
 
     @Override

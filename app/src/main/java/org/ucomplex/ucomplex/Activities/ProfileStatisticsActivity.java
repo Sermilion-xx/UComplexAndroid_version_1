@@ -18,7 +18,6 @@ import org.ucomplex.ucomplex.R;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
@@ -28,18 +27,19 @@ public class ProfileStatisticsActivity extends AppCompatActivity {
     ProfileStatisticsFragment profileStatisticsFragment;
     int role;
     int type;
+    User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile_statistics);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        final User user = Common.getUserDataFromPref(this);
-        toolbar.setTitle(user.getName());
         setSupportActionBar(toolbar);
+        user = Common.getUserDataFromPref(this);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         role = Integer.parseInt(getIntent().getExtras().getString("role"));
         type = Integer.parseInt(getIntent().getExtras().getString("type"));
+        toolbar.setTitle(getIntent().getExtras().getString("name"));
         profileStatisticsFragment = new ProfileStatisticsFragment();
         if(mItems.size()==0){
             getStatistics();
@@ -88,8 +88,6 @@ public class ProfileStatisticsActivity extends AppCompatActivity {
         try {
             if (jsonData != null) {
                 statisticsJson = new JSONObject(jsonData);
-                JSONObject progressJson = statisticsJson.getJSONObject("progress");
-                JSONObject rating = statisticsJson.getJSONObject("rating");
 
                 long lastOnlineMilliseconds = statisticsJson.getInt("online");
                 Date date = new Date(lastOnlineMilliseconds*1000);
@@ -97,21 +95,26 @@ public class ProfileStatisticsActivity extends AppCompatActivity {
                 SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", locale);
                 String lastOnline = sdfDate.format(date);
                 mItems.add(new Pair<>(Common.getStringUserType(ProfileStatisticsActivity.this, type), lastOnline));
-                mItems.add(new Pair<>("Год поступления :", statisticsJson.getString("year")));
-                mItems.add(new Pair<>("Форма обучения :", Common.getStudyForm(ProfileStatisticsActivity.this,statisticsJson.getInt("study"))));
-                mItems.add(new Pair<>("Форма оплаты :", Common.getPayment(ProfileStatisticsActivity.this,statisticsJson.getInt("study"))));
-                mItems.add(new Pair<>("Уровень образования :", Common.getStudyLevel(ProfileStatisticsActivity.this,statisticsJson.getInt("study"))));
-                mItems.add(new Pair<>("Факультет :", statisticsJson.getString("faculty_name")));
-                mItems.add(new Pair<>("Специальность :", statisticsJson.getString("major_name")));
-                mItems.add(new Pair<>("Группа :", statisticsJson.getString("group_name")));
 
-                double marks = Common.round((double)progressJson.getInt("mark") / (double)progressJson.getInt("marksCount"),2);
-                mItems.add(new Pair<>("Средняя успеваемость :", String.valueOf(marks)));
-                double attendance =  Common.round(100-((double) progressJson.getInt("absence") / (double) progressJson.getInt("hours"))*100,2);
-                mItems.add(new Pair<>("Общая посещаемость :", String.valueOf(attendance)+" %"));
+                if(statisticsJson.getInt("closed")!=1 || user.getId()==statisticsJson.getInt("id")){
+                    JSONObject progressJson = statisticsJson.getJSONObject("progress");
+                    JSONObject rating = statisticsJson.getJSONObject("rating");
+                    mItems.add(new Pair<>("Год поступления :", statisticsJson.getString("year")));
+                    mItems.add(new Pair<>("Форма обучения :", Common.getStudyForm(ProfileStatisticsActivity.this,statisticsJson.getInt("study"))));
+                    mItems.add(new Pair<>("Форма оплаты :", Common.getPayment(ProfileStatisticsActivity.this,statisticsJson.getInt("study"))));
+                    mItems.add(new Pair<>("Уровень образования :", Common.getStudyLevel(ProfileStatisticsActivity.this,statisticsJson.getInt("study"))));
+                    mItems.add(new Pair<>("Факультет :", statisticsJson.getString("faculty_name")));
+                    mItems.add(new Pair<>("Специальность :", statisticsJson.getString("major_name")));
+                    mItems.add(new Pair<>("Группа :", statisticsJson.getString("group_name")));
 
-                mItems.add(new Pair<>("Место в общем рейтинге :", rating.getString("general")));
-                mItems.add(new Pair<>("Место в рейтинге по факультету :", rating.getString("faculty")));
+                    double marks = Common.round((double)progressJson.getInt("mark") / (double)progressJson.getInt("marksCount"),2);
+                    mItems.add(new Pair<>("Средняя успеваемость :", String.valueOf(marks)));
+                    double attendance =  Common.round(100-((double) progressJson.getInt("absence") / (double) progressJson.getInt("hours"))*100,2);
+                    mItems.add(new Pair<>("Общая посещаемость :", String.valueOf(attendance)+" %"));
+
+                    mItems.add(new Pair<>("Место в общем рейтинге :", rating.getString("general")));
+                    mItems.add(new Pair<>("Место в рейтинге по факультету :", rating.getString("faculty")));
+                }
             }
         }catch (JSONException ignored){}
     }

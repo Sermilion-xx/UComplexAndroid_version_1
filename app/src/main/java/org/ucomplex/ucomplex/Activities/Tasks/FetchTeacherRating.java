@@ -31,7 +31,7 @@ public class FetchTeacherRating extends AsyncTask<Void, TeacherRating, TeacherRa
 
     @Override
     protected TeacherRating doInBackground(Void... params) {
-        String urlString = "http://you.com.ru/user/page/21866?mobile=1";
+        String urlString = "https://ucomplex.org/user/page/21866?mobile=1";
         String jsonData = Common.httpPost(urlString, Common.getLoginDataFromPref(mContext));
         if(jsonData!=null){
             return getRatingDataFromJson(jsonData);

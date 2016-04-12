@@ -48,7 +48,6 @@ public class ProfileFragment extends ListFragment {
             Field childFragmentManager = Fragment.class.getDeclaredField("mChildFragmentManager");
             childFragmentManager.setAccessible(true);
             childFragmentManager.set(this, null);
-
         } catch (NoSuchFieldException e) {
             throw new RuntimeException(e);
         } catch (IllegalAccessException e) {
@@ -122,6 +121,7 @@ public class ProfileFragment extends ListFragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(mContext, ProfileStatisticsActivity.class);
                 intent.putExtra("role", (String) mItems.get(position).getValue2());
+                intent.putExtra("name", mUser.getName());
                 String role = (String) mItems.get(position).getValue1();
                 if(!Common.isInt(role)){
                     String type = (String) mItems.get(position).getValue1();

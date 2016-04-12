@@ -47,7 +47,7 @@ public class SettingsTask extends AsyncTask<Pair<String, String>, Void, String> 
 
     @Override
     protected String doInBackground(Pair<String, String>... params) {
-        String url = "http://you.com.ru/student/profile/save";
+        String url = "https://ucomplex.org/student/profile/save";
         change = params[2];
         HashMap<String, String> httpParams = new HashMap<>();
         httpParams.put(params[0].getValue0(), params[0].getValue1());

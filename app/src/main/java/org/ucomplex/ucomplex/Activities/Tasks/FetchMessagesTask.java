@@ -60,10 +60,10 @@ public class FetchMessagesTask extends AsyncTask<String, String, LinkedList> imp
         httpParams.put("companion", params[0]);
         String jsonData = null;
         if (type == 0) {
-            urlString = "http://you.com.ru/user/messages/list?mobile=1";
+            urlString = "https://ucomplex.org/user/messages/list?mobile=1";
             jsonData = Common.httpPost(urlString, Common.getLoginDataFromPref(mContext), httpParams);
         } else if (type == 1) {
-            urlString = "https://chgu.org/user/messages/add?mobile=1";
+            urlString = "https://ucomplex.org/user/messages/add?mobile=1";
             httpParams.put("msg", params[1]);
             if (params.length > 2) {
                 //file path, companion, file name, message
@@ -72,7 +72,7 @@ public class FetchMessagesTask extends AsyncTask<String, String, LinkedList> imp
                 jsonData = Common.httpPost(urlString, Common.getLoginDataFromPref(mContext), httpParams);
             }
         } else if (type == 2) {
-            urlString = "http://you.com.ru/user/messages/list?mobile=1";
+            urlString = "https://ucomplex.org/user/messages/list?mobile=1";
             httpParams.put("new", "1");
             jsonData = Common.httpPost(urlString, Common.getLoginDataFromPref(mContext), httpParams);
         }
