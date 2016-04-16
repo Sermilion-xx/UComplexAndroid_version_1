@@ -2,6 +2,7 @@ package org.ucomplex.ucomplex.Activities;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -50,7 +51,7 @@ public class MyFilesActivity extends AppCompatActivity implements OnTaskComplete
     Toolbar toolbar;
     ArrayList<String> titles = new ArrayList<>();
     AsyncTask<Void, Void, ArrayList> uploadFileTask;
-
+    static ProgressDialog progressDialog = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -206,15 +207,33 @@ public class MyFilesActivity extends AppCompatActivity implements OnTaskComplete
     }
 
     private void uplodFile(final String filePath) {
-        linlaHeaderProgress.setVisibility(View.VISIBLE);
+
+        progressDialog = ProgressDialog.show(MyFilesActivity.this, "",
+                "Файл загружается", true);
+        progressDialog.setCancelable(true);
+        progressDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                Toast.makeText(MyFilesActivity.this, "Загрузка отменена",
+                        Toast.LENGTH_LONG).show();
+                uploadFileTask.cancel(true);
+                Common.httpPost.abort();
+                uploadFileTask = null;
+            }
+        });
+
         uploadFileTask = new AsyncTask<Void, Void, ArrayList>() {
+
+            @Override
+            protected void onPreExecute() {
+                progressDialog.show();
+            }
 
             @Override
             protected ArrayList doInBackground(Void... params) {
                 String jsonData = "";
                 if (Common.folderCode != null) {
                     jsonData = Common.uploadFile(filePath, Common.getLoginDataFromPref(MyFilesActivity.this), Common.folderCode);
-
                 } else {
                     jsonData = Common.uploadFile(filePath, Common.getLoginDataFromPref(MyFilesActivity.this));
                 }
@@ -224,22 +243,22 @@ public class MyFilesActivity extends AppCompatActivity implements OnTaskComplete
             @Override
             protected void onCancelled() {
                 super.onCancelled();
-                Common.connection.disconnect();
-                linlaHeaderProgress.setVisibility(View.INVISIBLE);
+                progressDialog.dismiss();
             }
 
             @Override
             protected void onPostExecute(ArrayList newFile) {
                 super.onPostExecute(newFile);
-                linlaHeaderProgress.setVisibility(View.GONE);
                 if (newFile != null) {
                     if (courseMaterialsFragment != null) {
                         courseMaterialsFragment.addFile((File) newFile.get(0));
                         courseMaterialsFragment.getAdapter().notifyDataSetChanged();
                     }
                 }
-                uploadFileTask = null;
+                Common.connection.disconnect();
                 cancel(true);
+                uploadFileTask = null;
+
             }
         }.execute();
     }

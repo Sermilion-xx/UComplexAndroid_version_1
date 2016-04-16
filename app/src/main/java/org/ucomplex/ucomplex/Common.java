@@ -83,6 +83,7 @@ public class Common {
     public static boolean newUsr;
     public static ArrayList<Integer> fromMessages = new ArrayList<>();
     public static DefaultHttpClient client;
+    public static HttpPost httpPost;
 
     public static HttpURLConnection connection;
     public static String X_UVERSION;
@@ -210,7 +211,7 @@ public class Common {
     public static String uploadFile(String path, String auth, String... folder) {
         try {
             java.io.File file = new java.io.File(path);
-            HttpPost httpPost = new HttpPost("http://you.com.ru/student/my_files/add_files?mobile=1");
+            httpPost = new HttpPost("http://you.com.ru/student/my_files/add_files?mobile=1");
             final byte[] authBytes = auth.getBytes("UTF-8");
             int flags = Base64.NO_WRAP | Base64.URL_SAFE;
             final String encoded = Base64.encodeToString(authBytes, flags);

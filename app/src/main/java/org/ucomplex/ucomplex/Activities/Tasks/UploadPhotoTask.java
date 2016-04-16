@@ -122,5 +122,4 @@ public class UploadPhotoTask extends AsyncTask<Object, Void, Integer> implements
         // Detach from progress tracker
         mProgressTracker = null;
     }
-
 }

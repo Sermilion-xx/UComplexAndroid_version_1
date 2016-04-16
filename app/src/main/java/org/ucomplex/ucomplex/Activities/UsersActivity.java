@@ -207,6 +207,11 @@ public class UsersActivity extends AppCompatActivity {
         }
 
         @Override
+        protected void onCancelled() {
+            super.onCancelled();
+        }
+
+        @Override
         protected void onPreExecute() {
             progressDialog.show();
         }
@@ -232,6 +237,7 @@ public class UsersActivity extends AppCompatActivity {
                     user.setName(userJson.getString("name"));
                     user.setCode(userJson.getString("code"));
                     user.setPhoto(userJson.getInt("photo"));
+                    user.setType(-1);
                     usersList.add(user);
                 }
             } catch (JSONException e) {

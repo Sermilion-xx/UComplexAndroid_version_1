@@ -17,10 +17,10 @@ android {
         applicationId "org.ucomplex.ucomplex"
         minSdkVersion 16
         targetSdkVersion 23
-        versionName '1.0.9'
+        versionName '1.0.10'
         // Enabling multidex support.
         multiDexEnabled true
-        versionCode 11
+        versionCode 12
     }
     buildTypes {
         release {

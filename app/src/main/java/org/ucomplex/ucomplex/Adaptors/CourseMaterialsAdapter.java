@@ -299,8 +299,12 @@ public class CourseMaterialsAdapter extends ArrayAdapter<File> {
                 protected String doInBackground(Void... params) {
                     String url = "http://you.com.ru/student/my_files/delete_file?mobile=1";
                     HashMap<String, String> httpParams = new HashMap();
-                    httpParams.put("file", adapter.mItems.get(pos).getAddress());
-                    return Common.httpPost(url, Common.getLoginDataFromPref(context), httpParams);
+                    if(adapter.mItems.size()>0){
+                        httpParams.put("file", adapter.mItems.get(pos).getAddress());
+                        return Common.httpPost(url, Common.getLoginDataFromPref(context), httpParams);
+                    }
+                    return "";
+
                 }
 
                 @Override
@@ -319,6 +323,7 @@ public class CourseMaterialsAdapter extends ArrayAdapter<File> {
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
+                        Toast.makeText(context, "Произошла ошибка", Toast.LENGTH_LONG).show();
                     }
 
                 }

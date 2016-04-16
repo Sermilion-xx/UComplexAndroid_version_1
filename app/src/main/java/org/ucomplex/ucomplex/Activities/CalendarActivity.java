@@ -167,12 +167,10 @@ public class CalendarActivity extends AppCompatActivity implements AdapterView.O
                 return true;
             case R.id.menu_calendar_info:
                 final String[] items = new String[]{"Текущий день",
-                        "Занятие/Событие", "Аттестация", "Экзамен",
-                        "Индивидуальное занятие", "Нерабочий день", "Расписание"};
-
+                        "Занятие/Событие", "Аттестация", "Расписание",
+                        "Индивидуальное занятие", "Нерабочий день", "Экзамен"};
                 ListAdapter adapter = new CalendarInfoAdapter(this, items, infoDrawables);
                 AlertDialog alertDialog = new AlertDialog.Builder(this).setAdapter(adapter, null).create();
-//                alertDialog.getWindow().setBackgroundDrawableResource(android.R.color.background_light);
                 alertDialog.show();
         }
         return super.onOptionsItemSelected(item);

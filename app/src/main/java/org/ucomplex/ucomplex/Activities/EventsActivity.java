@@ -27,6 +27,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import org.ucomplex.ucomplex.Activities.Tasks.FetchUserEventsTask;
 import org.ucomplex.ucomplex.Activities.Tasks.LoginTask;
@@ -68,6 +69,7 @@ public class EventsActivity extends AppCompatActivity implements OnTaskCompleteL
     LinearLayout linlaHeaderProgress;
     MediaPlayer mAlert;
     boolean refreshed;
+    private Boolean exit = false;
 
     public Intent getI() {
         return i;
@@ -230,6 +232,23 @@ public class EventsActivity extends AppCompatActivity implements OnTaskCompleteL
     public void onBackPressed() {
         if (this.Drawer.isDrawerOpen(GravityCompat.START)) {
             this.Drawer.closeDrawer(GravityCompat.START);
+        }else {
+            if (exit) {
+                finish(); // finish activity
+            } else {
+                Toast.makeText(this, "Нажмите еще раз, чтобы выйти.",
+                        Toast.LENGTH_SHORT).show();
+                exit = true;
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        Intent a = new Intent(Intent.ACTION_MAIN);
+                        a.addCategory(Intent.CATEGORY_HOME);
+                        a.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(a);
+                    }
+                }, 1000);
+            }
         }
     }
 
@@ -238,6 +257,9 @@ public class EventsActivity extends AppCompatActivity implements OnTaskCompleteL
         int id = item.getItemId();
         if (id == R.id.action_refresh) {
             refresh();
+            return true;
+        }else if(id == android.R.id.home){
+            onBackPressed();
             return true;
         }
         return super.onOptionsItemSelected(item);

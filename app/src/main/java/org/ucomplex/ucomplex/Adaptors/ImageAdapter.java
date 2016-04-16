@@ -157,12 +157,17 @@ public class ImageAdapter extends BaseAdapter {
 
         User user = getItem(position);
         if(user.isFriendRequested()){
-            convertView.setBackgroundColor(Color.parseColor("#ecfbfe"));
+            if (convertView != null) {
+                convertView.setBackgroundColor(Color.parseColor("#ecfbfe"));
+            }
         }
         int type = user.getType();
-        String typeStr = Common.getStringUserType(context, type);
+        if(type!=-1){
+            String typeStr = Common.getStringUserType(context, type);
+            viewHolder.textView2.setText(typeStr);
+        }
         viewHolder.textView1.setText(user.getName());
-        viewHolder.textView2.setText(typeStr);
+
         return convertView;
     }
 
