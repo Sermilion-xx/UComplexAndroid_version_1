@@ -163,7 +163,7 @@ public class Common {
     public static String sendFile(String path, String companion, String msg, String auth) {
         try {
             File file = new File(path);
-            HttpPost httpPost = new HttpPost("http://you.com.ru/user/messages/add?mobile=1");
+            httpPost = new HttpPost("http://you.com.ru/user/messages/add?mobile=1");
             final byte[] authBytes = auth.getBytes("UTF-8");
             int flags = Base64.NO_WRAP | Base64.URL_SAFE;
             final String encoded = Base64.encodeToString(authBytes, flags);

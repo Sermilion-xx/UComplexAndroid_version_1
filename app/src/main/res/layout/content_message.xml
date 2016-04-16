@@ -32,7 +32,8 @@
             android:id="@+id/message_image_temp"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:layout_marginLeft="10dp" />
+            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"/>
 
         <ProgressBar
             android:id="@+id/imagep_rogress"
@@ -40,7 +41,19 @@
             android:layout_height="30dp"
             android:indeterminate="true"
             android:layout_marginLeft="15dp"
+            android:layout_marginStart="15dp"
             android:layout_marginTop="10dp"/>
+
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:rotation="45"
+            android:visibility="gone"
+            android:layout_marginLeft="15dp"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="10dp"
+            android:id="@+id/message_file_cancel"
+            android:src="@drawable/ic_plus" />
 
 
     </RelativeLayout>
@@ -60,6 +73,7 @@
 
         <Button
             android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
             android:layout_width="35dp"
             android:layout_height="35dp"
             android:background="@drawable/ic_plus"
@@ -70,8 +84,10 @@
             android:layout_width="0dp"
             android:layout_height="60dp"
             android:layout_marginLeft="5dp"
+            android:layout_marginStart="5dp"
             android:layout_weight="0.64"
             android:hint="Сообщение"
+            android:textColor="@color/uc_gray_text_events"
             android:lines="1"
             android:id="@+id/messages_text"
             android:background="@null"/>
@@ -82,6 +98,7 @@
             android:background="@drawable/ic_send"
             android:id="@+id/messages_send_button"
             android:layout_marginRight="15dp"
+            android:layout_marginEnd="15dp"
             />
 
     </LinearLayout>

@@ -1,10 +1,12 @@
 package org.ucomplex.ucomplex.Activities.Tasks;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.app.job.JobInfo;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -42,15 +44,37 @@ public class FetchMessagesTask extends AsyncTask<String, String, LinkedList> imp
 
     private IProgressTracker mProgressTracker;
     private final OnTaskCompleteListener mTaskCompleteListener;
+    static ProgressDialog progressDialog = null;
 
     public FetchMessagesTask(Activity context, OnTaskCompleteListener taskCompleteListener) {
         this.mContext = context;
         this.caller = (MessagesActivity) mContext;
         this.mTaskCompleteListener = taskCompleteListener;
+
     }
 
     public void setupTask(String... params) {
         this.execute(params);
+//        if(type == 1){
+//            progressDialog = ProgressDialog.show(mContext, "",
+//                    "Файл загружается", true);
+//            progressDialog.setCancelable(true);
+//            progressDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+//                @Override
+//                public void onCancel(DialogInterface dialog) {
+//                    Toast.makeText(mContext, "Загрузка отменена",
+//                            Toast.LENGTH_LONG).show();
+//                    cancel(true);
+//                    if(Common.connection!=null){
+//                        Common.connection.disconnect();
+//                    }
+//                    if(Common.httpPost!=null){
+//                        Common.httpPost.abort();
+//                    }
+//                    mTaskCompleteListener.onTaskComplete(FetchMessagesTask.this);
+//                }
+//            });
+//        }
     }
 
     @Override

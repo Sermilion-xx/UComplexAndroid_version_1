@@ -255,9 +255,7 @@ public class MyFilesActivity extends AppCompatActivity implements OnTaskComplete
                         courseMaterialsFragment.getAdapter().notifyDataSetChanged();
                     }
                 }
-                Common.connection.disconnect();
-                cancel(true);
-                uploadFileTask = null;
+
 
             }
         }.execute();

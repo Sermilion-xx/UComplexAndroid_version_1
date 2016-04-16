@@ -2,12 +2,10 @@ package org.ucomplex.ucomplex.Activities;
 
 import android.Manifest;
 import android.animation.ObjectAnimator;
-import android.app.ProgressDialog;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -27,11 +25,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -43,7 +41,6 @@ import org.ucomplex.ucomplex.Adaptors.MessagesAdapter;
 import org.ucomplex.ucomplex.Common;
 import org.ucomplex.ucomplex.Interfaces.OnTaskCompleteListener;
 import org.ucomplex.ucomplex.Model.Message;
-import org.ucomplex.ucomplex.Model.StudyStructure.File;
 import org.ucomplex.ucomplex.Model.Users.User;
 import org.ucomplex.ucomplex.R;
 
@@ -68,6 +65,7 @@ public class MessagesActivity extends AppCompatActivity implements OnTaskComplet
     TextView nameTextView;
     CircleImageView profileImageView;
     TextView messageTextView;
+    ImageView cancelSendImage;
     Button sendFileButton;
     Button sendMsgButton;
     CircleImageView messageImage;
@@ -91,8 +89,35 @@ public class MessagesActivity extends AppCompatActivity implements OnTaskComplet
         nameTextView = (TextView) findViewById(R.id.list_messages_toolbar_name);
         messageImage = (CircleImageView) findViewById(R.id.message_image);
         messageImageTemp = (CircleImageView) findViewById(R.id.message_image_temp);
+        cancelSendImage = (ImageView) findViewById(R.id.message_file_cancel);
         imageProgress = (ProgressBar) findViewById(R.id.imagep_rogress);
         imageProgress.setVisibility(View.INVISIBLE);
+        imageProgress.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new AlertDialog.Builder(MessagesActivity.this)
+                        .setMessage("Отменить отправку файла?")
+                        .setCancelable(false)
+                        .setPositiveButton("Да", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                Toast.makeText(MessagesActivity.this, "Отправка отменена",
+                                        Toast.LENGTH_LONG).show();
+                                fetchNewMessagesTask.cancel(true);
+                                if(Common.connection!=null){
+                                    Common.connection.disconnect();
+                                }
+                                if(Common.httpPost!=null){
+                                    Common.httpPost.abort();
+                                }
+                                imageProgress.setVisibility(View.INVISIBLE);
+                                cancelSendImage.setVisibility(View.GONE);
+                            }
+                        })
+                        .setNegativeButton("Нет", null)
+                        .show();
+            }
+        });
+
         nameTextView.setTypeface(robotoFont);
         companion = getIntent().getStringExtra("companion");
         name = getIntent().getStringExtra("name");
@@ -100,16 +125,16 @@ public class MessagesActivity extends AppCompatActivity implements OnTaskComplet
         User aUser = new User();
         aUser.setId(Integer.valueOf(companion));
         aUser.setName(name);
-        if(bmp==null){
+        if (bmp == null) {
             profileImageView.setImageDrawable(Common.getDrawable(aUser));
-        }else{
-            profileImageView.setImageBitmap((Bitmap)getIntent().getParcelableExtra("profileImage"));
+        } else {
+            profileImageView.setImageBitmap((Bitmap) getIntent().getParcelableExtra("profileImage"));
         }
 
         String[] aName = name.split(" ");
-        if(aName.length>1){
+        if (aName.length > 1) {
             nameTextView.setText(aName[1] + " " + aName[0]);
-        }else{
+        } else {
             nameTextView.setText(aName[0]);
         }
         messagesAdapter = new MessagesAdapter(this, messageArrayList, companion, name);
@@ -119,16 +144,16 @@ public class MessagesActivity extends AppCompatActivity implements OnTaskComplet
             @Override
             public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
                 Message message = (Message) messagesAdapter.getItem(position);
-                if(message.getFiles().size()>0){
+                if (message.getFiles().size() > 0) {
                     String[] typeArray = ((Message) messagesAdapter.getItem(position)).getFiles().get(0).getName().split("\\.");
-                    String type = typeArray[typeArray.length-1];
-                    if(!type.equals("jpg") && !type.equals("png")){
+                    String type = typeArray[typeArray.length - 1];
+                    if (!type.equals("jpg") && !type.equals("png")) {
                         DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                switch (which){
+                                switch (which) {
                                     case DialogInterface.BUTTON_POSITIVE:
-                                        new AsyncTask<Void, Void, Bitmap>(){
+                                        new AsyncTask<Void, Void, Bitmap>() {
                                             @Override
                                             protected Bitmap doInBackground(Void... params) {
                                                 final String UC_BASE_URL = "http://storage.ucomplex.org/files/messages/" + ((Message) messagesAdapter.getItem(position)).getFiles().get(0).getFrom() + "/" + ((Message) messagesAdapter.getItem(position)).getFiles().get(0).getAddress();
@@ -148,22 +173,22 @@ public class MessagesActivity extends AppCompatActivity implements OnTaskComplet
                         builder.setMessage("Сохранить документ?").setPositiveButton("Да", dialogClickListener)
                                 .setNegativeButton("Нет", dialogClickListener).show();
 
-                    }else if (((Message) messagesAdapter.getItem(position)).getMessageImage()!=null){
+                    } else if (((Message) messagesAdapter.getItem(position)).getMessageImage() != null) {
                         DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                switch (which){
+                                switch (which) {
                                     case DialogInterface.BUTTON_POSITIVE:
 
                                         View v = messagesAdapter.getViewByPosition(position, listView);
                                         final MessagesAdapter.ViewHolder vh = (MessagesAdapter.ViewHolder) v.getTag();
                                         vh.getFileProgressBar().setVisibility(View.VISIBLE);
-                                        new AsyncTask<Void, Void, Bitmap>(){
+                                        new AsyncTask<Void, Void, Bitmap>() {
 
                                             @Override
                                             protected Bitmap doInBackground(Void... params) {
                                                 String url = "http://storage.ucomplex.org/files/messages/" + ((Message) messagesAdapter.getItem(position)).getFiles().get(0).getFrom() + "/" + ((Message) messagesAdapter.getItem(position)).getFiles().get(0).getAddress();
-                                                Bitmap bitmap = Common.getBitmapFromURL(url,1);
+                                                Bitmap bitmap = Common.getBitmapFromURL(url, 1);
                                                 return bitmap;
                                             }
 
@@ -171,7 +196,7 @@ public class MessagesActivity extends AppCompatActivity implements OnTaskComplet
                                             protected void onPostExecute(Bitmap aVoid) {
                                                 super.onPostExecute(aVoid);
                                                 vh.getFileProgressBar().setVisibility(View.INVISIBLE);
-                                                MediaStore.Images.Media.insertImage(getContentResolver(), aVoid, ((Message) messagesAdapter.getItem(position)).getFiles().get(0).getName() , "");
+                                                MediaStore.Images.Media.insertImage(getContentResolver(), aVoid, ((Message) messagesAdapter.getItem(position)).getFiles().get(0).getName(), "");
                                                 Toast.makeText(MessagesActivity.this, "Фото сохранено.", Toast.LENGTH_LONG)
                                                         .show();
 
@@ -211,10 +236,14 @@ public class MessagesActivity extends AppCompatActivity implements OnTaskComplet
                 sendMsgButton.setEnabled(true);
 
             }
+
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
             @Override
-            public void afterTextChanged(Editable s) {}
+            public void afterTextChanged(Editable s) {
+            }
         });
         sendMsgButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -226,6 +255,7 @@ public class MessagesActivity extends AppCompatActivity implements OnTaskComplet
                     String filename = splitFilename[splitFilename.length - 1];
                     messageImageTemp.setImageBitmap(null);
                     fetchNewMessagesTask.setupTask(filePath, companion, filename, message);
+                    cancelSendImage.setVisibility(View.VISIBLE);
                     imageProgress.setVisibility(View.VISIBLE);
                     file = false;
                 } else {
@@ -240,9 +270,9 @@ public class MessagesActivity extends AppCompatActivity implements OnTaskComplet
         sendFileButton = (Button) findViewById(R.id.messages_file_button);
         sendFileButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                if(!file){
+                if (!file) {
                     showFileChooser();
-                }else{
+                } else {
                     file = false;
                     filePath = "";
                     messageTextView.setText("");
@@ -254,7 +284,7 @@ public class MessagesActivity extends AppCompatActivity implements OnTaskComplet
         new Timer().scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                if(!fetching) {
+                if (!fetching) {
                     if (fetchNewMessagesTask == null) {
                         fetchNewMessagesTask = new FetchMessagesTask(MessagesActivity.this, MessagesActivity.this);
                         fetchNewMessagesTask.setType(0);
@@ -310,20 +340,20 @@ public class MessagesActivity extends AppCompatActivity implements OnTaskComplet
                     String[] splitFilename = filePath.split("/");
                     String filename = splitFilename[splitFilename.length - 1];
                     String[] fileNameArray = filename.split("\\.");
-                    String format = fileNameArray[fileNameArray.length-1];
+                    String format = fileNameArray[fileNameArray.length - 1];
                     file = true;
                     sendMsgButton.setEnabled(true);
 
                     ObjectAnimator.ofFloat(sendFileButton, "rotation", 1, 45).start();
 
-                    if(format.equals("jpeg") || format.equals("jpg") || format.equals("png")){
+                    if (format.equals("jpeg") || format.equals("jpg") || format.equals("png")) {
                         java.io.File image = new java.io.File(filePath);
                         BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-                        Bitmap bitmap = BitmapFactory.decodeFile(image.getAbsolutePath(),bmOptions);
-                        if(bitmap!=null){
+                        Bitmap bitmap = BitmapFactory.decodeFile(image.getAbsolutePath(), bmOptions);
+                        if (bitmap != null) {
                             messageImageTemp.setImageBitmap(bitmap);
                         }
-                    }else{
+                    } else {
                         messageImageTemp.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_attachment_dark));
                     }
                     this.revokeUriPermission(originalUri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
@@ -340,42 +370,42 @@ public class MessagesActivity extends AppCompatActivity implements OnTaskComplet
 
         // DocumentProvider
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                if (isExternalStorageDocument(uri)) {
-                    final String docId = DocumentsContract.getDocumentId(uri);
-                    final String[] split = docId.split(":");
-                    final String type = split[0];
-                    if ("primary".equalsIgnoreCase(type)) {
-                        return Environment.getExternalStorageDirectory() + "/" + split[1];
-                    }
+            if (isExternalStorageDocument(uri)) {
+                final String docId = DocumentsContract.getDocumentId(uri);
+                final String[] split = docId.split(":");
+                final String type = split[0];
+                if ("primary".equalsIgnoreCase(type)) {
+                    return Environment.getExternalStorageDirectory() + "/" + split[1];
                 }
-                // DownloadsProvider
-                else if (isDownloadsDocument(uri)) {
-                    final String id = DocumentsContract.getDocumentId(uri);
-                    final Uri contentUri = ContentUris.withAppendedId(
-                            Uri.parse("content://downloads/public_downloads"), Long.valueOf(id));
-                    return getDataColumn(context, contentUri, null, null);
+            }
+            // DownloadsProvider
+            else if (isDownloadsDocument(uri)) {
+                final String id = DocumentsContract.getDocumentId(uri);
+                final Uri contentUri = ContentUris.withAppendedId(
+                        Uri.parse("content://downloads/public_downloads"), Long.valueOf(id));
+                return getDataColumn(context, contentUri, null, null);
+            }
+            // MediaProvider
+            else if (isMediaDocument(uri)) {
+                final String docId = DocumentsContract.getDocumentId(uri);
+                final String[] split = docId.split(":");
+                final String type = split[0];
+                Uri contentUri = null;
+                if ("image".equals(type)) {
+                    contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+                } else if ("video".equals(type)) {
+                    contentUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
+                } else if ("audio".equals(type)) {
+                    contentUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
                 }
-                // MediaProvider
-                else if (isMediaDocument(uri)) {
-                    final String docId = DocumentsContract.getDocumentId(uri);
-                    final String[] split = docId.split(":");
-                    final String type = split[0];
-                    Uri contentUri = null;
-                    if ("image".equals(type)) {
-                        contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
-                    } else if ("video".equals(type)) {
-                        contentUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
-                    } else if ("audio".equals(type)) {
-                        contentUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-                    }
-                    final String selection = "_id=?";
-                    final String[] selectionArgs = new String[] {split[1]};
-                    return getDataColumn(context, contentUri, selection, selectionArgs);
-                }else if ("file".equalsIgnoreCase(uri.getScheme())) {
-                    return uri.getPath();
-                }else if ("content".equalsIgnoreCase(uri.getScheme())) {
-                    return getDataColumn(context, uri, null, null);
-                }
+                final String selection = "_id=?";
+                final String[] selectionArgs = new String[]{split[1]};
+                return getDataColumn(context, contentUri, selection, selectionArgs);
+            } else if ("file".equalsIgnoreCase(uri.getScheme())) {
+                return uri.getPath();
+            } else if ("content".equalsIgnoreCase(uri.getScheme())) {
+                return getDataColumn(context, uri, null, null);
+            }
 
         }// MediaStore (and general)
         else if ("content".equalsIgnoreCase(uri.getScheme())) {
@@ -389,7 +419,7 @@ public class MessagesActivity extends AppCompatActivity implements OnTaskComplet
     }
 
     @Nullable
-    public String getDataColumn(Context context, Uri uri, String selection,  String[] selectionArgs) {
+    public String getDataColumn(Context context, Uri uri, String selection, String[] selectionArgs) {
         Cursor cursor = null;
         final String column = "_data";
         final String[] projection = {column};
@@ -446,41 +476,40 @@ public class MessagesActivity extends AppCompatActivity implements OnTaskComplet
     @Override
     public void onTaskComplete(AsyncTask task, Object... o) {
         if (task.isCancelled()) {
-
             Toast.makeText(this, "Операция была прервана", Toast.LENGTH_LONG)
                     .show();
+            imageProgress.setVisibility(View.INVISIBLE);
         } else {
             try {
                 if (task instanceof UploadPhotoTask) {
 
                 } else {
                     FetchMessagesTask fmt = (FetchMessagesTask) task;
-                    if(fmt.getType() == 0){
+                    if (fmt.getType() == 0) {
                         messageArrayList = (LinkedList) task.get();
-                        if(messageArrayList != null){
-                            if(!first){
-                                for(int i=0; i<messageArrayList.size(); i++){
-                                    if(messageArrayList.get(i) instanceof Bitmap){
+                        if (messageArrayList != null) {
+                            if (!first) {
+                                for (int i = 0; i < messageArrayList.size(); i++) {
+                                    if (messageArrayList.get(i) instanceof Bitmap) {
                                         messageArrayList.remove(i);
                                     }
                                 }
                                 Collections.reverse(messageArrayList);
                                 messagesAdapter.setValues(messageArrayList);
                                 messagesAdapter.notifyDataSetChanged();
-                                listView.setSelection(messagesAdapter.getCount()-1);
-                            }else{
+                                listView.setSelection(messagesAdapter.getCount() - 1);
+                            } else {
                                 Collections.reverse(messageArrayList);
                                 messagesAdapter = new MessagesAdapter(this, messageArrayList, companion, name);
                                 listView.setAdapter(messagesAdapter);
-                                listView.setSelection(messagesAdapter.getCount()-1);
-                                if(messagesAdapter.getBitmap() !=null){
+                                listView.setSelection(messagesAdapter.getCount() - 1);
+                                if (messagesAdapter.getBitmap() != null) {
                                     profileImageView.setImageBitmap(messagesAdapter.getBitmap());
                                 }
                                 first = false;
                             }
                         }
-                    }
-                     else if (fmt.getType() == 1 || fmt.getType() == 2) {
+                    } else if (fmt.getType() == 1 || fmt.getType() == 2) {
 
                         LinkedList result = (LinkedList) task.get();
                         if (result != null) {
