@@ -92,12 +92,21 @@ public class SubjectsActivity extends AppCompatActivity implements OnTaskComplet
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> a, View v, int position, long id) {
-                    Intent intent = new Intent(getBaseContext(), CourseActivity.class);
-                    Bundle extras = new Bundle();
-                    extras.putInt("gcourse", mItems.get(position).getValue2());
-                    extras.putString("courseName", mItems.get(position).getValue0());
-                    intent.putExtras(extras);
-                    startActivity(intent);
+                    if(Common.ROLE == 4){
+                        Intent intent = new Intent(getBaseContext(), CourseActivity.class);
+                        Bundle extras = new Bundle();
+                        extras.putInt("gcourse", mItems.get(position).getValue2());
+                        extras.putString("courseName", mItems.get(position).getValue0());
+                        intent.putExtras(extras);
+                        startActivity(intent);
+                    }else if(Common.ROLE == 3){
+                        Intent intent = new Intent(getBaseContext(), CalendarActivity.class);
+                        Bundle extras = new Bundle();
+                        extras.putString("gcourse", String.valueOf(mItems.get(position).getValue2()));
+                        intent.putExtras(extras);
+                        startActivity(intent);
+                    }
+
                 }
             });
 

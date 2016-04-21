@@ -29,6 +29,7 @@ import org.javatuples.Quintet;
 import org.ucomplex.ucomplex.Activities.CalendarDayActivity;
 import org.ucomplex.ucomplex.Activities.Tasks.AsyncTaskManager;
 import org.ucomplex.ucomplex.Activities.Tasks.FetchCalendarTask;
+import org.ucomplex.ucomplex.Activities.Tasks.TFetchSubjectsCalendar;
 import org.ucomplex.ucomplex.Common;
 import org.ucomplex.ucomplex.Interfaces.OnTaskCompleteListener;
 import org.ucomplex.ucomplex.Model.Calendar.CalendarDayDecorator;
@@ -56,7 +57,15 @@ public class CalendarFragment extends Fragment implements OnTaskCompleteListener
     private AsyncTaskManager mAsyncTaskManager;
     FetchCalendarTask fetchCalendarTask;
     final String[] monthsTitles = {"Январь", "Февряль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"};
+    private String courseId;
 
+    public void setCourseId(String courseId) {
+        this.courseId = courseId;
+    }
+
+    public String getCourseId() {
+        return courseId;
+    }
 
     public CalendarFragment() {
         // Required empty public constructor
@@ -132,8 +141,14 @@ public class CalendarFragment extends Fragment implements OnTaskCompleteListener
         options.add("Показать все");
         options.add("Все дисциплины");
         options.add("События");
-        mAsyncTaskManager = new AsyncTaskManager(context, this);
-        mAsyncTaskManager.setupTask(new FetchCalendarTask(context), String.valueOf(user.getType()));
+        if(Common.ROLE == 4){
+            mAsyncTaskManager = new AsyncTaskManager(context, this);
+            mAsyncTaskManager.setupTask(new FetchCalendarTask(context), String.valueOf(user.getType()));
+        }else if(Common.ROLE == 3){
+            TFetchSubjectsCalendar tFetchSubjectsCalendar = new TFetchSubjectsCalendar(context, this);
+            tFetchSubjectsCalendar.execute(courseId);
+        }
+
         linlaHeaderProgress.setVisibility(View.VISIBLE);
 
         MonthArrayTitleFormatter monthArrayTitleFormatter = new MonthArrayTitleFormatter(monthsTitles);

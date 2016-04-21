@@ -68,12 +68,18 @@ public class CalendarActivity extends AppCompatActivity implements AdapterView.O
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_menu);
+
         statisticsFragment = new CalendarStatisticsFragment();
+        Bundle extras = getIntent().getExtras();
         CalendarFragment calendarFragment = new CalendarFragment();
+        calendarFragment.setCourseId(extras.getString("gcourse"));
         calendarFragment.setContext(this);
+
         tabLayout = (TabLayout) findViewById(R.id.tabs);
-        FetchAllStats fetchAllStats = new FetchAllStats(this, this);
-        fetchAllStats.setupTask();
+        if(Common.ROLE == 4){
+            FetchAllStats fetchAllStats = new FetchAllStats(this, this);
+            fetchAllStats.setupTask();
+        }
         //role related
         if (user.getType() == 4) {
             adapter = new ViewPagerAdapter(getSupportFragmentManager());

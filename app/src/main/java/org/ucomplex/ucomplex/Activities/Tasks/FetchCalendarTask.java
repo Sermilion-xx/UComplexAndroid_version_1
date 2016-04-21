@@ -26,7 +26,6 @@ public class FetchCalendarTask extends AsyncTask<String, String, UCCalendar> {
     Activity mContext;
     UCCalendar calendar;
 
-    private String mProgressMessage;
     private IProgressTracker mProgressTracker;
 
     public FetchCalendarTask(Activity context){
@@ -63,7 +62,7 @@ public class FetchCalendarTask extends AsyncTask<String, String, UCCalendar> {
         }
         publishProgress("50%");
         if(jsonData == null){
-            return null;
+            return new UCCalendar();
         }
         return getCalendarDataFromJson(jsonData);
     }
@@ -249,7 +248,7 @@ public class FetchCalendarTask extends AsyncTask<String, String, UCCalendar> {
 
     @Override
     protected void onProgressUpdate(String... values) {
-        mProgressMessage = values[0];
+        String mProgressMessage = values[0];
         if (mProgressTracker != null) {
             mProgressTracker.onProgress(mProgressMessage);
         }

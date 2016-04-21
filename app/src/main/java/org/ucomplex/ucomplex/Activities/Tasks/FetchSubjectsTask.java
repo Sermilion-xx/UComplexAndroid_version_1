@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.support.annotation.Nullable;
 
+import org.javatuples.Pair;
 import org.javatuples.Triplet;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -95,11 +96,11 @@ public class FetchSubjectsTask extends AsyncTask<Void, String, ArrayList<Triplet
                 ArrayList<String> coursesKeys = Common.getKeys(coursesJson);
                 JSONObject subjectsListJson = subjectsJson.getJSONObject("subjectsList");
 
-                HashMap<String, String> subjectsListMap = new HashMap<>();
+                HashMap<String, Pair<String, String>> subjectsListMap = new HashMap<>();
                 for(int i = 0; i< subjectsListJson.length(); i++){
                     JSONArray subjectListItem = subjectsListJson.getJSONArray(coursesKeys.get(i));
                     for(int j = 0; j< subjectListItem.length(); j++){
-                        subjectsListMap.put(subjectListItem.getJSONObject(j).getString("group"), coursesKeys.get(i));
+                        subjectsListMap.put(subjectListItem.getJSONObject(j).getString("group"), new Pair(coursesKeys.get(i), subjectListItem.getJSONObject(j).getString("id")));
                     }
                 }
                 ArrayList<String> keys = Common.getKeys(groursJson);
@@ -107,8 +108,8 @@ public class FetchSubjectsTask extends AsyncTask<Void, String, ArrayList<Triplet
                     JSONObject courseJson = groursJson.getJSONObject(key);
                     Triplet<String, String, Integer> courseItem = new Triplet<>(
                             courseJson.getString("name"),
-                            coursesJson.getString(subjectsListMap.get(key)),
-                            Integer.valueOf(subjectsListMap.get(key)));
+                            coursesJson.getString(subjectsListMap.get(key).getValue0()),
+                            Integer.valueOf(subjectsListMap.get(key).getValue1()));
                     subjectsListArray.add(courseItem);
                 }
             }

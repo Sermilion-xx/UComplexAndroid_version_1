@@ -26,7 +26,7 @@ public class CalendarDayDecorator implements DayViewDecorator {
     private String year;
     private String month;
     private int type;
-    private HashSet<CalendarDay> dates;
+    private HashSet<CalendarDay> dates = new HashSet<>();
     String[] colors = {"#51cde7","#fecd71","#9ece2b","#d18ec0","#fe7877","#8ea3d1","#c3ccd3"};
     private Context context;
 
