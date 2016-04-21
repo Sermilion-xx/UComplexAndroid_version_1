@@ -231,7 +231,7 @@ public class LoginActivity extends Activity implements LoginTask.AsyncResponse {
     @Override
     public void processFinish(User output, Bitmap bitmap) {
         if (output != null) {
-            if(output.getType()!=4){
+            if(output.getType()!=4 && output.getType()!=3){
                 showProgress(false);
                 Toast.makeText(this, "Ошибка роли", Toast.LENGTH_SHORT).show();
             } else {
@@ -239,21 +239,21 @@ public class LoginActivity extends Activity implements LoginTask.AsyncResponse {
                 SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(this).edit();
                 editor.putBoolean("logged", true);
                 editor.apply();
-
                 if (bitmap != null) {
                     Common.encodePhotoPref(this, bitmap, "profilePhoto");
                 }
                 Intent intent;
                 Common.setRoleToPref(this, output.getType());
-//            if (output.getRoles().size() > 1) {
-//                intent = new Intent(this, RoleSelectActivity.class);
-//                startActivity(intent);
-//                showProgress(false);
-//            } else {
+                Common.ROLE = output.getType();
+            if (output.getRoles().size() > 1) {
+                intent = new Intent(this, RoleSelectActivity.class);
+                startActivity(intent);
+                showProgress(false);
+            } else {
                 intent = new Intent(this, EventsActivity.class);
                 startActivity(intent);
                 showProgress(false);
-//            }
+            }
                 mAuthTask = null;
             }
         } else {

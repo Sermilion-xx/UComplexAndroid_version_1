@@ -19,6 +19,7 @@ import android.widget.Toast;
 import org.javatuples.Triplet;
 import org.ucomplex.ucomplex.Activities.Tasks.FetchSubjectsTask;
 import org.ucomplex.ucomplex.Adaptors.SubjectsAdapter;
+import org.ucomplex.ucomplex.Common;
 import org.ucomplex.ucomplex.Interfaces.OnTaskCompleteListener;
 import org.ucomplex.ucomplex.R;
 
@@ -82,10 +83,10 @@ public class SubjectsActivity extends AppCompatActivity implements OnTaskComplet
             }
             SubjectsAdapter subjectsAdapter = new SubjectsAdapter(this, mItems);
             listView.setAdapter(subjectsAdapter);
-            if(mItems.size()>0){
+            if (mItems.size() > 0) {
                 listView.setDivider(new ColorDrawable(ContextCompat.getColor(this, R.color.activity_background)));
                 listView.setDividerHeight(3);
-            }else{
+            } else {
                 listView.setDivider(null);
             }
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

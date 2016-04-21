@@ -36,11 +36,9 @@ public class UsersFragment extends ListFragment {
         user = Common.getUserDataFromPref(activity);
     }
 
-
     public UsersFragment() {
 
     }
-
 
     public void setUsersType(int usersType) {
         this.usersType = usersType;

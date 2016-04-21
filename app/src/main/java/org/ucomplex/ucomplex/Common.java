@@ -22,7 +22,6 @@ import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.util.Base64;
-import android.util.Log;
 
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.google.gson.Gson;
@@ -48,7 +47,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -65,8 +63,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
-
-import javax.net.ssl.HttpsURLConnection;
 
 /**
  * Created by Sermi lion on 04/12/2015.
@@ -88,7 +84,6 @@ public class Common {
     public static HttpURLConnection connection;
     public static String X_UVERSION;
     public static String messageCompanionName = "-";
-    User user;
 
     public static Typeface getTypeFace(Context context, String typeFace) {
         Typeface tf = Typeface.createFromAsset(context.getAssets(),
@@ -111,7 +106,7 @@ public class Common {
 
 
     public static void fetchMyNews(final Context context) {
-        if(context!=null){
+        if (context != null) {
             new AsyncTask<Void, Void, String>() {
 
                 @Override
@@ -363,7 +358,6 @@ public class Common {
                 first = false;
             else
                 result.append("&");
-
             result.append(URLEncoder.encode(entry.getKey(), "UTF-8"));
             result.append("=");
             result.append(URLEncoder.encode(entry.getValue(), "UTF-8"));
@@ -375,9 +369,9 @@ public class Common {
     public static Bitmap getBitmapFromURL(String code, int type) {
         try {
             String UC_BASE_URL;
-            if(type==0){
+            if (type == 0) {
                 UC_BASE_URL = "https://ucomplex.org/files/photos/" + code + ".jpg";
-            }else{
+            } else {
                 UC_BASE_URL = code;
             }
             URL url = new URL(UC_BASE_URL);
@@ -395,7 +389,7 @@ public class Common {
     public static Drawable getDrawable(User user) {
         final int colorsCount = 16;
         final int number = (user.getPerson() <= colorsCount) ? user.getPerson() : user.getPerson() % colorsCount;
-        char firstLetter = user.getName().split(" ").length>1?user.getName().split(" ")[1].charAt(0):user.getName().split(" ")[0].charAt(0);
+        char firstLetter = user.getName().split(" ").length > 1 ? user.getName().split(" ")[1].charAt(0) : user.getName().split(" ")[0].charAt(0);
 
         return TextDrawable.builder().beginConfig()
                 .width(120)
@@ -568,7 +562,7 @@ public class Common {
 
     public static int getRoleFromPref(Context mContext) {
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(mContext);
-        int role = pref.getInt("userRole", -1);
+        int role = pref.getInt("userRole", -2);
         return role;
     }
 
@@ -577,9 +571,9 @@ public class Common {
         Gson gson = new Gson();
         String json = pref.getString("loggedUser", "");
         User obj = gson.fromJson(json, User.class);
-        if(obj!=null){
+        if (obj != null) {
             return obj.getLogin() + ":" + obj.getPass() + ":" + obj.getId();
-        }else{
+        } else {
             return "";
         }
     }
@@ -695,43 +689,43 @@ public class Common {
         return typeStr;
     }
 
-    public static String getStudyForm(Context context, int type){
+    public static String getStudyForm(Context context, int type) {
         String typeStr = null;
-        if(type==1){
+        if (type == 1) {
             return "Очная";
-        }else if(type==2){
+        } else if (type == 2) {
             return "Заочная";
-        }else if(type==3){
+        } else if (type == 3) {
             return "Очно-аочная";
-        }else if(type==4){
+        } else if (type == 4) {
             return "Второе высшее";
         }
         return "Ошибка";
     }
 
-    public static String getPayment(Context context, int type){
+    public static String getPayment(Context context, int type) {
         String typeStr = null;
-        if(type==1){
+        if (type == 1) {
             return "Бюджет";
-        }else if(type==2){
+        } else if (type == 2) {
             return "Внебюджет";
-        }else if(type==3){
+        } else if (type == 3) {
             return "Бюджет целев";
-        }else if(type==4){
+        } else if (type == 4) {
             return "Льготы";
         }
         return "Ошибка";
     }
 
-    public static String getStudyLevel(Context context, int type){
+    public static String getStudyLevel(Context context, int type) {
         String typeStr = null;
-        if(type==1){
+        if (type == 1) {
             return "Бакалавриат";
-        }else if(type==2){
+        } else if (type == 2) {
             return "Специалитет";
-        }else if(type==3){
+        } else if (type == 3) {
             return "Магистратура";
-        }else if(type==4){
+        } else if (type == 4) {
             return "Аспирантура";
         }
         return "Ошибка";

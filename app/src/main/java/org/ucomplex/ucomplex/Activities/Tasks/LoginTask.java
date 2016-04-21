@@ -55,7 +55,8 @@ public class LoginTask extends AsyncTask<Void, Void, User> {
         User user = new User();
         user.setType(-1);
         for (int i = 0; i < rolesArray.length(); i++) {
-            if (rolesArray.getJSONObject(i).getInt("type") == 4) {
+            int roleType = rolesArray.getJSONObject(i).getInt("type");
+            if (roleType == 4 || roleType == 3) {
                 user.setType(rolesArray.getJSONObject(i).getInt("type"));
                 user.setId(rolesArray.getJSONObject(i).getInt("id"));
             }

@@ -46,17 +46,21 @@ public class FetchSubjectsTask extends AsyncTask<Void, String, ArrayList<Triplet
 
     @Override
     protected ArrayList<Triplet<String, String, Integer>> doInBackground(Void... params) {
-        String urlString = "https://ucomplex.org/student/subjects_list?json";
-        String jsonData = Common.httpPost(urlString, Common.getLoginDataFromPref(mContext));
-
+        String url = "";
+        String urlStudentString = "https://ucomplex.org/student/subjects_list?json";
+        String urlTeacherString = "https://ucomplex.org/teacher/subjects_list?mobile=1";
+        if(Common.ROLE == 4){
+            url = urlStudentString;
+        }else if(Common.ROLE == 3){
+            url = urlTeacherString;
+        }
+        String jsonData = Common.httpPost(url, Common.getLoginDataFromPref(mContext));
         if(jsonData!=null){
             if(jsonData.length()>0){
                 return getSubjectDataFromJson(jsonData);
             }
         }
-
         return new ArrayList<>();
-
     }
 
     @Nullable
@@ -65,26 +69,49 @@ public class FetchSubjectsTask extends AsyncTask<Void, String, ArrayList<Triplet
         JSONObject subjectsJson;
         try {
             subjectsJson = new JSONObject(jsonData);
-            JSONObject courses = subjectsJson.getJSONObject("courses");
-            JSONObject coursesForms = subjectsJson.getJSONObject("courses_forms");
-            JSONArray studentSubjectsList = subjectsJson.getJSONArray("studentSubjectsList");
-            HashMap<String, String> hashCourses = (HashMap<String, String>) Common.parseJsonKV(courses);
-            HashMap<String, String> hashCoursesForms = (HashMap<String, String>) Common.parseJsonKV(coursesForms);
+            if(Common.ROLE == 4){
+                JSONObject courses = subjectsJson.getJSONObject("courses");
+                JSONObject coursesForms = subjectsJson.getJSONObject("courses_forms");
+                JSONArray studentSubjectsList = subjectsJson.getJSONArray("studentSubjectsList");
+                HashMap<String, String> hashCourses = (HashMap<String, String>) Common.parseJsonKV(courses);
+                HashMap<String, String> hashCoursesForms = (HashMap<String, String>) Common.parseJsonKV(coursesForms);
 
-            ArrayList<HashMap<String, String>> studentSubjectsListHashMap = new ArrayList<>();
-            for(int i =0;i<studentSubjectsList.length();i++){
-                HashMap<String, String> hashSubj = (HashMap<String, String>) Common.parseJsonKV(studentSubjectsList.getJSONObject(i));
-                studentSubjectsListHashMap.add(hashSubj);
-            }
-            for(int i = 0; i<studentSubjectsListHashMap.size();i++){
-                int    gcourse = Integer.parseInt(studentSubjectsListHashMap.get(i).get("id"));
-                String _courseNameId = studentSubjectsListHashMap.get(i).get("course");
-                String courseName = hashCourses.get(_courseNameId);
-                int courseFrom = Integer.parseInt(hashCoursesForms.get(_courseNameId));
-                Triplet<String, String, Integer> subject = new Triplet<>(courseName, assesmentType[courseFrom], gcourse);
-                subjectsListArray.add(subject);
-            }
+                ArrayList<HashMap<String, String>> studentSubjectsListHashMap = new ArrayList<>();
+                for(int i =0;i<studentSubjectsList.length();i++){
+                    HashMap<String, String> hashSubj = (HashMap<String, String>) Common.parseJsonKV(studentSubjectsList.getJSONObject(i));
+                    studentSubjectsListHashMap.add(hashSubj);
+                }
+                for(int i = 0; i<studentSubjectsListHashMap.size();i++){
+                    int    gcourse = Integer.parseInt(studentSubjectsListHashMap.get(i).get("id"));
+                    String _courseNameId = studentSubjectsListHashMap.get(i).get("course");
+                    String courseName = hashCourses.get(_courseNameId);
+                    int courseFrom = Integer.parseInt(hashCoursesForms.get(_courseNameId));
+                    Triplet<String, String, Integer> subject = new Triplet<>(courseName, assesmentType[courseFrom], gcourse);
+                    subjectsListArray.add(subject);
+                }
+            }else if(Common.ROLE == 3){
+                JSONObject groursJson = subjectsJson.getJSONObject("groups");
+                JSONObject coursesJson = subjectsJson.getJSONObject("courses");
+                ArrayList<String> coursesKeys = Common.getKeys(coursesJson);
+                JSONObject subjectsListJson = subjectsJson.getJSONObject("subjectsList");
 
+                HashMap<String, String> subjectsListMap = new HashMap<>();
+                for(int i = 0; i< subjectsListJson.length(); i++){
+                    JSONArray subjectListItem = subjectsListJson.getJSONArray(coursesKeys.get(i));
+                    for(int j = 0; j< subjectListItem.length(); j++){
+                        subjectsListMap.put(subjectListItem.getJSONObject(j).getString("group"), coursesKeys.get(i));
+                    }
+                }
+                ArrayList<String> keys = Common.getKeys(groursJson);
+                for(String key: keys){
+                    JSONObject courseJson = groursJson.getJSONObject(key);
+                    Triplet<String, String, Integer> courseItem = new Triplet<>(
+                            courseJson.getString("name"),
+                            coursesJson.getString(subjectsListMap.get(key)),
+                            Integer.valueOf(subjectsListMap.get(key)));
+                    subjectsListArray.add(courseItem);
+                }
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }

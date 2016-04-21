@@ -32,7 +32,7 @@ public class RoleSelectFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        user  = Common.getUserDataFromPref(getContext());
+        user = Common.getUserDataFromPref(getContext());
         View view = inflater.inflate(R.layout.fragment_role_list, container, false);
         mRoleRecyclerView = (RecyclerView) view
                 .findViewById(R.id.crime_recycler_view);
@@ -47,7 +47,7 @@ public class RoleSelectFragment extends Fragment {
     }
 
 
-    private class RoleHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    private class RoleHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private User mUser;
         private int[] userIcons = {R.drawable.select_account_1,
@@ -59,27 +59,28 @@ public class RoleSelectFragment extends Fragment {
         private CircleImageView mRoleImage;
         private TextView mRoleTextView;
         private int position;
-            public RoleHolder(View itemView) {
-                super(itemView);
-                itemView.setOnClickListener(this);
-                mRoleImage = (CircleImageView) itemView.findViewById(R.id.role_select_image);
-                mRoleTextView = (TextView) itemView.findViewById(R.id.role_select_role);
+
+        public RoleHolder(View itemView) {
+            super(itemView);
+            itemView.setOnClickListener(this);
+            mRoleImage = (CircleImageView) itemView.findViewById(R.id.role_select_image);
+            mRoleTextView = (TextView) itemView.findViewById(R.id.role_select_role);
         }
 
         public void bindRole(User user, int position) {
             mUser = user;
             this.position = position;
             int drawable = -1;
-            if(position<5){
+            if (position < 5) {
                 drawable = userIcons[position];
-            }else{
+            } else {
                 drawable = userIcons[position % userIcons.length];
             }
-            if(mUser.getType()==3){
+            if (mUser.getType() == 3) {
                 mRoleTextView.setText("Преподаватель");
-            }else if(user.getType()==4){
+            } else if (user.getType() == 4) {
                 mRoleTextView.setText("Студент");
-            }else if(user.getType()==0){
+            } else if (user.getType() == 0) {
                 mRoleTextView.setText("Сотрудник");
             }
             mRoleImage.setImageResource(drawable);
@@ -92,11 +93,12 @@ public class RoleSelectFragment extends Fragment {
             user.setId(mUser.getPerson());
             Common.setUserDataToPref(getContext(), user);
             user = null;
-            Common.setRoleToPref(getContext(),mUser.getType());
-            if(mUser.getType()==3 || mUser.getType()==4){
+            Common.ROLE = mUser.getType();
+            Common.setRoleToPref(getContext(), mUser.getType());
+            if (mUser.getType() == 3 || mUser.getType() == 4) {
                 Intent intent = new Intent(getContext(), EventsActivity.class);
                 startActivity(intent);
-            }else if(mUser.getType()==0){
+            } else if (mUser.getType() == 0) {
                 Intent intent = new Intent(getContext(), UsersActivity.class);
                 startActivity(intent);
             }
@@ -122,6 +124,7 @@ public class RoleSelectFragment extends Fragment {
         @Override
         public void onBindViewHolder(RoleHolder holder, int position) {
             User role = mRoles.get(position);
+            Common.ROLE = mRoles.get(position).getType();
             holder.bindRole(role, position);
         }
 
