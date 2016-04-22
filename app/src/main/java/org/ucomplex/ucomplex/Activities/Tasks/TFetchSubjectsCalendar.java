@@ -38,9 +38,15 @@ public class TFetchSubjectsCalendar extends AsyncTask<String, String, UCCalendar
     @Override
     protected UCCalendar doInBackground(String... params) {
         HashMap<String, String> postParams = new HashMap<>();
-        postParams.put("subjId", params[0]);
         String urlString = "https://ucomplex.org/teacher/ajax/my_subjects?mobile=1";
-        String jsonData = Common.httpPost(urlString, Common.getLoginDataFromPref(mContext),postParams);
+        postParams.put("subjId", params[0]);
+        String jsonData;
+        if(params.length>1){
+            urlString = "https://ucomplex.org/teacher/ajax/attendance?mobile=1";
+            postParams.put("month", String.valueOf(params[1]));
+            postParams.put("time", String.valueOf(params[2]));
+        }
+        jsonData = Common.httpPost(urlString, Common.getLoginDataFromPref(mContext),postParams);
         if(jsonData == null){
             return new UCCalendar();
         }

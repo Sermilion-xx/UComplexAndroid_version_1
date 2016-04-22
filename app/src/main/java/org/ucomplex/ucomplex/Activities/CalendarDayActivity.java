@@ -2,12 +2,16 @@ package org.ucomplex.ucomplex.Activities;
 
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
 
 import org.ucomplex.ucomplex.Adaptors.ViewPagerAdapter;
+import org.ucomplex.ucomplex.Common;
 import org.ucomplex.ucomplex.Fragments.CalendarBeltFragment;
 import org.ucomplex.ucomplex.Fragments.CalendarTimetableFragment;
 import org.ucomplex.ucomplex.R;
@@ -33,22 +37,33 @@ public class CalendarDayActivity extends AppCompatActivity {
         toolbar.setTitle((String) getIntent().getExtras().get("date"));
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        tabLayout = (TabLayout) findViewById(R.id.tabs);
         mViewPager = (ViewPager) findViewById(R.id.viewpager);
-        adapter = new ViewPagerAdapter(getSupportFragmentManager());
+
 
         ArrayList calendarDay = (ArrayList) getIntent().getExtras().get("calendarDay");
         ArrayList calendarBeltDay = (ArrayList) getIntent().getExtras().get("calendarBeltDay");
         calendarTimetableFragment = new CalendarTimetableFragment();
         calendarTimetableFragment.setCalendarDay(calendarDay);
+        if(Common.ROLE == 3){
+            mViewPager.setVisibility(View.GONE);
+            tabLayout.setVisibility(View.GONE);
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            FragmentTransaction fragmentTransaction =
+                    fragmentManager.beginTransaction();
+            fragmentTransaction.replace(R.id.content_calendar_day, calendarTimetableFragment);
+            fragmentTransaction.commit();
+        }else{
+            adapter = new ViewPagerAdapter(getSupportFragmentManager());
+            calendarBeltFragment = new CalendarBeltFragment();
+            calendarBeltFragment.setFeedItems(calendarBeltDay);
+            adapter.addFragment(calendarTimetableFragment, "Расписание");
+            adapter.addFragment(calendarBeltFragment, "Успеваемость");
+            mViewPager.setAdapter(adapter);
+            tabLayout.setupWithViewPager(mViewPager);
+        }
 
-        calendarBeltFragment = new CalendarBeltFragment();
-        calendarBeltFragment.setFeedItems(calendarBeltDay);
-        adapter.addFragment(calendarTimetableFragment, "Расписание");
-        adapter.addFragment(calendarBeltFragment, "Успеваемость");
 
-        tabLayout = (TabLayout) findViewById(R.id.tabs);
-        mViewPager.setAdapter(adapter);
-        tabLayout.setupWithViewPager(mViewPager);
 
     }
 

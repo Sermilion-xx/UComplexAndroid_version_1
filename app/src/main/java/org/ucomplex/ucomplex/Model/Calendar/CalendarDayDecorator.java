@@ -60,8 +60,6 @@ public class CalendarDayDecorator implements DayViewDecorator {
         this.color = colors[type];
         dates = changedDaysToCalendarDays(days,type);
         this.context = context;
-
-
     }
 
     public CalendarDayDecorator(){
@@ -70,10 +68,7 @@ public class CalendarDayDecorator implements DayViewDecorator {
 
     @Override
     public boolean shouldDecorate(CalendarDay day) {
-        if(dates.contains(day)) {
-            return true;
-        }
-        return false;
+        return dates.contains(day);
     }
 
     @Override

@@ -72,9 +72,10 @@ public class CalendarActivity extends AppCompatActivity implements AdapterView.O
         statisticsFragment = new CalendarStatisticsFragment();
         Bundle extras = getIntent().getExtras();
         CalendarFragment calendarFragment = new CalendarFragment();
-        calendarFragment.setCourseId(extras.getString("gcourse"));
         calendarFragment.setContext(this);
-
+        if(extras!=null){
+            calendarFragment.setCourseId(extras.getString("gcourse"));
+        }
         tabLayout = (TabLayout) findViewById(R.id.tabs);
         if(Common.ROLE == 4){
             FetchAllStats fetchAllStats = new FetchAllStats(this, this);

@@ -55,6 +55,7 @@ public class CalendarFragment extends Fragment implements OnTaskCompleteListener
     LinearLayout linlaHeaderProgress;
     User user;
     private AsyncTaskManager mAsyncTaskManager;
+    TFetchSubjectsCalendar tFetchSubjectsCalendar;
     FetchCalendarTask fetchCalendarTask;
     final String[] monthsTitles = {"Январь", "Февряль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"};
     private String courseId;
@@ -141,16 +142,14 @@ public class CalendarFragment extends Fragment implements OnTaskCompleteListener
         options.add("Показать все");
         options.add("Все дисциплины");
         options.add("События");
-        if(Common.ROLE == 4){
+        if(Common.ROLE == 4 || (courseId==null && Common.ROLE == 3)){
             mAsyncTaskManager = new AsyncTaskManager(context, this);
             mAsyncTaskManager.setupTask(new FetchCalendarTask(context), String.valueOf(user.getType()));
-        }else if(Common.ROLE == 3){
-            TFetchSubjectsCalendar tFetchSubjectsCalendar = new TFetchSubjectsCalendar(context, this);
+        }else if(courseId!=null && Common.ROLE == 3){
+            tFetchSubjectsCalendar = new TFetchSubjectsCalendar(context, this);
             tFetchSubjectsCalendar.execute(courseId);
         }
-
         linlaHeaderProgress.setVisibility(View.VISIBLE);
-
         MonthArrayTitleFormatter monthArrayTitleFormatter = new MonthArrayTitleFormatter(monthsTitles);
         materialCalendarView = (MaterialCalendarView) view.findViewById(R.id.calendarView);
         materialCalendarView.setTitleFormatter(monthArrayTitleFormatter);
@@ -177,9 +176,14 @@ public class CalendarFragment extends Fragment implements OnTaskCompleteListener
                         int Year = cal.get(Calendar.YEAR);
 
                         if (year <= Year) {
-                            mAsyncTaskManager.setupTask(fetchCalendarTask, String.valueOf(user.getType()), monthStr, dateStr);
+                            if(Common.ROLE == 4 || (courseId==null && Common.ROLE == 3)){
+                                mAsyncTaskManager = new AsyncTaskManager(context, CalendarFragment.this);
+                                mAsyncTaskManager.setupTask(fetchCalendarTask, String.valueOf(user.getType()), monthStr, dateStr);
+                            }else if(courseId!=null && Common.ROLE == 3){
+                                tFetchSubjectsCalendar = new TFetchSubjectsCalendar(context, CalendarFragment.this);
+                                tFetchSubjectsCalendar.execute(courseId, monthStr, dateStr);
+                            }
                             linlaHeaderProgress.setVisibility(View.VISIBLE);
-
                         } else {
                             Toast.makeText(getContext(), "Нету данных для следующего года!", Toast.LENGTH_SHORT).show();
                         }
@@ -198,19 +202,17 @@ public class CalendarFragment extends Fragment implements OnTaskCompleteListener
         materialCalendarView.addDecorator(new CalendarDayDecorator(calendar, 6, context));
         //Расписание
         materialCalendarView.addDecorator(new CalendarDayDecorator(calendar, 5, context));
-        //занятие
-        materialCalendarView.addDecorator(new CalendarDayDecorator(calendar, 0, context));
         //индивидуадбное занятие
         materialCalendarView.addDecorator(new CalendarDayDecorator(calendar, 3, context));
+        //занятие
+        materialCalendarView.addDecorator(new CalendarDayDecorator(calendar, 0, context));
         //аттестация
         materialCalendarView.addDecorator(new CalendarDayDecorator(calendar, 1, context));
         //экзамен
         materialCalendarView.addDecorator(new CalendarDayDecorator(calendar, 2, context));
         //события
         materialCalendarView.addDecorator(new CalendarDayDecorator(calendar, 4, context));
-
     }
-
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -244,6 +246,7 @@ public class CalendarFragment extends Fragment implements OnTaskCompleteListener
                     try {
                         refreshMonth();
                     } catch (NullPointerException ignored) {
+                        ignored.printStackTrace();
                     }
                     keys = new ArrayList<>();
                     for (String key : calendar.getCourses().keySet()) {
@@ -265,9 +268,7 @@ public class CalendarFragment extends Fragment implements OnTaskCompleteListener
                     materialCalendarView.setOnDateChangedListener(new OnDateSelectedListener() {
                         @Override
                         public void onDateSelected(@NonNull MaterialCalendarView widget, @NonNull CalendarDay date, boolean selected) {
-
                             String day = date.getDay() < 10 ? "0" + String.valueOf(date.getDay()) : String.valueOf(date.getDay());
-
                             //Успеваемость
                             ArrayList<Quartet<Integer, String, String, Integer>> dayCalendarBeltArray = new ArrayList();
                             //dummy element for title
