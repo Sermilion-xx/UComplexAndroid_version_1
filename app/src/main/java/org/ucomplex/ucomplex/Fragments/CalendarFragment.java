@@ -2,12 +2,16 @@ package org.ucomplex.ucomplex.Fragments;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +19,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -402,6 +407,12 @@ public class CalendarFragment extends Fragment implements OnTaskCompleteListener
                                         String dayMonthYear = thisDay + "." + month + "." + date.getYear();
                                         ListAdapter adapter = new TeacherAddProtocolAdapter(context, calendar.getSubjId(), numbersOfLessons, dayMonthYear, CalendarFragment.this, selectedDay);
                                         dayProtocolsDialog = new AlertDialog.Builder(context).setAdapter(adapter, null).create();
+                                        ListView listView = dayProtocolsDialog.getListView();
+                                        if(numbersOfLessons.size()>1){
+                                            listView.setDivider(new ColorDrawable(ContextCompat.getColor(context,R.color.uc_gray_text))); // set color
+                                            listView.setDividerHeight(1);
+                                        }
+                                        dayProtocolsDialog.getListView().setFooterDividersEnabled(false);
                                         dayProtocolsDialog.show();
                                     }
                                 }
