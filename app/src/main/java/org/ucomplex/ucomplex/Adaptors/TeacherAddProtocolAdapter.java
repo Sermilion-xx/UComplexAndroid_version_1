@@ -12,6 +12,9 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import org.ucomplex.ucomplex.Common;
+import org.ucomplex.ucomplex.Fragments.CalendarFragment;
+import org.ucomplex.ucomplex.Interfaces.OnTaskCompleteListener;
+import org.ucomplex.ucomplex.Model.Calendar.ChangedDay;
 import org.ucomplex.ucomplex.R;
 
 import java.util.ArrayList;
@@ -28,15 +31,21 @@ public class TeacherAddProtocolAdapter extends ArrayAdapter<Integer> {
     private int subjId;
     ArrayList<Integer> numbersOfLessons = new ArrayList<>();
     Context context;
+    CalendarFragment calendarFragment;
     String dayMonthYear;
+    ChangedDay changedDay;
 
-    public TeacherAddProtocolAdapter(Context context, int subjId, ArrayList<Integer> numbersOfLessons, String dayMonthYear) {
+    public TeacherAddProtocolAdapter(Context context, int subjId, ArrayList<Integer> numbersOfLessons,
+                                     String dayMonthYear, CalendarFragment calendarFragment,
+                                     ChangedDay changedDay) {
         super(context, -1, numbersOfLessons);
+        this.calendarFragment = calendarFragment;
         this.context = context;
         this.subjId = subjId;
         this.numbersOfLessons = numbersOfLessons;
         this.numbersOfLessons.add(0);
         this.dayMonthYear = dayMonthYear;
+        this.changedDay = changedDay;
     }
 
     @Override
@@ -58,8 +67,9 @@ public class TeacherAddProtocolAdapter extends ArrayAdapter<Integer> {
         return numbersOfLessons.size();
     }
 
-    private View createHolder(ViewHolder viewHolder, View convertView, int viewType, int position) {
-        viewHolder = new ViewHolder(context, subjId, dayMonthYear);
+    private View createHolder(int viewType, int position) {
+        ViewHolder viewHolder = new ViewHolder(context);
+        View convertView = null;
         if (viewType == TYPE_ADD) {
             convertView = inflater.inflate(R.layout.list_item_calendar_day_lessons_popup_add, null);
             viewHolder.nameTextView = (TextView) convertView.findViewById(R.id.list_calendar_day_popup_add);
@@ -80,16 +90,16 @@ public class TeacherAddProtocolAdapter extends ArrayAdapter<Integer> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        ViewHolder viewHolder = null;
+        ViewHolder viewHolder;
         inflater = LayoutInflater.from(getContext());
         int viewType = getItemViewType(position);
         if (convertView == null) {
-            convertView = createHolder(viewHolder, convertView, viewType, position);
+            convertView = createHolder(viewType, position);
             viewHolder = (ViewHolder) convertView.getTag();
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
             if (viewHolder.holderId != viewType) {
-                convertView = createHolder(viewHolder, convertView, viewType, position);
+                convertView = createHolder(viewType, position);
                 viewHolder = (ViewHolder) convertView.getTag();
             }
         }
@@ -101,14 +111,12 @@ public class TeacherAddProtocolAdapter extends ArrayAdapter<Integer> {
         return convertView;
     }
 
-    public static class ViewHolder {
+    public class ViewHolder {
         int holderId;
         TextView nameTextView;
         Button menuBotton;
         ArrayList<String> actionsArrayList = new ArrayList<>();
         Context context;
-        int subjId;
-        String dayMonthYear;
 
         void setButton(Button button, final int position) {
             menuBotton = button;
@@ -122,19 +130,33 @@ public class TeacherAddProtocolAdapter extends ArrayAdapter<Integer> {
                         public void onClick(DialogInterface dialog, int which) {
                             switch (which) {
                                 case 0:
-                                    new AsyncTask<String, Void, Void>() {
+                                    new AsyncTask<String, Void, String>() {
+                                        private OnTaskCompleteListener listener = calendarFragment;
                                         @Override
-                                        protected Void doInBackground(String... params) {
+                                        protected String doInBackground(String... params) {
                                             HashMap<String, String> postParams = new HashMap<>();
                                             postParams.put("delete", String.valueOf("1"));
                                             postParams.put("subjId", String.valueOf(subjId));
                                             postParams.put("time", dayMonthYear);
                                             postParams.put("hourNumber", String.valueOf(position));
                                             String url = "https://ucomplex.org/teacher/ajax/oneday?mobile=1";
-                                            String jsonString = Common.httpPost(url, Common.getLoginDataFromPref(context), postParams);
-                                            return null;
+                                            return Common.httpPost(url, Common.getLoginDataFromPref(context), postParams);
+                                        }
+
+                                        @Override
+                                        protected void onPostExecute(String s) {
+                                            super.onPostExecute(s);
+                                            if(s!=null){
+                                                numbersOfLessons.remove(position);
+                                                TeacherAddProtocolAdapter.this.notifyDataSetChanged();
+                                                listener.onTaskComplete(this, "protocolDeleteSuccess", changedDay);
+                                            }else{
+                                                listener.onTaskComplete(this, "protocolDeleteFail", changedDay);
+                                            }
                                         }
                                     }.execute();
+
+
                                     break;
                                 case 1:
 
@@ -149,11 +171,9 @@ public class TeacherAddProtocolAdapter extends ArrayAdapter<Integer> {
             });
         }
 
-        public ViewHolder(final Context context, int subjId, String dayMonthYear) {
+        public ViewHolder(final Context context) {
             actionsArrayList.add("Удалить");
             this.context = context;
-            this.subjId = subjId;
-            this.dayMonthYear = dayMonthYear;
         }
 
     }
