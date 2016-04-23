@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+android:orientation="vertical" android:layout_width="match_parent"
+android:layout_height="match_parent">
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/uc_gray_text"
-        />
+<View
+    android:layout_width="match_parent"
+    android:layout_height="1dp"
+    android:background="@color/uc_gray_text"
+    />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/course_header"
-        android:text="@string/statistics_str_ru"
-        android:textSize="16sp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="18dp"
-        android:paddingBottom="20dp" />
+<TextView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:id="@+id/course_header"
+    android:text="@string/statistics_str_ru"
+    android:textSize="16sp"
+    android:layout_marginLeft="20dp"
+    android:layout_marginTop="18dp"
+    android:paddingBottom="20dp" />
 
 </RelativeLayout>

@@ -40,7 +40,6 @@ public class CalendarDayActivity extends AppCompatActivity {
         tabLayout = (TabLayout) findViewById(R.id.tabs);
         mViewPager = (ViewPager) findViewById(R.id.viewpager);
 
-
         ArrayList calendarDay = (ArrayList) getIntent().getExtras().get("calendarDay");
         ArrayList calendarBeltDay = (ArrayList) getIntent().getExtras().get("calendarBeltDay");
         calendarTimetableFragment = new CalendarTimetableFragment();
@@ -62,8 +61,6 @@ public class CalendarDayActivity extends AppCompatActivity {
             mViewPager.setAdapter(adapter);
             tabLayout.setupWithViewPager(mViewPager);
         }
-
-
 
     }
 
