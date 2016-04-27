@@ -1,6 +1,7 @@
 package org.ucomplex.ucomplex.Fragments;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -31,7 +32,12 @@ import com.prolificinteractive.materialcalendarview.format.MonthArrayTitleFormat
 
 import org.javatuples.Quartet;
 import org.javatuples.Quintet;
+import org.javatuples.Triplet;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.ucomplex.ucomplex.Activities.CalendarDayActivity;
+import org.ucomplex.ucomplex.Activities.ProtocolActivity;
 import org.ucomplex.ucomplex.Activities.Tasks.AsyncTaskManager;
 import org.ucomplex.ucomplex.Activities.Tasks.FetchCalendarTask;
 import org.ucomplex.ucomplex.Activities.Tasks.TFetchSubjectsCalendar;
@@ -39,6 +45,7 @@ import org.ucomplex.ucomplex.Adaptors.TeacherAddProtocolAdapter;
 import org.ucomplex.ucomplex.Common;
 import org.ucomplex.ucomplex.Interfaces.OnTaskCompleteListener;
 import org.ucomplex.ucomplex.Model.Calendar.CalendarDayDecorator;
+import org.ucomplex.ucomplex.Model.Calendar.CalendarOneDay;
 import org.ucomplex.ucomplex.Model.Calendar.ChangedDay;
 import org.ucomplex.ucomplex.Model.Calendar.Lesson;
 import org.ucomplex.ucomplex.Model.Calendar.UCCalendar;
@@ -398,25 +405,43 @@ public class CalendarFragment extends Fragment implements OnTaskCompleteListener
                                         if (selectedDay != null) {
                                             numOfLessons = selectedDay.getLessons().size();
                                         }
-                                        ArrayList<Integer> numbersOfLessons = new ArrayList<>();
+                                        final ArrayList<Integer> numbersOfLessons = new ArrayList<>();
                                         for (int i = 1; i < numOfLessons + 1; i++) {
                                             numbersOfLessons.add(i);
                                         }
                                         String thisDay = date.getDay() < 10 ? "0" + String.valueOf(date.getDay()) : String.valueOf(date.getDay());
                                         String month = date.getMonth() < 10 ? "0" + String.valueOf(date.getMonth() + 1) : String.valueOf(date.getMonth() + 1);
-                                        String dayMonthYear = thisDay + "." + month + "." + date.getYear();
+                                        final String dayMonthYear = thisDay + "." + month + "." + date.getYear();
                                         ListAdapter adapter = new TeacherAddProtocolAdapter(context, calendar.getSubjId(), numbersOfLessons, dayMonthYear, CalendarFragment.this, selectedDay);
-                                        dayProtocolsDialog = new AlertDialog.Builder(context).setAdapter(adapter, null).create();
+
+                                        final int finalNumOfLessons = numOfLessons;
+                                        final ChangedDay finalSelectedDay = selectedDay;
+                                        dayProtocolsDialog = new AlertDialog.Builder(context)
+                                                .setAdapter(adapter, null)
+                                                .setItems(null, new DialogInterface.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(DialogInterface dialog, final int which) {
+                                                        if (which < finalNumOfLessons) {
+                                                            Intent intent = new Intent(context, ProtocolActivity.class);
+                                                            intent.putExtra("subjId", calendar.getSubjId());
+                                                            intent.putExtra("dayMonthYear", dayMonthYear);
+                                                            intent.putExtra("hourNumber", which+1);
+                                                            intent.putExtra("hourType", finalSelectedDay != null ? finalSelectedDay.getLessons().get(which).getType() : 0);
+                                                            startActivity(intent);
+                                                        }else{
+
+                                                        }
+                                                    }
+                                                }).create();
                                         ListView listView = dayProtocolsDialog.getListView();
-                                        if(numbersOfLessons.size()>1){
-                                            listView.setDivider(new ColorDrawable(ContextCompat.getColor(context,R.color.uc_gray_text))); // set color
+                                        if (numbersOfLessons.size() > 1) {
+                                            listView.setDivider(new ColorDrawable(ContextCompat.getColor(context, R.color.uc_gray_text))); // set color
                                             listView.setDividerHeight(1);
                                         }
                                         dayProtocolsDialog.getListView().setFooterDividersEnabled(false);
                                         dayProtocolsDialog.show();
                                     }
                                 }
-
                             }
                         });
                         fetchCalendarTask = null;
@@ -424,7 +449,6 @@ public class CalendarFragment extends Fragment implements OnTaskCompleteListener
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-
             }
         }
     }

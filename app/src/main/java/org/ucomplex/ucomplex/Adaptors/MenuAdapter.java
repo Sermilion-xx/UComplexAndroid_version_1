@@ -158,6 +158,7 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
             }
             else if (getAdapterPosition() == 6) {
                 Intent intent = new Intent(contxt, CalendarActivity.class);
+                intent.putExtra("fromMenu", "1");
                 contxt.startActivity(intent);
             } else if (getAdapterPosition() == 7) {
 

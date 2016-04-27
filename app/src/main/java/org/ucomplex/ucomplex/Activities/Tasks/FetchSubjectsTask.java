@@ -49,7 +49,7 @@ public class FetchSubjectsTask extends AsyncTask<Void, String, ArrayList<Triplet
     protected ArrayList<Triplet<String, String, Integer>> doInBackground(Void... params) {
         String url = "";
         String urlStudentString = "https://ucomplex.org/student/subjects_list?json";
-        String urlTeacherString = "https://ucomplex.org/teacher/subjects_list?mobile=1";
+        String urlTeacherString = "https://ucomplex.org/teacher/subjects_list?json";
         if(Common.ROLE == 4){
             url = urlStudentString;
         }else if(Common.ROLE == 3){

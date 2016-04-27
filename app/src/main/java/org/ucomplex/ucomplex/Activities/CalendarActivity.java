@@ -1,6 +1,8 @@
 package org.ucomplex.ucomplex.Activities;
 
 import android.content.Context;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
@@ -71,6 +73,11 @@ public class CalendarActivity extends AppCompatActivity implements AdapterView.O
 
         statisticsFragment = new CalendarStatisticsFragment();
         Bundle extras = getIntent().getExtras();
+        if(!extras.containsKey("fromMenu")){
+            final Drawable upArrow = ContextCompat.getDrawable(this,R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+            upArrow.setColorFilter(ContextCompat.getColor(this,R.color.white), PorterDuff.Mode.SRC_ATOP);
+            getSupportActionBar().setHomeAsUpIndicator(upArrow);
+        }
         CalendarFragment calendarFragment = new CalendarFragment();
         calendarFragment.setContext(this);
         if(extras!=null){

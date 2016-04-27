@@ -1,44 +1,39 @@
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/white"
-    android:fitsSystemWindows="true"
->
+    android:fitsSystemWindows="true">
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar_subjects"
-            android:title="@string/subjects_str"
-            app:titleTextColor="@color/white"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="@color/colorPrimary"
-            app:popupTheme="@style/AppTheme.PopupOverlay"
-            />
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar_subjects"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorPrimary"
+        android:title="@string/subjects_str"
+        app:popupTheme="@style/AppTheme.PopupOverlay"
+        app:titleTextColor="@color/white" />
 
-        <LinearLayout
-            android:id="@+id/linlaHeaderProgress"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:visibility="gone" >
+    <LinearLayout
+        android:id="@+id/linlaHeaderProgress"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone">
 
-                <ProgressBar
-                    android:id="@+id/pbHeaderProgress"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" >
-                </ProgressBar>
-        </LinearLayout>
+        <ProgressBar
+            android:id="@+id/pbHeaderProgress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
 
-        <ListView
-            android:layout_marginTop="56dp"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/subject_listview"
-            android:choiceMode="singleChoice">
-        </ListView>
-
+    <ListView
+        android:id="@+id/subject_listview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="56dp"
+        android:choiceMode="singleChoice"/>
 
 
 </android.support.design.widget.CoordinatorLayout>
