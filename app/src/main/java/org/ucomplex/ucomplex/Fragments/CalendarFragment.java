@@ -3,7 +3,6 @@ package org.ucomplex.ucomplex.Fragments;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -12,7 +11,6 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,10 +30,6 @@ import com.prolificinteractive.materialcalendarview.format.MonthArrayTitleFormat
 
 import org.javatuples.Quartet;
 import org.javatuples.Quintet;
-import org.javatuples.Triplet;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.ucomplex.ucomplex.Activities.CalendarDayActivity;
 import org.ucomplex.ucomplex.Activities.ProtocolActivity;
 import org.ucomplex.ucomplex.Activities.Tasks.AsyncTaskManager;
@@ -45,7 +39,6 @@ import org.ucomplex.ucomplex.Adaptors.TeacherAddProtocolAdapter;
 import org.ucomplex.ucomplex.Common;
 import org.ucomplex.ucomplex.Interfaces.OnTaskCompleteListener;
 import org.ucomplex.ucomplex.Model.Calendar.CalendarDayDecorator;
-import org.ucomplex.ucomplex.Model.Calendar.CalendarOneDay;
 import org.ucomplex.ucomplex.Model.Calendar.ChangedDay;
 import org.ucomplex.ucomplex.Model.Calendar.Lesson;
 import org.ucomplex.ucomplex.Model.Calendar.UCCalendar;
@@ -91,6 +84,14 @@ public class CalendarFragment extends Fragment implements OnTaskCompleteListener
         this.context = context;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (courseId != null && Common.ROLE == 3) {
+            tFetchSubjectsCalendar = new TFetchSubjectsCalendar(context, this);
+            tFetchSubjectsCalendar.execute(courseId);
+        }
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -421,16 +422,12 @@ public class CalendarFragment extends Fragment implements OnTaskCompleteListener
                                                 .setItems(null, new DialogInterface.OnClickListener() {
                                                     @Override
                                                     public void onClick(DialogInterface dialog, final int which) {
-                                                        if (which < finalNumOfLessons) {
                                                             Intent intent = new Intent(context, ProtocolActivity.class);
                                                             intent.putExtra("subjId", calendar.getSubjId());
                                                             intent.putExtra("dayMonthYear", dayMonthYear);
                                                             intent.putExtra("hourNumber", which+1);
                                                             intent.putExtra("hourType", finalSelectedDay != null ? finalSelectedDay.getLessons().get(which).getType() : 0);
                                                             startActivity(intent);
-                                                        }else{
-
-                                                        }
                                                     }
                                                 }).create();
                                         ListView listView = dayProtocolsDialog.getListView();

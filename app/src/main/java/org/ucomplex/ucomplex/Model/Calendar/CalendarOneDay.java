@@ -21,7 +21,7 @@ public class CalendarOneDay {
     private int recordID;
     private int hourType;
     //id, mark, name
-    private ArrayList<Triplet<Integer, Integer, String>> studentsProgress;
+    private ArrayList<Triplet<Integer, Integer, String>> studentsProgress = new ArrayList<>();
 
     public CalendarOneDay() {
     }

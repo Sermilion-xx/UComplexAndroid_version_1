@@ -244,21 +244,46 @@ public class ProtocolActivity extends AppCompatActivity {
             calendarOneDay.setDate(calendarDayJson.getString("date"));
             calendarOneDay.setTime(calendarDayJson.getString("time"));
             calendarOneDay.setHourNumber(calendarDayJson.getInt("hourNumber"));
-//            calendarOneDay.setSubgroup(calendarDayJson.getInt("subgroup"));
+            try{
+                calendarOneDay.setSubgroup(calendarDayJson.getInt("subgroup"));
+            }catch (JSONException ignored){}
             calendarOneDay.setGroup(calendarDayJson.getInt("group"));
             calendarOneDay.setCourse(calendarDayJson.getInt("course"));
             calendarOneDay.setTable(calendarDayJson.getInt("table"));
             calendarOneDay.setMaxNumber(calendarDayJson.getInt("maxNumber"));
-            calendarOneDay.setHourType(calendarDayJson.getInt("hourType"));
-            calendarOneDay.setRecordID(calendarDayJson.getInt("recordID"));
+            try{
+                calendarOneDay.setHourType(calendarDayJson.getInt("hourType"));
+            }catch (JSONException ignored){}
+            try{
+                calendarOneDay.setRecordID(calendarDayJson.getInt("recordID"));
+            }catch (JSONException ignored){}
+            JSONObject studentProgressJson = new JSONObject();
+            try{
+                studentProgressJson = calendarDayJson.getJSONObject("student_progress");
+            }catch (JSONException ignored){}
+            JSONArray studentsJson = new JSONArray();
+            try{
+                studentsJson = calendarDayJson.getJSONArray("students");
+            }catch (JSONException ignored){}
 
-            JSONObject studentProgressJson = calendarDayJson.getJSONObject("student_progress");
-            JSONArray studentsJson = calendarDayJson.getJSONArray("students");
             ArrayList<Triplet<Integer, Integer, String>> studentsProgressArray = new ArrayList<>();
 
             for (int i = 0; i < studentsJson.length(); i++) {
+                Integer studentId = -1;
+                Integer mark = 0;
+                String name = "-1";
                 JSONObject studentJson = studentsJson.getJSONObject(i);
-                Triplet<Integer, Integer, String> studentInfo = new Triplet<>(studentJson.getInt("id"), studentProgressJson.getInt(studentJson.getString("id")), studentJson.getString("name"));
+                try{
+                    studentId = studentJson.getInt("id");
+                }catch (JSONException ignored){}
+                try{
+                    mark = studentProgressJson.getInt(studentJson.getString("id"));
+                }catch (JSONException ignored){}
+                try{
+                    name = studentJson.getString("name");
+                }catch (JSONException ignored){}
+
+                Triplet<Integer, Integer, String> studentInfo = new Triplet<>(studentId, mark, name);
                 studentsProgressArray.add(studentInfo);
             }
             calendarOneDay.setStudentsProgress(studentsProgressArray);
