@@ -131,10 +131,12 @@ public class TeacherInfo {
     }
 
     public void setUpqualification(String upqualification) {
-        if(upqualification.equals("")){
+        if(upqualification.equals("") || upqualification.equals("")){
             this.upqualification = "не указанно";
+        }else{
+            this.upqualification = upqualification;
         }
-        this.upqualification = upqualification;
+
     }
 
     public int getRank() {
@@ -152,8 +154,10 @@ public class TeacherInfo {
     public void setCourses(String courses) {
         if(courses.equals("")){
             this.courses = "не указанно";
+        }else{
+            this.courses = courses;
         }
-        this.courses = courses;
+
     }
 
     public int getDegree() {
@@ -171,8 +175,9 @@ public class TeacherInfo {
     public void setBio(String bio) {
         if(bio.equals("")){
             this.bio = "не указанно";
+        }else{
+            this.bio = bio;
         }
-        this.bio = bio;
     }
 
     public int getPlan() {

@@ -90,7 +90,7 @@ public class ProfileFragment extends ListFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        user = Common.getUserDataFromPref(mContext);
+        user = Common.getUserDataFromPref(getContext());
     }
 
     @Override
@@ -120,12 +120,13 @@ public class ProfileFragment extends ListFragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = null;
-                if(Common.ROLE == 4){
+                if(mUser.getRole() == 4){
                     intent = new Intent(mContext, ProfileStatisticsActivity.class);
-                }else if(Common.ROLE == 3){
+                }else if(mUser.getRole() == 0){
                     intent = new Intent(mContext, TeacherProfileStatisticsActivity.class);
                 }
                 if (intent != null) {
+                    intent.putExtra("id", mUser.getPerson());
                     intent.putExtra("role", (String) mItems.get(position).getValue2());
                     intent.putExtra("name", mUser.getName());
                     String role = (String) mItems.get(position).getValue1();

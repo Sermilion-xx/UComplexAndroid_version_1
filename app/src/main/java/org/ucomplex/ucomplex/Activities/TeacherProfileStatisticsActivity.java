@@ -34,6 +34,8 @@ public class TeacherProfileStatisticsActivity extends AppCompatActivity {
     private TeacherInfo teacherInfo;
     ViewPagerAdapter adapter;
     ViewPager mViewPager;
+    int role = -1;
+    int id = -1;
 
     private TeacherInfoFragment teacherStatisticsFragment;
     private TeacherRatingFragment teacherRatingFragment;
@@ -73,7 +75,8 @@ public class TeacherProfileStatisticsActivity extends AppCompatActivity {
             public void onPageScrollStateChanged(int state) {
             }
         });
-        int role = Integer.parseInt(getIntent().getExtras().getString("role"));
+        role = Integer.parseInt(getIntent().getExtras().getString("role"));
+        id = getIntent().getExtras().getInt("id");
         FetchTeachersInfoTask fetchTeachersInfoTask = new FetchTeachersInfoTask();
         fetchTeachersInfoTask.execute(role);
 
@@ -85,9 +88,12 @@ public class TeacherProfileStatisticsActivity extends AppCompatActivity {
 
         teacherStatisticsFragment = new TeacherInfoFragment();
         teacherStatisticsFragment.setTeacherInfo(teacherInfo);
+        teacherRatingFragment = new TeacherRatingFragment();
+        teacherRatingFragment.setmContext(this);
+        teacherRatingFragment.setTeacher(id);
         adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFragment(teacherStatisticsFragment, "Личная информация");
-        adapter.addFragment(new Fragment(), "Рейтинг");
+        adapter.addFragment(teacherRatingFragment, "Рейтинг");
         viewPager.setAdapter(adapter);
     }
 
@@ -134,10 +140,11 @@ public class TeacherProfileStatisticsActivity extends AppCompatActivity {
                 teacherInfo.setBio(filesJson.getString("bio"));
                 teacherInfo.setPlan(filesJson.getInt("plan"));
                 teacherInfo.setFact(filesJson.getInt("fact"));
-                teacherInfo.setActivity(filesJson.getDouble("activity"));
+                try{
+                    teacherInfo.setActivity(filesJson.getDouble("activity"));
+                }catch (JSONException ignored){}
                 teacherInfo.setDepartmentName(filesJson.getString("department_name"));
                 teacherInfo.setFacultyName(filesJson.getString("faculty_name"));
-
                 JSONArray timetableCoursesJson = filesJson.getJSONArray("timetable_courses");
                 ArrayList<TeacherTimetableCourses> teacherTimetableCoursesArrayList = new ArrayList<>();
                 TeacherTimetableCourses teacherTimetableCourses;

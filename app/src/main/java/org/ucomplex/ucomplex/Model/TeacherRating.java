@@ -9,7 +9,7 @@ public class TeacherRating {
 
     private int teacher;
     private boolean my_teacher;
-    private ArrayList<Votes> votes;
+    private ArrayList<Votes> votes = new ArrayList<>();
 
     public TeacherRating() {
     }

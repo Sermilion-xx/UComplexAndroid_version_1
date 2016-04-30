@@ -152,7 +152,7 @@ public class CalendarStatisticsAdapter extends ArrayAdapter<Quintet<String, Stri
             viewHolder.markTextView.setText(String.valueOf(item.getValue2()));
             viewHolder.attendanceTextView.setText(String.valueOf(item.getValue3())+" %");
         } else if (viewType == TYPE_TITLE_2) {
-            viewHolder.titleTextView.setText("Предыдушие семестры");
+            viewHolder.titleTextView.setText("Предыдущие семестры");
         } else if (viewType == TYPE_TITLE_1) {
             viewHolder.titleTextView.setText("Текущий семестр");
         }

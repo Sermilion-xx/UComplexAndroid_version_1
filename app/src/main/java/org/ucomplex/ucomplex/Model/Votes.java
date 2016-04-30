@@ -1,9 +1,13 @@
 package org.ucomplex.ucomplex.Model;
 
+import java.util.ArrayList;
+
 /**
  * Created by Sermilion on 22/03/16.
  */
 public class Votes {
+
+    public static int position;
 
     private int one;
     private int two;
@@ -15,8 +19,38 @@ public class Votes {
     private int eight;
     private int nine;
     private int ten;
+    ArrayList<Integer> all = new ArrayList<>();
+
 
     public Votes() {
+        all.add(one);
+        all.add(two);
+        all.add(three);
+        all.add(four);
+        all.add(five);
+        all.add(six);
+        all.add(seven);
+        all.add(eight);
+        all.add(nine);
+        all.add(ten);
+    }
+
+    public ArrayList<Integer> getAll() {
+        return all;
+    }
+
+    public void setNext(int score, int position){
+        all.set(position, score);
+    }
+
+    public int next(){
+        int score = all.get(position);
+        position++;
+        if(position==all.size()){
+            position = 0;
+        }
+        return score;
+
     }
 
     public int getOne() {

@@ -777,8 +777,12 @@ public class Common {
 
     public static double round(double value, int places) {
         if (places < 0) throw new IllegalArgumentException();
-
-        BigDecimal bd = new BigDecimal(value);
+        BigDecimal bd = null;
+        try{
+            bd = new BigDecimal(value);
+        }catch (NumberFormatException e){
+            return 0.0;
+        }
         bd = bd.setScale(places, RoundingMode.HALF_UP);
         return bd.doubleValue();
     }

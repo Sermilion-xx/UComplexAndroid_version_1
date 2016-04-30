@@ -2,8 +2,6 @@ package org.ucomplex.ucomplex.Fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.ListFragment;
-import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,12 +17,6 @@ import org.ucomplex.ucomplex.R;
 public class TeacherInfoFragment extends Fragment {
 
     private TeacherInfo teacherInfo = new TeacherInfo();
-    private TextView disciplinesTextView;
-    private TextView disiplinesInTimetable;
-    private TextView studyDegreeTextView;
-    private TextView studyRankTextView;
-    private TextView upqualificationsTextView;
-    private TextView bioTextView;
 
     public void setTeacherInfo(TeacherInfo teacherInfo) {
         this.teacherInfo = teacherInfo;
@@ -34,18 +26,18 @@ public class TeacherInfoFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_teacher_info, container, false);
-        disciplinesTextView = (TextView) view.findViewById(R.id.list_teacher_disciplines_value);
-        disiplinesInTimetable = (TextView) view.findViewById(R.id.list_teacher_disciplines_in_timetabl_values);
-        studyDegreeTextView = (TextView) view.findViewById(R.id.study_degree_value);
-        studyRankTextView = (TextView) view.findViewById(R.id.study_rank_value);
-        upqualificationsTextView = (TextView) view.findViewById(R.id.study_upqualification_value);
-        bioTextView = (TextView) view.findViewById(R.id.bio_value);
+        TextView disciplinesTextView = (TextView) view.findViewById(R.id.list_teacher_disciplines_value);
+        TextView disiplinesInTimetable = (TextView) view.findViewById(R.id.list_teacher_disciplines_in_timetabl_values);
+        TextView studyDegreeTextView = (TextView) view.findViewById(R.id.study_degree_value);
+        TextView studyRankTextView = (TextView) view.findViewById(R.id.study_rank_value);
+        TextView upqualificationsTextView = (TextView) view.findViewById(R.id.study_upqualification_value);
+        TextView bioTextView = (TextView) view.findViewById(R.id.bio_value);
 
         disciplinesTextView.setText(teacherInfo.getCourses());
         StringBuilder stringBuilder = new StringBuilder();
-        for(int i = 0; i <teacherInfo.getTeacherTimetableCourses().size(); i++){
+        for (int i = 0; i < teacherInfo.getTeacherTimetableCourses().size(); i++) {
             stringBuilder.append(teacherInfo.getTeacherTimetableCourses().get(i).getName());
-            if(i<teacherInfo.getTeacherTimetableCourses().size()){
+            if (i < teacherInfo.getTeacherTimetableCourses().size()) {
                 stringBuilder.append(", ");
             }
         }

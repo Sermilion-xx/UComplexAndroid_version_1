@@ -34,16 +34,16 @@ import java.util.ArrayList;
 public class CourseMaterialsFragment extends ListFragment {
 
 
-    private ArrayList<File> mItems;
-    OnHeadlineSelectedListener mCallback;
-    LinearLayout linlaHeaderProgress;
+        private ArrayList<File> mItems;
+        OnHeadlineSelectedListener mCallback;
+        LinearLayout linlaHeaderProgress;
 
-    private Activity mContext;
-    private boolean myFiles = false;
-    private CourseMaterialsAdapter adapter;
+        private Activity mContext;
+        private boolean myFiles = false;
+        private CourseMaterialsAdapter adapter;
 
-    public static final int DIALOG_DOWNLOAD_PROGRESS = 0;
-    String myFilesToolBarTitle;
+        public static final int DIALOG_DOWNLOAD_PROGRESS = 0;
+        String myFilesToolBarTitle;
 
 
     public void setMyFilesToolBarTitle(String myFilesToolBarTitle) {

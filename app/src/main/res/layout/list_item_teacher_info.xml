@@ -15,8 +15,10 @@
         android:text="Название крутого предмета"
         android:layout_marginTop="11dp"
         android:layout_marginLeft="17dp"
+        android:layout_marginStart="17dp"
         android:textSize="13sp"
-        android:layout_marginRight="20dp" />
+        android:layout_marginRight="20dp"
+        android:layout_marginEnd="20dp"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
