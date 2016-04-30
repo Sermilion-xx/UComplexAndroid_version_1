@@ -119,4 +119,10 @@
     <string name="title_activity_profile_statistics">ProfileStatisticsActivity</string>
     <string name="title_activity_protocol">ProtocolActivity</string>
     <string name="save_str">Сохранить</string>
+    <string name="disciplines">Преподаваемые дисциплины:</string>
+    <string name="disciplines_in_timetable">Дисциплины в расписании:</string>
+    <string name="study_rank">Ученое звание:</string>
+    <string name="upqualifications">Повышение квалификации и переподготовка:</string>
+    <string name="short_bio">Краткая биография:</string>
+    <string name="not_specified">не указанно</string>
 </resources>

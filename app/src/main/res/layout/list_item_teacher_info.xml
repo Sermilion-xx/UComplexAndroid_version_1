@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ffffff"
+
+    >
+
+    <TextView
+        android:layout_width="wrap_content"
+
+        android:layout_height="wrap_content"
+        android:id="@+id/subject_listview_item_text1"
+        android:text="Название крутого предмета"
+        android:layout_marginTop="11dp"
+        android:layout_marginLeft="17dp"
+        android:textSize="13sp"
+        android:layout_marginRight="20dp" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/subject_listview_item_text2"
+        android:text="Зачет"
+        android:textColor="@color/black"
+        android:textSize="17sp"
+        android:layout_below="@+id/subject_listview_item_text1"
+        android:layout_alignLeft="@+id/subject_listview_item_text1"
+        android:layout_alignStart="@+id/subject_listview_item_text1"
+        android:paddingBottom="21dp" />
+
+
+</RelativeLayout>

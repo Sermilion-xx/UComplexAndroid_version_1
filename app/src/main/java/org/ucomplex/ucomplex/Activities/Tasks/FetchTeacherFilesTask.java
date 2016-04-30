@@ -29,14 +29,13 @@ public class FetchTeacherFilesTask extends AsyncTask<Object, String, ArrayList> 
     User owner;
 
     private final OnTaskCompleteListener mTaskCompleteListener;
-    private final ProgressDialog mProgressDialog;
 
     public FetchTeacherFilesTask(Activity context, OnTaskCompleteListener taskCompleteListener) {
         this.mContext = context;
         this.caller = (CourseActivity) mContext;
 
         this.mTaskCompleteListener = taskCompleteListener;
-        mProgressDialog = new ProgressDialog(context);
+        ProgressDialog mProgressDialog = new ProgressDialog(context);
         mProgressDialog.setIndeterminate(true);
         mProgressDialog.setCancelable(true);
         mProgressDialog.setOnCancelListener(this);

@@ -12,8 +12,8 @@ import android.view.View;
 import android.widget.AdapterView;
 
 import org.javatuples.Triplet;
-import org.ucomplex.ucomplex.Activities.EventsActivity;
 import org.ucomplex.ucomplex.Activities.ProfileStatisticsActivity;
+import org.ucomplex.ucomplex.Activities.TeacherProfileStatisticsActivity;
 import org.ucomplex.ucomplex.Adaptors.ProfileAdapter;
 import org.ucomplex.ucomplex.Common;
 import org.ucomplex.ucomplex.Model.Users.User;
@@ -119,17 +119,24 @@ public class ProfileFragment extends ListFragment {
         getListView().setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(mContext, ProfileStatisticsActivity.class);
-                intent.putExtra("role", (String) mItems.get(position).getValue2());
-                intent.putExtra("name", mUser.getName());
-                String role = (String) mItems.get(position).getValue1();
-                if(!Common.isInt(role)){
-                    String type = (String) mItems.get(position).getValue1();
-                    intent.putExtra("type", type.split("/")[1]);
-                }else {
-                    intent.putExtra("type", (String) mItems.get(position).getValue1());
+                Intent intent = null;
+                if(Common.ROLE == 4){
+                    intent = new Intent(mContext, ProfileStatisticsActivity.class);
+                }else if(Common.ROLE == 3){
+                    intent = new Intent(mContext, TeacherProfileStatisticsActivity.class);
                 }
-                mContext.startActivity(intent);
+                if (intent != null) {
+                    intent.putExtra("role", (String) mItems.get(position).getValue2());
+                    intent.putExtra("name", mUser.getName());
+                    String role = (String) mItems.get(position).getValue1();
+                    if (!Common.isInt(role)) {
+                        String type = (String) mItems.get(position).getValue1();
+                        intent.putExtra("type", type.split("/")[1]);
+                    } else {
+                        intent.putExtra("type", (String) mItems.get(position).getValue1());
+                    }
+                    mContext.startActivity(intent);
+                }
             }
         });
     }

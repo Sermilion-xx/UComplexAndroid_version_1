@@ -58,9 +58,9 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".Activities.ProtocolActivity"
-            android:windowSoftInputMode="adjustPan"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".Activities.SubjectsActivity"
             android:label="@string/title_activity_courses"
@@ -130,6 +130,14 @@
         <activity
             android:name=".Activities.ProfileActivity"
             android:label="@string/title_activity_message"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+
+        <activity
+            android:name=".Activities.TeacherProfileStatisticsActivity"
+            android:label="Профиль"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />

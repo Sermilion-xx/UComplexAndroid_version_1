@@ -689,6 +689,49 @@ public class Common {
         return typeStr;
     }
 
+    public static String getDegree(int degree){
+        switch (degree){
+            case 1:return "технических наук";
+            case 2:return "физико-математических наук";
+            case 3:return "филологических наук";
+            case 4:return "экономических наук";
+            case 5:return "педагогических наук";
+            case 6:return "политических наук";
+            case 7:return "биологических наук";
+            case 8:return "сельскохозяйственных наук";
+            case 9:return "ветеринарных наук";
+            case 10:return "географических наук";
+            case 11:return "юридических наук";
+            case 12:return "исторических наук";
+            case 13:return "философских наук";
+            case 14:return "химических наук'";
+            case 15:return "медицинских наук";
+            case 16:return "фармацевтических наук";
+            case 17:return "социологических наук";
+            case 18:return "психологических наук";
+            case 19:return "геолого-минералогических наук";
+            case 20:return "военных наук";
+            case 21:return "архитектуры";
+            case 22:return "искусствоведения";
+            case 23:return "культурологии";
+            default:return "не указанно";
+        }
+    }
+
+    public static String getRank(int degree){
+        switch (degree) {
+            case 1:
+                return "доцент";
+            case 2:
+                return "профессор";
+            case 3:
+                return "член-корреспондент";
+            case 4:
+                return "академик";
+            default:return "не указанно";
+        }
+    }
+
     public static String getStudyForm(Context context, int type) {
         String typeStr = null;
         if (type == 1) {

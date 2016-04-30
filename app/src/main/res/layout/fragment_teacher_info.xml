@@ -1,0 +1,232 @@
+<ScrollView android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context="org.ucomplex.ucomplex.Activities.TeacherProfileStatisticsActivity">
+
+
+        <TextView
+            android:id="@+id/list_teacher_disciplines_key"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="20dp"
+            android:layout_marginLeft="17dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginStart="17dp"
+            android:layout_marginTop="20dp"
+            android:text="@string/disciplines"
+            android:textSize="13sp" />
+
+        <TextView
+            android:id="@+id/list_teacher_disciplines_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/list_teacher_disciplines_key"
+            android:layout_alignStart="@+id/list_teacher_disciplines_key"
+            android:layout_below="@+id/list_teacher_disciplines_key"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="5dp"
+            android:paddingBottom="15dp"
+            android:text="@string/not_specified"
+            android:textColor="@color/black"
+            android:textSize="17sp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@+id/list_teacher_disciplines_value"
+            android:layout_marginEnd="17dp"
+            android:layout_marginLeft="17dp"
+            android:layout_marginStart="17dp"
+            android:background="@color/uc_gray_text" />
+
+        <TextView
+            android:id="@+id/list_teacher_disciplines_in_timetabl_key"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/list_teacher_disciplines_value"
+            android:layout_marginEnd="20dp"
+            android:layout_marginLeft="17dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginStart="17dp"
+            android:layout_marginTop="20dp"
+            android:text="@string/disciplines_in_timetable"
+            android:textSize="13sp" />
+
+        <TextView
+            android:id="@+id/list_teacher_disciplines_in_timetabl_values"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/list_teacher_disciplines_in_timetabl_key"
+            android:layout_alignStart="@+id/list_teacher_disciplines_in_timetabl_key"
+            android:layout_below="@+id/list_teacher_disciplines_in_timetabl_key"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="5dp"
+            android:paddingBottom="15dp"
+            android:text="@string/not_specified"
+            android:textColor="@color/black"
+            android:textSize="17sp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@+id/list_teacher_disciplines_in_timetabl_values"
+            android:layout_marginEnd="17dp"
+            android:layout_marginLeft="17dp"
+            android:layout_marginStart="17dp"
+            android:background="@color/uc_gray_text" />
+
+        <TextView
+            android:id="@+id/study_degree_key"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/list_teacher_disciplines_in_timetabl_values"
+            android:layout_marginEnd="20dp"
+            android:layout_marginLeft="17dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginStart="17dp"
+            android:layout_marginTop="20dp"
+            android:text="@string/study_rank"
+            android:textSize="13sp" />
+
+        <TextView
+            android:id="@+id/study_degree_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/study_degree_key"
+            android:layout_alignStart="@+id/study_degree_key"
+            android:layout_below="@+id/study_degree_key"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="5dp"
+            android:paddingBottom="15dp"
+            android:text="@string/not_specified"
+            android:textColor="@color/black"
+            android:textSize="17sp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@+id/study_degree_value"
+            android:layout_marginEnd="17dp"
+            android:layout_marginLeft="17dp"
+            android:layout_marginStart="17dp"
+            android:background="@color/uc_gray_text" />
+
+
+        <TextView
+            android:id="@+id/study_rank_key"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/study_degree_value"
+            android:layout_marginEnd="20dp"
+            android:layout_marginLeft="17dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginStart="17dp"
+            android:layout_marginTop="20dp"
+            android:text="@string/study_rank"
+            android:textSize="13sp" />
+
+        <TextView
+            android:id="@+id/study_rank_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/study_rank_key"
+            android:layout_alignStart="@+id/study_rank_key"
+            android:layout_below="@+id/study_rank_key"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="5dp"
+            android:paddingBottom="15dp"
+            android:text="@string/not_specified"
+            android:textColor="@color/black"
+            android:textSize="17sp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@+id/study_rank_value"
+            android:layout_marginEnd="17dp"
+            android:layout_marginLeft="17dp"
+            android:layout_marginStart="17dp"
+            android:background="@color/uc_gray_text" />
+
+
+        <TextView
+            android:id="@+id/study_upqualification_key"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/study_rank_value"
+            android:layout_alignStart="@+id/study_rank_value"
+            android:layout_below="@+id/study_rank_value"
+            android:layout_marginEnd="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="20dp"
+            android:text="@string/upqualifications"
+            android:textSize="13sp" />
+
+        <TextView
+            android:id="@+id/study_upqualification_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/study_upqualification_key"
+            android:layout_alignStart="@+id/study_upqualification_key"
+            android:layout_below="@+id/study_upqualification_key"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="5dp"
+            android:paddingBottom="15dp"
+            android:text="@string/not_specified"
+            android:textColor="@color/black"
+            android:textSize="17sp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@+id/study_upqualification_value"
+            android:layout_marginEnd="17dp"
+            android:layout_marginLeft="17dp"
+            android:layout_marginStart="17dp"
+            android:background="@color/uc_gray_text" />
+
+
+        <TextView
+            android:id="@+id/bio_key"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/study_upqualification_value"
+            android:layout_marginEnd="20dp"
+            android:layout_marginLeft="17dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginStart="17dp"
+            android:layout_marginTop="20dp"
+            android:text="@string/short_bio"
+            android:textSize="13sp" />
+
+        <TextView
+            android:id="@+id/bio_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/bio_key"
+            android:layout_alignStart="@+id/bio_key"
+            android:layout_below="@+id/bio_key"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="5dp"
+            android:paddingBottom="15dp"
+            android:text="@string/not_specified"
+            android:textColor="@color/black"
+            android:textSize="17sp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@+id/bio_value"
+            android:layout_marginEnd="17dp"
+            android:layout_marginLeft="17dp"
+            android:layout_marginStart="17dp"
+            android:background="@color/uc_gray_text" />
+
+
+    </RelativeLayout>
+</ScrollView>
