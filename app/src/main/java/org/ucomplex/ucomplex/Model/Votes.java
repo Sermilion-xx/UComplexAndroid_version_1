@@ -9,16 +9,16 @@ public class Votes {
 
     public static int position;
 
-    private int one;
-    private int two;
-    private int three;
-    private int four;
-    private int five;
-    private int six;
-    private int seven;
-    private int eight;
-    private int nine;
-    private int ten;
+    private int one = 0;
+    private int two = 0;
+    private int three = 0;
+    private int four = 0;
+    private int five = 0;
+    private int six = 0;
+    private int seven = 0;
+    private int eight = 0;
+    private int nine = 0;
+    private int ten = 0;
     ArrayList<Integer> all = new ArrayList<>();
 
 

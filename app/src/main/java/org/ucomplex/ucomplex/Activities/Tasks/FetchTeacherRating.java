@@ -49,7 +49,12 @@ public class FetchTeacherRating extends AsyncTask<String, TeacherRating, Teacher
         try {
             teacherRatingJson = new JSONObject(jsonData);
             int teacher = teacherRatingJson.getInt("teacher");
-            boolean myTeacher = teacherRatingJson.getBoolean("my_teacher");
+            boolean myTeacher;
+            try{
+                myTeacher = teacherRatingJson.getBoolean("my_teacher");
+            }catch (JSONException e){
+                myTeacher = false;
+            }
             JSONObject questionsJson = teacherRatingJson.getJSONObject("votes");
             teacherRating.setMy_teacher(myTeacher);
             teacherRating.setTeacher(teacher);
@@ -77,7 +82,7 @@ public class FetchTeacherRating extends AsyncTask<String, TeacherRating, Teacher
         }catch (JSONException e){
             e.printStackTrace();
         }
-        return null;
+        return new TeacherRating();
     }
 
     @Override

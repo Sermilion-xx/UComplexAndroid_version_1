@@ -32,6 +32,11 @@ public class TeacherInfoAdapter extends ArrayAdapter<Votes> {
     public TeacherInfoAdapter(Context context, TeacherRating teacherRating) {
         super(context, -1, teacherRating.getVotes());
         mItems = teacherRating.getVotes();
+        if(mItems.size()==0){
+            for(int i = 0; i<10; i++){
+                mItems.add(new Votes());
+            }
+        }
         teacher = teacherRating.getTeacher();
         myTeacher = teacherRating.isMy_teacher();
 
@@ -112,6 +117,9 @@ public class TeacherInfoAdapter extends ArrayAdapter<Votes> {
             }
             if(count>0){
                 score = score/count;
+            }
+            if(score==0){
+                score = 10;
             }
             double diff = (10-score);
             for (int j = 9; j >= diff; j--) {

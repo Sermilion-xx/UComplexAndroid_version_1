@@ -59,23 +59,12 @@ public class TeacherRatingFragment extends ListFragment implements OnTaskComplet
         super.onCreate(savedInstanceState);
         FetchTeacherRating fetchTeacherRating = new FetchTeacherRating(mContext, this);
         fetchTeacherRating.execute(String.valueOf(teacher));
-        //form Materials menu
-//        if (adapter == null && teacherRating!=null) {
-//            adapter = new TeacherInfoAdapter(mContext, teacherRating);
-//            setListAdapter(adapter);
-//        }
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         linlaHeaderProgress = (LinearLayout) view.findViewById(R.id.linlaHeaderProgress);
-//        if(teacherRating.getVotes().size()==0){
-//            getListView().setDivider(null);
-//        }else{
-//            getListView().setDivider(new ColorDrawable(ContextCompat.getColor(mContext, R.color.activity_background)));
-//            getListView().setDividerHeight(3);
-//        }
     }
 
     @Override

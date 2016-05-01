@@ -13,7 +13,7 @@ public class TeacherInfo {
     String alias;
     int agent;
     int online;
-    int department;
+    ArrayList<Integer> department = new ArrayList<>();
     String upqualification;
     int rank;
     String courses;
@@ -118,12 +118,15 @@ public class TeacherInfo {
         this.online = online;
     }
 
-    public int getDepartment() {
+    public ArrayList<Integer> getDepartment() {
         return department;
     }
 
-    public void setDepartment(int department) {
+    public void setDepartment(ArrayList<Integer> department) {
         this.department = department;
+    }
+    public void addDepartment(Integer department){
+        this.department.add(department);
     }
 
     public String getUpqualification() {

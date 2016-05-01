@@ -2,6 +2,8 @@ package org.ucomplex.ucomplex.Activities;
 
 import android.os.AsyncTask;
 import android.os.Build;
+import android.support.annotation.IntegerRes;
+import android.support.annotation.InterpolatorRes;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -9,6 +11,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
@@ -25,6 +28,7 @@ import org.ucomplex.ucomplex.Model.TeacherTimetableCourses;
 import org.ucomplex.ucomplex.R;
 
 import java.util.ArrayList;
+import java.util.StringTokenizer;
 
 public class TeacherProfileStatisticsActivity extends AppCompatActivity {
 
@@ -84,6 +88,16 @@ public class TeacherProfileStatisticsActivity extends AppCompatActivity {
         tabLayout.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimary));
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     private void setupViewPager(ViewPager viewPager) {
 
         teacherStatisticsFragment = new TeacherInfoFragment();
@@ -133,7 +147,10 @@ public class TeacherProfileStatisticsActivity extends AppCompatActivity {
                 teacherInfo.setClosed(filesJson.getInt("closed"));
                 teacherInfo.setAlias(filesJson.getString("alias"));
                 teacherInfo.setAgent(filesJson.getInt("agent"));
-                teacherInfo.setDepartment(filesJson.getInt("department"));
+                String[] deps = filesJson.getString("department").split(",");
+                for (String dep : deps) {
+                    teacherInfo.addDepartment(Integer.valueOf(dep));
+                }
                 teacherInfo.setUpqualification(filesJson.getString("upqualification"));
                 teacherInfo.setRank(filesJson.getInt("rank"));
                 teacherInfo.setDegree(filesJson.getInt("degree"));
@@ -143,8 +160,13 @@ public class TeacherProfileStatisticsActivity extends AppCompatActivity {
                 try{
                     teacherInfo.setActivity(filesJson.getDouble("activity"));
                 }catch (JSONException ignored){}
-                teacherInfo.setDepartmentName(filesJson.getString("department_name"));
-                teacherInfo.setFacultyName(filesJson.getString("faculty_name"));
+                try{
+                    teacherInfo.setDepartmentName(filesJson.getString("department_name"));
+                }catch (JSONException ignored){}
+                try{
+                    teacherInfo.setFacultyName(filesJson.getString("faculty_name"));
+                }catch (JSONException ignored){}
+
                 JSONArray timetableCoursesJson = filesJson.getJSONArray("timetable_courses");
                 ArrayList<TeacherTimetableCourses> teacherTimetableCoursesArrayList = new ArrayList<>();
                 TeacherTimetableCourses teacherTimetableCourses;

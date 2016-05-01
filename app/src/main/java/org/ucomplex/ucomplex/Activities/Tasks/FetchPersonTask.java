@@ -59,7 +59,6 @@ public class FetchPersonTask extends AsyncTask<Void, String, User> implements IP
         if (jsonData != null && jsonData.length() > 2) {
             user = getUserDataFromJson(jsonData);
         }
-        publishProgress("User got");
         return user;
     }
 
@@ -106,7 +105,7 @@ public class FetchPersonTask extends AsyncTask<Void, String, User> implements IP
         try {
             userJson = new JSONObject(jsonData);
             user = new User();
-            user.setPerson(userJson.getInt("id"));
+            user.setId(userJson.getInt("id"));
             user.setName(userJson.getString("name"));
             user.setEmail(userJson.getString("email"));
             user.setCode(userJson.getString("code"));
@@ -117,10 +116,14 @@ public class FetchPersonTask extends AsyncTask<Void, String, User> implements IP
             for (int i = 0; i < rolesArray.length(); i++) {
                 User role = null;
                 JSONObject roleJson = rolesArray.getJSONObject(i);
+                if(roleJson.getInt("role")==user.getId()){
+                    user.setRole(roleJson.getInt("role"));
+                    user.setType(roleJson.getInt("type"));
+                    user.setPerson(roleJson.getInt("person"));
+                }
                 if (roleJson.getInt("type") == 3) {
                     User teacherRole = new User();
                     teacherAdminStudentCommonSetter(teacherRole, roleJson);
-
                     teacherRole.setStatuses(userJson.getString("statuses"));
                     String academicAwards = userJson.getString("academic_awards");
                     teacherRole.setAcademicAwards(academicAwards);

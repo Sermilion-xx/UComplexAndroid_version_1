@@ -112,7 +112,7 @@ public class ProfileFragment extends ListFragment {
                 }
             }.execute(code);
         } else {
-            mAdapter = new ProfileAdapter(mContext, mItems, mBitmap, user);
+            mAdapter = new ProfileAdapter(getContext(), mItems, mBitmap, user);
             setListAdapter(mAdapter);
         }
         getListView().setDivider(null);
@@ -120,9 +120,9 @@ public class ProfileFragment extends ListFragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = null;
-                if(mUser.getRole() == 4){
+                if(mUser.getRoles().get(position-1).getType() == 4){
                     intent = new Intent(mContext, ProfileStatisticsActivity.class);
-                }else if(mUser.getRole() == 0){
+                }else if(mUser.getRoles().get(position-1).getType() == 3){
                     intent = new Intent(mContext, TeacherProfileStatisticsActivity.class);
                 }
                 if (intent != null) {

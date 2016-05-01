@@ -30,6 +30,7 @@ import org.ucomplex.ucomplex.Adaptors.ImageAdapter;
 import org.ucomplex.ucomplex.Adaptors.ViewPagerAdapter;
 import org.ucomplex.ucomplex.Common;
 import org.ucomplex.ucomplex.Fragments.UsersFragment;
+import org.ucomplex.ucomplex.Fragments.UsersGroupFragment;
 import org.ucomplex.ucomplex.Model.Users.User;
 import org.ucomplex.ucomplex.R;
 
@@ -129,9 +130,7 @@ public class UsersActivity extends AppCompatActivity {
             adapter.addFragment(teachersUsersFragment, "Преподаватели");
 
         }else if(user.getType() == 3){
-            UsersFragment groupsUsersFragment = new UsersFragment();
-            groupsUsersFragment.setUsersType(12);
-            groupsUsersFragment.setActivity(UsersActivity.this);
+            UsersGroupFragment groupsUsersFragment = new UsersGroupFragment();
             adapter.addFragment(groupsUsersFragment, "Группы");
 
             UsersFragment kafedraUsersFragment = new UsersFragment();

@@ -83,7 +83,7 @@ public class FetchUsersTask extends AsyncTask<Integer, Void, ArrayList<User>> {
     }
 
 
-    private ArrayList<User> getUserDataFromJson(String jsonData, int getTypeInt) {
+    public ArrayList<User> getUserDataFromJson(String jsonData, int getTypeInt) {
 
         JSONObject onlineUsersJson = null;
         ArrayList<User> usersList = new ArrayList<>();

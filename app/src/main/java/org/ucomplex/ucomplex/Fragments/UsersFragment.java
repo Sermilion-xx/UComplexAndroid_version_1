@@ -184,6 +184,4 @@ public class UsersFragment extends ListFragment {
         }
         getListView().addFooterView(btnLoadExtra);
     }
-
-
 }
