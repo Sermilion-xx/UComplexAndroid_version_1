@@ -82,6 +82,8 @@ public class RoleSelectFragment extends Fragment {
                 mRoleTextView.setText("Студент");
             } else if (user.getType() == 0) {
                 mRoleTextView.setText("Сотрудник");
+            }else if (user.getType() == 3) {
+                mRoleTextView.setText("Преподаватель");
             }
             mRoleImage.setImageResource(drawable);
         }

@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:id="@+id/reference_layout"
     android:fitsSystemWindows="true"
-    tools:context="org.ucomplex.ucomplex.Activities.ReferenceActivity">
+    tools:mContext="org.ucomplex.ucomplex.Activities.ReferenceActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"

@@ -154,6 +154,7 @@ public class MyFilesActivity extends AppCompatActivity implements OnTaskComplete
                     if (newFolder != null) {
                         courseMaterialsFragment.addFile((File) newFolder.get(0));
                         courseMaterialsFragment.getAdapter().notifyDataSetChanged();
+                        courseMaterialsFragment.setMyFilesActivity(MyFilesActivity.this);
                     } else {
                         Toast.makeText(MyFilesActivity.this, "Ошибка при создании папки.", Toast.LENGTH_SHORT)
                                 .show();

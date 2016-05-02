@@ -6,7 +6,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:fitsSystemWindows="true"
     android:background="@color/activity_background"
-    tools:context=".Activities.CalendarDayActivity"
+    tools:mContext=".Activities.CalendarDayActivity"
     >
 
     <android.support.design.widget.AppBarLayout

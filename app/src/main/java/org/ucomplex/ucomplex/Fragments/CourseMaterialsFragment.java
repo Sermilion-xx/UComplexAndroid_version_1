@@ -18,6 +18,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
+import org.ucomplex.ucomplex.Activities.MyFilesActivity;
 import org.ucomplex.ucomplex.Activities.Tasks.FetchMyFilesTask;
 import org.ucomplex.ucomplex.Activities.Tasks.FetchTeacherFilesTask;
 import org.ucomplex.ucomplex.Adaptors.CourseMaterialsAdapter;
@@ -32,17 +33,21 @@ import java.util.ArrayList;
 public class CourseMaterialsFragment extends ListFragment {
 
 
-        private ArrayList<File> mItems;
-        OnHeadlineSelectedListener mCallback;
-        LinearLayout linlaHeaderProgress;
+    private ArrayList<File> mItems;
+    OnHeadlineSelectedListener mCallback;
+    LinearLayout linlaHeaderProgress;
 
-        private Activity mContext;
-        private boolean myFiles = false;
-        private CourseMaterialsAdapter adapter;
+    MyFilesActivity myFilesActivity;
+    private Activity mContext;
+    private boolean myFiles = false;
+    private CourseMaterialsAdapter adapter;
 
-        public static final int DIALOG_DOWNLOAD_PROGRESS = 0;
-        String myFilesToolBarTitle;
+    public static final int DIALOG_DOWNLOAD_PROGRESS = 0;
+    String myFilesToolBarTitle;
 
+    public void setMyFilesActivity(MyFilesActivity myFilesActivity) {
+        this.myFilesActivity = myFilesActivity;
+    }
 
     public void setMyFilesToolBarTitle(String myFilesToolBarTitle) {
         this.myFilesToolBarTitle = myFilesToolBarTitle;
@@ -111,6 +116,7 @@ public class CourseMaterialsFragment extends ListFragment {
         if (adapter == null) {
             adapter = new CourseMaterialsAdapter(getActivity(), mItems, myFiles, this);
             adapter.setActivity(mContext);
+            adapter.setMyFilesActivity(myFilesActivity);
         }
         setListAdapter(adapter);
 
@@ -123,7 +129,7 @@ public class CourseMaterialsFragment extends ListFragment {
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        if(mItems.size()==0){
+        if (mItems.size() == 0) {
             getListView().setDivider(null);
         }
         super.onActivityCreated(savedInstanceState);
@@ -143,7 +149,7 @@ public class CourseMaterialsFragment extends ListFragment {
                         protected void onPostExecute(ArrayList fileArrayList) {
                             mItems.clear();
                             ArrayList<File> newFiles = new ArrayList<>(fileArrayList);
-                            if(newFiles.size()==0){
+                            if (newFiles.size() == 0) {
                                 getListView().setDivider(null);
                             }
                             mItems.addAll(newFiles);
@@ -186,9 +192,9 @@ public class CourseMaterialsFragment extends ListFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         linlaHeaderProgress = (LinearLayout) view.findViewById(R.id.linlaHeaderProgress);
-        if(mItems.size()==0){
+        if (mItems.size() == 0) {
             getListView().setDivider(null);
-        }else{
+        } else {
             getListView().setDivider(new ColorDrawable(ContextCompat.getColor(mContext, R.color.activity_background)));
             getListView().setDividerHeight(3);
         }

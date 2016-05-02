@@ -19,6 +19,24 @@ public class File implements Serializable{
     private String checkTime;
     private int message;
     private int from;
+    private String folder;
+    private int ID;
+
+    public int getID() {
+        return ID;
+    }
+
+    public void setID(int ID) {
+        this.ID = ID;
+    }
+
+    public String getFolder() {
+        return folder;
+    }
+
+    public void setFolder(String folder) {
+        this.folder = folder;
+    }
 
     public int getFrom() {
         return from;
