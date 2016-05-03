@@ -2,6 +2,7 @@ package org.ucomplex.ucomplex.Fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,7 +34,7 @@ public class TeacherInfoFragment extends Fragment {
         TextView upqualificationsTextView = (TextView) view.findViewById(R.id.study_upqualification_value);
         TextView bioTextView = (TextView) view.findViewById(R.id.bio_value);
 
-        disciplinesTextView.setText(teacherInfo.getCourses());
+        disciplinesTextView.setText(Html.fromHtml(Html.fromHtml(teacherInfo.getCourses()).toString()));
         StringBuilder stringBuilder = new StringBuilder();
         for (int i = 0; i < teacherInfo.getTeacherTimetableCourses().size(); i++) {
             stringBuilder.append(teacherInfo.getTeacherTimetableCourses().get(i).getName());
@@ -41,7 +42,7 @@ public class TeacherInfoFragment extends Fragment {
                 stringBuilder.append(", ");
             }
         }
-        disiplinesInTimetable.setText(stringBuilder.toString());
+        disiplinesInTimetable.setText(Html.fromHtml(Html.fromHtml(stringBuilder.toString()).toString()));
         studyDegreeTextView.setText(Common.getDegree(teacherInfo.getDegree()));
         studyRankTextView.setText(Common.getRank(teacherInfo.getRank()));
         upqualificationsTextView.setText(teacherInfo.getUpqualification());
