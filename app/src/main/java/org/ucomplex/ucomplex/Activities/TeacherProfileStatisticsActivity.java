@@ -16,18 +16,24 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
 
+import org.javatuples.Pair;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.ucomplex.ucomplex.Adaptors.ProfileStatisticsAdapter;
 import org.ucomplex.ucomplex.Adaptors.ViewPagerAdapter;
 import org.ucomplex.ucomplex.Common;
+import org.ucomplex.ucomplex.Fragments.ProfileStatisticsFragment;
 import org.ucomplex.ucomplex.Fragments.TeacherRatingFragment;
 import org.ucomplex.ucomplex.Fragments.TeacherInfoFragment;
 import org.ucomplex.ucomplex.Model.TeacherInfo;
 import org.ucomplex.ucomplex.Model.TeacherTimetableCourses;
 import org.ucomplex.ucomplex.R;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
 import java.util.StringTokenizer;
 
 public class TeacherProfileStatisticsActivity extends AppCompatActivity {
@@ -81,6 +87,7 @@ public class TeacherProfileStatisticsActivity extends AppCompatActivity {
         });
         role = Integer.parseInt(getIntent().getExtras().getString("role"));
         id = getIntent().getExtras().getInt("id");
+        toolbar.setTitle(getIntent().getExtras().getString("name"));
         FetchTeachersInfoTask fetchTeachersInfoTask = new FetchTeachersInfoTask();
         fetchTeachersInfoTask.execute(role);
 
@@ -106,6 +113,7 @@ public class TeacherProfileStatisticsActivity extends AppCompatActivity {
         teacherRatingFragment.setmContext(this);
         teacherRatingFragment.setTeacher(id);
         adapter = new ViewPagerAdapter(getSupportFragmentManager());
+
         adapter.addFragment(teacherStatisticsFragment, "Личная информация");
         adapter.addFragment(teacherRatingFragment, "Рейтинг");
         viewPager.setAdapter(adapter);
@@ -133,8 +141,27 @@ public class TeacherProfileStatisticsActivity extends AppCompatActivity {
         protected void onPostExecute(TeacherInfo aVoid) {
             super.onPostExecute(aVoid);
             teacherInfo = aVoid;
-            setupViewPager(mViewPager);
-            toolbar.setTitle(teacherInfo.getName());
+            if(teacherInfo.getType()!=-1){
+                setupViewPager(mViewPager);
+
+            }else{
+                adapter = new ViewPagerAdapter(getSupportFragmentManager());
+
+                ProfileStatisticsFragment profileStatisticsFragment = new ProfileStatisticsFragment();
+                ArrayList<Pair<String, String>> items = new ArrayList<>();
+                int lastOnlineMilliseconds = teacherInfo.getOnline();
+                Date date = new Date(lastOnlineMilliseconds*1000);
+                Locale locale = new Locale("ru", "RU");
+                SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", locale);
+                String lastOnline = sdfDate.format(date);
+                items.add(new Pair<>("Сотрудник",lastOnline));
+                profileStatisticsFragment.setStatisticItems(items);
+                adapter.addFragment(profileStatisticsFragment, "Профиль");
+                mViewPager.setAdapter(adapter);
+                tabLayout.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+                tabLayout.setupWithViewPager(mViewPager);
+            }
+
             linlaHeaderProgress.setVisibility(View.GONE);
         }
 
@@ -146,47 +173,58 @@ public class TeacherProfileStatisticsActivity extends AppCompatActivity {
                 teacherInfo.setId(filesJson.getInt("id"));
                 teacherInfo.setName(filesJson.getString("name"));
                 teacherInfo.setType(filesJson.getInt("type"));
-                teacherInfo.setCourses(filesJson.getString("courses"));
+                teacherInfo.setOnline(filesJson.getInt("online"));
+                try {
+                    teacherInfo.setCourses(filesJson.getString("courses"));
+                } catch (JSONException ignored) {
+                }
                 teacherInfo.setClosed(filesJson.getInt("closed"));
                 teacherInfo.setAlias(filesJson.getString("alias"));
                 teacherInfo.setAgent(filesJson.getInt("agent"));
-                String[] deps = filesJson.getString("department").split(",");
-                for (String dep : deps) {
-                    teacherInfo.addDepartment(Integer.valueOf(dep));
-                }
-                teacherInfo.setUpqualification(filesJson.getString("upqualification"));
-                teacherInfo.setRank(filesJson.getInt("rank"));
-                teacherInfo.setDegree(filesJson.getInt("degree"));
-                teacherInfo.setBio(filesJson.getString("bio"));
-                teacherInfo.setPlan(filesJson.getInt("plan"));
-                teacherInfo.setFact(filesJson.getInt("fact"));
-                try{
-                    teacherInfo.setActivity(filesJson.getDouble("activity"));
-                }catch (JSONException ignored){}
-                try{
-                    teacherInfo.setDepartmentName(filesJson.getString("department_name"));
-                }catch (JSONException ignored){}
-                try{
-                    teacherInfo.setFacultyName(filesJson.getString("faculty_name"));
-                }catch (JSONException ignored){}
+                try {
+                    String[] deps = filesJson.getString("department").split(",");
+                    for (String dep : deps) {
+                        teacherInfo.addDepartment(Integer.valueOf(dep));
+                    }
+                    teacherInfo.setUpqualification(filesJson.getString("upqualification"));
+                    teacherInfo.setRank(filesJson.getInt("rank"));
+                    teacherInfo.setDegree(filesJson.getInt("degree"));
+                    teacherInfo.setBio(filesJson.getString("bio"));
+                    teacherInfo.setPlan(filesJson.getInt("plan"));
+                    teacherInfo.setFact(filesJson.getInt("fact"));
+                    try {
+                        teacherInfo.setActivity(filesJson.getDouble("activity"));
+                    } catch (JSONException ignored) {
+                    }
+                    try {
+                        teacherInfo.setDepartmentName(filesJson.getString("department_name"));
+                    } catch (JSONException ignored) {
+                    }
+                    try {
+                        teacherInfo.setFacultyName(filesJson.getString("faculty_name"));
+                    } catch (JSONException ignored) {
+                    }
 
-                JSONArray timetableCoursesJson = filesJson.getJSONArray("timetable_courses");
-                ArrayList<TeacherTimetableCourses> teacherTimetableCoursesArrayList = new ArrayList<>();
-                TeacherTimetableCourses teacherTimetableCourses;
+                    JSONArray timetableCoursesJson = filesJson.getJSONArray("timetable_courses");
+                    ArrayList<TeacherTimetableCourses> teacherTimetableCoursesArrayList = new ArrayList<>();
+                    TeacherTimetableCourses teacherTimetableCourses;
 
-                for (int i = 0; i < timetableCoursesJson.length(); i++) {
-                    JSONObject timeTableCourse = timetableCoursesJson.getJSONObject(i);
-                    teacherTimetableCourses = new TeacherTimetableCourses();
-                    teacherTimetableCourses.setId(timeTableCourse.getInt("id"));
-                    teacherTimetableCourses.setName(timeTableCourse.getString("name"));
-                    teacherTimetableCourses.setDescription(timeTableCourse.getString("description"));
-                    teacherTimetableCourses.setCat(timeTableCourse.getInt("cat"));
-                    teacherTimetableCourses.setType(timeTableCourse.getInt("type"));
-                    teacherTimetableCourses.setDepartment(timeTableCourse.getInt("department"));
-                    teacherTimetableCourses.setClient(timeTableCourse.getInt("client"));
-                    teacherTimetableCoursesArrayList.add(teacherTimetableCourses);
+                    for (int i = 0; i < timetableCoursesJson.length(); i++) {
+                        JSONObject timeTableCourse = timetableCoursesJson.getJSONObject(i);
+                        teacherTimetableCourses = new TeacherTimetableCourses();
+                        teacherTimetableCourses.setId(timeTableCourse.getInt("id"));
+                        teacherTimetableCourses.setName(timeTableCourse.getString("name"));
+                        teacherTimetableCourses.setDescription(timeTableCourse.getString("description"));
+                        teacherTimetableCourses.setCat(timeTableCourse.getInt("cat"));
+                        teacherTimetableCourses.setType(timeTableCourse.getInt("type"));
+                        teacherTimetableCourses.setDepartment(timeTableCourse.getInt("department"));
+                        teacherTimetableCourses.setClient(timeTableCourse.getInt("client"));
+                        teacherTimetableCoursesArrayList.add(teacherTimetableCourses);
+                    }
+                    teacherInfo.setTeacherTimetableCourses(teacherTimetableCoursesArrayList);
+                } catch (JSONException ignored) {
+                    teacherInfo.setType(-1);
                 }
-                teacherInfo.setTeacherTimetableCourses(teacherTimetableCoursesArrayList);
                 return teacherInfo;
 
             } catch (JSONException e) {

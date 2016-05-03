@@ -61,6 +61,7 @@ public class UsersFragment extends ListFragment {
             User user = mItems.get(position);
             Intent intent = new Intent(getContext(), ProfileActivity.class);
             Bundle extras = new Bundle();
+            extras.putInt("type", user.getType());
             extras.putString("person", String.valueOf(user.getPerson()));
             if (user.getPhotoBitmap() != null) {
                 intent.putExtra("bitmap", user.getPhotoBitmap());

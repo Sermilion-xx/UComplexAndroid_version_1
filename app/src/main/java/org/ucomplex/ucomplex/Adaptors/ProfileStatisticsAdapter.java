@@ -17,7 +17,7 @@ import java.util.ArrayList;
  */
 public class ProfileStatisticsAdapter extends ArrayAdapter<Pair<String, String>> {
     private LayoutInflater inflater;
-    ArrayList<Pair<String, String>> mItems;
+    ArrayList<Pair<String, String>> mItems = new ArrayList<>();
     Context context;
 
     private static final int TYPE_HEADER = 0;
@@ -39,7 +39,7 @@ public class ProfileStatisticsAdapter extends ArrayAdapter<Pair<String, String>>
     public int getCount() {
         int count = mItems.size() == 0 ? 1 : mItems.size();
         if(mItems.size()==1){
-            if(mItems.get(0).getValue0().equals("Студент")){
+            if(mItems.get(0).getValue0().equals("Студент") || mItems.get(0).getValue0().equals("Сотрудник")){
                 mItems.add(new Pair<>("Профиль закрыт",""));
             }
         }

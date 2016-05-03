@@ -33,20 +33,25 @@ public class TeacherInfoFragment extends Fragment {
         TextView studyRankTextView = (TextView) view.findViewById(R.id.study_rank_value);
         TextView upqualificationsTextView = (TextView) view.findViewById(R.id.study_upqualification_value);
         TextView bioTextView = (TextView) view.findViewById(R.id.bio_value);
-
-        disciplinesTextView.setText(Html.fromHtml(Html.fromHtml(teacherInfo.getCourses()).toString()));
-        StringBuilder stringBuilder = new StringBuilder();
-        for (int i = 0; i < teacherInfo.getTeacherTimetableCourses().size(); i++) {
-            stringBuilder.append(teacherInfo.getTeacherTimetableCourses().get(i).getName());
-            if (i < teacherInfo.getTeacherTimetableCourses().size()) {
-                stringBuilder.append(", ");
+        if(teacherInfo.getId()!=0){
+            String disciplines = teacherInfo.getCourses()!=null?teacherInfo.getCourses():"не указанно";
+            disciplinesTextView.setText(Html.fromHtml(Html.fromHtml(disciplines).toString()));
+            StringBuilder stringBuilder = new StringBuilder();
+            for (int i = 0; i < teacherInfo.getTeacherTimetableCourses().size(); i++) {
+                stringBuilder.append(teacherInfo.getTeacherTimetableCourses().get(i).getName());
+                if (i < teacherInfo.getTeacherTimetableCourses().size()) {
+                    stringBuilder.append(", ");
+                }
             }
+            String disiplinesInTimetableStr = Html.fromHtml(Html.fromHtml(stringBuilder.toString()).toString()).toString();
+            disiplinesInTimetable.setText(!disiplinesInTimetableStr.equals("")?disiplinesInTimetableStr:"не указанно");
+            studyDegreeTextView.setText(Common.getDegree(teacherInfo.getDegree()));
+            studyRankTextView.setText(Common.getRank(teacherInfo.getRank()));
+            String upqualifications = teacherInfo.getUpqualification()!=null?teacherInfo.getUpqualification():"не указанно";
+            upqualificationsTextView.setText(Html.fromHtml(upqualifications).toString());
+            bioTextView.setText(Html.fromHtml(Html.fromHtml(teacherInfo.getBio()).toString()));
         }
-        disiplinesInTimetable.setText(Html.fromHtml(Html.fromHtml(stringBuilder.toString()).toString()));
-        studyDegreeTextView.setText(Common.getDegree(teacherInfo.getDegree()));
-        studyRankTextView.setText(Common.getRank(teacherInfo.getRank()));
-        upqualificationsTextView.setText(teacherInfo.getUpqualification());
-        bioTextView.setText(teacherInfo.getBio());
+
         return view;
     }
 }

@@ -99,6 +99,15 @@ public class User implements Serializable {
     private String facultyName;
     private ArrayList<TimetableEntry> timetableEntries;
 
+    private Progress progress;
+    private String alias;
+    private int group;
+    private int major;
+    private int study;
+    private int year;
+    private int payment;
+    private int contract_year;
+
     public int getOut() {
         return out;
     }
@@ -462,14 +471,7 @@ public class User implements Serializable {
     //---
 
 
-    private Progress progress;
-    private String alias;
-    private int group;
-    private int major;
-    private int study;
-    private int year;
-    private int payment;
-    private int contract_year;
+
 
     public Progress getProgress() {
         return progress;

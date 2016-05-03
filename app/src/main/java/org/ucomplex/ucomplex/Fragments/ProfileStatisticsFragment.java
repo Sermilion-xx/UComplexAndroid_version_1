@@ -15,7 +15,7 @@ import java.util.ArrayList;
  */
 public class ProfileStatisticsFragment extends ListFragment {
 
-    ArrayList<Pair<String, String>> statisticItems;
+    ArrayList<Pair<String, String>> statisticItems = new ArrayList<>();
 
     public ProfileStatisticsFragment() {}
 

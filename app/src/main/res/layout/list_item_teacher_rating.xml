@@ -16,7 +16,7 @@
 
     <Button
         android:id="@+id/question_button_1"
-        android:layout_width="35dp"
+        android:layout_width="32dp"
         android:layout_height="25dp"
         android:layout_below="@+id/question"
         android:layout_marginLeft="17dp"
@@ -26,7 +26,7 @@
 
     <Button
         android:id="@+id/question_button_2"
-        android:layout_width="35dp"
+        android:layout_width="32dp"
         android:layout_height="25dp"
         android:background="#E77D72"
         android:text="2"
@@ -36,7 +36,7 @@
 
     <Button
         android:id="@+id/question_button_3"
-        android:layout_width="35dp"
+        android:layout_width="32dp"
         android:layout_height="25dp"
         android:background="#E78D72"
         android:text="3"
@@ -46,7 +46,7 @@
 
     <Button
         android:id="@+id/question_button_4"
-        android:layout_width="35dp"
+        android:layout_width="32dp"
         android:layout_height="25dp"
         android:background="#E7A472"
         android:text="4"
@@ -56,7 +56,7 @@
 
     <Button
         android:id="@+id/question_button_5"
-        android:layout_width="35dp"
+        android:layout_width="32dp"
         android:layout_height="25dp"
         android:background="#E8B472"
         android:text="5"
@@ -65,7 +65,7 @@
         android:layout_toEndOf="@+id/question_button_4" />
     <Button
         android:id="@+id/question_button_6"
-        android:layout_width="35dp"
+        android:layout_width="32dp"
         android:layout_height="25dp"
         android:background="#E8C272"
         android:text="6"
@@ -75,7 +75,7 @@
 
     <Button
         android:id="@+id/question_button_7"
-        android:layout_width="35dp"
+        android:layout_width="32dp"
         android:layout_height="25dp"
         android:background="#E8C272"
         android:text="7"
@@ -85,7 +85,7 @@
 
     <Button
         android:id="@+id/question_button_8"
-        android:layout_width="35dp"
+        android:layout_width="32dp"
         android:layout_height="25dp"
         android:background="#E6E773"
         android:text="8"
@@ -95,7 +95,7 @@
 
     <Button
         android:id="@+id/question_button_9"
-        android:layout_width="35dp"
+        android:layout_width="32dp"
         android:layout_height="25dp"
         android:background="#c3e874"
         android:text="9"
@@ -105,7 +105,7 @@
 
     <Button
         android:id="@+id/question_button_10"
-        android:layout_width="35dp"
+        android:layout_width="32dp"
         android:layout_height="25dp"
         android:background="#89e874"
         android:text="10"

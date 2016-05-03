@@ -128,10 +128,10 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
                     User user = Common.getUserDataFromPref(context);
                     Intent intent = new Intent(contxt, ProfileActivity.class);
                     intent.putExtra("person", String.valueOf(user.getPerson()));
-//                profileBitmap = Common.decodePhotoPref(context, "profilePhoto");
                     intent.putExtra("bitmap",profileBitmap);
                     intent.putExtra("hasPhoto", String.valueOf(user.getPhoto()));
                     intent.putExtra("code",user.getCode());
+                    intent.putExtra("type",user.getType());
                     contxt.startActivity(intent);
                 }else{
                     Toast.makeText(context, "Проверьте интернет соединение.",

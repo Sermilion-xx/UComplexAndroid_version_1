@@ -7,23 +7,23 @@ import java.util.ArrayList;
  */
 public class TeacherInfo {
     int id;
-    String name;
+    String name = "";
     int type;
     int closed;
-    String alias;
+    String alias = "";
     int agent;
     int online;
     ArrayList<Integer> department = new ArrayList<>();
-    String upqualification;
+    String upqualification = "";
     int rank;
-    String courses;
+    String courses = "";
     int degree;
-    String bio;
+    String bio = "";
     int plan;
     int fact;
     double activity;
-    String departmentName;
-    String facultyName;
+    String departmentName = "";
+    String facultyName = "";
     ArrayList<TeacherTimetableCourses> teacherTimetableCourses = new ArrayList<>();
 
 

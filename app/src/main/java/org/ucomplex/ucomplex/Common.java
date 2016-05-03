@@ -713,7 +713,7 @@ public class Common {
             "Архитектуры",
             "Искусствоведения",
             "Культурологии",
-            "Не указанно"};
+            "не указанно"};
 
     public static String getDegree(int degree){
         switch (degree){

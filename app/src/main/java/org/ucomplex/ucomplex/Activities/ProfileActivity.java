@@ -36,6 +36,7 @@ public class ProfileActivity extends AppCompatActivity implements OnTaskComplete
     int hasPhoto;
     String code;
     LinearLayout linlaHeaderProgress;
+    int type;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +51,7 @@ public class ProfileActivity extends AppCompatActivity implements OnTaskComplete
         final Bundle extra = getIntent().getExtras();
 
         if (extra != null) {
+            type = extra.getInt("type");
             personId = Integer.parseInt(extra.getString("person"));
             bitmap = extra.getParcelable("bitmap");
             hasPhoto = Integer.parseInt(extra.getString("hasPhoto"));
@@ -92,6 +94,7 @@ public class ProfileActivity extends AppCompatActivity implements OnTaskComplete
             Triplet<Bitmap, User, String> item = new Triplet<>(bitmap, mUser, "-1");
             items.add(item);
             if(mUser!=null){
+                mUser.setType(type);
                 for (User role : mUser.getRoles()) {
                     Triplet<String, String, String> aItem;
                     String positionName = role.getPositionName();
