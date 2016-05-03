@@ -1,28 +1,19 @@
 package org.ucomplex.ucomplex.Fragments;
 
 import android.app.Activity;
-import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.ListFragment;
-import android.support.v4.content.ContextCompat;
-import android.view.ContextMenu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import org.ucomplex.ucomplex.Activities.Tasks.FetchTeacherRating;
-import org.ucomplex.ucomplex.Adaptors.CourseMaterialsAdapter;
 import org.ucomplex.ucomplex.Adaptors.TeacherInfoAdapter;
 import org.ucomplex.ucomplex.Interfaces.OnTaskCompleteListener;
 import org.ucomplex.ucomplex.Model.TeacherRating;
-import org.ucomplex.ucomplex.Model.Votes;
 import org.ucomplex.ucomplex.R;
 
-import java.util.ArrayList;
-import java.util.StringTokenizer;
 import java.util.concurrent.ExecutionException;
 
 /**

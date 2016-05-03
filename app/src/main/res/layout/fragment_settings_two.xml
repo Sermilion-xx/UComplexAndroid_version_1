@@ -14,7 +14,7 @@
 
         <TextView
             android:layout_width="wrap_content"
-            android:id="@+id/settings_degree1_key"
+            android:id="@+id/settings_rank_key"
             android:layout_height="wrap_content"
             android:textSize="13sp"
             android:text="@string/edu_stepen_str_ru"
@@ -23,70 +23,68 @@
             android:layout_marginRight="15dp" />
 
         <Spinner
-            android:id="@+id/settings_degree1_value"
+            android:id="@+id/settings_rank_value"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/settings_degree1_key"
+            android:layout_below="@+id/settings_rank_key"
             android:textSize="19sp"
-            android:text="Ученое звание"
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"
-            android:layout_marginTop="40dp"
+            android:layout_marginTop="13dp"
              />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:layout_below="@+id/settings_degree1_value"
+            android:layout_below="@+id/settings_rank_value"
             android:background="@drawable/line_divider_gray"
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"/>
 
         <TextView
             android:layout_width="wrap_content"
-            android:id="@+id/settings_degree2_key"
+            android:id="@+id/settings_degree_key"
             android:layout_height="wrap_content"
             android:textSize="13sp"
-            android:layout_below="@+id/settings_degree1_value"
+            android:layout_below="@+id/settings_rank_value"
             android:text="@string/study_degree2_str_ru"
             android:layout_marginLeft="15dp"
-            android:layout_marginTop="40dp"
+            android:layout_marginTop="28dp"
             android:layout_marginRight="15dp" />
 
         <Spinner
-            android:layout_width="wrap_content"
-            android:id="@+id/settings_degree2_value"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="13sp"
-            android:text="Ученая степень"
-            android:layout_below="@+id/settings_degree2_key"
+            android:id="@+id/settings_degree_value"
+            android:textSize="19sp"
+            android:layout_below="@+id/settings_degree_key"
             android:layout_marginLeft="15dp"
-            android:layout_marginTop="40dp"
-            android:layout_marginRight="15dp" />
+            android:layout_marginRight="15dp"
+            android:layout_marginTop="13dp"/>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:layout_below="@+id/settings_degree2_value"
+            android:layout_below="@+id/settings_degree_value"
             android:background="@drawable/line_divider_gray"
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"/>
 
         <Spinner
-            android:layout_width="wrap_content"
-            android:id="@+id/settings_degree2_value2"
+            android:layout_width="match_parent"
+            android:id="@+id/settings_degree2_value"
             android:layout_height="wrap_content"
-            android:textSize="13sp"
+            android:textSize="19sp"
             android:text="@string/study_degree_str_ru"
-            android:layout_below="@+id/settings_degree2_value"
+            android:layout_below="@+id/settings_degree_value"
             android:layout_marginLeft="15dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginRight="15dp" />
+            android:layout_marginRight="15dp"
+            android:layout_marginTop="13dp" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:layout_below="@+id/settings_degree2_value2"
+            android:layout_below="@+id/settings_degree2_value"
             android:background="@drawable/line_divider_gray"
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"/>
@@ -99,9 +97,9 @@
             android:layout_height="wrap_content"
             android:textSize="13sp"
             android:text="@string/teaching_subjects_str_ru"
-            android:layout_below="@+id/settings_degree2_value2"
+            android:layout_below="@+id/settings_degree2_value"
             android:layout_marginLeft="15dp"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="26dp"
             android:layout_marginRight="15dp" />
 
         <EditText
@@ -110,11 +108,11 @@
             android:layout_height="wrap_content"
             android:textColor="@color/black"
             android:textSize="16sp"
-            android:hint="Математика"
+            android:hint="Введите дисциплины"
             android:background="@null"
             android:layout_below="@+id/settings_subjects_key"
             android:layout_marginLeft="15dp"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="10dp"
             android:layout_marginRight="15dp" />
 
         <View
@@ -135,21 +133,21 @@
             android:text="@string/upqualification_str_ru"
             android:layout_below="@+id/settings_subjects_value"
             android:layout_marginLeft="15dp"
-            android:layout_marginTop="40dp"
+            android:layout_marginTop="25dp"
             android:layout_marginRight="15dp" />
 
         <EditText
             android:layout_width="match_parent"
             android:id="@+id/settings_upqualification_value"
             android:layout_height="wrap_content"
-            android:textColor="@color/uc_gray_text_events"
+            android:textColor="@color/black"
             android:textSize="16sp"
             android:textColorHint="@color/uc_gray_text_events"
-            android:text="@string/math_str_rus"
+            android:hint="Повышение квалификации"
             android:background="@null"
             android:layout_below="@+id/settings_upqualification_key"
             android:layout_marginLeft="15dp"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="10dp"
             android:layout_marginRight="15dp" />
 
         <View
@@ -168,7 +166,7 @@
             android:textSize="13sp"
             android:text="@string/short_bio_str_ru"
             android:layout_marginLeft="15dp"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="25dp"
             android:layout_marginRight="15dp"
             android:layout_below="@+id/settings_upqualification_value"/>
 
@@ -179,11 +177,11 @@
             android:layout_height="wrap_content"
             android:textColor="@color/black"
             android:textSize="16sp"
-            android:hint="Математика"
+            android:hint="Биография"
             android:background="@null"
             android:layout_below="@+id/settings_bio_key"
             android:layout_marginLeft="15dp"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="10dp"
             android:layout_marginRight="15dp"
             />
 

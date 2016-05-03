@@ -12,7 +12,7 @@ import org.ucomplex.ucomplex.Interfaces.OnTaskCompleteListener;
 /**
  * Created by Sermilion on 30/12/2015.
  */
-public class FetchProfileTask extends AsyncTask<Void, Void, Pair<String, String>>{
+public class FetchProfileTask extends AsyncTask<Void, Void, Pair<Pair<String, String>, JSONObject> >{
 
     Activity mContext;
     private OnTaskCompleteListener mTaskCompleteListener;
@@ -23,17 +23,19 @@ public class FetchProfileTask extends AsyncTask<Void, Void, Pair<String, String>
     }
 
     @Override
-    protected Pair<String, String> doInBackground(Void... params) {
+    protected Pair<Pair<String, String>, JSONObject> doInBackground(Void... params) {
         String urlString = "https://ucomplex.org/user/profile?json";
         String jsonData = Common.httpPost(urlString, Common.getLoginDataFromPref(mContext));
         if(jsonData!=null){
             try {
                 JSONObject jsonObject = new JSONObject(jsonData);
                 JSONObject infoJson = jsonObject.getJSONObject("info");
+                JSONObject infoCustomJson = jsonObject.getJSONObject("custom").getJSONObject("my_info");
                 String closed = infoJson.getString("closed");
                 String searchable  = infoJson.getString("searchable");
                 Pair<String, String> privacy = new Pair<>(closed, searchable);
-                return privacy;
+                Pair<Pair<String, String>, JSONObject> result = new Pair<>(privacy, infoCustomJson);
+                return result;
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -42,7 +44,7 @@ public class FetchProfileTask extends AsyncTask<Void, Void, Pair<String, String>
     }
 
     @Override
-    protected void onPostExecute(Pair<String, String> objects) {
+    protected void onPostExecute(Pair<Pair<String, String>, JSONObject> objects) {
         super.onPostExecute(objects);
         mTaskCompleteListener.onTaskComplete(this);
     }

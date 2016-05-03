@@ -689,45 +689,73 @@ public class Common {
         return typeStr;
     }
 
+    public static String[] degrees = new String[]{
+            "Технических наук",
+            "Физико-математических наук",
+            "Филологических наук",
+            "Экономических наук",
+            "Педагогических наук",
+            "Политических наук",
+            "Биологических наук",
+            "Сельскохозяйственных наук",
+            "Ветеринарных наук",
+            "Географических наук",
+            "Юридических наук",
+            "Исторических наук",
+            "Философских наук",
+            "Химических наук",
+            "Медицинских наук",
+            "Фармацевтических наук",
+            "Социологических наук",
+            "Психологических наук",
+            "Геолого-минералогических наук",
+            "Военных наук",
+            "Архитектуры",
+            "Искусствоведения",
+            "Культурологии",
+            "Не указанно"};
+
     public static String getDegree(int degree){
         switch (degree){
-            case 1:return "технических наук";
-            case 2:return "физико-математических наук";
-            case 3:return "филологических наук";
-            case 4:return "экономических наук";
-            case 5:return "педагогических наук";
-            case 6:return "политических наук";
-            case 7:return "биологических наук";
-            case 8:return "сельскохозяйственных наук";
-            case 9:return "ветеринарных наук";
-            case 10:return "географических наук";
-            case 11:return "юридических наук";
-            case 12:return "исторических наук";
-            case 13:return "философских наук";
-            case 14:return "химических наук'";
-            case 15:return "медицинских наук";
-            case 16:return "фармацевтических наук";
-            case 17:return "социологических наук";
-            case 18:return "психологических наук";
-            case 19:return "геолого-минералогических наук";
-            case 20:return "военных наук";
-            case 21:return "архитектуры";
-            case 22:return "искусствоведения";
-            case 23:return "культурологии";
-            default:return "не указанно";
+            case 1:return  degrees[0];
+            case 2:return  degrees[1];
+            case 3:return  degrees[2];
+            case 4:return  degrees[3];
+            case 5:return  degrees[4];
+            case 6:return  degrees[5];
+            case 7:return  degrees[6];
+            case 8:return  degrees[7];
+            case 9:return  degrees[8];
+            case 10:return degrees[9];
+            case 11:return degrees[10];
+            case 12:return degrees[11];
+            case 13:return degrees[12];
+            case 14:return degrees[13];
+            case 15:return degrees[14];
+            case 16:return degrees[15];
+            case 17:return degrees[16];
+            case 18:return degrees[17];
+            case 19:return degrees[18];
+            case 20:return degrees[19];
+            case 21:return degrees[20];
+            case 22:return degrees[21];
+            case 23:return degrees[22];
+            default:return degrees[23];
         }
     }
+
+    public static String[] ranks = new String[]{"доцент","профессор","член-корреспондент", "академик"};
 
     public static String getRank(int degree){
         switch (degree) {
             case 1:
-                return "доцент";
+                return ranks[0];
             case 2:
-                return "профессор";
+                return ranks[1];
             case 3:
-                return "член-корреспондент";
+                return ranks[2];
             case 4:
-                return "академик";
+                return ranks[4];
             default:return "не указанно";
         }
     }

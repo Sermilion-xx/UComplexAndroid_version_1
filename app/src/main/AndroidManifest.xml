@@ -109,11 +109,6 @@
             android:label="@string/title_activity_library"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".Activities.SettingsActivity"
-            android:label="@string/title_activity_settings"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
             android:name=".Activities.SettingsActivity2"
             android:label="@string/title_activity_settings"
             android:screenOrientation="portrait"

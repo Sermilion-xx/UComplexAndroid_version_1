@@ -1,7 +1,6 @@
 package org.ucomplex.ucomplex.Activities;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -17,7 +16,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.AttributeSet;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
@@ -26,6 +24,7 @@ import android.widget.Toast;
 
 import org.apache.http.entity.mime.content.ByteArrayBody;
 import org.javatuples.Pair;
+import org.json.JSONObject;
 import org.ucomplex.ucomplex.Activities.Tasks.FetchProfileTask;
 import org.ucomplex.ucomplex.Activities.Tasks.SettingsTask;
 import org.ucomplex.ucomplex.Activities.Tasks.UploadPhotoTask;
@@ -83,6 +82,7 @@ public class SettingsActivity2 extends AppCompatActivity implements OnTaskComple
         settingsOneFragment.setFilename(filename);
 
         settingsTwoFragment = new SettingsTwoFragment();
+        settingsTwoFragment.setmContext(this);
 
         FetchProfileTask fetchProfileTask = new FetchProfileTask(this, this);
         fetchProfileTask.execute();
@@ -91,12 +91,13 @@ public class SettingsActivity2 extends AppCompatActivity implements OnTaskComple
             @Override
             public void onClick(View v) {
                 if (Common.isNetworkConnected(SettingsActivity2.this)) {
+                    //----------------------Settings One--------------------------------------------
                     if (SettingsOneFragment.PROFILE_IMAGE_CHANGED) {
                         UploadPhotoTask uploadPhotoTask = new UploadPhotoTask(SettingsActivity2.this, SettingsActivity2.this);
                         uploadPhotoTask.setupTask(settingsOneFragment.getContentBody());
                         SettingsOneFragment.PROFILE_IMAGE_CHANGED = false;
                     }
-                if (SettingsOneFragment.CURRENT_PASSWORD_CHANGE || SettingsOneFragment.NEW_PASSWORD_CHANGE || SettingsOneFragment.NEW_PASSWORD_AGAIN_CHANGE) {
+                    if (SettingsOneFragment.CURRENT_PASSWORD_CHANGE || SettingsOneFragment.NEW_PASSWORD_CHANGE || SettingsOneFragment.NEW_PASSWORD_AGAIN_CHANGE) {
                         settingsOneFragment.resetPassword(settingsOneFragment.currentPasswordTextView,
                                 settingsOneFragment.newPasswordTextView,
                                 settingsOneFragment.newPasswordAgainTextView, settingsOneFragment.user);
@@ -113,6 +114,13 @@ public class SettingsActivity2 extends AppCompatActivity implements OnTaskComple
                     } else if (SettingsOneFragment.NEW_PHONE_CHANGED || SettingsOneFragment.NEW_PHONE_PASSWORD_CHANGE) {
                         Toast.makeText(SettingsActivity2.this, "Заполните все поля!", Toast.LENGTH_LONG).show();
                     }
+                    //----------------------Settings Two--------------------------------------------
+                    if (SettingsTwoFragment.STUDY_RANK_CHANGED || SettingsTwoFragment.BIO_CHANGED || SettingsTwoFragment.STUDY_DEGREE_CHANGED
+                            || SettingsTwoFragment.DISCIPLINES_CHANGED || SettingsTwoFragment.STUDY_DEGREE_CHANGED_2
+                            || SettingsTwoFragment.UPQUALIFICATIONS_CHANGED) {
+                        settingsTwoFragment.saveSettingsTwo();
+                    }
+
                 } else {
                     Toast.makeText(SettingsActivity2.this, "Проверьте интернет соединение.", Toast.LENGTH_LONG).show();
                 }
@@ -167,7 +175,9 @@ public class SettingsActivity2 extends AppCompatActivity implements OnTaskComple
     public void onTaskComplete(AsyncTask task, Object... o) {
         if (task instanceof FetchProfileTask) {
             try {
-                Pair<String, String> privacy = ((FetchProfileTask) task).get();
+                Pair<Pair<String, String>, JSONObject> profileSettings = ((FetchProfileTask) task).get();
+                Pair<String, String> privacy = profileSettings.getValue0();
+                settingsTwoFragment.setCustomInfoSettings(profileSettings.getValue1());
                 if (privacy != null) {
 //                    settingsOneFragment.getClosedProfile().setChecked(false);
 //                    settingsOneFragment.getHideProfile().setChecked(false);
@@ -191,7 +201,7 @@ public class SettingsActivity2 extends AppCompatActivity implements OnTaskComple
                 try {
                     User user = Common.getUserDataFromPref(SettingsActivity2.this);
                     if (SettingsOneFragment.CURRENT_PASSWORD_CHANGE || SettingsOneFragment.NEW_PASSWORD_CHANGE || SettingsOneFragment.NEW_PASSWORD_AGAIN_CHANGE) {
-                        if(!settingsOneFragment.newPasswordTextView.getText().toString().equals("")){
+                        if (!settingsOneFragment.newPasswordTextView.getText().toString().equals("")) {
                             user.setPass(settingsOneFragment.newPasswordTextView.getText().toString());
                             Common.setUserDataToPref(SettingsActivity2.this, user);
                             settingsOneFragment.user.setPass(settingsOneFragment.newPasswordTextView.getText().toString());
@@ -208,7 +218,7 @@ public class SettingsActivity2 extends AppCompatActivity implements OnTaskComple
                         if (task.get().equals("success")) {
                             if ((int) o[0] == 3) {
                                 //phone
-                                if(!settingsOneFragment.newPhoneTextView.getText().toString().equals("")){
+                                if (!settingsOneFragment.newPhoneTextView.getText().toString().equals("")) {
                                     user.setPhone(settingsOneFragment.newPhoneTextView.getText().toString());
                                     Common.setUserDataToPref(SettingsActivity2.this, user);
                                 }
@@ -220,7 +230,7 @@ public class SettingsActivity2 extends AppCompatActivity implements OnTaskComple
                                 SettingsOneFragment.NEW_PHONE_CHANGED = false;
                             } else if ((int) o[0] == 2) {
                                 //email
-                                if(!settingsOneFragment.newEmalTextView.getText().toString().equals("")){
+                                if (!settingsOneFragment.newEmalTextView.getText().toString().equals("")) {
                                     user.setEmail(settingsOneFragment.newEmalTextView.getText().toString());
                                     Common.setUserDataToPref(SettingsActivity2.this, user);
                                 }

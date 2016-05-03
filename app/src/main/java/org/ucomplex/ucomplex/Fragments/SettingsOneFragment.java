@@ -24,6 +24,7 @@ import com.amulyakhare.textdrawable.TextDrawable;
 
 import org.apache.http.entity.mime.content.ByteArrayBody;
 import org.javatuples.Pair;
+import org.json.JSONObject;
 import org.ucomplex.ucomplex.Activities.SettingsActivity2;
 import org.ucomplex.ucomplex.Activities.Tasks.FetchProfileTask;
 import org.ucomplex.ucomplex.Activities.Tasks.SettingsTask;
@@ -476,7 +477,8 @@ public class SettingsOneFragment extends Fragment implements OnTaskCompleteListe
             }
         } else if (task instanceof FetchProfileTask) {
             try {
-                Pair<String, String> privacy = ((FetchProfileTask) task).get();
+                Pair<Pair<String, String>, JSONObject> profileSettings = ((FetchProfileTask) task).get();
+                Pair<String, String> privacy = profileSettings.getValue0();
                 if (privacy != null) {
                     closedProfile.setChecked(false);
                     hideProfile.setChecked(false);
