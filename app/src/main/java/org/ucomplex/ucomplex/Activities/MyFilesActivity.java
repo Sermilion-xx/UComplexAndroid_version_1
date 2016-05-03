@@ -250,6 +250,7 @@ public class MyFilesActivity extends AppCompatActivity implements OnTaskComplete
             @Override
             protected void onPostExecute(ArrayList newFile) {
                 super.onPostExecute(newFile);
+                progressDialog.dismiss();
                 if (newFile != null) {
                     if (courseMaterialsFragment != null) {
                         courseMaterialsFragment.addFile((File) newFile.get(0));

@@ -94,7 +94,8 @@ public class UsersGroupFragment extends ListFragment {
                     builderSingle = new AlertDialog.Builder(getContext());
                     builderSingle.setTitle(mUsersGroups.get(position).getName());
 
-                    final ImageAdapter imageAdapter = new ImageAdapter(users, getActivity(), 0);
+                    final ImageAdapter imageAdapter = new ImageAdapter(users, getActivity(), -1);
+                    imageAdapter.setFromSearch(true);
 
                     builderSingle.setNegativeButton(
                             "Назад",

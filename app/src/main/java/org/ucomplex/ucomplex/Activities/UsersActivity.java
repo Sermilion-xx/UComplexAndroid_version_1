@@ -254,7 +254,7 @@ public class UsersActivity extends AppCompatActivity {
             builderSingle = new AlertDialog.Builder(UsersActivity.this);
             builderSingle.setTitle("Найденные пользователи");
 
-            final ImageAdapter imageAdapter = new ImageAdapter(users, UsersActivity.this,0);
+            final ImageAdapter imageAdapter = new ImageAdapter(users, UsersActivity.this, 0);
 
             builderSingle.setNegativeButton(
                     "Назад",

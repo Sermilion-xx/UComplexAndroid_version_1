@@ -49,6 +49,7 @@ public class ImageAdapter extends BaseAdapter {
     protected ImageLoader imageLoader;
     private int usersType;
     public Activity context;
+    public boolean fromSearch = false;
 
     public void setmItems(ArrayList<User> mItems) {
         this.mItems = mItems;
@@ -56,6 +57,10 @@ public class ImageAdapter extends BaseAdapter {
 
     public ArrayList<User> getmItems() {
         return mItems;
+    }
+
+    public void setFromSearch(boolean fromSearch) {
+        this.fromSearch = fromSearch;
     }
 
     public ImageAdapter(ArrayList<User> items, Activity context, int usersType) {
@@ -162,7 +167,7 @@ public class ImageAdapter extends BaseAdapter {
             }
         }
         int type = user.getType();
-        if(type!=-1){
+        if(type!=-1 && !fromSearch){
             String typeStr = Common.getStringUserType(context, type);
             viewHolder.textView2.setText(typeStr);
         }

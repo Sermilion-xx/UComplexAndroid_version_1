@@ -436,6 +436,7 @@ public class CourseMaterialsAdapter extends ArrayAdapter<File> {
                                 @Override
                                 protected void onPostExecute(String s) {
                                     super.onPostExecute(s);
+                                    Toast.makeText(context, "Готово", Toast.LENGTH_LONG).show();
                                 }
                             }.execute(ids);
 
@@ -499,46 +500,51 @@ public class CourseMaterialsAdapter extends ArrayAdapter<File> {
 
         private void removeItem(final int pos) {
 
-            new AsyncTask<Void, Void, String>() {
-                @Override
-                protected String doInBackground(Void... params) {
-                    String url = "http://you.com.ru/student/my_files/delete_file?mobile=1";
-                    HashMap<String, String> httpParams = new HashMap();
-                    if (adapter.mItems.size() > 0) {
-                        httpParams.put("file", adapter.mItems.get(pos).getAddress());
-                        return Common.httpPost(url, Common.getLoginDataFromPref(context), httpParams);
-                    }
-                    return "";
+                        new AsyncTask<Void, Void, String>() {
+                            @Override
+                            protected String doInBackground(Void... params) {
+                                String url = "";
+                                if(user.getType()==4){
+                                    url = "https://ucomplex.org/student/my_files/delete_file?mobile=1";
+                                }else if(user.getType()==3){
+                                    url = "https://ucomplex.org/teacher/my_files/delete_file?mobile=1";
+                                }
+                                HashMap<String, String> httpParams = new HashMap();
+                                if (adapter.mItems.size() > 0) {
+                                    httpParams.put("file", adapter.mItems.get(pos).getAddress());
+                                    return Common.httpPost(url, Common.getLoginDataFromPref(context), httpParams);
+                                }
+                                return "";
 
-                }
-
-                @Override
-                protected void onPostExecute(String newFile) {
-                    super.onPostExecute(newFile);
-                    try {
-                        JSONObject jsonObject = new JSONObject(newFile);
-                        if (jsonObject.getBoolean("general")) {
-                            adapter.mItems.remove(pos);
-                            adapter.notifyDataSetChanged();
-                            if (adapter.mItems.size() == 0) {
-                                fragment.getListView().setDivider(null);
                             }
-                        } else {
-                            Toast.makeText(context, "Произошла ошибка", Toast.LENGTH_LONG).show();
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                        Toast.makeText(context, "Произошла ошибка", Toast.LENGTH_LONG).show();
+
+                            @Override
+                            protected void onPostExecute(String newFile) {
+                                super.onPostExecute(newFile);
+//                    try {
+//                        JSONObject jsonObject = new JSONObject(newFile);
+//                        if (jsonObject.getBoolean("general")) {
+                                adapter.mItems.remove(pos);
+                                adapter.notifyDataSetChanged();
+                                if (adapter.mItems.size() == 0) {
+                                    fragment.getListView().setDivider(null);
+                                }
+//                        } else {
+//                            Toast.makeText(context, "Произошла ошибка", Toast.LENGTH_LONG).show();
+//                        }
+//                    } catch (JSONException e) {
+//                        e.printStackTrace();
+//                        Toast.makeText(context, "Произошла ошибка", Toast.LENGTH_LONG).show();
+//                    }
+
+                            }
+                        }.execute();
                     }
 
-                }
-            }.execute();
-        }
-
-        private void renameItem(final int pos, final String newName) {
-            new AsyncTask<Void, Void, String>() {
-                @Override
-                protected String doInBackground(Void... params) {
+                private void renameItem(final int pos, final String newName) {
+                    new AsyncTask<Void, Void, String>() {
+                        @Override
+                        protected String doInBackground(Void... params) {
 
                     String jsonData;
                     String url = "http://you.com.ru/student/my_files/rename_file?mobile=1";
