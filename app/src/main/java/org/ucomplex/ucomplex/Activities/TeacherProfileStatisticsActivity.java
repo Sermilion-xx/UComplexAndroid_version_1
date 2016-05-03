@@ -53,7 +53,7 @@ public class TeacherProfileStatisticsActivity extends AppCompatActivity {
         }
         setContentView(R.layout.activity_teacher_info);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle(Common.getUserDataFromPref(this).getName());
+        toolbar.setTitle("Профиль");
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -109,6 +109,8 @@ public class TeacherProfileStatisticsActivity extends AppCompatActivity {
         adapter.addFragment(teacherStatisticsFragment, "Личная информация");
         adapter.addFragment(teacherRatingFragment, "Рейтинг");
         viewPager.setAdapter(adapter);
+        tabLayout.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+        tabLayout.setupWithViewPager(viewPager);
     }
 
     private class FetchTeachersInfoTask extends AsyncTask<Integer, Void, TeacherInfo> {
@@ -132,6 +134,7 @@ public class TeacherProfileStatisticsActivity extends AppCompatActivity {
             super.onPostExecute(aVoid);
             teacherInfo = aVoid;
             setupViewPager(mViewPager);
+            toolbar.setTitle(teacherInfo.getName());
             linlaHeaderProgress.setVisibility(View.GONE);
         }
 
