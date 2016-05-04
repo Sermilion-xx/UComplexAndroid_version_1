@@ -153,6 +153,7 @@ public class FetchUsersTask extends AsyncTask<Integer, Void, ArrayList<User>> {
                     try {
                         user.setPerson(userJson.getInt("person"));
                     } catch (JSONException ignored) {
+                        user.setPerson(userJson.getInt("id"));
                     }
 
                     user.setName(userJson.getString("name"));
