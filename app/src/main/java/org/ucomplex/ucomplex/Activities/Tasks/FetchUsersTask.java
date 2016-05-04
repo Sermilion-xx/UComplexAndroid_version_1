@@ -104,6 +104,8 @@ public class FetchUsersTask extends AsyncTask<Integer, Void, ArrayList<User>> {
                     if (userJson.has("type")) {
                         type = userJson.getInt("type");
                         user.setType(userJson.getInt("type"));
+                    }else{
+                        user.setType(-1);
                     }
                     if (type == 1) {
                         User admin = new User();

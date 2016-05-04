@@ -94,7 +94,9 @@ public class ProfileActivity extends AppCompatActivity implements OnTaskComplete
             Triplet<Bitmap, User, String> item = new Triplet<>(bitmap, mUser, "-1");
             items.add(item);
             if(mUser!=null){
-                mUser.setType(type);
+                if(mUser.getType()==0){
+                    mUser.setType(type);
+                }
                 for (User role : mUser.getRoles()) {
                     Triplet<String, String, String> aItem;
                     String positionName = role.getPositionName();
@@ -106,6 +108,7 @@ public class ProfileActivity extends AppCompatActivity implements OnTaskComplete
                     items.add(aItem);
                 }
             }
+
             profileFragment.setContext(this);
             profileFragment.setBitmap(bitmap);
             profileFragment.setHasPhoto(hasPhoto);

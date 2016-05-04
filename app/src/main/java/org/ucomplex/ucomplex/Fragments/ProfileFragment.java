@@ -120,6 +120,9 @@ public class ProfileFragment extends ListFragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = null;
+                if(mUser.getType()==-1){
+                    mUser.setType(mUser.getRoles().get(position-1).getType());
+                }
                 if(mUser.getType() == 4){
                     intent = new Intent(mContext, ProfileStatisticsActivity.class);
                 }else if(mUser.getType() == 3){

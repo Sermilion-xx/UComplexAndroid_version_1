@@ -2,11 +2,10 @@ package org.ucomplex.ucomplex.Fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
-import android.support.v4.content.ContextCompat;
 import android.view.View;
+
 import org.javatuples.Pair;
 import org.ucomplex.ucomplex.Adaptors.ProfileStatisticsAdapter;
-import org.ucomplex.ucomplex.R;
 
 import java.util.ArrayList;
 
@@ -16,8 +15,14 @@ import java.util.ArrayList;
 public class ProfileStatisticsFragment extends ListFragment {
 
     ArrayList<Pair<String, String>> statisticItems = new ArrayList<>();
+    boolean isClosed;
 
-    public ProfileStatisticsFragment() {}
+    public ProfileStatisticsFragment() {
+    }
+
+    public void setClosed(boolean closed) {
+        isClosed = closed;
+    }
 
     public void setStatisticItems(ArrayList<Pair<String, String>> statisticItems) {
         this.statisticItems = statisticItems;
@@ -30,6 +35,7 @@ public class ProfileStatisticsFragment extends ListFragment {
         setListShown(true);
         if (statisticItems != null) {
             ProfileStatisticsAdapter profileStatisticsAdapter = new ProfileStatisticsAdapter(getContext(), this.statisticItems);
+            profileStatisticsAdapter.setClosed(false);
             getListView().setAdapter(profileStatisticsAdapter);
         }
         if ((statisticItems != null ? statisticItems.size() : 0) == 0) {

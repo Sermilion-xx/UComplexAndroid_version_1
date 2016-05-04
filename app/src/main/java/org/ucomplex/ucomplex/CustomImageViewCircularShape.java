@@ -11,7 +11,7 @@ import android.widget.ImageView;
  * Created by Sermilion on 01/03/16.
  */
 public class CustomImageViewCircularShape extends ImageView {
-//you can change the radius to modify the circlur shape into oval or rounded rectangle
+//you can change the radius to modify the circlur shape into oval or rounded rectangle_green
 
     public static float radius = 100.0f;
 

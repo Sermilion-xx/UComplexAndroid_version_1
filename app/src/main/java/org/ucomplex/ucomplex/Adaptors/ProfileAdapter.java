@@ -35,6 +35,7 @@ public class ProfileAdapter extends ArrayAdapter<Triplet> {
 
     private static final int TYPE_HEADER = 0;
     private static final int TYPE_INFO = 1;
+    private static final int TYPE_ACTIVITY = 2;
 
     private Bitmap mBitmap;
     private User mUser;

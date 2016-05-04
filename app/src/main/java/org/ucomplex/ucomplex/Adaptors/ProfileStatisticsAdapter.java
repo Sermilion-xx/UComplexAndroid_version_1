@@ -19,6 +19,7 @@ public class ProfileStatisticsAdapter extends ArrayAdapter<Pair<String, String>>
     private LayoutInflater inflater;
     ArrayList<Pair<String, String>> mItems = new ArrayList<>();
     Context context;
+    boolean isClosed;
 
     private static final int TYPE_HEADER = 0;
     private static final int TYPE_INFO = 1;
@@ -28,6 +29,10 @@ public class ProfileStatisticsAdapter extends ArrayAdapter<Pair<String, String>>
         this.mItems = new ArrayList<>();
         this.mItems = items;
         this.context = context;
+    }
+
+    public void setClosed(boolean closed) {
+        isClosed = closed;
     }
 
     @Override
@@ -40,7 +45,9 @@ public class ProfileStatisticsAdapter extends ArrayAdapter<Pair<String, String>>
         int count = mItems.size() == 0 ? 1 : mItems.size();
         if(mItems.size()==1){
             if(mItems.get(0).getValue0().equals("Студент") || mItems.get(0).getValue0().equals("Сотрудник")){
-                mItems.add(new Pair<>("Профиль закрыт",""));
+                if(isClosed){
+                    mItems.add(new Pair<>("Профиль закрыт",""));
+                }
             }
         }
         return count;

@@ -24,6 +24,7 @@ import org.ucomplex.ucomplex.Adaptors.ProfileStatisticsAdapter;
 import org.ucomplex.ucomplex.Adaptors.ViewPagerAdapter;
 import org.ucomplex.ucomplex.Common;
 import org.ucomplex.ucomplex.Fragments.ProfileStatisticsFragment;
+import org.ucomplex.ucomplex.Fragments.TeacherProfileFragment;
 import org.ucomplex.ucomplex.Fragments.TeacherRatingFragment;
 import org.ucomplex.ucomplex.Fragments.TeacherInfoFragment;
 import org.ucomplex.ucomplex.Model.TeacherInfo;
@@ -49,6 +50,7 @@ public class TeacherProfileStatisticsActivity extends AppCompatActivity {
 
     private TeacherInfoFragment teacherStatisticsFragment;
     private TeacherRatingFragment teacherRatingFragment;
+    private TeacherProfileFragment teacherProfileFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,13 +109,20 @@ public class TeacherProfileStatisticsActivity extends AppCompatActivity {
 
     private void setupViewPager(ViewPager viewPager) {
 
+        teacherProfileFragment = new TeacherProfileFragment();
+        teacherProfileFragment.setmContext(this);
+        teacherProfileFragment.setmTeacherRating(teacherInfo);
+
         teacherStatisticsFragment = new TeacherInfoFragment();
         teacherStatisticsFragment.setTeacherInfo(teacherInfo);
+
         teacherRatingFragment = new TeacherRatingFragment();
         teacherRatingFragment.setmContext(this);
         teacherRatingFragment.setTeacher(id);
+
         adapter = new ViewPagerAdapter(getSupportFragmentManager());
 
+        adapter.addFragment(teacherProfileFragment, "Профиль");
         adapter.addFragment(teacherStatisticsFragment, "Личная информация");
         adapter.addFragment(teacherRatingFragment, "Рейтинг");
         viewPager.setAdapter(adapter);
@@ -150,12 +159,17 @@ public class TeacherProfileStatisticsActivity extends AppCompatActivity {
                 ProfileStatisticsFragment profileStatisticsFragment = new ProfileStatisticsFragment();
                 ArrayList<Pair<String, String>> items = new ArrayList<>();
                 int lastOnlineMilliseconds = teacherInfo.getOnline();
-                Date date = new Date(lastOnlineMilliseconds*1000);
-                Locale locale = new Locale("ru", "RU");
-                SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", locale);
-                String lastOnline = sdfDate.format(date);
+                String lastOnline = "";
+                if(lastOnlineMilliseconds>0){
+                    Date date = new Date(lastOnlineMilliseconds*1000);
+                    Locale locale = new Locale("ru", "RU");
+                    SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", locale);
+                    lastOnline = sdfDate.format(date);
+                }
+
                 items.add(new Pair<>("Сотрудник",lastOnline));
                 profileStatisticsFragment.setStatisticItems(items);
+                profileStatisticsFragment.setClosed(false);
                 adapter.addFragment(profileStatisticsFragment, "Профиль");
                 mViewPager.setAdapter(adapter);
                 tabLayout.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
