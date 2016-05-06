@@ -150,7 +150,7 @@ public class TeacherProfileStatisticsActivity extends AppCompatActivity {
         protected void onPostExecute(TeacherInfo aVoid) {
             super.onPostExecute(aVoid);
             teacherInfo = aVoid;
-            if(teacherInfo.getType()!=-1){
+            if(teacherInfo.getType()!=0){
                 setupViewPager(mViewPager);
 
             }else{
@@ -158,16 +158,16 @@ public class TeacherProfileStatisticsActivity extends AppCompatActivity {
 
                 ProfileStatisticsFragment profileStatisticsFragment = new ProfileStatisticsFragment();
                 ArrayList<Pair<String, String>> items = new ArrayList<>();
-                int lastOnlineMilliseconds = teacherInfo.getOnline();
+                long lastOnlineMilliseconds = teacherInfo.getOnline();
+                long s = lastOnlineMilliseconds *1000;
                 String lastOnline = "";
                 if(lastOnlineMilliseconds>0){
-                    Date date = new Date(lastOnlineMilliseconds*1000);
+                    Date date = new Date(s);
                     Locale locale = new Locale("ru", "RU");
                     SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", locale);
                     lastOnline = sdfDate.format(date);
                 }
-
-                items.add(new Pair<>("Сотрудник",lastOnline));
+                items.add(new Pair<>(Common.getStringUserType(TeacherProfileStatisticsActivity.this, teacherInfo.getType()),lastOnline));
                 profileStatisticsFragment.setStatisticItems(items);
                 profileStatisticsFragment.setClosed(false);
                 adapter.addFragment(profileStatisticsFragment, "Профиль");
@@ -237,7 +237,7 @@ public class TeacherProfileStatisticsActivity extends AppCompatActivity {
                     }
                     teacherInfo.setTeacherTimetableCourses(teacherTimetableCoursesArrayList);
                 } catch (JSONException ignored) {
-                    teacherInfo.setType(-1);
+                    teacherInfo.setType(0);
                 }
                 return teacherInfo;
 

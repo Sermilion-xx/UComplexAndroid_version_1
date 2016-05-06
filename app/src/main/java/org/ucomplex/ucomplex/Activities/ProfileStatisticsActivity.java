@@ -74,6 +74,9 @@ public class ProfileStatisticsActivity extends AppCompatActivity {
             protected void onPostExecute(Void aVoid) {
                 super.onPostExecute(aVoid);
                 profileStatisticsFragment.setStatisticItems(mItems);
+                if(mItems.size()<2){
+                    profileStatisticsFragment.setClosed(true);
+                }
                 FragmentManager fragmentManager = getSupportFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                 fragmentTransaction.replace(R.id.content_profile_statistics, profileStatisticsFragment);

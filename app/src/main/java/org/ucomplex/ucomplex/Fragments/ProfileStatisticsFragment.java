@@ -35,7 +35,7 @@ public class ProfileStatisticsFragment extends ListFragment {
         setListShown(true);
         if (statisticItems != null) {
             ProfileStatisticsAdapter profileStatisticsAdapter = new ProfileStatisticsAdapter(getContext(), this.statisticItems);
-            profileStatisticsAdapter.setClosed(false);
+            profileStatisticsAdapter.setClosed(isClosed);
             getListView().setAdapter(profileStatisticsAdapter);
         }
         if ((statisticItems != null ? statisticItems.size() : 0) == 0) {

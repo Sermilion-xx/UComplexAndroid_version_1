@@ -10,6 +10,7 @@ import android.widget.TextView;
 import org.javatuples.Pair;
 import org.ucomplex.ucomplex.Common;
 import org.ucomplex.ucomplex.R;
+
 import java.util.ArrayList;
 
 /**
@@ -42,15 +43,12 @@ public class ProfileStatisticsAdapter extends ArrayAdapter<Pair<String, String>>
 
     @Override
     public int getCount() {
-        int count = mItems.size() == 0 ? 1 : mItems.size();
-        if(mItems.size()==1){
-            if(mItems.get(0).getValue0().equals("Студент") || mItems.get(0).getValue0().equals("Сотрудник")){
-                if(isClosed){
-                    mItems.add(new Pair<>("Профиль закрыт",""));
-                }
+        if (mItems.size() == 1) {
+            if (isClosed) {
+                mItems.add(new Pair<>("Профиль закрыт", ""));
             }
         }
-        return count;
+        return mItems.size() == 0 ? 1 : mItems.size();
     }
 
     @Override
@@ -116,7 +114,7 @@ public class ProfileStatisticsAdapter extends ArrayAdapter<Pair<String, String>>
         Pair<String, String> item = getItem(position);
         if (viewType == TYPE_HEADER) {
             viewHolder.headerTextView.setText(item.getValue0());
-            if(!item.getValue1().equals(" ")){
+            if (!item.getValue1().equals(" ")) {
                 viewHolder.onlineTextView.setText(Common.makeDate(item.getValue1()));
             }
         } else if (viewType == TYPE_INFO) {
