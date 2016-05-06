@@ -65,7 +65,6 @@ public class TeacherProfileStatisticsActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-
         linlaHeaderProgress = (LinearLayout) findViewById(R.id.linlaHeaderProgress);
         mViewPager = (ViewPager) findViewById(R.id.viewpager);
         adapter = new ViewPagerAdapter(getSupportFragmentManager());

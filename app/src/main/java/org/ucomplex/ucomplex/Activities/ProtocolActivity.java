@@ -76,8 +76,8 @@ public class ProtocolActivity extends AppCompatActivity {
                         postParams.put("time", dayMonthYear);
                         postParams.put("hourNumber", String.valueOf(hourNumber));
                         postParams.put("hourType", hourType);
-                        for(int i = 0; i < studentsIds.size(); i++){
-                            postParams.put("arr["+studentsIds.get(i).getValue0()+"][mark]", String.valueOf(studentsIds.get(i).getValue1()));
+                        for (int i = 0; i < studentsIds.size(); i++) {
+                            postParams.put("arr[" + studentsIds.get(i).getValue0() + "][mark]", String.valueOf(studentsIds.get(i).getValue1()));
                         }
                         String url = "https://ucomplex.org/teacher/ajax/save_attendance?mobile=1";
                         String jsonString = Common.httpPost(url, Common.getLoginDataFromPref(ProtocolActivity.this), postParams);
@@ -118,7 +118,7 @@ public class ProtocolActivity extends AppCompatActivity {
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
                 R.layout.spinner_item_white, options.toArray(new String[options.size()])) {
 
-            public View getView(int position, View convertView,ViewGroup parent) {
+            public View getView(int position, View convertView, ViewGroup parent) {
 
                 View v = super.getView(position, convertView, parent);
 
@@ -128,9 +128,9 @@ public class ProtocolActivity extends AppCompatActivity {
 
             }
 
-            public View getDropDownView(int position, View convertView,ViewGroup parent) {
+            public View getDropDownView(int position, View convertView, ViewGroup parent) {
 
-                View v = super.getDropDownView(position, convertView,parent);
+                View v = super.getDropDownView(position, convertView, parent);
 
                 ((TextView) v).setGravity(Gravity.CENTER);
 
@@ -149,7 +149,8 @@ public class ProtocolActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> spinner, View container, int position, long id) {
                 String[] hourTypeArray = new String[]{"common_hour", "control_hour", "exam_hour", "work_off"};
-                hourType = hourTypeArray[position];}
+                hourType = hourTypeArray[position];
+            }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
@@ -208,16 +209,20 @@ public class ProtocolActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int id) {
                         if (Common.isNetworkConnected(ProtocolActivity.this)) {
                             String newName = editText.getText().toString();
-                             newName = newName.replace(" ","");
-                            if(newName.equals("")){
-                                newName = "0";
+                            newName = newName.replace(" ", "").toLowerCase();
+                            try {
+                                int test = Integer.valueOf(newName);
+                            } catch (NumberFormatException e) {
+                                if (!newName.equals("н") && !newName.equals("у") && !newName.equals("б")) {
+                                    newName = "0";
+                                }
                             }
-                                Triplet<Integer, Integer, String> triplet = protocolAdapter.getmItems().get(position);
-                                triplet = triplet.setAt1(Integer.valueOf(newName));
-                                protocolAdapter.setItemAt(triplet, position);
-                                protocolAdapter.notifyDataSetChanged();
-                                Pair<Integer, Integer> pair = new Pair(protocolAdapter.getItem(position).getValue0(), protocolAdapter.getItem(position).getValue1());
-                                studentsIds.add(pair);
+                            Triplet<Integer, String, String> triplet = protocolAdapter.getmItems().get(position);
+                            triplet = triplet.setAt1(newName);
+                            protocolAdapter.setItemAt(triplet, position);
+                            protocolAdapter.notifyDataSetChanged();
+                            Pair<Integer, Integer> pair = new Pair(protocolAdapter.getItem(position).getValue0(), protocolAdapter.getItem(position).getValue1());
+                            studentsIds.add(pair);
 
                         } else {
                             Toast.makeText(ProtocolActivity.this, "Проверте интернет соединение", Toast.LENGTH_LONG).show();
@@ -244,46 +249,54 @@ public class ProtocolActivity extends AppCompatActivity {
             calendarOneDay.setDate(calendarDayJson.getString("date"));
             calendarOneDay.setTime(calendarDayJson.getString("time"));
             calendarOneDay.setHourNumber(calendarDayJson.getInt("hourNumber"));
-            try{
+            try {
                 calendarOneDay.setSubgroup(calendarDayJson.getInt("subgroup"));
-            }catch (JSONException ignored){}
+            } catch (JSONException ignored) {
+            }
             calendarOneDay.setGroup(calendarDayJson.getInt("group"));
             calendarOneDay.setCourse(calendarDayJson.getInt("course"));
             calendarOneDay.setTable(calendarDayJson.getInt("table"));
             calendarOneDay.setMaxNumber(calendarDayJson.getInt("maxNumber"));
-            try{
+            try {
                 calendarOneDay.setHourType(calendarDayJson.getInt("hourType"));
-            }catch (JSONException ignored){}
-            try{
+            } catch (JSONException ignored) {
+            }
+            try {
                 calendarOneDay.setRecordID(calendarDayJson.getInt("recordID"));
-            }catch (JSONException ignored){}
+            } catch (JSONException ignored) {
+            }
             JSONObject studentProgressJson = new JSONObject();
-            try{
+            try {
                 studentProgressJson = calendarDayJson.getJSONObject("student_progress");
-            }catch (JSONException ignored){}
+            } catch (JSONException ignored) {
+            }
             JSONArray studentsJson = new JSONArray();
-            try{
+            try {
                 studentsJson = calendarDayJson.getJSONArray("students");
-            }catch (JSONException ignored){}
+            } catch (JSONException ignored) {
+            }
 
-            ArrayList<Triplet<Integer, Integer, String>> studentsProgressArray = new ArrayList<>();
+            ArrayList<Triplet<Integer, String, String>> studentsProgressArray = new ArrayList<>();
 
             for (int i = 0; i < studentsJson.length(); i++) {
                 Integer studentId = -1;
-                Integer mark = 0;
+                String mark = "0";
                 String name = "-1";
                 JSONObject studentJson = studentsJson.getJSONObject(i);
-                try{
+                try {
                     studentId = studentJson.getInt("id");
-                }catch (JSONException ignored){}
-                try{
-                    mark = studentProgressJson.getInt(studentJson.getString("id"));
-                }catch (JSONException ignored){}
-                try{
+                } catch (JSONException ignored) {
+                }
+                try {
+                    mark = String.valueOf(studentProgressJson.getInt(studentJson.getString("id")));
+                } catch (JSONException ignored) {
+                }
+                try {
                     name = studentJson.getString("name");
-                }catch (JSONException ignored){}
+                } catch (JSONException ignored) {
+                }
 
-                Triplet<Integer, Integer, String> studentInfo = new Triplet<>(studentId, mark, name);
+                Triplet<Integer, String, String> studentInfo = new Triplet<>(studentId, mark, name);
                 studentsProgressArray.add(studentInfo);
             }
             calendarOneDay.setStudentsProgress(studentsProgressArray);

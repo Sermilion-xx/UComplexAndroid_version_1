@@ -2,6 +2,7 @@ package org.ucomplex.ucomplex.Adaptors;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,12 +23,15 @@ import java.util.ArrayList;
  */
 public class TeacherInfoAdapter extends ArrayAdapter<Votes> {
 
+    private ArrayList<String> colors = new ArrayList();
+
     private ArrayList<Button> buttons = new ArrayList<>();
     private LayoutInflater inflater;
     private ArrayList<Votes> mItems = new ArrayList<>();
     private int teacher;
     private boolean myTeacher;
     private ArrayList<Pair<Integer, Integer>> questionHint = new ArrayList<>();
+    private static int givenMark;
 
     public TeacherInfoAdapter(Context context, TeacherRating teacherRating) {
         super(context, -1, teacherRating.getVotes());
@@ -50,6 +54,17 @@ public class TeacherInfoAdapter extends ArrayAdapter<Votes> {
         questionHint.add(new Pair<>(R.string.question8, R.string.questionHint8));
         questionHint.add(new Pair<>(R.string.question9, R.string.questionHint9));
         questionHint.add(new Pair<>(R.string.question10, R.string.questionHint10));
+
+        colors.add("#E77272");
+        colors.add("#E77D72");
+        colors.add("#E78D72");
+        colors.add("#E7A472");
+        colors.add("#E8B472");
+        colors.add("#E8C272");
+        colors.add("#E8C272");
+        colors.add("#E6E773");
+        colors.add("#c3e874");
+        colors.add("#89e874");
     }
 
     @Override
@@ -61,6 +76,37 @@ public class TeacherInfoAdapter extends ArrayAdapter<Votes> {
     public boolean isEnabled(int position) {
         return mItems.size() != 0;
     }
+
+    View.OnClickListener clickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Button button = (Button) v;
+            String text = button.getText().toString();
+            if(text.equals("1")){
+                givenMark = 1;
+            }else if(text.equals("2")){
+                givenMark = 2;
+            }else if(text.equals("3")){
+                givenMark = 3;
+            }else if(text.equals("4")){
+                givenMark = 4;
+            }else if(text.equals("5")){
+                givenMark = 5;
+            }else if(text.equals("6")){
+                givenMark = 6;
+            }else if(text.equals("7")){
+                givenMark = 7;
+            }else if(text.equals("8")){
+                givenMark = 8;
+            }else if(text.equals("9")){
+                givenMark = 9;
+            }else if(text.equals("10")){
+                givenMark = 10;
+            }
+            colorButton(givenMark);
+            notifyDataSetChanged();
+        }
+    };
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
@@ -90,6 +136,18 @@ public class TeacherInfoAdapter extends ArrayAdapter<Votes> {
                 viewHolder.button8 = (Button) convertView.findViewById(R.id.question_button_8);
                 viewHolder.button9 = (Button) convertView.findViewById(R.id.question_button_9);
                 viewHolder.button10 = (Button) convertView.findViewById(R.id.question_button_10);
+
+                viewHolder.button1.setOnClickListener(clickListener);
+                viewHolder.button2.setOnClickListener(clickListener);
+                viewHolder.button3.setOnClickListener(clickListener);
+                viewHolder.button4.setOnClickListener(clickListener);
+                viewHolder.button5.setOnClickListener(clickListener);
+                viewHolder.button6.setOnClickListener(clickListener);
+                viewHolder.button7.setOnClickListener(clickListener);
+                viewHolder.button8.setOnClickListener(clickListener);
+                viewHolder.button9.setOnClickListener(clickListener);
+                viewHolder.button1.setOnClickListener(clickListener);
+
                 buttons.add(viewHolder.button1);
                 buttons.add(viewHolder.button2);
                 buttons.add(viewHolder.button3);
@@ -121,15 +179,23 @@ public class TeacherInfoAdapter extends ArrayAdapter<Votes> {
             if(score==0){
                 score = 10;
             }
-            double diff = (10-score);
-            for (int j = 9; j >= diff; j--) {
-                Button button = buttons.get(j);
-                button.setBackgroundColor(Color.WHITE);
-                button.setTextColor(Color.BLACK);
-            }
-
+//            double diff = (10-Math.round(score));
+            colorButton(Math.round(score));
+//            colorButton((int) score);
+//            for (int j = 9; j >= diff; j--) {
+//                Button button = buttons.get(j);
+//                button.setBackgroundColor(Color.WHITE);
+//                button.setTextColor(Color.BLACK);
+//            }
         }
         return convertView;
+    }
+
+    private void colorButton(long givenMark){
+        for (int j = 0; j <= givenMark; j++) {
+            Button button = buttons.get(j);
+            button.setBackgroundColor(Color.parseColor(colors.get(j)));
+        }
     }
 
     private static class ViewHolder {

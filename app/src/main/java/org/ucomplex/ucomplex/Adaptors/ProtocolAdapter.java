@@ -17,28 +17,28 @@ import java.util.List;
 /**
  * Created by Sermilion on 24/04/16.
  */
-public class ProtocolAdapter extends ArrayAdapter<Triplet<Integer, Integer, String>> {
+public class ProtocolAdapter extends ArrayAdapter<Triplet<Integer, String, String>> {
 
     //id, mark, name
-    private ArrayList<Triplet<Integer, Integer, String>> mItems;
+    private ArrayList<Triplet<Integer, String, String>> mItems;
     private Context mContext;
     private LayoutInflater inflater;
 
-    public ProtocolAdapter(Context context, ArrayList<Triplet<Integer, Integer, String>> items) {
+    public ProtocolAdapter(Context context, ArrayList<Triplet<Integer, String, String>> items) {
         super(context, -1, items);
         mItems = items;
         mContext = context;
     }
 
-    public void setItemAt(Triplet<Integer, Integer, String> item, int position){
+    public void setItemAt(Triplet<Integer, String, String> item, int position){
         mItems.set(position, item);
     }
 
-    public List<Triplet<Integer, Integer, String>> getmItems() {
+    public List<Triplet<Integer, String, String>> getmItems() {
         return mItems;
     }
 
-    public void setmItems(ArrayList<Triplet<Integer, Integer, String>> mItems) {
+    public void setmItems(ArrayList<Triplet<Integer, String, String>> mItems) {
         this.mItems = mItems;
     }
 
@@ -74,7 +74,7 @@ public class ProtocolAdapter extends ArrayAdapter<Triplet<Integer, Integer, Stri
                 viewHolder = (ViewHolder) convertView.getTag();
             }
             viewHolder.mNameTextView.setText((position + 1) + ". " + getItem(position).getValue2());
-            if(getItem(position).getValue1()==0){
+            if(getItem(position).getValue1().equals("0")){
                 viewHolder.mMarkTextView.setText("");
             }else{
                 viewHolder.mMarkTextView.setText(String.valueOf(getItem(position).getValue1()));

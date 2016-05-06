@@ -21,7 +21,7 @@ public class CalendarOneDay {
     private int recordID;
     private int hourType;
     //id, mark, name
-    private ArrayList<Triplet<Integer, Integer, String>> studentsProgress = new ArrayList<>();
+    private ArrayList<Triplet<Integer, String, String>> studentsProgress = new ArrayList<>();
 
     public CalendarOneDay() {
     }
@@ -114,11 +114,11 @@ public class CalendarOneDay {
         this.maxNumber = maxNumber;
     }
 
-    public ArrayList<Triplet<Integer, Integer, String>> getStudentsProgress() {
+    public ArrayList<Triplet<Integer, String, String>> getStudentsProgress() {
         return studentsProgress;
     }
 
-    public void setStudentsProgress(ArrayList<Triplet<Integer, Integer, String>> studentsProgress) {
+    public void setStudentsProgress(ArrayList<Triplet<Integer, String, String>> studentsProgress) {
         this.studentsProgress = studentsProgress;
     }
 }
