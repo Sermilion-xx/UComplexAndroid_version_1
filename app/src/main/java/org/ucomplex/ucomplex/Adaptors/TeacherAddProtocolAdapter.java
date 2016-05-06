@@ -147,6 +147,7 @@ public class TeacherAddProtocolAdapter extends ArrayAdapter<Integer> {
                                         protected void onPostExecute(String s) {
                                             super.onPostExecute(s);
                                             if(s!=null){
+                                                changedDay.getLessons().remove(position);
                                                 numbersOfLessons.remove(position);
                                                 TeacherAddProtocolAdapter.this.notifyDataSetChanged();
                                                 listener.onTaskComplete(this, "protocolDeleteSuccess", changedDay);

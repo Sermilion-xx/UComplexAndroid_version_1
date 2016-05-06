@@ -264,7 +264,12 @@ public class CalendarFragment extends Fragment implements OnTaskCompleteListener
                 try {
                     if (o != null && o.length == 2) {
                         if (o[0].equals("protocolDeleteSuccess")) {
-                            calendar.getChangedDays().remove(o[1]);
+//                            calendar.getChangedDays().remove(o[1]);
+                            for(int i = 0; i< calendar.getChangedDays().size(); i++){
+                                if(calendar.getChangedDays().get(i).equals(o[1])){
+                                    calendar.getChangedDays().get(i).setLessons(((ChangedDay)o[1]).getLessons());
+                                }
+                            }
                             materialCalendarView.removeDecorators();
                             refreshMonth();
                             dayProtocolsDialog.dismiss();
@@ -422,12 +427,14 @@ public class CalendarFragment extends Fragment implements OnTaskCompleteListener
                                                 .setItems(null, new DialogInterface.OnClickListener() {
                                                     @Override
                                                     public void onClick(DialogInterface dialog, final int which) {
-                                                            Intent intent = new Intent(context, ProtocolActivity.class);
-                                                            intent.putExtra("subjId", calendar.getSubjId());
-                                                            intent.putExtra("dayMonthYear", dayMonthYear);
-                                                            intent.putExtra("hourNumber", which+1);
-                                                            intent.putExtra("hourType", finalSelectedDay != null ? finalSelectedDay.getLessons().get(which).getType() : 0);
-                                                            startActivity(intent);
+                                                        Intent intent = new Intent(context, ProtocolActivity.class);
+                                                        intent.putExtra("subjId", calendar.getSubjId());
+                                                        intent.putExtra("dayMonthYear", dayMonthYear);
+                                                        intent.putExtra("hourNumber", which+1);
+                                                        if (finalSelectedDay != null && finalSelectedDay.getLessons().size() > which) {
+                                                            intent.putExtra("hourType", finalSelectedDay.getLessons().get(which).getType());
+                                                        }
+                                                        startActivity(intent);
                                                     }
                                                 }).create();
                                         ListView listView = dayProtocolsDialog.getListView();

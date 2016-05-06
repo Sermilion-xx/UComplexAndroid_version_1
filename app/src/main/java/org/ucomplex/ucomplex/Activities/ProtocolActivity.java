@@ -43,18 +43,18 @@ import java.util.HashMap;
 public class ProtocolActivity extends AppCompatActivity {
 
     private CalendarOneDay mCalendarOneDay;
-    ListView mListView;
-    LinearLayout linlaHeaderProgress;
+    private ListView mListView;
+    private LinearLayout linlaHeaderProgress;
 
     private int subjId;
     private String dayMonthYear;
     private int hourNumber;
     private ArrayList<Pair<Integer, Integer>> studentsIds = new ArrayList<>();
 
-    ProtocolAdapter protocolAdapter;
-    Spinner spinner;
-    ArrayList<String> options = new ArrayList<>();
-    String hourType;
+    private ProtocolAdapter protocolAdapter;
+    private Spinner spinner;
+    private ArrayList<String> options = new ArrayList<>();
+    private String hourType;
     int hourTypeInt;
 
     public static ImageButton doneButton;

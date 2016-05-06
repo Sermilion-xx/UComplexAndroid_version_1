@@ -32,4 +32,23 @@ public class ChangedDay implements Serializable {
     public void setLessons(ArrayList<Lesson> lessons) {
         this.lessons = lessons;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ChangedDay that = (ChangedDay) o;
+
+        if (day != that.day) return false;
+        else return true;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = day;
+        result = 31 * result + (lessons != null ? lessons.hashCode() : 0);
+        return result;
+    }
 }
