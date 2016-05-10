@@ -28,13 +28,16 @@ public class TeacherRatingAdapter extends ArrayAdapter<Votes> {
     private ArrayList<String> colors = new ArrayList();
     private LayoutInflater inflater;
     public ArrayList<Votes> mItems = new ArrayList<>();
-    private ArrayList<Votes> mItemsTemp = new ArrayList<>();
     private int teacher;
     private boolean myTeacher;
     private ArrayList<Pair<Integer, Integer>> questionHint = new ArrayList<>();
     private HashMap<String, Integer> givenMarks = new HashMap<>();
     ViewHolder viewHolder;
+    public static boolean voted;
 
+    public ArrayList<Votes> getmItems() {
+        return mItems;
+    }
 
     public TeacherRatingAdapter(Context context, TeacherRating teacherRating) {
         super(context, -1, teacherRating.getVotes());
@@ -246,6 +249,7 @@ public class TeacherRatingAdapter extends ArrayAdapter<Votes> {
                 }
                 int pos = (int) v.getTag();
                 mItems.get(pos).setChecked(givenMark - 1);
+                voted = true;
                 System.out.println();
             }
         };

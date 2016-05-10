@@ -20,6 +20,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.ucomplex.ucomplex.Activities.Tasks.UploadPhotoTask;
+import org.ucomplex.ucomplex.Adaptors.TeacherRatingAdapter;
 import org.ucomplex.ucomplex.Adaptors.ViewPagerAdapter;
 import org.ucomplex.ucomplex.Common;
 import org.ucomplex.ucomplex.Fragments.ProfileStatisticsFragment;
@@ -30,11 +31,13 @@ import org.ucomplex.ucomplex.Fragments.TeacherProfileFragment;
 import org.ucomplex.ucomplex.Fragments.TeacherRatingFragment;
 import org.ucomplex.ucomplex.Model.TeacherInfo;
 import org.ucomplex.ucomplex.Model.TeacherTimetableCourses;
+import org.ucomplex.ucomplex.Model.Votes;
 import org.ucomplex.ucomplex.R;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
 
 public class TeacherProfileStatisticsActivity extends AppCompatActivity {
@@ -71,42 +74,117 @@ public class TeacherProfileStatisticsActivity extends AppCompatActivity {
         doneButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (Common.isNetworkConnected(TeacherProfileStatisticsActivity.this)) {
-
-                } else {
-                    Toast.makeText(TeacherProfileStatisticsActivity.this, "Проверьте интернет соединение.", Toast.LENGTH_LONG).show();
+                if (TeacherRatingAdapter.voted) {
+                    if (Common.isNetworkConnected(TeacherProfileStatisticsActivity.this)) {
+                        ArrayList<Votes> items = teacherRatingFragment.getListAdapter().getmItems();
+                        new AsyncTask<Void, Void, Void>(){
+                            @Override
+                            protected Void doInBackground(Void... params) {
+                                String urlString = "https://ucomplex.org/student/ajax/set_teacher_vote?mobile=1";
+                                HashMap<String, String> httpParams = new HashMap<>();
+                                httpParams.put("teacher", String.valueOf(teacherInfo.getId()));
+                                for(int i = 0; i < 10; i++){
+                                    Votes vote = teacherRatingFragment.getListAdapter().getmItems().get(i);
+                                    if(vote.getChecked()>0){
+                                        httpParams.put("qs["+(i+1)+"]", String.valueOf(vote.getChecked()));
+                                    }
+                                }
+                                String jsonData = Common.httpPost(urlString, Common.getLoginDataFromPref(TeacherProfileStatisticsActivity.this), httpParams);
+                                Toast.makeText(TeacherProfileStatisticsActivity.this, "Оценка сохранена.", Toast.LENGTH_LONG).show();
+                                return null;
+                            }
+                        }.execute();
+                    } else {
+                        Toast.makeText(TeacherProfileStatisticsActivity.this, "Проверьте интернет соединение.", Toast.LENGTH_LONG).show();
+                    }
+                }else{
+                    Toast.makeText(TeacherProfileStatisticsActivity.this, "Нету изменений.", Toast.LENGTH_LONG).show();
                 }
             }
-        });
+                                      }
 
-        linlaHeaderProgress = (LinearLayout) findViewById(R.id.linlaHeaderProgress);
-        mViewPager = (ViewPager) findViewById(R.id.viewpager);
-        adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-            }
+        );
 
-            @Override
-            public void onPageSelected(int position) {
-                if (position == 1) {
+        linlaHeaderProgress = (LinearLayout)
 
-                } else {
+                findViewById(R.id.linlaHeaderProgress);
 
-                }
-            }
+        mViewPager = (ViewPager)
 
-            @Override
-            public void onPageScrollStateChanged(int state) {
-            }
-        });
-        role = Integer.parseInt(getIntent().getExtras().getString("role"));
-        id = getIntent().getExtras().getInt("id");
-        toolbar.setTitle(getIntent().getExtras().getString("name"));
+                findViewById(R.id.viewpager);
+
+        adapter = new
+
+                ViewPagerAdapter(getSupportFragmentManager()
+
+        );
+        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener()
+
+                                           {
+                                               @Override
+                                               public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                                               }
+
+                                               @Override
+                                               public void onPageSelected(int position) {
+                                                   if (position == 1) {
+
+                                                   } else {
+
+                                                   }
+                                               }
+
+                                               @Override
+                                               public void onPageScrollStateChanged(int state) {
+                                               }
+                                           }
+
+        );
+        role = Integer.parseInt(
+
+                getIntent()
+
+                        .
+
+                                getExtras()
+
+                        .
+
+                                getString("role")
+
+        );
+        id =
+
+                getIntent()
+
+                        .
+
+                                getExtras()
+
+                        .
+
+                                getInt("id");
+
+        toolbar.setTitle(
+
+                getIntent()
+
+                        .
+
+                                getExtras()
+
+                        .
+
+                                getString("name")
+
+        );
         FetchTeachersInfoTask fetchTeachersInfoTask = new FetchTeachersInfoTask();
         fetchTeachersInfoTask.execute(role);
 
-        tabLayout = (TabLayout) findViewById(R.id.tabs);
+        tabLayout = (TabLayout)
+
+                findViewById(R.id.tabs);
+
         tabLayout.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimary));
     }
 
@@ -182,9 +260,9 @@ public class TeacherProfileStatisticsActivity extends AppCompatActivity {
                 }
                 items.add(new Pair<>(Common.getStringUserType(TeacherProfileStatisticsActivity.this, teacherInfo.getType()), lastOnline));
                 profileStatisticsFragment.setStatisticItems(items);
-                if(teacherInfo.getClosed()==1){
+                if (teacherInfo.getClosed() == 1) {
                     profileStatisticsFragment.setClosed(true);
-                }else{
+                } else {
                     profileStatisticsFragment.setClosed(false);
                 }
 

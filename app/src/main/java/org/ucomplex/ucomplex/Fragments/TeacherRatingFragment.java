@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.ListAdapter;
 import android.widget.Toast;
 
 import org.ucomplex.ucomplex.Activities.Tasks.FetchTeacherRating;
@@ -31,6 +32,11 @@ public class TeacherRatingFragment extends ListFragment implements OnTaskComplet
 
     public TeacherRatingFragment() {
 
+    }
+
+    @Override
+    public TeacherRatingAdapter getListAdapter() {
+        return adapter;
     }
 
     public void setTeacher(int teacher) {
