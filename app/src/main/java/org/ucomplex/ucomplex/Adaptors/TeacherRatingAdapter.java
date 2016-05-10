@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.RadioButton;
 import android.widget.TextView;
 
 import org.javatuples.Pair;
@@ -25,28 +26,26 @@ import java.util.HashMap;
 public class TeacherRatingAdapter extends ArrayAdapter<Votes> {
 
     private ArrayList<String> colors = new ArrayList();
-
-    private ArrayList<Button> buttons = new ArrayList<>();
     private LayoutInflater inflater;
-    private ArrayList<Votes> mItems = new ArrayList<>();
+    public ArrayList<Votes> mItems = new ArrayList<>();
     private ArrayList<Votes> mItemsTemp = new ArrayList<>();
     private int teacher;
     private boolean myTeacher;
     private ArrayList<Pair<Integer, Integer>> questionHint = new ArrayList<>();
-    private static int givenMark;
     private HashMap<String, Integer> givenMarks = new HashMap<>();
     ViewHolder viewHolder;
+
 
     public TeacherRatingAdapter(Context context, TeacherRating teacherRating) {
         super(context, -1, teacherRating.getVotes());
         mItems = teacherRating.getVotes();
-        if(mItems.size()==0){
-            for(int i = 0; i<10; i++){
+        if (mItems.size() == 0) {
+            for (int i = 0; i < 10; i++) {
                 mItems.add(new Votes());
             }
         }
-        for(int i = 0; i<teacherRating.getVotes().size(); i++){
-            givenMarks.put(String.valueOf(i+1), teacherRating.getVotes().get(i).getAll().get(i));
+        for (int i = 0; i < teacherRating.getVotes().size(); i++) {
+            givenMarks.put(String.valueOf(i + 1), teacherRating.getVotes().get(i).getAll().get(i));
         }
         teacher = teacherRating.getTeacher();
         myTeacher = teacherRating.isMy_teacher();
@@ -84,41 +83,50 @@ public class TeacherRatingAdapter extends ArrayAdapter<Votes> {
         return mItems.size() != 0;
     }
 
-    View.OnClickListener clickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            Button button = (Button) v;
-            String text = button.getText().toString();
-            if(text.equals("1")){
-                givenMark = 1;
-            }else if(text.equals("2")){
-                givenMark = 2;
-            }else if(text.equals("3")){
-                givenMark = 3;
-            }else if(text.equals("4")){
-                givenMark = 4;
-            }else if(text.equals("5")){
-                givenMark = 5;
-            }else if(text.equals("6")){
-                givenMark = 6;
-            }else if(text.equals("7")){
-                givenMark = 7;
-            }else if(text.equals("8")){
-                givenMark = 8;
-            }else if(text.equals("9")){
-                givenMark = 9;
-            }else if(text.equals("10")){
-                givenMark = 10;
-            }
+    private View createHolder(ViewGroup parent, int pos) {
+        viewHolder = new ViewHolder();
 
-            colorButton(givenMark, viewHolder);
-//            button.setBackgroundColor(Color.parseColor(colors.get(givenMark)));
-            mItems.get(Integer.valueOf(button.getTag().toString())).addOne(Integer.valueOf(text));
-//            mItems.get(Integer.valueOf(button.getTag().toString())).setScore(Integer.valueOf(text), givenMark);
-//            givenMarks.put(button.getTag().toString(), givenMark);
-//            notifyDataSetChanged();
-        }
-    };
+        viewHolder.holderId = pos;
+        View convertView = inflater.inflate(R.layout.list_item_teacher_rating2, parent, false);
+        viewHolder = new ViewHolder();
+        viewHolder.mQuestionTextView = (TextView) convertView.findViewById(R.id.question);
+        viewHolder.mHintTextView = (TextView) convertView.findViewById(R.id.question_hint);
+        viewHolder.button1 = (RadioButton) convertView.findViewById(R.id.question_button_1);
+        viewHolder.button2 = (RadioButton) convertView.findViewById(R.id.question_button_2);
+        viewHolder.button3 = (RadioButton) convertView.findViewById(R.id.question_button_3);
+        viewHolder.button4 = (RadioButton) convertView.findViewById(R.id.question_button_4);
+        viewHolder.button5 = (RadioButton) convertView.findViewById(R.id.question_button_5);
+        viewHolder.button6 = (RadioButton) convertView.findViewById(R.id.question_button_6);
+        viewHolder.button7 = (RadioButton) convertView.findViewById(R.id.question_button_7);
+        viewHolder.button8 = (RadioButton) convertView.findViewById(R.id.question_button_8);
+        viewHolder.button9 = (RadioButton) convertView.findViewById(R.id.question_button_9);
+        viewHolder.button10 = (RadioButton) convertView.findViewById(R.id.question_button_10);
+
+        viewHolder.setListener(viewHolder.button1);
+        viewHolder.setListener(viewHolder.button2);
+        viewHolder.setListener(viewHolder.button3);
+        viewHolder.setListener(viewHolder.button4);
+        viewHolder.setListener(viewHolder.button5);
+        viewHolder.setListener(viewHolder.button6);
+        viewHolder.setListener(viewHolder.button7);
+        viewHolder.setListener(viewHolder.button8);
+        viewHolder.setListener(viewHolder.button9);
+        viewHolder.setListener(viewHolder.button10);
+
+        viewHolder.button1.setTag(pos);
+        viewHolder.button2.setTag(pos);
+        viewHolder.button3.setTag(pos);
+        viewHolder.button4.setTag(pos);
+        viewHolder.button5.setTag(pos);
+        viewHolder.button6.setTag(pos);
+        viewHolder.button7.setTag(pos);
+        viewHolder.button8.setTag(pos);
+        viewHolder.button9.setTag(pos);
+        viewHolder.button10.setTag(pos);
+
+        convertView.setTag(viewHolder);
+        return convertView;
+    }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
@@ -132,58 +140,15 @@ public class TeacherRatingAdapter extends ArrayAdapter<Votes> {
             return convertView;
         } else {
             if (convertView == null) {
-                buttons.clear();
-                convertView = inflater.inflate(R.layout.list_item_teacher_rating, parent, false);
-                viewHolder = new ViewHolder();
-                viewHolder.mQuestionTextView = (TextView) convertView.findViewById(R.id.question);
-                viewHolder.mHintTextView = (TextView) convertView.findViewById(R.id.question_hint);
-                viewHolder.button1 = (Button) convertView.findViewById(R.id.question_button_1);
-                viewHolder.button2 = (Button) convertView.findViewById(R.id.question_button_2);
-                viewHolder.button3 = (Button) convertView.findViewById(R.id.question_button_3);
-                viewHolder.button4 = (Button) convertView.findViewById(R.id.question_button_4);
-                viewHolder.button5 = (Button) convertView.findViewById(R.id.question_button_5);
-                viewHolder.button6 = (Button) convertView.findViewById(R.id.question_button_6);
-                viewHolder.button7 = (Button) convertView.findViewById(R.id.question_button_7);
-                viewHolder.button8 = (Button) convertView.findViewById(R.id.question_button_8);
-                viewHolder.button9 = (Button) convertView.findViewById(R.id.question_button_9);
-                viewHolder.button10 = (Button) convertView.findViewById(R.id.question_button_10);
-
-                viewHolder.button1.setOnClickListener(clickListener);
-                viewHolder.button2.setOnClickListener(clickListener);
-                viewHolder.button3.setOnClickListener(clickListener);
-                viewHolder.button4.setOnClickListener(clickListener);
-                viewHolder.button5.setOnClickListener(clickListener);
-                viewHolder.button6.setOnClickListener(clickListener);
-                viewHolder.button7.setOnClickListener(clickListener);
-                viewHolder.button8.setOnClickListener(clickListener);
-                viewHolder.button9.setOnClickListener(clickListener);
-                viewHolder.button1.setOnClickListener(clickListener);
-
-                viewHolder.button1.setTag(position);
-                viewHolder.button2.setTag(position);
-                viewHolder.button3.setTag(position);
-                viewHolder.button4.setTag(position);
-                viewHolder.button5.setTag(position);
-                viewHolder.button6.setTag(position);
-                viewHolder.button7.setTag(position);
-                viewHolder.button8.setTag(position);
-                viewHolder.button9.setTag(position);
-                viewHolder.button1.setTag(position);
-
-                buttons.add(viewHolder.button1);
-                buttons.add(viewHolder.button2);
-                buttons.add(viewHolder.button3);
-                buttons.add(viewHolder.button4);
-                buttons.add(viewHolder.button5);
-                buttons.add(viewHolder.button6);
-                buttons.add(viewHolder.button7);
-                buttons.add(viewHolder.button8);
-                buttons.add(viewHolder.button9);
-                buttons.add(viewHolder.button10);
-
-                convertView.setTag(viewHolder);
+                convertView = createHolder(parent, position);
             } else {
                 viewHolder = (ViewHolder) convertView.getTag();
+            }
+            if (viewHolder.holderId != position) {
+                convertView = createHolder(parent, position);
+                if (mItems.get(position).getChecked() != -1) {
+                    viewHolder.buttons.get(mItems.get(position).getChecked()).setChecked(true);
+                }
             }
             viewHolder.mQuestionTextView.setText(questionHint.get(position).getValue0());
             viewHolder.mHintTextView.setText(questionHint.get(position).getValue1());
@@ -191,50 +156,104 @@ public class TeacherRatingAdapter extends ArrayAdapter<Votes> {
 
             int count = 0;
             double score = 0;
-            for(int i = 0; i<item.getAll().size(); i++){
-                score += (i+1) * item.getAll().get(i);
-                count +=item.getAll().get(i);
+            for (int i = 0; i < item.getAll().size(); i++) {
+                score += (i + 1) * item.getAll().get(i);
+                count += item.getAll().get(i);
             }
-            if(count>0){
-                score = score/count;
+            if (count > 0) {
+                score = score / count;
             }
-            if(score==0){
+            if (score == 0) {
                 score = 10;
             }
-//            double diff = (10-Math.round(score));
-            colorButton(Math.round(score), viewHolder);
-//            colorButton((int) score);
-//            for (int j = 9; j >= diff; j--) {
-//                Button button = buttons.get(j);
-//                button.setBackgroundColor(Color.WHITE);
-//                button.setTextColor(Color.BLACK);
-//            }
+            int wholeScore = (int) Math.round(score);
+
+            if(mItems.get(position).getChecked()>0){
+                viewHolder.buttons.get(mItems.get(position).getChecked() - 1).setChecked(true);
+            }else{
+                viewHolder.buttons.get(wholeScore-1).setChecked(true);
+            }
         }
         return convertView;
     }
 
-    private void colorButton(long givenMark, ViewHolder viewHolder){
-        for(int i=0; i<buttons.size();i++){
-            buttons.get(i).setBackgroundColor(Color.WHITE);
-        }
-        for (int j = 0; j < givenMark; j++) {
-            Button button = buttons.get(j);
-            button.setBackgroundColor(Color.parseColor(colors.get(j)));
-        }
-    }
+//    private void colorButton(long givenMark, ViewHolder viewHolder){
+//        for(int i=0; i<buttons.size();i++){
+//            buttons.get(i).setBackgroundColor(Color.WHITE);
+//        }
+//        for (int j = 0; j < givenMark; j++) {
+//            Button button = buttons.get(j);
+//            button.setBackgroundColor(Color.parseColor(colors.get(j)));
+//        }
+//    }
 
-    private static class ViewHolder {
+    public class ViewHolder {
+        int holderId;
+        int givenMark = 0;
         TextView mQuestionTextView;
         TextView mHintTextView;
-        Button button1;
-        Button button2;
-        Button button3;
-        Button button4;
-        Button button5;
-        Button button6;
-        Button button7;
-        Button button8;
-        Button button9;
-        Button button10;
+        RadioButton button1;
+        RadioButton button2;
+        RadioButton button3;
+        RadioButton button4;
+        RadioButton button5;
+        RadioButton button6;
+        RadioButton button7;
+        RadioButton button8;
+        RadioButton button9;
+        RadioButton button10;
+
+        private ArrayList<RadioButton> buttons = new ArrayList<>();
+
+
+        View.OnClickListener radioListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                RadioButton rb = (RadioButton) v;
+                switch (rb.getId()) {
+                    case R.id.question_button_1:
+                        givenMark = 1;
+                        break;
+                    case R.id.question_button_2:
+                        givenMark = 2;
+                        break;
+                    case R.id.question_button_3:
+                        givenMark = 3;
+                        break;
+                    case R.id.question_button_4:
+                        givenMark = 4;
+                        break;
+                    case R.id.question_button_5:
+                        givenMark = 5;
+                        break;
+                    case R.id.question_button_6:
+                        givenMark = 6;
+                        break;
+                    case R.id.question_button_7:
+                        givenMark = 7;
+                        break;
+                    case R.id.question_button_8:
+                        givenMark = 8;
+                        break;
+                    case R.id.question_button_9:
+                        givenMark = 9;
+                        break;
+                    case R.id.question_button_10:
+                        givenMark = 10;
+                        break;
+                    default:
+                        break;
+                }
+                int pos = (int) v.getTag();
+                mItems.get(pos).setChecked(givenMark - 1);
+                System.out.println();
+            }
+        };
+
+        public void setListener(RadioButton button) {
+            button.setOnClickListener(radioListener);
+            buttons.add(button);
+        }
+
     }
 }

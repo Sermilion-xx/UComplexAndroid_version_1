@@ -147,7 +147,7 @@ public class FetchUsersTask extends AsyncTask<Integer, Void, ArrayList<User>> {
                             user.setAgent(userJson.getInt("agent"));
                         }
                     } catch (JSONException e) {
-                        e.printStackTrace();
+//                        e.printStackTrace();
                     }
                     user.setId(userJson.getInt("id"));
                     try {

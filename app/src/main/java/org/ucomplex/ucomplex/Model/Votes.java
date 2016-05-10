@@ -8,6 +8,7 @@ import java.util.ArrayList;
 public class Votes {
 
     public static int position;
+    public int checked = -1;
 
     private int one = 0;
     private int two = 0;
@@ -33,6 +34,14 @@ public class Votes {
         all.add(eight);
         all.add(nine);
         all.add(ten);
+    }
+
+    public void setChecked(int checked) {
+        this.checked = checked;
+    }
+
+    public int getChecked() {
+        return checked;
     }
 
     public ArrayList<Integer> getAll() {
