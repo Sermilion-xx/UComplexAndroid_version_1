@@ -116,7 +116,7 @@ public class TeacherRatingAdapter extends ArrayAdapter<Votes> {
             mItems.get(Integer.valueOf(button.getTag().toString())).addOne(Integer.valueOf(text));
 //            mItems.get(Integer.valueOf(button.getTag().toString())).setScore(Integer.valueOf(text), givenMark);
 //            givenMarks.put(button.getTag().toString(), givenMark);
-            notifyDataSetChanged();
+//            notifyDataSetChanged();
         }
     };
 
@@ -217,7 +217,7 @@ public class TeacherRatingAdapter extends ArrayAdapter<Votes> {
         for(int i=0; i<buttons.size();i++){
             buttons.get(i).setBackgroundColor(Color.WHITE);
         }
-        for (int j = 0; j <= givenMark; j++) {
+        for (int j = 0; j < givenMark; j++) {
             Button button = buttons.get(j);
             button.setBackgroundColor(Color.parseColor(colors.get(j)));
         }

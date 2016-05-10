@@ -824,4 +824,18 @@ public class Common {
         }
     }
 
+    public static int doubleGreaterThanDouble(double a, double b){
+        int retval = Double.compare(a, b);
+
+        if(retval > 0) {
+            return 1;
+        }
+        else if(retval < 0) {
+            return -1;
+        }
+        else {
+            return 0;
+        }
+    }
+
 }

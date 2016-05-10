@@ -51,7 +51,7 @@ public class TeacherProfileStatisticsActivity extends AppCompatActivity {
     public static ImageButton doneButton;
 
     private TeacherInfoFragment teacherStatisticsFragment;
-    private TeacherRatingFragment teacherRatingFragment;
+//    private TeacherRatingFragment teacherRatingFragment;
     private TeacherProfileFragment teacherProfileFragment;
 
     @Override
@@ -129,15 +129,15 @@ public class TeacherProfileStatisticsActivity extends AppCompatActivity {
         teacherStatisticsFragment = new TeacherInfoFragment();
         teacherStatisticsFragment.setTeacherInfo(teacherInfo);
 
-        teacherRatingFragment = new TeacherRatingFragment();
-        teacherRatingFragment.setmContext(this);
-        teacherRatingFragment.setTeacher(id);
+//        teacherRatingFragment = new TeacherRatingFragment();
+//        teacherRatingFragment.setmContext(this);
+//        teacherRatingFragment.setTeacher(id);
 
         adapter = new ViewPagerAdapter(getSupportFragmentManager());
 
         adapter.addFragment(teacherProfileFragment, "Профиль");
         adapter.addFragment(teacherStatisticsFragment, "Личная информация");
-        adapter.addFragment(teacherRatingFragment, "Рейтинг");
+//        adapter.addFragment(teacherRatingFragment, "Рейтинг");
         viewPager.setAdapter(adapter);
         tabLayout.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
         tabLayout.setupWithViewPager(viewPager);
@@ -182,7 +182,12 @@ public class TeacherProfileStatisticsActivity extends AppCompatActivity {
                 }
                 items.add(new Pair<>(Common.getStringUserType(TeacherProfileStatisticsActivity.this, teacherInfo.getType()), lastOnline));
                 profileStatisticsFragment.setStatisticItems(items);
-                profileStatisticsFragment.setClosed(false);
+                if(teacherInfo.getClosed()==1){
+                    profileStatisticsFragment.setClosed(true);
+                }else{
+                    profileStatisticsFragment.setClosed(false);
+                }
+
                 adapter.addFragment(profileStatisticsFragment, "Профиль");
                 mViewPager.setAdapter(adapter);
                 tabLayout.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
