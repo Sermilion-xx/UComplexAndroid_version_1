@@ -9,7 +9,7 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import org.ucomplex.ucomplex.Activities.Tasks.FetchTeacherRating;
-import org.ucomplex.ucomplex.Adaptors.TeacherInfoAdapter;
+import org.ucomplex.ucomplex.Adaptors.TeacherRatingAdapter;
 import org.ucomplex.ucomplex.Interfaces.OnTaskCompleteListener;
 import org.ucomplex.ucomplex.Model.TeacherRating;
 import org.ucomplex.ucomplex.R;
@@ -27,7 +27,7 @@ public class TeacherRatingFragment extends ListFragment implements OnTaskComplet
     private int teacher;
     private Activity mContext;
     private boolean myTeacher = false;
-    private TeacherInfoAdapter adapter;
+    private TeacherRatingAdapter adapter;
 
     public TeacherRatingFragment() {
 
@@ -65,7 +65,7 @@ public class TeacherRatingFragment extends ListFragment implements OnTaskComplet
         } else {
             try {
                 teacherRating = (TeacherRating) task.get();
-                adapter = new TeacherInfoAdapter(mContext, teacherRating);
+                adapter = new TeacherRatingAdapter(mContext, teacherRating);
                 setListAdapter(adapter);
                 System.out.println();
             } catch (InterruptedException | ExecutionException e) {

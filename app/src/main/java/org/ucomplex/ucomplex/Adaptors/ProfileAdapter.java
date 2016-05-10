@@ -23,6 +23,7 @@ import org.ucomplex.ucomplex.Common;
 import org.ucomplex.ucomplex.Model.Users.User;
 import org.ucomplex.ucomplex.R;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -40,7 +41,7 @@ public class ProfileAdapter extends ArrayAdapter<Triplet> {
     private Bitmap mBitmap;
     private User mUser;
     private Context mContext;
-    private List<Triplet> mItems;
+    private List<Triplet> mItems = new ArrayList<>();
     private LayoutInflater inflater;
     private Typeface robotoFont = Typeface.createFromAsset(getContext().getAssets(), "fonts/Roboto-Regular.ttf");
     Drawable ic_remove_friend;
@@ -50,9 +51,9 @@ public class ProfileAdapter extends ArrayAdapter<Triplet> {
     public ProfileAdapter(Context context, List<Triplet> profileItems, Bitmap bitmap, User user) {
         super(context, R.layout.list_item_profile_header, profileItems);
         mUser = (User) profileItems.get(0).getValue1();
+        mItems = profileItems;
         mContext = context;
         mBitmap = bitmap;
-        mItems = profileItems;
         ic_add_friend = ContextCompat.getDrawable(mContext, R.drawable.ic_add_as_friend);
         ic_remove_friend = ContextCompat.getDrawable(mContext, R.drawable.ic_remove_friend);
         this.user = user;

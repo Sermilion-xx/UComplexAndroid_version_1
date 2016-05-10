@@ -17,29 +17,36 @@ import org.ucomplex.ucomplex.Model.Votes;
 import org.ucomplex.ucomplex.R;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by Sermilion on 30/04/16.
  */
-public class TeacherInfoAdapter extends ArrayAdapter<Votes> {
+public class TeacherRatingAdapter extends ArrayAdapter<Votes> {
 
     private ArrayList<String> colors = new ArrayList();
 
     private ArrayList<Button> buttons = new ArrayList<>();
     private LayoutInflater inflater;
     private ArrayList<Votes> mItems = new ArrayList<>();
+    private ArrayList<Votes> mItemsTemp = new ArrayList<>();
     private int teacher;
     private boolean myTeacher;
     private ArrayList<Pair<Integer, Integer>> questionHint = new ArrayList<>();
     private static int givenMark;
+    private HashMap<String, Integer> givenMarks = new HashMap<>();
+    ViewHolder viewHolder;
 
-    public TeacherInfoAdapter(Context context, TeacherRating teacherRating) {
+    public TeacherRatingAdapter(Context context, TeacherRating teacherRating) {
         super(context, -1, teacherRating.getVotes());
         mItems = teacherRating.getVotes();
         if(mItems.size()==0){
             for(int i = 0; i<10; i++){
                 mItems.add(new Votes());
             }
+        }
+        for(int i = 0; i<teacherRating.getVotes().size(); i++){
+            givenMarks.put(String.valueOf(i+1), teacherRating.getVotes().get(i).getAll().get(i));
         }
         teacher = teacherRating.getTeacher();
         myTeacher = teacherRating.isMy_teacher();
@@ -103,14 +110,18 @@ public class TeacherInfoAdapter extends ArrayAdapter<Votes> {
             }else if(text.equals("10")){
                 givenMark = 10;
             }
-            colorButton(givenMark);
+
+            colorButton(givenMark, viewHolder);
+//            button.setBackgroundColor(Color.parseColor(colors.get(givenMark)));
+            mItems.get(Integer.valueOf(button.getTag().toString())).addOne(Integer.valueOf(text));
+//            mItems.get(Integer.valueOf(button.getTag().toString())).setScore(Integer.valueOf(text), givenMark);
+//            givenMarks.put(button.getTag().toString(), givenMark);
             notifyDataSetChanged();
         }
     };
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        ViewHolder viewHolder;
         inflater = LayoutInflater.from(getContext());
         if (mItems.size() == 0) {
             if (!Common.isNetworkConnected(getContext())) {
@@ -148,6 +159,17 @@ public class TeacherInfoAdapter extends ArrayAdapter<Votes> {
                 viewHolder.button9.setOnClickListener(clickListener);
                 viewHolder.button1.setOnClickListener(clickListener);
 
+                viewHolder.button1.setTag(position);
+                viewHolder.button2.setTag(position);
+                viewHolder.button3.setTag(position);
+                viewHolder.button4.setTag(position);
+                viewHolder.button5.setTag(position);
+                viewHolder.button6.setTag(position);
+                viewHolder.button7.setTag(position);
+                viewHolder.button8.setTag(position);
+                viewHolder.button9.setTag(position);
+                viewHolder.button1.setTag(position);
+
                 buttons.add(viewHolder.button1);
                 buttons.add(viewHolder.button2);
                 buttons.add(viewHolder.button3);
@@ -180,7 +202,7 @@ public class TeacherInfoAdapter extends ArrayAdapter<Votes> {
                 score = 10;
             }
 //            double diff = (10-Math.round(score));
-            colorButton(Math.round(score));
+            colorButton(Math.round(score), viewHolder);
 //            colorButton((int) score);
 //            for (int j = 9; j >= diff; j--) {
 //                Button button = buttons.get(j);
@@ -191,7 +213,10 @@ public class TeacherInfoAdapter extends ArrayAdapter<Votes> {
         return convertView;
     }
 
-    private void colorButton(long givenMark){
+    private void colorButton(long givenMark, ViewHolder viewHolder){
+        for(int i=0; i<buttons.size();i++){
+            buttons.get(i).setBackgroundColor(Color.WHITE);
+        }
         for (int j = 0; j <= givenMark; j++) {
             Button button = buttons.get(j);
             button.setBackgroundColor(Color.parseColor(colors.get(j)));

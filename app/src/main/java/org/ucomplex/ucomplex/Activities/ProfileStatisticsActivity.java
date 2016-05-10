@@ -104,8 +104,8 @@ public class ProfileStatisticsActivity extends AppCompatActivity {
                     JSONObject rating = statisticsJson.getJSONObject("rating");
                     mItems.add(new Pair<>("Год поступления :", statisticsJson.getString("year")));
                     mItems.add(new Pair<>("Форма обучения :", Common.getStudyForm(ProfileStatisticsActivity.this,statisticsJson.getInt("study"))));
-                    mItems.add(new Pair<>("Форма оплаты :", Common.getPayment(ProfileStatisticsActivity.this,statisticsJson.getInt("study"))));
-                    mItems.add(new Pair<>("Уровень образования :", Common.getStudyLevel(ProfileStatisticsActivity.this,statisticsJson.getInt("study"))));
+                    mItems.add(new Pair<>("Форма оплаты :", Common.getPayment(ProfileStatisticsActivity.this,statisticsJson.getInt("payment"))));
+                    mItems.add(new Pair<>("Уровень образования :", Common.getStudyLevel(ProfileStatisticsActivity.this,statisticsJson.getInt("study_level"))));
                     mItems.add(new Pair<>("Факультет :", statisticsJson.getString("faculty_name")));
                     mItems.add(new Pair<>("Специальность :", statisticsJson.getString("major_name")));
                     mItems.add(new Pair<>("Группа :", statisticsJson.getString("group_name")));

@@ -767,7 +767,7 @@ public class Common {
         } else if (type == 2) {
             return "Заочная";
         } else if (type == 3) {
-            return "Очно-аочная";
+            return "Очно-заочная";
         } else if (type == 4) {
             return "Второе высшее";
         }

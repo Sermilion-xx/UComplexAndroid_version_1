@@ -2,31 +2,32 @@ package org.ucomplex.ucomplex.Activities;
 
 import android.os.AsyncTask;
 import android.os.Build;
-import android.support.annotation.IntegerRes;
-import android.support.annotation.InterpolatorRes;
+import android.os.Bundle;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import org.javatuples.Pair;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.ucomplex.ucomplex.Adaptors.ProfileStatisticsAdapter;
+import org.ucomplex.ucomplex.Activities.Tasks.UploadPhotoTask;
 import org.ucomplex.ucomplex.Adaptors.ViewPagerAdapter;
 import org.ucomplex.ucomplex.Common;
 import org.ucomplex.ucomplex.Fragments.ProfileStatisticsFragment;
+import org.ucomplex.ucomplex.Fragments.SettingsOneFragment;
+import org.ucomplex.ucomplex.Fragments.SettingsTwoFragment;
+import org.ucomplex.ucomplex.Fragments.TeacherInfoFragment;
 import org.ucomplex.ucomplex.Fragments.TeacherProfileFragment;
 import org.ucomplex.ucomplex.Fragments.TeacherRatingFragment;
-import org.ucomplex.ucomplex.Fragments.TeacherInfoFragment;
 import org.ucomplex.ucomplex.Model.TeacherInfo;
 import org.ucomplex.ucomplex.Model.TeacherTimetableCourses;
 import org.ucomplex.ucomplex.R;
@@ -35,7 +36,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
-import java.util.StringTokenizer;
 
 public class TeacherProfileStatisticsActivity extends AppCompatActivity {
 
@@ -47,6 +47,8 @@ public class TeacherProfileStatisticsActivity extends AppCompatActivity {
     ViewPager mViewPager;
     int role = -1;
     int id = -1;
+
+    public static ImageButton doneButton;
 
     private TeacherInfoFragment teacherStatisticsFragment;
     private TeacherRatingFragment teacherRatingFragment;
@@ -64,6 +66,18 @@ public class TeacherProfileStatisticsActivity extends AppCompatActivity {
         toolbar.setTitle("Профиль");
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        doneButton = (ImageButton) findViewById(R.id.settings_done);
+
+        doneButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (Common.isNetworkConnected(TeacherProfileStatisticsActivity.this)) {
+
+                } else {
+                    Toast.makeText(TeacherProfileStatisticsActivity.this, "Проверьте интернет соединение.", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
 
         linlaHeaderProgress = (LinearLayout) findViewById(R.id.linlaHeaderProgress);
         mViewPager = (ViewPager) findViewById(R.id.viewpager);
@@ -149,24 +163,24 @@ public class TeacherProfileStatisticsActivity extends AppCompatActivity {
         protected void onPostExecute(TeacherInfo aVoid) {
             super.onPostExecute(aVoid);
             teacherInfo = aVoid;
-            if(teacherInfo.getType()!=0){
+            if (teacherInfo.getType() != 0) {
                 setupViewPager(mViewPager);
 
-            }else{
+            } else {
                 adapter = new ViewPagerAdapter(getSupportFragmentManager());
 
                 ProfileStatisticsFragment profileStatisticsFragment = new ProfileStatisticsFragment();
                 ArrayList<Pair<String, String>> items = new ArrayList<>();
                 long lastOnlineMilliseconds = teacherInfo.getOnline();
-                long s = lastOnlineMilliseconds *1000;
+                long s = lastOnlineMilliseconds * 1000;
                 String lastOnline = "";
-                if(lastOnlineMilliseconds>0){
+                if (lastOnlineMilliseconds > 0) {
                     Date date = new Date(s);
                     Locale locale = new Locale("ru", "RU");
                     SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", locale);
                     lastOnline = sdfDate.format(date);
                 }
-                items.add(new Pair<>(Common.getStringUserType(TeacherProfileStatisticsActivity.this, teacherInfo.getType()),lastOnline));
+                items.add(new Pair<>(Common.getStringUserType(TeacherProfileStatisticsActivity.this, teacherInfo.getType()), lastOnline));
                 profileStatisticsFragment.setStatisticItems(items);
                 profileStatisticsFragment.setClosed(false);
                 adapter.addFragment(profileStatisticsFragment, "Профиль");

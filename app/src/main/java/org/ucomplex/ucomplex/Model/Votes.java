@@ -39,6 +39,17 @@ public class Votes {
         return all;
     }
 
+    public void addOne(int index){
+        all.set(index, all.get(index)+1);
+    }
+
+    public void setScore(int index, int score){
+        for(int i =0; i<10; i++){
+            all.set(i, 0);
+        }
+        all.set(index, score);
+    }
+
     public void setNext(int score, int position){
         all.set(position, score);
     }
