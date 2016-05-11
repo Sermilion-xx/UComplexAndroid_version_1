@@ -130,7 +130,7 @@ public class UsersActivity extends AppCompatActivity {
             teachersUsersFragment.setActivity(UsersActivity.this);
             adapter.addFragment(teachersUsersFragment, "Преподаватели");
 
-        }else if(user.getType() == 3){
+        }else if(Common.ROLE == 3){
             UsersGroupFragment groupsUsersFragment = new UsersGroupFragment();
             adapter.addFragment(groupsUsersFragment, "Группы");
 

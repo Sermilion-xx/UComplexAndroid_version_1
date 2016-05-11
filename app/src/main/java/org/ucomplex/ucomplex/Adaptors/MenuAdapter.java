@@ -44,6 +44,7 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
     private String mNavTitles[];
     private int mIcons[];
     private String name;
+    private String role;
     private int msgCount = 0;
     private boolean newFriend;
     private EventsActivity context;
@@ -76,7 +77,7 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         int Holderid;
-
+        TextView roleTextView;
         TextView textView;
         ImageView imageView;
         ImageView msgCountImageView;
@@ -100,6 +101,7 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
             } else if (ViewType == TYPE_HEADER) {
                 Name = (TextView) itemView.findViewById(R.id.name);
                 Name.setTypeface(custom_font);
+                roleTextView = (TextView) itemView.findViewById(R.id.role);
                 profile = (de.hdodenhof.circleimageview.CircleImageView) itemView.findViewById(R.id.circleView);
                 profileBitmap = Common.decodePhotoPref(context, "profilePhoto");
                 if (profileBitmap != null) {
@@ -140,21 +142,44 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
 
             }if (getAdapterPosition() == 1) {
                 Intent intent = new Intent(contxt, EventsActivity.class);
+
                 contxt.startActivity(intent);
             } else if (getAdapterPosition() == 2) {
-                Intent intent = new Intent(contxt, SubjectsActivity.class);
+                Intent intent;
+                if(Common.ROLE==0){
+                    intent = new Intent(contxt, UsersActivity.class);
+                }else{
+                    intent = new Intent(contxt, SubjectsActivity.class);
+                }
                 contxt.startActivity(intent);
             } else if (getAdapterPosition() == 3) {
-                Intent intent = new Intent(contxt, MyFilesActivity.class);
+                Intent intent;
+                if(Common.ROLE==0){
+                    intent = new Intent(contxt, MessagesListActivity.class);
+                }else{
+                    intent = new Intent(contxt, MyFilesActivity.class);
+                }
                 contxt.startActivity(intent);
             }
             else if (getAdapterPosition() == 4) {
-                Intent intent = new Intent(contxt, UsersActivity.class);
+                Intent intent;
+                if(Common.ROLE==0){
+                    intent = new Intent(contxt, SettingsActivity2.class);
+                }else{
+                    intent = new Intent(contxt, UsersActivity.class);
+                }
                 contxt.startActivity(intent);
             } else if (getAdapterPosition() == 5) {
-                Intent intent = new Intent(contxt, MessagesListActivity.class);
-                Common.newMesg = 0;
-                contxt.startActivity(intent);
+                Intent intent = new Intent();
+                if(Common.ROLE==0){
+                    this.contxt.stopService(EventsActivity.i);
+                    this.logout();
+                }else{
+                    intent = new Intent(contxt, MessagesListActivity.class);
+                    Common.newMesg = 0;
+                    contxt.startActivity(intent);
+                }
+
             }
             else if (getAdapterPosition() == 6) {
                 Intent intent = new Intent(contxt, CalendarActivity.class);
@@ -212,6 +237,11 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
             profileBitmap = user.getPhotoBitmap();
             this.user = user;
         }
+        switch (Common.ROLE){
+            case 4: role = "Студент"; break;
+            case 3: role = "Преподаватель"; break;
+            default:role = "Сотрудник"; break;
+        }
         this.context = passedContext;
     }
 
@@ -258,6 +288,8 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
                  holder.profile.setImageDrawable(drawable);
             }
             holder.Name.setText(name);
+            holder.roleTextView.setText(role);
+
         } else if (holder.Holderid == 2) {
             holder.textView.setText(mNavTitles[position - 1]);
             holder.imageView.setImageResource(mIcons[position - 1]);

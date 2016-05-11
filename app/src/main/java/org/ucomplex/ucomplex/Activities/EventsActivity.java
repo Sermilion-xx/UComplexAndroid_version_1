@@ -51,15 +51,11 @@ public class EventsActivity extends AppCompatActivity implements OnTaskCompleteL
     User user;
     public static Intent i;
 
-    final String[] TITLES = {"События", "Дисциплины", "Материалы", "Пользователи", "Сообщения", "Календарь", "Настройки", "Выход"};
-    final int[] ICONS = {R.drawable.ic_menu_events,
-            R.drawable.ic_menu_subjects,
-            R.drawable.ic_menu_materials,
-            R.drawable.ic_menu_users,
-            R.drawable.ic_menu_messages,
-            R.drawable.ic_menu_timetable,
-            R.drawable.ic_menu_settings,
-            R.drawable.ic_menu_exit};
+    String[] TITLES;
+    int[] ICONS;
+
+
+
 
     RecyclerView mRecyclerView;                           // Declaring RecyclerView
     MenuAdapter mAdapter;                        // Declaring Adapter For Recycler View
@@ -76,8 +72,26 @@ public class EventsActivity extends AppCompatActivity implements OnTaskCompleteL
     }
 
     public EventsActivity() {
+        TITLES = new String[] {"События", "Дисциплины", "Материалы", "Пользователи", "Сообщения", "Календарь", "Настройки", "Выход"};
+        ICONS = new int[] {R.drawable.ic_menu_events,
+                R.drawable.ic_menu_subjects,
+                R.drawable.ic_menu_materials,
+                R.drawable.ic_menu_users,
+                R.drawable.ic_menu_messages,
+                R.drawable.ic_menu_timetable,
+                R.drawable.ic_menu_settings,
+                R.drawable.ic_menu_exit};
 
+        if(Common.ROLE==0){
+            TITLES = new String[] {"События","Пользователи", "Сообщения","Настройки", "Выход"};
+            ICONS = new int[]{R.drawable.ic_menu_events,
+                    R.drawable.ic_menu_users,
+                    R.drawable.ic_menu_messages,
+                    R.drawable.ic_menu_settings,
+                    R.drawable.ic_menu_exit};
+        }
     }
+
 
     @Override
     protected void onSaveInstanceState(Bundle state) {
@@ -107,7 +121,8 @@ public class EventsActivity extends AppCompatActivity implements OnTaskCompleteL
                     eventsArray = items;
                     EventsFragment fragment = new EventsFragment();
                     fragment.setContext(EventsActivity.this);
-                    fragment.setUserType(user.getType());
+                    fragment.setUserType(Common.ROLE);
+
                     Bundle data = new Bundle();
                     data.putSerializable("eventItems", eventsArray);
                     fragment.setArguments(data);
@@ -179,6 +194,8 @@ public class EventsActivity extends AppCompatActivity implements OnTaskCompleteL
         if(Common.ROLE == -1){
             Common.ROLE = Common.getRoleFromPref(this);
         }
+        user = Common.getUserDataFromPref(this);
+
         setContentView(R.layout.activity_events);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
@@ -197,7 +214,7 @@ public class EventsActivity extends AppCompatActivity implements OnTaskCompleteL
         Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar);
         toolbar.setTitle("События");
         setSupportActionBar(toolbar);
-        user = Common.getUserDataFromPref(this);
+
         Bitmap bmp;
         if (Common.hasKeyPref(this, "profilePhoto")) {
             bmp = Common.decodePhotoPref(this, "profilePhoto");

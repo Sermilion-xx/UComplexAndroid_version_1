@@ -80,10 +80,10 @@ public class SettingsActivity2 extends AppCompatActivity implements OnTaskComple
         settingsOneFragment = new SettingsOneFragment();
         settingsOneFragment.setContext(this);
         settingsOneFragment.setFilename(filename);
-
-        settingsTwoFragment = new SettingsTwoFragment();
-        settingsTwoFragment.setmContext(this);
-
+        if (Common.ROLE == 3) {
+            settingsTwoFragment = new SettingsTwoFragment();
+            settingsTwoFragment.setmContext(this);
+        }
         FetchProfileTask fetchProfileTask = new FetchProfileTask(this, this);
         fetchProfileTask.execute();
 
@@ -177,7 +177,9 @@ public class SettingsActivity2 extends AppCompatActivity implements OnTaskComple
             try {
                 Pair<Pair<String, String>, JSONObject> profileSettings = ((FetchProfileTask) task).get();
                 Pair<String, String> privacy = profileSettings.getValue0();
-                settingsTwoFragment.setCustomInfoSettings(profileSettings.getValue1());
+                if (Common.ROLE == 3) {
+                    settingsTwoFragment.setCustomInfoSettings(profileSettings.getValue1());
+                }
                 if (privacy != null) {
 //                    settingsOneFragment.getClosedProfile().setChecked(false);
 //                    settingsOneFragment.getHideProfile().setChecked(false);

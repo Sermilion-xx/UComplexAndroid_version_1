@@ -23,7 +23,7 @@ public class UCCalendar implements Serializable {
     private String course;
     private HashMap<String, String> courses = new HashMap<>();
     private ArrayList<ChangedDay> changedDays = new ArrayList<>();
-    private Timetable timetable;
+    private Timetable timetable = new Timetable();
 
     public UCCalendar() {
     }

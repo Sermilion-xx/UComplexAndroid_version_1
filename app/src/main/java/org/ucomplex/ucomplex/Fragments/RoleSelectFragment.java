@@ -50,11 +50,11 @@ public class RoleSelectFragment extends Fragment {
     private class RoleHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private User mUser;
-        private int[] userIcons = {R.drawable.select_account_1,
-                R.drawable.select_account_2,
-                R.drawable.select_account_3,
-                R.drawable.select_account_4,
-                R.drawable.select_account_5};
+        private int[] userIcons = {R.drawable.role_select_1,
+                R.drawable.role_select_2,
+                R.drawable.role_select_3,
+                R.drawable.role_select_4,
+                R.drawable.role_select_5};
 
         private CircleImageView mRoleImage;
         private TextView mRoleTextView;
@@ -82,7 +82,7 @@ public class RoleSelectFragment extends Fragment {
                 mRoleTextView.setText("Студент");
             } else if (user.getType() == 0) {
                 mRoleTextView.setText("Сотрудник");
-            }else if (user.getType() == 3) {
+            } else if (user.getType() == 3) {
                 mRoleTextView.setText("Преподаватель");
             }
             mRoleImage.setImageResource(drawable);
@@ -97,13 +97,9 @@ public class RoleSelectFragment extends Fragment {
             user = null;
             Common.ROLE = mUser.getType();
             Common.setRoleToPref(getContext(), mUser.getType());
-            if (mUser.getType() == 3 || mUser.getType() == 4) {
-                Intent intent = new Intent(getContext(), EventsActivity.class);
-                startActivity(intent);
-            } else if (mUser.getType() == 0) {
-                Intent intent = new Intent(getContext(), UsersActivity.class);
-                startActivity(intent);
-            }
+            Intent intent = new Intent(getContext(), EventsActivity.class);
+            startActivity(intent);
+
         }
     }
 
