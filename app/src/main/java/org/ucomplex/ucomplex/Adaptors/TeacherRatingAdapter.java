@@ -42,6 +42,7 @@ public class TeacherRatingAdapter extends ArrayAdapter<Votes> {
     public TeacherRatingAdapter(Context context, TeacherRating teacherRating) {
         super(context, -1, teacherRating.getVotes());
         mItems = teacherRating.getVotes();
+        myTeacher = teacherRating.isMy_teacher();
         if (mItems.size() == 0) {
             for (int i = 0; i < 10; i++) {
                 mItems.add(new Votes());
@@ -104,6 +105,18 @@ public class TeacherRatingAdapter extends ArrayAdapter<Votes> {
         viewHolder.button8 = (RadioButton) convertView.findViewById(R.id.question_button_8);
         viewHolder.button9 = (RadioButton) convertView.findViewById(R.id.question_button_9);
         viewHolder.button10 = (RadioButton) convertView.findViewById(R.id.question_button_10);
+        if(!myTeacher){
+            viewHolder.button1.setActivated(false);
+            viewHolder.button2.setActivated(false);
+            viewHolder.button3.setActivated(false);
+            viewHolder.button4.setActivated(false);
+            viewHolder.button5.setActivated(false);
+            viewHolder.button6.setActivated(false);
+            viewHolder.button7.setActivated(false);
+            viewHolder.button8.setActivated(false);
+            viewHolder.button9.setActivated(false);
+            viewHolder.button10.setActivated(false);
+        }
 
         viewHolder.setListener(viewHolder.button1);
         viewHolder.setListener(viewHolder.button2);
@@ -212,45 +225,47 @@ public class TeacherRatingAdapter extends ArrayAdapter<Votes> {
         View.OnClickListener radioListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                RadioButton rb = (RadioButton) v;
-                switch (rb.getId()) {
-                    case R.id.question_button_1:
-                        givenMark = 1;
-                        break;
-                    case R.id.question_button_2:
-                        givenMark = 2;
-                        break;
-                    case R.id.question_button_3:
-                        givenMark = 3;
-                        break;
-                    case R.id.question_button_4:
-                        givenMark = 4;
-                        break;
-                    case R.id.question_button_5:
-                        givenMark = 5;
-                        break;
-                    case R.id.question_button_6:
-                        givenMark = 6;
-                        break;
-                    case R.id.question_button_7:
-                        givenMark = 7;
-                        break;
-                    case R.id.question_button_8:
-                        givenMark = 8;
-                        break;
-                    case R.id.question_button_9:
-                        givenMark = 9;
-                        break;
-                    case R.id.question_button_10:
-                        givenMark = 10;
-                        break;
-                    default:
-                        break;
+                if(myTeacher) {
+                    RadioButton rb = (RadioButton) v;
+                    switch (rb.getId()) {
+                        case R.id.question_button_1:
+                            givenMark = 1;
+                            break;
+                        case R.id.question_button_2:
+                            givenMark = 2;
+                            break;
+                        case R.id.question_button_3:
+                            givenMark = 3;
+                            break;
+                        case R.id.question_button_4:
+                            givenMark = 4;
+                            break;
+                        case R.id.question_button_5:
+                            givenMark = 5;
+                            break;
+                        case R.id.question_button_6:
+                            givenMark = 6;
+                            break;
+                        case R.id.question_button_7:
+                            givenMark = 7;
+                            break;
+                        case R.id.question_button_8:
+                            givenMark = 8;
+                            break;
+                        case R.id.question_button_9:
+                            givenMark = 9;
+                            break;
+                        case R.id.question_button_10:
+                            givenMark = 10;
+                            break;
+                        default:
+                            break;
+                    }
+                    int pos = (int) v.getTag();
+                    mItems.get(pos).setChecked(givenMark - 1);
+                    voted = true;
+                    System.out.println();
                 }
-                int pos = (int) v.getTag();
-                mItems.get(pos).setChecked(givenMark - 1);
-                voted = true;
-                System.out.println();
             }
         };
 

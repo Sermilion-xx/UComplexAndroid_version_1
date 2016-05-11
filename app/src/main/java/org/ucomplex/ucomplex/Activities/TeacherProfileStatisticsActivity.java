@@ -50,6 +50,7 @@ public class TeacherProfileStatisticsActivity extends AppCompatActivity {
     ViewPager mViewPager;
     int role = -1;
     int id = -1;
+    int type;
 
     public static ImageButton doneButton;
 
@@ -72,35 +73,34 @@ public class TeacherProfileStatisticsActivity extends AppCompatActivity {
         doneButton = (ImageButton) findViewById(R.id.settings_done);
 
         doneButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (TeacherRatingAdapter.voted) {
-                    if (Common.isNetworkConnected(TeacherProfileStatisticsActivity.this)) {
-                        ArrayList<Votes> items = teacherRatingFragment.getListAdapter().getmItems();
-                        new AsyncTask<Void, Void, Void>(){
-                            @Override
-                            protected Void doInBackground(Void... params) {
-                                String urlString = "https://ucomplex.org/student/ajax/set_teacher_vote?mobile=1";
-                                HashMap<String, String> httpParams = new HashMap<>();
-                                httpParams.put("teacher", String.valueOf(teacherInfo.getId()));
-                                for(int i = 0; i < 10; i++){
-                                    Votes vote = teacherRatingFragment.getListAdapter().getmItems().get(i);
-                                    if(vote.getChecked()>0){
-                                        httpParams.put("qs["+(i+1)+"]", String.valueOf(vote.getChecked()));
-                                    }
-                                }
-                                String jsonData = Common.httpPost(urlString, Common.getLoginDataFromPref(TeacherProfileStatisticsActivity.this), httpParams);
-                                Toast.makeText(TeacherProfileStatisticsActivity.this, "Оценка сохранена.", Toast.LENGTH_LONG).show();
-                                return null;
-                            }
-                        }.execute();
-                    } else {
-                        Toast.makeText(TeacherProfileStatisticsActivity.this, "Проверьте интернет соединение.", Toast.LENGTH_LONG).show();
-                    }
-                }else{
-                    Toast.makeText(TeacherProfileStatisticsActivity.this, "Нету изменений.", Toast.LENGTH_LONG).show();
-                }
-            }
+                                          @Override
+                                          public void onClick(View v) {
+                                              if (TeacherRatingAdapter.voted) {
+                                                  if (Common.isNetworkConnected(TeacherProfileStatisticsActivity.this)) {
+                                                      new AsyncTask<Void, Void, Void>() {
+                                                          @Override
+                                                          protected Void doInBackground(Void... params) {
+                                                              String urlString = "https://ucomplex.org/student/ajax/set_teacher_vote?mobile=1";
+                                                              HashMap<String, String> httpParams = new HashMap<>();
+                                                              httpParams.put("teacher", String.valueOf(teacherInfo.getId()));
+                                                              for (int i = 0; i < 10; i++) {
+                                                                  Votes vote = teacherRatingFragment.getListAdapter().getmItems().get(i);
+                                                                  if (vote.getChecked() > 0) {
+                                                                      httpParams.put("qs[" + (i + 1) + "]", String.valueOf(vote.getChecked()));
+                                                                  }
+                                                              }
+                                                              String jsonData = Common.httpPost(urlString, Common.getLoginDataFromPref(TeacherProfileStatisticsActivity.this), httpParams);
+                                                              Toast.makeText(TeacherProfileStatisticsActivity.this, "Оценка сохранена.", Toast.LENGTH_LONG).show();
+                                                              return null;
+                                                          }
+                                                      }.execute();
+                                                  } else {
+                                                      Toast.makeText(TeacherProfileStatisticsActivity.this, "Проверьте интернет соединение.", Toast.LENGTH_LONG).show();
+                                                  }
+                                              } else {
+                                                  Toast.makeText(TeacherProfileStatisticsActivity.this, "Нету изменений.", Toast.LENGTH_LONG).show();
+                                              }
+                                          }
                                       }
 
         );
@@ -140,51 +140,13 @@ public class TeacherProfileStatisticsActivity extends AppCompatActivity {
                                            }
 
         );
-        role = Integer.parseInt(
-
-                getIntent()
-
-                        .
-
-                                getExtras()
-
-                        .
-
-                                getString("role")
-
-        );
-        id =
-
-                getIntent()
-
-                        .
-
-                                getExtras()
-
-                        .
-
-                                getInt("id");
-
-        toolbar.setTitle(
-
-                getIntent()
-
-                        .
-
-                                getExtras()
-
-                        .
-
-                                getString("name")
-
-        );
+        role = Integer.parseInt(getIntent().getExtras().getString("role"));
+        id = getIntent().getExtras().getInt("id");
+        type = Integer.valueOf(getIntent().getExtras().getString("type"));
+        toolbar.setTitle(getIntent().getExtras().getString("name"));
         FetchTeachersInfoTask fetchTeachersInfoTask = new FetchTeachersInfoTask();
         fetchTeachersInfoTask.execute(role);
-
-        tabLayout = (TabLayout)
-
-                findViewById(R.id.tabs);
-
+        tabLayout = (TabLayout)findViewById(R.id.tabs);
         tabLayout.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimary));
     }
 
@@ -258,7 +220,13 @@ public class TeacherProfileStatisticsActivity extends AppCompatActivity {
                     SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", locale);
                     lastOnline = sdfDate.format(date);
                 }
-                items.add(new Pair<>(Common.getStringUserType(TeacherProfileStatisticsActivity.this, teacherInfo.getType()), lastOnline));
+                int theType = -1;
+                if (teacherInfo.getType() == 0 && type > 0) {
+                    theType = type;
+                } else {
+                    theType = teacherInfo.getType();
+                }
+                items.add(new Pair<>(Common.getStringUserType(TeacherProfileStatisticsActivity.this, theType), lastOnline));
                 profileStatisticsFragment.setStatisticItems(items);
                 if (teacherInfo.getClosed() == 1) {
                     profileStatisticsFragment.setClosed(true);
