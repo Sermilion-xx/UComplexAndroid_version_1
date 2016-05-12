@@ -82,7 +82,7 @@ public class CalendarActivity extends AppCompatActivity implements AdapterView.O
         calendarFragment.setContext(this);
         calendarFragment.setCourseId(extras.getString("gcourse"));
         tabLayout = (TabLayout) findViewById(R.id.tabs);
-        if(Common.ROLE == 4){
+        if(Common.USER_TYPE == 4){
             FetchAllStats fetchAllStats = new FetchAllStats(this, this);
             fetchAllStats.setupTask();
         }

@@ -8,8 +8,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -105,7 +103,7 @@ public class UsersActivity extends AppCompatActivity {
     public void setupViewPager(ViewPager viewPager) {
 
         UsersFragment onlineUsersFragment = new UsersFragment();
-        if(Common.ROLE==4){
+        if(Common.USER_TYPE ==4){
             onlineUsersFragment.setUsersType(0);
         }else{
             onlineUsersFragment.setUsersType(10);
@@ -130,7 +128,7 @@ public class UsersActivity extends AppCompatActivity {
             teachersUsersFragment.setActivity(UsersActivity.this);
             adapter.addFragment(teachersUsersFragment, "Преподаватели");
 
-        }else if(Common.ROLE == 3){
+        }else if(Common.USER_TYPE == 3){
             UsersGroupFragment groupsUsersFragment = new UsersGroupFragment();
             adapter.addFragment(groupsUsersFragment, "Группы");
 

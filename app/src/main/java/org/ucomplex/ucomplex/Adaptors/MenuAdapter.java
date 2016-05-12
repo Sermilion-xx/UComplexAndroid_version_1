@@ -146,7 +146,7 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
                 contxt.startActivity(intent);
             } else if (getAdapterPosition() == 2) {
                 Intent intent;
-                if(Common.ROLE==0){
+                if(Common.USER_TYPE ==0){
                     intent = new Intent(contxt, UsersActivity.class);
                 }else{
                     intent = new Intent(contxt, SubjectsActivity.class);
@@ -154,7 +154,7 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
                 contxt.startActivity(intent);
             } else if (getAdapterPosition() == 3) {
                 Intent intent;
-                if(Common.ROLE==0){
+                if(Common.USER_TYPE ==0){
                     intent = new Intent(contxt, MessagesListActivity.class);
                 }else{
                     intent = new Intent(contxt, MyFilesActivity.class);
@@ -163,7 +163,7 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
             }
             else if (getAdapterPosition() == 4) {
                 Intent intent;
-                if(Common.ROLE==0){
+                if(Common.USER_TYPE ==0){
                     intent = new Intent(contxt, SettingsActivity2.class);
                 }else{
                     intent = new Intent(contxt, UsersActivity.class);
@@ -171,7 +171,7 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
                 contxt.startActivity(intent);
             } else if (getAdapterPosition() == 5) {
                 Intent intent = new Intent();
-                if(Common.ROLE==0){
+                if(Common.USER_TYPE ==0){
                     this.contxt.stopService(EventsActivity.i);
                     this.logout();
                 }else{
@@ -237,7 +237,7 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
             profileBitmap = user.getPhotoBitmap();
             this.user = user;
         }
-        switch (Common.ROLE){
+        switch (Common.USER_TYPE){
             case 4: role = "Студент"; break;
             case 3: role = "Преподаватель"; break;
             default:role = "Сотрудник"; break;

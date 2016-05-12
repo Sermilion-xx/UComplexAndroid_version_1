@@ -1,5 +1,6 @@
 package org.ucomplex.ucomplex.Fragments;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -11,7 +12,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import org.ucomplex.ucomplex.Activities.EventsActivity;
-import org.ucomplex.ucomplex.Activities.UsersActivity;
 import org.ucomplex.ucomplex.Common;
 import org.ucomplex.ucomplex.Model.Users.User;
 import org.ucomplex.ucomplex.R;
@@ -25,9 +25,14 @@ import de.hdodenhof.circleimageview.CircleImageView;
  */
 public class RoleSelectFragment extends Fragment {
 
+    Context context;
     User user = null;
     private RecyclerView mRoleRecyclerView;
     private RoleAdapter mAdapter;
+
+    public void setContext(Context context) {
+        this.context = context;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -90,13 +95,13 @@ public class RoleSelectFragment extends Fragment {
 
         @Override
         public void onClick(View v) {
-            User user = Common.getUserDataFromPref(getContext());
+            User user = Common.getUserDataFromPref(context);
             user.setType(mUser.getType());
-            user.setId(mUser.getPerson());
+            user.setRole(mUser.getId());
+            user.setId(mUser.getId());
             Common.setUserDataToPref(getContext(), user);
             user = null;
-            Common.ROLE = mUser.getType();
-            Common.setRoleToPref(getContext(), mUser.getType());
+            Common.USER_TYPE = mUser.getType();
             Intent intent = new Intent(getContext(), EventsActivity.class);
             startActivity(intent);
 
@@ -122,7 +127,7 @@ public class RoleSelectFragment extends Fragment {
         @Override
         public void onBindViewHolder(RoleHolder holder, int position) {
             User role = mRoles.get(position);
-            Common.ROLE = mRoles.get(position).getType();
+            Common.USER_TYPE = mRoles.get(position).getType();
             holder.bindRole(role, position);
         }
 

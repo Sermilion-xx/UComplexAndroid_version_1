@@ -13,7 +13,6 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -231,9 +230,9 @@ public class LoginActivity extends Activity implements LoginTask.AsyncResponse {
     @Override
     public void processFinish(User output, Bitmap bitmap) {
         if (output != null) {
-            if(output.getType()!=4 && output.getType()!=3){
+            if(output.getRoles().size()==0){
                 showProgress(false);
-                Toast.makeText(this, "Ошибка роли", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Ошибка авторизации", Toast.LENGTH_SHORT).show();
             } else {
                 Common.setUserDataToPref(this, output);
                 SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(this).edit();
@@ -243,8 +242,7 @@ public class LoginActivity extends Activity implements LoginTask.AsyncResponse {
                     Common.encodePhotoPref(this, bitmap, "profilePhoto");
                 }
                 Intent intent;
-                Common.setRoleToPref(this, output.getType());
-                Common.ROLE = output.getType();
+                Common.USER_TYPE = output.getType();
             if (output.getRoles().size() > 1) {
                 intent = new Intent(this, RoleSelectActivity.class);
                 startActivity(intent);

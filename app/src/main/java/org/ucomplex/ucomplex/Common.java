@@ -69,7 +69,7 @@ import java.util.Map;
  */
 public class Common {
 
-    public static int ROLE = -1;
+    public static int USER_TYPE = -1;
     public static final int FILE_SELECT_CODE = 0;
     public static String folderCode;
     public static int userListChanged = -1;
@@ -572,7 +572,7 @@ public class Common {
         String json = pref.getString("loggedUser", "");
         User obj = gson.fromJson(json, User.class);
         if (obj != null) {
-            return obj.getLogin() + ":" + obj.getPass() + ":" + obj.getId();
+            return obj.getLogin() + ":" + obj.getPass() + ":" + obj.getRole();
         } else {
             return "";
         }

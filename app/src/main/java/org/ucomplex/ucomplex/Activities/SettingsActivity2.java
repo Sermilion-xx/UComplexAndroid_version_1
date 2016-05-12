@@ -80,7 +80,7 @@ public class SettingsActivity2 extends AppCompatActivity implements OnTaskComple
         settingsOneFragment = new SettingsOneFragment();
         settingsOneFragment.setContext(this);
         settingsOneFragment.setFilename(filename);
-        if (Common.ROLE == 3) {
+        if (Common.USER_TYPE == 3) {
             settingsTwoFragment = new SettingsTwoFragment();
             settingsTwoFragment.setmContext(this);
         }
@@ -129,7 +129,7 @@ public class SettingsActivity2 extends AppCompatActivity implements OnTaskComple
         viewPager = (ViewPager) findViewById(R.id.viewpager);
         adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFragment(settingsOneFragment, "Общая информация");
-        if (Common.ROLE == 3) {
+        if (Common.USER_TYPE == 3) {
             adapter.addFragment(settingsTwoFragment, "Личные данные");
         }
         viewPager.setAdapter(adapter);
@@ -177,7 +177,7 @@ public class SettingsActivity2 extends AppCompatActivity implements OnTaskComple
             try {
                 Pair<Pair<String, String>, JSONObject> profileSettings = ((FetchProfileTask) task).get();
                 Pair<String, String> privacy = profileSettings.getValue0();
-                if (Common.ROLE == 3) {
+                if (Common.USER_TYPE == 3) {
                     settingsTwoFragment.setCustomInfoSettings(profileSettings.getValue1());
                 }
                 if (privacy != null) {

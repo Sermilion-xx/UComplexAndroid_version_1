@@ -1,8 +1,5 @@
 package org.ucomplex.ucomplex.Activities;
 
-import android.app.Activity;
-import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -13,7 +10,6 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -21,8 +17,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
@@ -82,7 +76,7 @@ public class EventsActivity extends AppCompatActivity implements OnTaskCompleteL
                 R.drawable.ic_menu_settings,
                 R.drawable.ic_menu_exit};
 
-        if(Common.ROLE==0){
+        if(Common.USER_TYPE ==0){
             TITLES = new String[] {"События","Пользователи", "Сообщения","Настройки", "Выход"};
             ICONS = new int[]{R.drawable.ic_menu_events,
                     R.drawable.ic_menu_users,
@@ -108,7 +102,7 @@ public class EventsActivity extends AppCompatActivity implements OnTaskCompleteL
                 mAdapter.notifyDataSetChanged();
             }
         }
-        user = Common.getUserDataFromPref(this);
+
         if(user!=null && user.getPerson()!=0) {
             LoginTask loginTask = new LoginTask(user.getLogin(), user.getPass(), EventsActivity.this);
             loginTask.delegate = this;
@@ -121,7 +115,7 @@ public class EventsActivity extends AppCompatActivity implements OnTaskCompleteL
                     eventsArray = items;
                     EventsFragment fragment = new EventsFragment();
                     fragment.setContext(EventsActivity.this);
-                    fragment.setUserType(Common.ROLE);
+                    fragment.setUserType(Common.USER_TYPE);
 
                     Bundle data = new Bundle();
                     data.putSerializable("eventItems", eventsArray);
@@ -191,11 +185,18 @@ public class EventsActivity extends AppCompatActivity implements OnTaskCompleteL
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(Common.ROLE == -1){
-            Common.ROLE = Common.getRoleFromPref(this);
-        }
         user = Common.getUserDataFromPref(this);
-
+        if(Common.USER_TYPE == -1){
+            Common.USER_TYPE = user.getType();
+        }
+        if(Common.USER_TYPE == 0){
+            TITLES = new String[] {"События","Пользователи", "Сообщения","Настройки", "Выход"};
+            ICONS = new int[]{R.drawable.ic_menu_events,
+                    R.drawable.ic_menu_users,
+                    R.drawable.ic_menu_messages,
+                    R.drawable.ic_menu_settings,
+                    R.drawable.ic_menu_exit};
+        }
         setContentView(R.layout.activity_events);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
@@ -309,7 +310,9 @@ public class EventsActivity extends AppCompatActivity implements OnTaskCompleteL
     public void processFinish(User output, Bitmap bitmap) {
         if (output != null) {
             if(output.getPerson()!=0){
-                Common.setUserDataToPref(this, output);
+                if(output.getType()!=-1 || output.getRole()!=0){
+                    Common.setUserDataToPref(this, output);
+                }
             }
             if(MenuAdapter.getProfileBitmap()==null){
                 mAdapter.setProfileBitmap(bitmap);

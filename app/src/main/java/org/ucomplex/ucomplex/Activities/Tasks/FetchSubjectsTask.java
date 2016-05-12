@@ -1,7 +1,6 @@
 package org.ucomplex.ucomplex.Activities.Tasks;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.support.annotation.Nullable;
@@ -50,9 +49,9 @@ public class FetchSubjectsTask extends AsyncTask<Void, String, ArrayList<Triplet
         String url = "";
         String urlStudentString = "https://ucomplex.org/student/subjects_list?json";
         String urlTeacherString = "https://ucomplex.org/teacher/subjects_list?json";
-        if(Common.ROLE == 4){
+        if(Common.USER_TYPE == 4){
             url = urlStudentString;
-        }else if(Common.ROLE == 3){
+        }else if(Common.USER_TYPE == 3){
             url = urlTeacherString;
         }
         String jsonData = Common.httpPost(url, Common.getLoginDataFromPref(mContext));
@@ -70,7 +69,7 @@ public class FetchSubjectsTask extends AsyncTask<Void, String, ArrayList<Triplet
         JSONObject subjectsJson;
         try {
             subjectsJson = new JSONObject(jsonData);
-            if(Common.ROLE == 4){
+            if(Common.USER_TYPE == 4){
                 JSONObject courses = subjectsJson.getJSONObject("courses");
                 JSONObject coursesForms = subjectsJson.getJSONObject("courses_forms");
                 JSONArray studentSubjectsList = subjectsJson.getJSONArray("studentSubjectsList");
@@ -90,7 +89,7 @@ public class FetchSubjectsTask extends AsyncTask<Void, String, ArrayList<Triplet
                     Triplet<String, String, Integer> subject = new Triplet<>(courseName, assesmentType[courseFrom], gcourse);
                     subjectsListArray.add(subject);
                 }
-            }else if(Common.ROLE == 3){
+            }else if(Common.USER_TYPE == 3){
                 JSONObject groursJson = subjectsJson.getJSONObject("groups");
                 JSONObject coursesJson = subjectsJson.getJSONObject("courses");
                 ArrayList<String> coursesKeys = Common.getKeys(coursesJson);

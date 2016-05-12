@@ -8,7 +8,9 @@ public class RoleSelectActivity extends SingleFragmentActivity {
 
     @Override
     protected Fragment createFragment() {
-        return new RoleSelectFragment();
+        RoleSelectFragment roleSelectFragment = new RoleSelectFragment();
+        roleSelectFragment.setContext(this);
+        return roleSelectFragment;
     }
 
 }

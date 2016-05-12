@@ -87,7 +87,7 @@ public class CalendarFragment extends Fragment implements OnTaskCompleteListener
     @Override
     public void onResume() {
         super.onResume();
-        if (courseId != null && Common.ROLE == 3) {
+        if (courseId != null && Common.USER_TYPE == 3) {
             tFetchSubjectsCalendar = new TFetchSubjectsCalendar(context, this);
             tFetchSubjectsCalendar.execute(courseId);
         }
@@ -160,10 +160,10 @@ public class CalendarFragment extends Fragment implements OnTaskCompleteListener
         options.add("Показать все");
         options.add("Все дисциплины");
         options.add("События");
-        if (Common.ROLE == 4 || (courseId == null && Common.ROLE == 3)) {
+        if (Common.USER_TYPE == 4 || (courseId == null && Common.USER_TYPE == 3)) {
             mAsyncTaskManager = new AsyncTaskManager(context, this);
             mAsyncTaskManager.setupTask(new FetchCalendarTask(context), String.valueOf(user.getType()));
-        } else if (courseId != null && Common.ROLE == 3) {
+        } else if (courseId != null && Common.USER_TYPE == 3) {
             tFetchSubjectsCalendar = new TFetchSubjectsCalendar(context, this);
             tFetchSubjectsCalendar.execute(courseId);
         }
@@ -195,10 +195,10 @@ public class CalendarFragment extends Fragment implements OnTaskCompleteListener
                         int Year = cal.get(Calendar.YEAR);
 
                         if (year <= Year) {
-                            if (Common.ROLE == 4 || (courseId == null && Common.ROLE == 3)) {
+                            if (Common.USER_TYPE == 4 || (courseId == null && Common.USER_TYPE == 3)) {
                                 mAsyncTaskManager = new AsyncTaskManager(context, CalendarFragment.this);
                                 mAsyncTaskManager.setupTask(fetchCalendarTask, String.valueOf(user.getType()), monthStr, dateStr);
-                            } else if (courseId != null && Common.ROLE == 3) {
+                            } else if (courseId != null && Common.USER_TYPE == 3) {
                                 tFetchSubjectsCalendar = new TFetchSubjectsCalendar(context, CalendarFragment.this);
                                 tFetchSubjectsCalendar.execute(courseId, monthStr, dateStr);
                             }
@@ -304,7 +304,7 @@ public class CalendarFragment extends Fragment implements OnTaskCompleteListener
                         materialCalendarView.setOnDateChangedListener(new OnDateSelectedListener() {
                             @Override
                             public void onDateSelected(@NonNull MaterialCalendarView widget, @NonNull CalendarDay date, boolean selected) {
-                                if (Common.ROLE == 4 || (courseId == null && Common.ROLE == 3)) {
+                                if (Common.USER_TYPE == 4 || (courseId == null && Common.USER_TYPE == 3)) {
                                     String day = date.getDay() < 10 ? "0" + String.valueOf(date.getDay()) : String.valueOf(date.getDay());
                                     //Успеваемость
                                     ArrayList<Quartet<Integer, String, String, Integer>> dayCalendarBeltArray = new ArrayList();
@@ -400,7 +400,7 @@ public class CalendarFragment extends Fragment implements OnTaskCompleteListener
                                     intent.putExtras(bundle);
                                     startActivity(intent);
                                 } else {
-                                    if (courseId != null && Common.ROLE == 3) {
+                                    if (courseId != null && Common.USER_TYPE == 3) {
                                         int numOfLessons = 0;
                                         ChangedDay selectedDay = null;
                                         for (ChangedDay day : calendar.getChangedDays()) {

@@ -44,7 +44,7 @@ public class CalendarDayActivity extends AppCompatActivity {
         ArrayList calendarBeltDay = (ArrayList) getIntent().getExtras().get("calendarBeltDay");
         calendarTimetableFragment = new CalendarTimetableFragment();
         calendarTimetableFragment.setCalendarDay(calendarDay);
-        if(Common.ROLE == 3){
+        if(Common.USER_TYPE == 3){
             mViewPager.setVisibility(View.GONE);
             tabLayout.setVisibility(View.GONE);
             FragmentManager fragmentManager = getSupportFragmentManager();
