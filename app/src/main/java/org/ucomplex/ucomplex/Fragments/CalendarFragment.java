@@ -87,15 +87,19 @@ public class CalendarFragment extends Fragment implements OnTaskCompleteListener
     @Override
     public void onResume() {
         super.onResume();
-        if (courseId != null && Common.USER_TYPE == 3) {
+        if (courseId != null && Common.USER_TYPE == 3 && calendar==null) {
             tFetchSubjectsCalendar = new TFetchSubjectsCalendar(context, this);
             tFetchSubjectsCalendar.execute(courseId);
         }
     }
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        if(savedInstanceState!=null){
+            calendar = (UCCalendar) savedInstanceState.getSerializable("calendar");
+        }
         // Inflate the layout for this fragment
         user = Common.getUserDataFromPref(getContext());
         View view = inflater.inflate(R.layout.fragment_calendar, container, false);

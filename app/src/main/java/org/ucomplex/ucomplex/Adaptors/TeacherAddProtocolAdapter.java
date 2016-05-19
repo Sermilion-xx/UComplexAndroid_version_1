@@ -106,7 +106,7 @@ public class TeacherAddProtocolAdapter extends ArrayAdapter<Integer> {
         if(viewHolder.holderId == TYPE_NAME){
             viewHolder.nameTextView.setText("Занятие "+(position+1));
         }else{
-            viewHolder.nameTextView.setText("+ Добавить протокол на "+dayMonthYear);
+            viewHolder.nameTextView.setText("+ Добавить занятие на "+dayMonthYear);
         }
         return convertView;
     }

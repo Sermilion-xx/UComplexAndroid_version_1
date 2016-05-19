@@ -1,12 +1,13 @@
 package org.ucomplex.ucomplex.Model.Calendar;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
  * Created by Sermilion on 20/12/2015.
  */
-public class Timetable {
+public class Timetable implements Serializable{
     private HashMap<String, String> teachers = new HashMap<>();
     private HashMap<String, String> groups = new HashMap<>();
     private HashMap<String, String> hours = new HashMap<>();

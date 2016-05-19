@@ -1,6 +1,7 @@
 package org.ucomplex.ucomplex.Adaptors;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -74,8 +75,13 @@ public class ProtocolAdapter extends ArrayAdapter<Triplet<Integer, String, Strin
                 viewHolder = (ViewHolder) convertView.getTag();
             }
             viewHolder.mNameTextView.setText((position + 1) + ". " + getItem(position).getValue2());
-            if(getItem(position).getValue1().equals("0")){
+            int mark = Integer.valueOf(getItem(position).getValue1());
+            if(mark == 0){
                 viewHolder.mMarkTextView.setText("");
+            }else if(mark == -3){
+                viewHolder.mMarkTextView.setText("б");
+            }else if(mark == -1){
+                viewHolder.mMarkTextView.setText("н");
             }else{
                 viewHolder.mMarkTextView.setText(String.valueOf(getItem(position).getValue1()));
             }
