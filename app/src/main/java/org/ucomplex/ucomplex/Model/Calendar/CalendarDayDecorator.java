@@ -82,8 +82,16 @@ public class CalendarDayDecorator implements DayViewDecorator {
             view.setBackgroundDrawable(drawable);
         }else {
             int dotSize = 5;
-            if(context.getResources().getDisplayMetrics().density>2){
+            int density = (int) context.getResources().getDisplayMetrics().density;
+            if(density>2){
                 dotSize = 8;
+            }else if(density<2){
+                TextDrawable drawable = TextDrawable.builder().beginConfig()
+                        .width(20)
+                        .height(20)
+                        .endConfig()
+                        .buildRound(null, Color.parseColor(color));
+                view.setBackgroundDrawable(drawable);
             }
             view.addSpan(new DayDecoratorSpan(dotSize, Color.parseColor(color)));
         }
