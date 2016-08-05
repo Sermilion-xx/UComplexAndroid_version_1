@@ -194,9 +194,7 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
                     FileOutputStream stream = contxt.openFileOutput(filename, Context.MODE_PRIVATE);
                     try {
                         profileBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+                    } catch (Exception ignored) {}
                     //Cleanup
                     stream.close();
                     if (profileBitmap != null) {

@@ -4,19 +4,16 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 
-import org.javatuples.Quartet;
 import org.javatuples.Quintet;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.ucomplex.ucomplex.Common;
 import org.ucomplex.ucomplex.Interfaces.OnTaskCompleteListener;
-import org.ucomplex.ucomplex.Model.StudyStructure.Course;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 

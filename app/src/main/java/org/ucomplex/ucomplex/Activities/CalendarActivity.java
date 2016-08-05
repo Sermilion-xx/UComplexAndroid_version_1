@@ -74,7 +74,7 @@ public class CalendarActivity extends AppCompatActivity implements AdapterView.O
         statisticsFragment = new CalendarStatisticsFragment();
         Bundle extras = getIntent().getExtras();
         if(!extras.containsKey("fromMenu")){
-            final Drawable upArrow = ContextCompat.getDrawable(this,R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+            final Drawable upArrow = ContextCompat.getDrawable(this,R.drawable.abc_ic_ab_back_material);
             upArrow.setColorFilter(ContextCompat.getColor(this,R.color.white), PorterDuff.Mode.SRC_ATOP);
             getSupportActionBar().setHomeAsUpIndicator(upArrow);
         }

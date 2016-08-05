@@ -623,7 +623,7 @@ public class Common {
 
     public static boolean hasKeyPref(Context context, String typeStr) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        String value = preferences.getString("typeStr", null);
+        String value = preferences.getString(typeStr, null);
         return value != null;
     }
 
