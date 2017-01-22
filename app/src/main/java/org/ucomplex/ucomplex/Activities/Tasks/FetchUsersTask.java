@@ -85,11 +85,11 @@ public class FetchUsersTask extends AsyncTask<Integer, Void, ArrayList<User>> {
 
     public ArrayList<User> getUserDataFromJson(String jsonData, int getTypeInt) {
 
-        JSONObject onlineUsersJson = null;
+        JSONObject onlineUsersJson;
         ArrayList<User> usersList = new ArrayList<>();
         try {
             onlineUsersJson = new JSONObject(jsonData);
-            String getType = "";
+            String getType;
             if (getTypeInt == 1) {
                 getType = "friends";
             } else {
@@ -120,7 +120,7 @@ public class FetchUsersTask extends AsyncTask<Integer, Void, ArrayList<User>> {
                     if (getTypeInt == 3) {
                         User teacher = new User();
                         teacher.setSex(userJson.getInt("sex"));
-                        teacher.setStatuses(userJson.getString("statuses"));
+//                        teacher.setStatuses(userJson.getString("statuses"));
                         String academicAwards = userJson.getString("academic_awards");
                         teacher.setAcademicAwards(academicAwards);
                         teacher.setBirthday(userJson.getString("birthday"));
@@ -163,7 +163,8 @@ public class FetchUsersTask extends AsyncTask<Integer, Void, ArrayList<User>> {
                         user.setFriendRequested(true);
                     }
                     usersList.add(user);
-                } catch (JSONException ignored) {
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
             }
             return usersList;

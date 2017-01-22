@@ -21,7 +21,7 @@
     <ScrollView
         android:id="@+id/login_form"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
 >
 
         <LinearLayout
@@ -54,10 +54,12 @@
                 android:layout_height="wrap_content"
                 android:foreground="#00ffffff"
                 android:textColorHint="#ffffff"
+                android:textColor="#ffffff"
                 android:layout_marginTop="100dp">
 
                 <AutoCompleteTextView
                     android:id="@+id/email"
+                    android:hint="Логин"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textEmailAddress"
@@ -66,7 +68,8 @@
                     android:textColor="#ffffff"
                     android:textColorHint="#ffffff"
                     android:popupBackground="#ffffff"
-                    android:backgroundTint="#ffffff" />
+                    android:backgroundTint="#ffffff"
+                    android:completionHint="Логин" />
 
             </android.support.design.widget.TextInputLayout>
 
