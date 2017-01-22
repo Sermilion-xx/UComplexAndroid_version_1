@@ -145,14 +145,14 @@ public class SettingsActivity2 extends AppCompatActivity implements OnTaskComple
         if (requestCode == GET_FROM_GALLERY && resultCode == Activity.RESULT_OK) {
             Uri uri = data.getData();
             try {
-                settingsOneFragment.setProfileBitmap(MediaStore.Images.Media.getBitmap(getContentResolver(), uri));
-//                profileBitmap = Common.getCroppedBitmap(profileBitmap, 604);
-                settingsOneFragment.getPhotoImageView().setImageBitmap(settingsOneFragment.getProfileBitmap());
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
+                settingsOneFragment.getPhotoImageView().setImageBitmap(bitmap);
                 ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                settingsOneFragment.setProfileBitmap(bitmap);
                 settingsOneFragment.getProfileBitmap().compress(Bitmap.CompressFormat.JPEG, 60, bos);
                 settingsOneFragment.setContentBody(new ByteArrayBody(bos.toByteArray(), "filename"));
-                settingsOneFragment.getPhotoImageView().setImageBitmap(MediaStore.Images.Media.getBitmap(getContentResolver(), uri));
                 SettingsOneFragment.PROFILE_IMAGE_CHANGED = true;
+                Toast.makeText(this, "Фотография отправленна на модерацию", Toast.LENGTH_SHORT).show();
             } catch (IOException e) {
                 e.printStackTrace();
             }

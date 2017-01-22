@@ -1,8 +1,10 @@
 package org.ucomplex.ucomplex.Adaptors;
 
+import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -30,6 +32,7 @@ import org.ucomplex.ucomplex.Common;
 import org.ucomplex.ucomplex.Model.Users.User;
 import org.ucomplex.ucomplex.R;
 
+import java.io.File;
 import java.io.FileOutputStream;
 
 /**
@@ -126,20 +129,7 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
         @Override
         public void onClick(View v) {
             if (getAdapterPosition() == 0) {
-                if(Common.isNetworkConnected(context)){
-                    User user = Common.getUserDataFromPref(context);
-                    Intent intent = new Intent(contxt, ProfileActivity.class);
-                    intent.putExtra("person", String.valueOf(user.getPerson()));
-                    intent.putExtra("bitmap",profileBitmap);
-                    intent.putExtra("hasPhoto", String.valueOf(user.getPhoto()));
-                    intent.putExtra("code",user.getCode());
-                    intent.putExtra("type",user.getType());
-                    contxt.startActivity(intent);
-                }else{
-                    Toast.makeText(context, "Проверьте интернет соединение.",
-                            Toast.LENGTH_SHORT).show();
-                }
-
+                goToProfile();
             }if (getAdapterPosition() == 1) {
                 Intent intent = new Intent(contxt, EventsActivity.class);
 
@@ -210,6 +200,25 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
             } else if (getAdapterPosition() == 8) {
                 this.contxt.stopService(EventsActivity.i);
                 this.logout();
+            }
+        }
+
+        private void goToProfile() {
+            if(Common.isNetworkConnected(context)){
+                User user = Common.getUserDataFromPref(context);
+                Intent intent = new Intent(contxt, ProfileActivity.class);
+                intent.putExtra("person", String.valueOf(user.getPerson()));
+                if (profileBitmap != null) {
+                    File bitmapFile = Common.storeImage(profileBitmap, (Application) context.getApplicationContext());
+                    intent.putExtra("bitmap", bitmapFile);
+                }
+                intent.putExtra("hasPhoto", String.valueOf(user.getPhoto()));
+                intent.putExtra("code",user.getCode());
+                intent.putExtra("type",user.getType());
+                contxt.startActivity(intent);
+            }else{
+                Toast.makeText(context, "Проверьте интернет соединение.",
+                        Toast.LENGTH_SHORT).show();
             }
         }
 

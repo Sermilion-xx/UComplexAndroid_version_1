@@ -1,13 +1,10 @@
 package org.ucomplex.ucomplex.Fragments;
 
-import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ListFragment;
-import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
@@ -25,7 +22,7 @@ import java.util.ArrayList;
 
 public class UsersFragment extends ListFragment {
 
-    private static final int MY_PERMISSIONS_REQUEST_WRITE_STORAGE = 0;
+
     ArrayList<User> mItems = new ArrayList<>();
     int usersType;
     ImageAdapter imageAdapter;
@@ -65,7 +62,7 @@ public class UsersFragment extends ListFragment {
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         this.position = position;
-        checkWritePermissions();
+        boolean granted = Common.checkWritePermissions(this.getActivity());
     }
 
     @Override
@@ -86,7 +83,7 @@ public class UsersFragment extends ListFragment {
         btnLoadExtra = new Button(getContext());
         btnLoadExtra.setFocusable(false);
         btnLoadExtra.setText("Загрузить еще...");
-        if (usersType>1) {
+        if (usersType > 1) {
             btnLoadExtra.setVisibility(View.INVISIBLE);
         }
         if (savedInstanceState != null) {
@@ -128,7 +125,7 @@ public class UsersFragment extends ListFragment {
                     if (mItems.size() > 1) {
                         if (mItems.get(0).getName().equals(user.getName())) {
                             mItems.remove(0);
-                        }else if(mItems.get(1).getName().equals(user.getName())){
+                        } else if (mItems.get(1).getName().equals(user.getName())) {
                             mItems.remove(1);
                         }
                     }
@@ -153,7 +150,7 @@ public class UsersFragment extends ListFragment {
             btnLoadExtra.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View arg0) {
-                    if(loadMoreTask == null){
+                    if (loadMoreTask == null) {
                         loadMoreTask = (FetchUsersTask) new FetchUsersTask(getActivity()) {
                             @Override
                             protected void onPostExecute(ArrayList<User> users) {
@@ -179,39 +176,17 @@ public class UsersFragment extends ListFragment {
         getListView().addFooterView(btnLoadExtra);
     }
 
-    private void checkWritePermissions(){
-        if (ContextCompat.checkSelfPermission(this.getContext(),
-                Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this.getActivity(),
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                ActivityCompat.requestPermissions(this.getActivity(),
-                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                        MY_PERMISSIONS_REQUEST_WRITE_STORAGE);
-            } else {
-                ActivityCompat.requestPermissions(this.getActivity(),
-                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                        MY_PERMISSIONS_REQUEST_WRITE_STORAGE);
-            }
-        }else {
-            prepareProfileIntent();
-            System.out.println();
-        }
-    }
-
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {
         switch (requestCode) {
-            case MY_PERMISSIONS_REQUEST_WRITE_STORAGE: {
-                // If request is cancelled, the result arrays are empty.
+            case Common.MY_PERMISSIONS_REQUEST_WRITE_STORAGE: {
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     prepareProfileIntent();
                 } else {
-
+                    Toast.makeText(getActivity(), "Вы не разрешили доступ к пямяти.", Toast.LENGTH_LONG).show();
                 }
-                return;
             }
         }
     }

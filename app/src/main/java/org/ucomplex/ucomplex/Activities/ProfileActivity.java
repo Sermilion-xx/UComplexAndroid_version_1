@@ -56,7 +56,9 @@ public class ProfileActivity extends AppCompatActivity implements OnTaskComplete
             type = extra.getInt("type");
             personId = Integer.parseInt(extra.getString("person"));
             File bitmapFile = (File) extra.get("bitmap");
-            bitmap = BitmapFactory.decodeFile(bitmapFile.getPath());
+            if(bitmapFile!=null) {
+                bitmap = BitmapFactory.decodeFile(bitmapFile.getPath());
+            }
             hasPhoto = Integer.parseInt(extra.getString("hasPhoto"));
             code = extra.getString("code");
             profileFragment = new ProfileFragment();

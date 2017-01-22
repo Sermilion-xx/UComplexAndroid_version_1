@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.media.MediaPlayer;
 import android.os.AsyncTask;
@@ -182,6 +183,7 @@ public class EventsActivity extends AppCompatActivity implements OnTaskCompleteL
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Common.checkWritePermissions(this);
         user = Common.getUserDataFromPref(this);
         if(Common.USER_TYPE == -1){
             Common.USER_TYPE = user.getType();
@@ -244,6 +246,22 @@ public class EventsActivity extends AppCompatActivity implements OnTaskCompleteL
         };
         Drawer.setDrawerListener(mDrawerToggle);
         mDrawerToggle.syncState();
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case Common.MY_PERMISSIONS_REQUEST_WRITE_STORAGE: {
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                } else {
+                    Toast.makeText(this, "Вы не разрешили доступ к пямяти.", Toast.LENGTH_LONG).show();
+                }
+            }
+        }
     }
 
     @Override
