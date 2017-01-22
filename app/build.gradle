@@ -1,26 +1,17 @@
 apply plugin: 'com.android.application'
 
 android {
-    signingConfigs {
-        config {
-            keyAlias 'uComplex'
-            keyPassword 'Emocore95'
-            storeFile file('/Users/Sermilion/AndroidStudioProjects/Keystore.jks')
-            storePassword 'Emocore95'
-        }
-        config1 {
-        }
-    }
-    compileSdkVersion 24
-    buildToolsVersion "24.0.0"
+
+    compileSdkVersion 25
+    buildToolsVersion "25.0.1"
     defaultConfig {
         applicationId "org.ucomplex.ucomplex"
         minSdkVersion 16
-        targetSdkVersion 24
-        versionName '1.2.2'
+        targetSdkVersion 25
+        versionName '1.2.3'
         // Enabling multidex support.
         multiDexEnabled true
-        versionCode 17
+        versionCode 18
     }
     buildTypes {
         release {

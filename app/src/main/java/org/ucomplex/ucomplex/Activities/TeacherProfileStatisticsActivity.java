@@ -55,7 +55,7 @@ public class TeacherProfileStatisticsActivity extends AppCompatActivity {
     public static ImageButton doneButton;
 
     private TeacherInfoFragment teacherStatisticsFragment;
-    private TeacherRatingFragment teacherRatingFragment;
+//    private TeacherRatingFragment teacherRatingFragment;
     private TeacherProfileFragment teacherProfileFragment;
 
     @Override
@@ -84,10 +84,10 @@ public class TeacherProfileStatisticsActivity extends AppCompatActivity {
                                                               HashMap<String, String> httpParams = new HashMap<>();
                                                               httpParams.put("teacher", String.valueOf(teacherInfo.getId()));
                                                               for (int i = 0; i < 10; i++) {
-                                                                  Votes vote = teacherRatingFragment.getListAdapter().getmItems().get(i);
-                                                                  if (vote.getChecked() > 0) {
-                                                                      httpParams.put("qs[" + (i + 1) + "]", String.valueOf(vote.getChecked()));
-                                                                  }
+//                                                                  Votes vote = teacherRatingFragment.getListAdapter().getmItems().get(i);
+//                                                                  if (vote.getChecked() > 0) {
+//                                                                      httpParams.put("qs[" + (i + 1) + "]", String.valueOf(vote.getChecked()));
+//                                                                  }
                                                               }
                                                               String jsonData = Common.httpPost(urlString, Common.getLoginDataFromPref(TeacherProfileStatisticsActivity.this), httpParams);
                                                               Toast.makeText(TeacherProfileStatisticsActivity.this, "Оценка сохранена.", Toast.LENGTH_LONG).show();
@@ -169,15 +169,15 @@ public class TeacherProfileStatisticsActivity extends AppCompatActivity {
         teacherStatisticsFragment = new TeacherInfoFragment();
         teacherStatisticsFragment.setTeacherInfo(teacherInfo);
 
-        teacherRatingFragment = new TeacherRatingFragment();
-        teacherRatingFragment.setmContext(this);
-        teacherRatingFragment.setTeacher(id);
+//        teacherRatingFragment = new TeacherRatingFragment();
+//        teacherRatingFragment.setmContext(this);
+//        teacherRatingFragment.setTeacher(id);
 
         adapter = new ViewPagerAdapter(getSupportFragmentManager());
 
         adapter.addFragment(teacherProfileFragment, "Профиль");
         adapter.addFragment(teacherStatisticsFragment, "Личная информация");
-        adapter.addFragment(teacherRatingFragment, "Рейтинг");
+//        adapter.addFragment(teacherRatingFragment, "Рейтинг");
         viewPager.setAdapter(adapter);
         tabLayout.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
         tabLayout.setupWithViewPager(viewPager);

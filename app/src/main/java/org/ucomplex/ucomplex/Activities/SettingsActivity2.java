@@ -95,6 +95,7 @@ public class SettingsActivity2 extends AppCompatActivity implements OnTaskComple
                         UploadPhotoTask uploadPhotoTask = new UploadPhotoTask(SettingsActivity2.this, SettingsActivity2.this);
                         uploadPhotoTask.setupTask(settingsOneFragment.getContentBody());
                         SettingsOneFragment.PROFILE_IMAGE_CHANGED = false;
+                        Toast.makeText(SettingsActivity2.this, "Ваша фотография отправленна на модерацию", Toast.LENGTH_SHORT).show();
                     }
                     if (SettingsOneFragment.CURRENT_PASSWORD_CHANGE || SettingsOneFragment.NEW_PASSWORD_CHANGE || SettingsOneFragment.NEW_PASSWORD_AGAIN_CHANGE) {
                         settingsOneFragment.resetPassword(settingsOneFragment.currentPasswordTextView,
@@ -152,7 +153,7 @@ public class SettingsActivity2 extends AppCompatActivity implements OnTaskComple
                 settingsOneFragment.getProfileBitmap().compress(Bitmap.CompressFormat.JPEG, 60, bos);
                 settingsOneFragment.setContentBody(new ByteArrayBody(bos.toByteArray(), "filename"));
                 SettingsOneFragment.PROFILE_IMAGE_CHANGED = true;
-                Toast.makeText(this, "Фотография отправленна на модерацию", Toast.LENGTH_SHORT).show();
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
