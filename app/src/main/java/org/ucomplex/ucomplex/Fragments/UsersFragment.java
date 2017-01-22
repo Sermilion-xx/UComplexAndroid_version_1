@@ -1,9 +1,13 @@
 package org.ucomplex.ucomplex.Fragments;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ListFragment;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
@@ -15,11 +19,13 @@ import org.ucomplex.ucomplex.Adaptors.ImageAdapter;
 import org.ucomplex.ucomplex.Common;
 import org.ucomplex.ucomplex.Model.Users.User;
 
+import java.io.File;
 import java.util.ArrayList;
 
 
 public class UsersFragment extends ListFragment {
 
+    private static final int MY_PERMISSIONS_REQUEST_WRITE_STORAGE = 0;
     ArrayList<User> mItems = new ArrayList<>();
     int usersType;
     ImageAdapter imageAdapter;
@@ -29,6 +35,7 @@ public class UsersFragment extends ListFragment {
     Activity activity;
     User user;
     FetchUsersTask loadMoreTask;
+    private int position;
 
 
     public void setActivity(Activity activity) {
@@ -47,7 +54,7 @@ public class UsersFragment extends ListFragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putSerializable("mItems", mItems);
+//        outState.putSerializable("mItems", mItems);
     }
 
     @Override
@@ -57,22 +64,8 @@ public class UsersFragment extends ListFragment {
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
-        if (Common.isNetworkConnected(activity)) {
-            User user = mItems.get(position);
-            Intent intent = new Intent(getContext(), ProfileActivity.class);
-            Bundle extras = new Bundle();
-            extras.putInt("type", user.getType());
-            extras.putString("person", String.valueOf(user.getPerson()));
-            if (user.getPhotoBitmap() != null) {
-                intent.putExtra("bitmap", user.getPhotoBitmap());
-            }
-            extras.putString("hasPhoto", String.valueOf(user.getPhoto()));
-            extras.putString("code", user.getCode());
-            intent.putExtras(extras);
-            startActivity(intent);
-        } else {
-            Toast.makeText(activity, "Проверте интернет соединение.", Toast.LENGTH_LONG).show();
-        }
+        this.position = position;
+        checkWritePermissions();
     }
 
     @Override
@@ -184,5 +177,62 @@ public class UsersFragment extends ListFragment {
             });
         }
         getListView().addFooterView(btnLoadExtra);
+    }
+
+    private void checkWritePermissions(){
+        if (ContextCompat.checkSelfPermission(this.getContext(),
+                Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this.getActivity(),
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                ActivityCompat.requestPermissions(this.getActivity(),
+                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                        MY_PERMISSIONS_REQUEST_WRITE_STORAGE);
+            } else {
+                ActivityCompat.requestPermissions(this.getActivity(),
+                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                        MY_PERMISSIONS_REQUEST_WRITE_STORAGE);
+            }
+        }else {
+            prepareProfileIntent();
+            System.out.println();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case MY_PERMISSIONS_REQUEST_WRITE_STORAGE: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    prepareProfileIntent();
+                } else {
+
+                }
+                return;
+            }
+        }
+    }
+
+    private void prepareProfileIntent() {
+        if (Common.isNetworkConnected(activity)) {
+            User user = mItems.get(position);
+            Intent intent = new Intent(getContext(), ProfileActivity.class);
+            Bundle extras = new Bundle();
+            extras.putInt("type", user.getType());
+            extras.putString("person", String.valueOf(user.getPerson()));
+            if (user.getPhotoBitmap() != null) {
+                File bitmapFile = Common.storeImage(user.getPhotoBitmap(), activity.getApplication());
+                intent.putExtra("bitmap", bitmapFile);
+            }
+            extras.putString("hasPhoto", String.valueOf(user.getPhoto()));
+            extras.putString("code", user.getCode());
+            intent.putExtras(extras);
+            startActivity(intent);
+        } else {
+            Toast.makeText(activity, "Проверте интернет соединение.", Toast.LENGTH_LONG).show();
+        }
     }
 }

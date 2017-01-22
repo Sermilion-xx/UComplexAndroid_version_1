@@ -1,6 +1,7 @@
 package org.ucomplex.ucomplex.Activities;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
@@ -19,6 +20,7 @@ import org.ucomplex.ucomplex.Interfaces.OnTaskCompleteListener;
 import org.ucomplex.ucomplex.Model.Users.User;
 import org.ucomplex.ucomplex.R;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -53,7 +55,8 @@ public class ProfileActivity extends AppCompatActivity implements OnTaskComplete
         if (extra != null) {
             type = extra.getInt("type");
             personId = Integer.parseInt(extra.getString("person"));
-            bitmap = extra.getParcelable("bitmap");
+            File bitmapFile = (File) extra.get("bitmap");
+            bitmap = BitmapFactory.decodeFile(bitmapFile.getPath());
             hasPhoto = Integer.parseInt(extra.getString("hasPhoto"));
             code = extra.getString("code");
             profileFragment = new ProfileFragment();

@@ -1,6 +1,7 @@
 package org.ucomplex.ucomplex;
 
 import android.app.Activity;
+import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -19,9 +20,12 @@ import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.util.Base64;
+import android.util.Log;
+import android.widget.Toast;
 
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.google.gson.Gson;
@@ -44,6 +48,8 @@ import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -64,11 +70,14 @@ import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 
+import static android.provider.MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE;
+
 /**
  * Created by Sermi lion on 04/12/2015.
  */
 public class Common {
 
+    public static int MEDIA_TYPE_IMAGE = 2;
     public static int USER_TYPE = -1;
     public static final int FILE_SELECT_CODE = 0;
     public static String folderCode;
@@ -838,6 +847,94 @@ public class Common {
         else {
             return 0;
         }
+    }
+
+
+
+    public static Bitmap getThumbnail(Uri uri, Activity activity) throws IOException {
+        int THUMBNAIL_SIZE = 640;
+        InputStream input = activity.getContentResolver().openInputStream(uri);
+
+        BitmapFactory.Options onlyBoundsOptions = new BitmapFactory.Options();
+        onlyBoundsOptions.inJustDecodeBounds = true;
+        onlyBoundsOptions.inPreferredConfig = Bitmap.Config.ARGB_8888;
+        BitmapFactory.decodeStream(input, null, onlyBoundsOptions);
+        input.close();
+        if (onlyBoundsOptions.outWidth == -1 || onlyBoundsOptions.outHeight == -1)
+            return null;
+        int originalSize;
+        if (onlyBoundsOptions.outHeight > onlyBoundsOptions.outWidth)
+            originalSize = onlyBoundsOptions.outHeight;
+        else
+            originalSize = onlyBoundsOptions.outWidth;
+
+        Double ratio;
+        if (originalSize > THUMBNAIL_SIZE)
+            ratio = (double) originalSize / THUMBNAIL_SIZE;
+        else
+            ratio = 1.0;
+
+        BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
+        bitmapOptions.inSampleSize = getPowerOfTwoForSampleRatio(ratio);
+        bitmapOptions.inPreferredConfig = Bitmap.Config.ARGB_8888;
+        input = activity.getContentResolver().openInputStream(uri);
+        Bitmap bitmap = BitmapFactory.decodeStream(input, null, bitmapOptions);
+        if (input != null) {
+            input.close();
+        }
+        return bitmap;
+    }
+
+    public static int getPowerOfTwoForSampleRatio(Double ratio) {
+        int k = Integer.highestOneBit((int) Math.floor(ratio));
+        if (k == 0)
+            return 1;
+        else
+            return k;
+    }
+
+    public static File storeImage(Bitmap image, Application application) {
+        File pictureFile = getOutputMediaFile(application);
+        if (pictureFile == null) {
+            Log.d("",
+                    "Error creating media file, check storage permissions: ");// e.getMessage());
+            return null;
+        }
+        try {
+            FileOutputStream fos = new FileOutputStream(pictureFile);
+            image.compress(Bitmap.CompressFormat.PNG, 90, fos);
+            fos.close();
+        } catch (FileNotFoundException e) {
+            Log.d("", "File not found: " + e.getMessage());
+        } catch (IOException e) {
+            Log.d("", "Error accessing file: " + e.getMessage());
+        }
+        return pictureFile;
+    }
+
+    /** Create a File for saving an image or video */
+    private static  File getOutputMediaFile(Application application){
+        // To be safe, you should check that the SDCard is mounted
+        // using Environment.getExternalStorageState() before doing this.
+        File mediaStorageDir = new File(Environment.getExternalStorageDirectory()
+                + "/Android/data/"
+                + application.getPackageName()
+                + "/Files");
+
+        // This location works best if you want the created images to be shared
+        // between applications and persist after your app has been uninstalled.
+
+        // Create the storage directory if it does not exist
+        if (! mediaStorageDir.exists()){
+            if (! mediaStorageDir.mkdirs()){
+                Toast.makeText(application, "Необходимо разрешение на произведение записи в пямять. Перейдите в настройки программы и дайте разрешение", Toast.LENGTH_SHORT).show();
+                return null;
+            }
+        }
+        File mediaFile;
+        String mImageName="UC_temp.jpg";
+        mediaFile = new File(mediaStorageDir.getPath() + File.separator + mImageName);
+        return mediaFile;
     }
 
 }
