@@ -99,8 +99,10 @@ public class Common {
 
 
     public static int getColor(int index) {
-        String[] hexColors = {"#f6a6c1", "#92d6eb", "#4dd9e2", "#68d9f0", "#c69ad9", "#ff83b6", "#fda79d", "#f8c092",
-                "#928fbf", "#aa7aad", "#e27193", "#fb736d", "#36add8", "#ff6c76", "#4dbcbb", "#4da8b6", ""};
+        String[] hexColors = {"#f6a6c1", "#92d6eb", "#4dd9e2", "#68d9f0", "#c69ad9", "#ff83b6",
+                "#fda79d", "#f8c092",
+                "#928fbf", "#aa7aad", "#e27193", "#fb736d", "#36add8", "#ff6c76", "#4dbcbb",
+                "#4da8b6", " "};
         return Color.parseColor(hexColors[index]);
     }
 

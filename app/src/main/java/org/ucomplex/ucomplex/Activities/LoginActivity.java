@@ -160,7 +160,6 @@ public class LoginActivity extends Activity implements LoginTask.AsyncResponse {
         if (mAuthTask != null) {
             mAuthTask = null;
         }
-
         mEmailView.setError(null);
         mPasswordView.setError(null);
 
@@ -212,7 +211,6 @@ public class LoginActivity extends Activity implements LoginTask.AsyncResponse {
                     mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
                 }
             });
-//89640633856
             mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
             mProgressView.animate().setDuration(shortAnimTime).alpha(
                     show ? 1 : 0).setListener(new AnimatorListenerAdapter() {

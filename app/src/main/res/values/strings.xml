@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    android:hint="@string/prompt_login"
 
     <string name="app_name">UComplex</string>
     <string name="hello_world">Hello world!</string>

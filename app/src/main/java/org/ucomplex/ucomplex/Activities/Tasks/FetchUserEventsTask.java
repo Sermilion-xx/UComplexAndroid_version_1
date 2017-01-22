@@ -35,7 +35,6 @@ public class FetchUserEventsTask extends AsyncTask<Integer, Void, ArrayList<Even
         }
     }
 
-
     @Override
     protected ArrayList<EventRowItem> doInBackground(Integer... params) {
         String urlString = "";

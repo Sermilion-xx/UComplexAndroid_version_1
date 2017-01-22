@@ -68,9 +68,10 @@ public class CalendarActivity extends AppCompatActivity implements AdapterView.O
         Toolbar toolbar = (Toolbar) findViewById(R.id.calendar_toolbar2);
         toolbar.setTitle("Календарь");
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_menu);
-
+        if(getSupportActionBar()!= null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_menu);
+        }
         statisticsFragment = new CalendarStatisticsFragment();
         Bundle extras = getIntent().getExtras();
         if(!extras.containsKey("fromMenu")){

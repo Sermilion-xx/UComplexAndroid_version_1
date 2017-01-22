@@ -48,9 +48,6 @@ public class EventsActivity extends AppCompatActivity implements OnTaskCompleteL
     String[] TITLES;
     int[] ICONS;
 
-
-
-
     RecyclerView mRecyclerView;                           // Declaring RecyclerView
     MenuAdapter mAdapter;                        // Declaring Adapter For Recycler View
     LinearLayoutManager mLayoutManager;            // Declaring Layout Manager as a linear layout manager

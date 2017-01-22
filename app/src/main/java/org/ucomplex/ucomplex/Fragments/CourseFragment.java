@@ -40,10 +40,6 @@ public class CourseFragment extends ListFragment {
         getListView().setEnabled(false);
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

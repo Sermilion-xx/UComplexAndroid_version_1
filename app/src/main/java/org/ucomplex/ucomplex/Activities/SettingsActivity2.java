@@ -68,7 +68,6 @@ public class SettingsActivity2 extends AppCompatActivity implements OnTaskComple
         }
         setContentView(R.layout.activity_settings2);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
         toolbar.setTitle("Настройки");
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

@@ -12,5 +12,4 @@ public class RoleSelectActivity extends SingleFragmentActivity {
         roleSelectFragment.setContext(this);
         return roleSelectFragment;
     }
-
 }

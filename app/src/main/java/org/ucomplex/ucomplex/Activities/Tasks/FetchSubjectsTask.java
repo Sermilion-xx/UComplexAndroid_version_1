@@ -24,7 +24,7 @@ import java.util.HashMap;
 public class FetchSubjectsTask extends AsyncTask<Void, String, ArrayList<Triplet<String, String, Integer>>> implements IProgressTracker, DialogInterface.OnCancelListener{
 
     Activity mContext;
-    String[] assesmentType = {"Зачет","Экзамен", "Самостоятельная работа"};
+    String[] assesmentType = {"Зачет","Экзамен", "Самостоятельная работа", " "};
     SubjectsActivity caller;
 
     private String mProgressMessage;
@@ -85,7 +85,11 @@ public class FetchSubjectsTask extends AsyncTask<Void, String, ArrayList<Triplet
                     int    gcourse = Integer.parseInt(studentSubjectsListHashMap.get(i).get("id"));
                     String _courseNameId = studentSubjectsListHashMap.get(i).get("course");
                     String courseName = hashCourses.get(_courseNameId);
-                    int courseFrom = Integer.parseInt(hashCoursesForms.get(_courseNameId));
+                    String courseFormStr = hashCoursesForms.get(_courseNameId);
+                    int courseFrom = 3;
+                    if(courseFormStr!=null) {
+                        courseFrom = Integer.parseInt(hashCoursesForms.get(_courseNameId));
+                    }
                     Triplet<String, String, Integer> subject = new Triplet<>(courseName, assesmentType[courseFrom], gcourse);
                     subjectsListArray.add(subject);
                 }
