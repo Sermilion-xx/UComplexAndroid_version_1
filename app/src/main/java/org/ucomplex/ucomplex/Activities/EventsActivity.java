@@ -1,5 +1,6 @@
 package org.ucomplex.ucomplex.Activities;
 
+import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -11,6 +12,8 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -37,6 +40,8 @@ import org.ucomplex.ucomplex.R;
 
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
+
+import static org.ucomplex.ucomplex.Common.MY_PERMISSIONS_REQUEST_WRITE_STORAGE;
 
 public class EventsActivity extends AppCompatActivity implements OnTaskCompleteListener, LoginTask.AsyncResponse {
 
@@ -183,7 +188,13 @@ public class EventsActivity extends AppCompatActivity implements OnTaskCompleteL
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Common.checkWritePermissions(this);
+        if(ContextCompat.checkSelfPermission(this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    MY_PERMISSIONS_REQUEST_WRITE_STORAGE);
+        }
         user = Common.getUserDataFromPref(this);
         if(Common.USER_TYPE == -1){
             Common.USER_TYPE = user.getType();
@@ -253,9 +264,8 @@ public class EventsActivity extends AppCompatActivity implements OnTaskCompleteL
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {
         switch (requestCode) {
-            case Common.MY_PERMISSIONS_REQUEST_WRITE_STORAGE: {
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            case MY_PERMISSIONS_REQUEST_WRITE_STORAGE: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
                 } else {
                     Toast.makeText(this, "Вы не разрешили доступ к пямяти.", Toast.LENGTH_LONG).show();

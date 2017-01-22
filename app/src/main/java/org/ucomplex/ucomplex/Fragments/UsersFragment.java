@@ -1,10 +1,13 @@
 package org.ucomplex.ucomplex.Fragments;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ListFragment;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
@@ -18,6 +21,8 @@ import org.ucomplex.ucomplex.Model.Users.User;
 
 import java.io.File;
 import java.util.ArrayList;
+
+import static org.ucomplex.ucomplex.Common.MY_PERMISSIONS_REQUEST_WRITE_STORAGE;
 
 
 public class UsersFragment extends ListFragment {
@@ -62,7 +67,16 @@ public class UsersFragment extends ListFragment {
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         this.position = position;
-        boolean granted = Common.checkWritePermissions(this.getActivity());
+        if(ContextCompat.checkSelfPermission(this.getActivity(),
+                Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                == PackageManager.PERMISSION_GRANTED){
+            prepareProfileIntent();
+        }else{
+            ActivityCompat.requestPermissions(this.getActivity(),
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    MY_PERMISSIONS_REQUEST_WRITE_STORAGE);
+        }
+
     }
 
     @Override
@@ -177,12 +191,10 @@ public class UsersFragment extends ListFragment {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         switch (requestCode) {
-            case Common.MY_PERMISSIONS_REQUEST_WRITE_STORAGE: {
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            case MY_PERMISSIONS_REQUEST_WRITE_STORAGE: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     prepareProfileIntent();
                 } else {
                     Toast.makeText(getActivity(), "Вы не разрешили доступ к пямяти.", Toast.LENGTH_LONG).show();
